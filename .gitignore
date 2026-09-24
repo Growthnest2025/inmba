@@ -1,0 +1,14 @@
+**/node_modules/
+**/.env
+**/.env.*
+!**/.env.example
+**/build/
+**/dist/
+backend/storage/
+backend/uploads/
+backend/docs/
+backend/*-test.json
+docs/
+database/
+*.tar
+**/uploads/

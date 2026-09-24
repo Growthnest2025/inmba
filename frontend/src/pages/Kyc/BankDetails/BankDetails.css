@@ -1,0 +1,891 @@
+/* ========================================
+   BANK DETAILS PAGE
+======================================== */
+
+.inmba-bank-page {
+  min-height: 100vh;
+  padding: 125px 22px 70px;
+  background:
+    radial-gradient(
+      circle at 8% 15%,
+      rgba(15, 77, 15, 0.1),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 92% 80%,
+      rgba(57, 145, 57, 0.08),
+      transparent 35%
+    ),
+    linear-gradient(
+      145deg,
+      #edf6ea 0%,
+      #f9fcf8 52%,
+      #eaf3e6 100%
+    );
+}
+
+.inmba-bank-container {
+  width: min(100%, 1120px);
+  margin: 0 auto;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.inmba-bank-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding: 28px 30px;
+  border-radius: 26px;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 88% 10%,
+      rgba(255, 255, 255, 0.15),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      #0b410b,
+      #126012 55%,
+      #278327
+    );
+  box-shadow:
+    0 22px 48px rgba(15, 77, 15, 0.21);
+}
+
+.inmba-bank-header p {
+  margin: 0 0 5px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.73rem;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.inmba-bank-header h1 {
+  margin: 0 0 6px;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  font-weight: 900;
+}
+
+.inmba-bank-header > div > span {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.6;
+}
+
+.inmba-bank-header-button {
+  min-height: 43px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.13);
+  font-size: 0.79rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.inmba-bank-header-button:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ========================================
+   KYC PROGRESS
+======================================== */
+
+.inmba-bank-progress {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 17px 20px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 12px 30px rgba(35, 70, 35, 0.07);
+}
+
+.inmba-bank-progress article {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inmba-bank-progress > div {
+  height: 2px;
+  flex: 1;
+  margin: 0 12px;
+  background: #dae7d8;
+}
+
+.inmba-bank-progress article > span {
+  width: 31px;
+  height: 31px;
+  flex: 0 0 31px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #667866;
+  background: #e9f0e8;
+  font-size: 0.69rem;
+  font-weight: 900;
+}
+
+.inmba-bank-progress article strong,
+.inmba-bank-progress article small {
+  display: block;
+}
+
+.inmba-bank-progress article strong {
+  color: #536553;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.inmba-bank-progress article small {
+  margin-top: 1px;
+  color: #899589;
+  font-size: 0.58rem;
+}
+
+.inmba-bank-progress
+  .inmba-bank-progress-active
+  > span {
+  color: #ffffff;
+  background: #0f4d0f;
+  box-shadow:
+    0 6px 14px rgba(15, 77, 15, 0.22);
+}
+
+.inmba-bank-progress
+  .inmba-bank-progress-active
+  strong {
+  color: #0f4d0f;
+}
+
+/* ========================================
+   MEMBER CARD
+======================================== */
+
+.inmba-bank-member-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding: 17px 20px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 19px;
+  background: rgba(255, 255, 255, 0.97);
+}
+
+.inmba-bank-avatar {
+  width: 51px;
+  height: 51px;
+  flex: 0 0 51px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #288428
+    );
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.inmba-bank-member-card > div {
+  flex: 1;
+}
+
+.inmba-bank-member-card p {
+  margin: 0 0 2px;
+  color: #7b897b;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.inmba-bank-member-card h2 {
+  margin: 0 0 2px;
+  color: #1c3a1c;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.inmba-bank-member-card div > span {
+  color: #748174;
+  font-size: 0.73rem;
+}
+
+.inmba-bank-member-card > strong {
+  padding: 7px 11px;
+  border-radius: 999px;
+  color: #176027;
+  background: #e1f2e2;
+  font-size: 0.68rem;
+}
+
+/* ========================================
+   ALERT
+======================================== */
+
+.inmba-bank-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 14px 17px;
+  border: 1px solid #efb1b7;
+  border-radius: 14px;
+  color: #9f2935;
+  background: #fff0f1;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* ========================================
+   MAIN LAYOUT
+======================================== */
+
+.inmba-bank-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  align-items: start;
+  gap: 22px;
+}
+
+/* ========================================
+   FORM CARD
+======================================== */
+
+.inmba-bank-form-card {
+  padding: 24px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow:
+    0 18px 42px rgba(34, 68, 34, 0.1);
+}
+
+.inmba-bank-card-header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e4ece2;
+}
+
+.inmba-bank-card-header > span {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #288428
+    );
+  box-shadow:
+    0 9px 20px rgba(15, 77, 15, 0.18);
+}
+
+.inmba-bank-card-header h2 {
+  margin: 0;
+  color: #193819;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.inmba-bank-card-header p {
+  margin: 4px 0 0;
+  color: #778677;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+/* ========================================
+   FORM
+======================================== */
+
+.inmba-bank-form-row {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.inmba-bank-form-group {
+  min-width: 0;
+  margin-bottom: 20px;
+}
+
+.inmba-bank-form-group > label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  color: #304730;
+  font-size: 0.79rem;
+  font-weight: 900;
+}
+
+.inmba-bank-form-group label > span {
+  color: #d33443;
+}
+
+.inmba-bank-form-group label > small {
+  margin-left: auto;
+  color: #879487;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.inmba-bank-form-group input {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 13px;
+  border: 1px solid #d3e2d1;
+  border-radius: 12px;
+  color: #213821;
+  background: #fbfdfb;
+  font-size: 0.86rem;
+  outline: none;
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease;
+}
+
+.inmba-bank-form-group input:focus {
+  border-color: #6ba76b;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(15, 77, 15, 0.09);
+}
+
+.inmba-bank-form-group input:disabled {
+  cursor: not-allowed;
+  color: #788478;
+  background: #f0f3f0;
+}
+
+.inmba-bank-icon-input {
+  position: relative;
+}
+
+.inmba-bank-icon-input > i {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  z-index: 1;
+  transform: translateY(-50%);
+  color: #5c805c;
+  font-size: 0.75rem;
+}
+
+.inmba-bank-icon-input input {
+  padding-left: 38px;
+}
+
+.inmba-bank-form-group
+  .inmba-bank-input-error {
+  border-color: #dc4553;
+  background: #fffafa;
+  box-shadow:
+    0 0 0 3px rgba(220, 69, 83, 0.07);
+}
+
+.inmba-bank-field-error {
+  display: block;
+  margin-top: 6px;
+  color: #c52e3c;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* ========================================
+   FILE UPLOAD
+======================================== */
+
+.inmba-bank-hidden-input {
+  display: none;
+}
+
+.inmba-bank-upload {
+  width: 100%;
+  min-height: 112px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 15px;
+  border: 1px dashed #a9cba6;
+  border-radius: 16px;
+  color: #244224;
+  background: #f5faf4;
+  text-align: left;
+  transition:
+    border-color 0.22s ease,
+    background 0.22s ease;
+}
+
+.inmba-bank-upload:hover {
+  border-color: #579557;
+  background: #edf7eb;
+}
+
+.inmba-bank-upload:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.inmba-bank-upload-error {
+  border-color: #d94b58;
+  background: #fff7f8;
+}
+
+.inmba-bank-upload-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.inmba-bank-upload-content > span {
+  width: 45px;
+  height: 45px;
+  flex: 0 0 45px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #ffffff;
+  background: #0f4d0f;
+}
+
+.inmba-bank-upload-content strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #2a482a;
+  font-size: 0.79rem;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.inmba-bank-upload-content small {
+  display: block;
+  color: #768576;
+  font-size: 0.68rem;
+}
+
+.inmba-bank-proof-preview {
+  position: relative;
+  width: 78px;
+  height: 78px;
+  flex: 0 0 78px;
+}
+
+.inmba-bank-proof-preview img {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #d3e0d1;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.inmba-bank-proof-preview > span {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  width: 23px;
+  height: 23px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  color: #ffffff;
+  background: #c93342;
+  font-size: 0.66rem;
+  cursor: pointer;
+}
+
+/* ========================================
+   FORM ACTIONS
+======================================== */
+
+.inmba-bank-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 11px;
+  padding-top: 5px;
+}
+
+.inmba-bank-primary-button,
+.inmba-bank-secondary-button {
+  min-height: 45px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 17px;
+  border-radius: 12px;
+  font-size: 0.79rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.inmba-bank-primary-button {
+  border: 0;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #278327
+    );
+  box-shadow:
+    0 10px 23px rgba(15, 77, 15, 0.22);
+}
+
+.inmba-bank-primary-button:hover {
+  color: #ffffff;
+}
+
+.inmba-bank-primary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+  box-shadow: none;
+}
+
+.inmba-bank-secondary-button {
+  border: 1px solid #cee1cb;
+  color: #0f4d0f;
+  background: #edf6ec;
+}
+
+/* ========================================
+   SIDE COLUMN
+======================================== */
+
+.inmba-bank-side-column {
+  display: grid;
+  gap: 16px;
+}
+
+.inmba-bank-help-card,
+.inmba-bank-next-card {
+  padding: 20px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 13px 32px rgba(35, 70, 35, 0.08);
+}
+
+.inmba-bank-help-card > header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 16px;
+}
+
+.inmba-bank-help-card
+  > header
+  > span {
+  width: 43px;
+  height: 43px;
+  flex: 0 0 43px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  color: #ffffff;
+  background: #0f4d0f;
+}
+
+.inmba-bank-help-card h2 {
+  margin: 0;
+  color: #1d3b1d;
+  font-size: 0.97rem;
+  font-weight: 900;
+}
+
+.inmba-bank-help-card header p {
+  margin: 3px 0 0;
+  color: #788678;
+  font-size: 0.68rem;
+}
+
+.inmba-bank-help-card ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.inmba-bank-help-card li {
+  margin-bottom: 10px;
+  color: #687868;
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+.inmba-bank-help-card li:last-child {
+  margin-bottom: 0;
+}
+
+/* ========================================
+   DOCUMENT CARD
+======================================== */
+
+.inmba-bank-document-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 16px;
+  border: 1px solid #cbe1c9;
+  border-radius: 17px;
+  background: #edf7eb;
+}
+
+.inmba-bank-document-card > span {
+  width: 39px;
+  height: 39px;
+  flex: 0 0 39px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: #1f6824;
+  background: #d8edd6;
+}
+
+.inmba-bank-document-card h3 {
+  margin: 0 0 4px;
+  color: #285328;
+  font-size: 0.79rem;
+  font-weight: 900;
+}
+
+.inmba-bank-document-card p {
+  margin: 0;
+  color: #627562;
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+/* ========================================
+   NEXT STEP
+======================================== */
+
+.inmba-bank-next-card {
+  text-align: center;
+}
+
+.inmba-bank-next-card > p {
+  margin: 0 0 11px;
+  color: #478047;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.inmba-bank-next-card > i {
+  margin-bottom: 10px;
+  color: #0f4d0f;
+  font-size: 1.7rem;
+}
+
+.inmba-bank-next-card h3 {
+  margin: 0 0 6px;
+  color: #203d20;
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.inmba-bank-next-card > span {
+  display: block;
+  color: #768576;
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
+/* ========================================
+   LOADING / ERROR
+======================================== */
+
+.inmba-bank-state {
+  width: min(100%, 540px);
+  min-height: 350px;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 35px;
+  border: 1px solid rgba(15, 77, 15, 0.12);
+  border-radius: 25px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow:
+    0 20px 45px rgba(35, 68, 35, 0.1);
+}
+
+.inmba-bank-state .spinner-border {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 19px;
+  color: #0f4d0f;
+}
+
+.inmba-bank-state h1 {
+  margin: 0 0 8px;
+  color: #193719;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.inmba-bank-state p {
+  max-width: 390px;
+  margin: 0 0 20px;
+  color: #718071;
+  line-height: 1.65;
+}
+
+.inmba-bank-state-icon {
+  width: 67px;
+  height: 67px;
+  margin-bottom: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #a92d39;
+  background: #fde8ea;
+  font-size: 1.5rem;
+}
+
+.inmba-bank-state-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 991px) {
+  .inmba-bank-page {
+    padding-top: 110px;
+  }
+
+  .inmba-bank-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-bank-side-column {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .inmba-bank-help-card {
+    grid-row: span 2;
+  }
+}
+
+@media (max-width: 767px) {
+  .inmba-bank-page {
+    padding:
+      98px 14px 50px;
+  }
+
+  .inmba-bank-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 23px;
+  }
+
+  .inmba-bank-header-button {
+    width: 100%;
+  }
+
+  .inmba-bank-progress {
+    overflow-x: auto;
+  }
+
+  .inmba-bank-progress article {
+    min-width: 72px;
+  }
+
+  .inmba-bank-progress > div {
+    min-width: 25px;
+  }
+
+  .inmba-bank-side-column {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-bank-help-card {
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 575px) {
+  .inmba-bank-page {
+    padding-right: 11px;
+    padding-left: 11px;
+  }
+
+  .inmba-bank-member-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .inmba-bank-member-card > strong {
+    width: 100%;
+    text-align: center;
+  }
+
+  .inmba-bank-form-card {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .inmba-bank-form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .inmba-bank-upload {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .inmba-bank-proof-preview {
+    width: 100%;
+    height: 170px;
+  }
+
+  .inmba-bank-form-actions,
+  .inmba-bank-state-actions {
+    flex-direction: column;
+  }
+
+  .inmba-bank-primary-button,
+  .inmba-bank-secondary-button {
+    width: 100%;
+  }
+}

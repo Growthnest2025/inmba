@@ -1,0 +1,1163 @@
+/* =========================================================
+   PAGE
+========================================================= */
+
+.legal-entity-page {
+  min-height: 100vh;
+  padding: 32px 20px 70px;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(47, 153, 71, 0.08),
+      transparent 35%
+    ),
+    linear-gradient(
+      180deg,
+      #f7fbf5,
+      #edf5ea
+    );
+}
+
+.legal-entity-container {
+  width: min(100%, 1050px);
+  margin: 0 auto;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.legal-entity-header {
+  display: grid;
+  grid-template-columns:
+    auto 1fr auto;
+  align-items: center;
+  gap: 18px;
+
+  padding: 25px;
+
+  border:
+    1px solid #d8e7d5;
+
+  border-radius:
+    23px;
+
+  background:
+    #ffffff;
+
+  box-shadow:
+    0 16px 42px
+    rgba(15, 77, 15, 0.07);
+}
+
+.legal-entity-header-icon {
+  width: 60px;
+  height: 60px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius:
+    17px;
+
+  color:
+    #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2e853e
+    );
+
+  font-size:
+    1.4rem;
+}
+
+.legal-entity-header > div:nth-child(2) > span {
+  display: block;
+
+  margin-bottom:
+    4px;
+
+  color:
+    #43814c;
+
+  font-size:
+    0.68rem;
+
+  font-weight:
+    900;
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    0.1em;
+}
+
+.legal-entity-header h1 {
+  margin: 0;
+
+  color:
+    #173c22;
+
+  font-size:
+    clamp(
+      1.5rem,
+      4vw,
+      2.1rem
+    );
+}
+
+.legal-entity-header p {
+  margin:
+    7px 0 0;
+
+  color:
+    #75817a;
+
+  font-size:
+    0.8rem;
+
+  line-height:
+    1.6;
+}
+
+.legal-entity-step {
+  min-width:
+    95px;
+
+  padding:
+    10px 14px;
+
+  border:
+    1px solid #d6e6d3;
+
+  border-radius:
+    12px;
+
+  background:
+    #f7fbf6;
+
+  text-align:
+    center;
+}
+
+.legal-entity-step small {
+  display:
+    block;
+
+  color:
+    #879488;
+
+  font-size:
+    0.6rem;
+}
+
+.legal-entity-step strong {
+  color:
+    #246c35;
+
+  font-size:
+    0.8rem;
+}
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.legal-entity-progress {
+  display:
+    flex;
+
+  align-items:
+    flex-start;
+
+  justify-content:
+    center;
+
+  margin:
+    25px 0;
+}
+
+.legal-progress-item {
+  min-width:
+    65px;
+
+  display:
+    grid;
+
+  justify-items:
+    center;
+
+  gap:
+    6px;
+}
+
+.legal-progress-item > span {
+  width:
+    32px;
+
+  height:
+    32px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border:
+    1px solid #d1ddd0;
+
+  border-radius:
+    50%;
+
+  color:
+    #849087;
+
+  background:
+    #ffffff;
+
+  font-size:
+    0.72rem;
+
+  font-weight:
+    800;
+}
+
+.legal-progress-item small {
+  color:
+    #849087;
+
+  font-size:
+    0.64rem;
+
+  font-weight:
+    700;
+}
+
+.legal-progress-item.completed > span {
+  border-color:
+    #359349;
+
+  color:
+    #ffffff;
+
+  background:
+    #359349;
+}
+
+.legal-progress-item.completed small {
+  color:
+    #367740;
+}
+
+.legal-progress-item.active > span {
+  border-color:
+    #0f4d0f;
+
+  color:
+    #ffffff;
+
+  background:
+    #0f4d0f;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(15, 77, 15, 0.08);
+}
+
+.legal-progress-item.active small {
+  color:
+    #0f4d0f;
+}
+
+.legal-progress-line {
+  width:
+    70px;
+
+  height:
+    2px;
+
+  margin-top:
+    15px;
+
+  background:
+    #d6e1d4;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.legal-entity-error {
+  display:
+    flex;
+
+  align-items:
+    flex-start;
+
+  gap:
+    9px;
+
+  margin-bottom:
+    16px;
+
+  padding:
+    13px 15px;
+
+  border:
+    1px solid #ecc3c6;
+
+  border-radius:
+    12px;
+
+  color:
+    #a8323b;
+
+  background:
+    #fff2f2;
+
+  font-size:
+    0.76rem;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.legal-entity-form {
+  display:
+    grid;
+
+  gap:
+    17px;
+}
+
+.legal-entity-card {
+  overflow:
+    hidden;
+
+  border:
+    1px solid #dce8da;
+
+  border-radius:
+    19px;
+
+  background:
+    #ffffff;
+
+  box-shadow:
+    0 10px 30px
+    rgba(15, 77, 15, 0.045);
+}
+
+.legal-entity-card-header {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    12px;
+
+  padding:
+    17px 20px;
+
+  border-bottom:
+    1px solid #e4ece2;
+
+  background:
+    #f9fcf8;
+}
+
+.legal-entity-card-header > span {
+  width:
+    39px;
+
+  height:
+    39px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  flex:
+    0 0 39px;
+
+  border-radius:
+    11px;
+
+  color:
+    #ffffff;
+
+  background:
+    #327a40;
+}
+
+.legal-entity-card-header h2 {
+  margin:
+    0;
+
+  color:
+    #294b31;
+
+  font-size:
+    0.9rem;
+}
+
+.legal-entity-card-header p {
+  margin:
+    3px 0 0;
+
+  color:
+    #829086;
+
+  font-size:
+    0.69rem;
+}
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.legal-entity-grid {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap:
+    17px;
+
+  padding:
+    21px;
+}
+
+/* =========================================================
+   FIELD
+========================================================= */
+
+.legal-entity-field {
+  display:
+    grid;
+
+  gap:
+    7px;
+
+  min-width:
+    0;
+}
+
+.legal-entity-field label {
+  display:
+    flex;
+
+  gap:
+    4px;
+
+  color:
+    #506557;
+
+  font-size:
+    0.7rem;
+
+  font-weight:
+    800;
+}
+
+.legal-entity-field label span {
+  color:
+    #c6313a;
+}
+
+.legal-entity-field input {
+  width:
+    100%;
+
+  min-height:
+    45px;
+
+  padding:
+    10px 13px;
+
+  border:
+    1px solid #ccdccc;
+
+  border-radius:
+    10px;
+
+  outline:
+    none;
+
+  color:
+    #2e4a34;
+
+  background:
+    #ffffff;
+
+  font:
+    inherit;
+
+  font-size:
+    0.78rem;
+}
+
+.legal-entity-field input:focus {
+  border-color:
+    #6ba574;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(15, 77, 15, 0.06);
+}
+
+.legal-entity-field-error input {
+  border-color:
+    #d7656c;
+}
+
+.legal-entity-field > small {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    5px;
+
+  color:
+    #b43b43;
+
+  font-size:
+    0.64rem;
+}
+
+/* =========================================================
+   UPLOAD
+========================================================= */
+
+.legal-entity-upload-grid {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap:
+    14px;
+
+  padding:
+    20px;
+}
+
+.legal-entity-upload {
+  min-width:
+    0;
+}
+
+.legal-entity-upload > input {
+  position:
+    absolute;
+
+  width:
+    1px;
+
+  height:
+    1px;
+
+  opacity:
+    0;
+
+  pointer-events:
+    none;
+}
+
+.legal-entity-upload > label {
+  min-height:
+    150px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  flex-direction:
+    column;
+
+  gap:
+    10px;
+
+  padding:
+    15px;
+
+  border:
+    1px dashed #9bbba0;
+
+  border-radius:
+    14px;
+
+  background:
+    #f8fbf7;
+
+  cursor:
+    pointer;
+
+  text-align:
+    center;
+}
+
+.legal-entity-upload-icon {
+  width:
+    48px;
+
+  height:
+    48px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    13px;
+
+  color:
+    #267639;
+
+  background:
+    #e6f4e6;
+
+  font-size:
+    1.1rem;
+}
+
+.legal-entity-upload strong {
+  display:
+    block;
+
+  margin-bottom:
+    4px;
+
+  color:
+    #36513b;
+
+  font-size:
+    0.76rem;
+}
+
+.legal-entity-upload label small {
+  display:
+    block;
+
+  max-width:
+    180px;
+
+  overflow:
+    hidden;
+
+  color:
+    #879388;
+
+  font-size:
+    0.62rem;
+
+  text-overflow:
+    ellipsis;
+
+  white-space:
+    nowrap;
+}
+
+.legal-entity-browse {
+  padding:
+    7px 12px;
+
+  border:
+    1px solid #c9dcc7;
+
+  border-radius:
+    8px;
+
+  color:
+    #2d713a;
+
+  background:
+    #ffffff;
+
+  font-size:
+    0.65rem;
+
+  font-weight:
+    800;
+}
+
+/* =========================================================
+   PREVIEW
+========================================================= */
+
+.legal-entity-preview {
+  width:
+    70px;
+
+  height:
+    70px;
+
+  position:
+    relative;
+}
+
+.legal-entity-preview img {
+  width:
+    100%;
+
+  height:
+    100%;
+
+  border-radius:
+    11px;
+
+  object-fit:
+    cover;
+}
+
+.legal-entity-preview button {
+  position:
+    absolute;
+
+  top:
+    -7px;
+
+  right:
+    -7px;
+
+  width:
+    23px;
+
+  height:
+    23px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  padding:
+    0;
+
+  border:
+    2px solid #ffffff;
+
+  border-radius:
+    50%;
+
+  color:
+    #ffffff;
+
+  background:
+    #c73c45;
+
+  cursor:
+    pointer;
+}
+
+.legal-entity-upload-error > label {
+  border-color:
+    #d8646b;
+
+  background:
+    #fff8f8;
+}
+
+.legal-entity-upload-message {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    5px;
+
+  margin-top:
+    6px;
+
+  color:
+    #b63b44;
+
+  font-size:
+    0.63rem;
+}
+
+/* =========================================================
+   NOTE
+========================================================= */
+
+.legal-entity-note {
+  display:
+    flex;
+
+  align-items:
+    flex-start;
+
+  gap:
+    12px;
+
+  padding:
+    15px 17px;
+
+  border:
+    1px solid #cee1ca;
+
+  border-radius:
+    14px;
+
+  color:
+    #335b3b;
+
+  background:
+    #f3faf1;
+}
+
+.legal-entity-note > i {
+  margin-top:
+    2px;
+
+  color:
+    #26763a;
+}
+
+.legal-entity-note strong {
+  display:
+    block;
+
+  margin-bottom:
+    3px;
+
+  font-size:
+    0.74rem;
+}
+
+.legal-entity-note p {
+  margin:
+    0;
+
+  color:
+    #718075;
+
+  font-size:
+    0.67rem;
+
+  line-height:
+    1.5;
+}
+
+/* =========================================================
+   ACTION
+========================================================= */
+
+.legal-entity-actions {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    14px;
+
+  padding-top:
+    4px;
+}
+
+.legal-entity-actions > a,
+.legal-entity-actions > button {
+  min-height:
+    45px;
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    8px;
+
+  padding:
+    10px 18px;
+
+  border-radius:
+    11px;
+
+  font:
+    inherit;
+
+  font-size:
+    0.73rem;
+
+  font-weight:
+    800;
+
+  text-decoration:
+    none;
+}
+
+.legal-entity-actions > a {
+  border:
+    1px solid #ccddca;
+
+  color:
+    #416347;
+
+  background:
+    #ffffff;
+}
+
+.legal-entity-actions > button {
+  min-width:
+    165px;
+
+  border:
+    0;
+
+  color:
+    #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2c7b3b
+    );
+
+  cursor:
+    pointer;
+
+  box-shadow:
+    0 10px 24px
+    rgba(15, 77, 15, 0.17);
+}
+
+.legal-entity-actions > button:disabled {
+  opacity:
+    0.65;
+
+  cursor:
+    not-allowed;
+}
+
+/* =========================================================
+   STATE
+========================================================= */
+
+.legal-entity-state {
+  min-height:
+    70vh;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  flex-direction:
+    column;
+
+  gap:
+    10px;
+
+  text-align:
+    center;
+}
+
+.legal-entity-state h2 {
+  margin:
+    0;
+
+  color:
+    #294a31;
+}
+
+.legal-entity-state p {
+  margin:
+    0;
+
+  color:
+    #76837a;
+}
+
+.legal-entity-spinner {
+  width:
+    44px;
+
+  height:
+    44px;
+
+  border:
+    4px solid #d9e6d6;
+
+  border-top-color:
+    #1c6f2c;
+
+  border-radius:
+    50%;
+
+  animation:
+    legalEntitySpin
+    0.8s
+    linear
+    infinite;
+}
+
+@keyframes legalEntitySpin {
+  to {
+    transform:
+      rotate(
+        360deg
+      );
+  }
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (
+  max-width:
+    800px
+) {
+  .legal-entity-upload-grid {
+    grid-template-columns:
+      1fr;
+  }
+}
+
+@media (
+  max-width:
+    720px
+) {
+  .legal-entity-header {
+    grid-template-columns:
+      auto 1fr;
+  }
+
+  .legal-entity-step {
+    grid-column:
+      1 / -1;
+
+    width:
+      fit-content;
+  }
+
+  .legal-entity-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .legal-progress-line {
+    width:
+      30px;
+  }
+}
+
+@media (
+  max-width:
+    520px
+) {
+  .legal-entity-page {
+    padding:
+      18px
+      12px
+      50px;
+  }
+
+  .legal-entity-header {
+    grid-template-columns:
+      1fr;
+
+    text-align:
+      center;
+  }
+
+  .legal-entity-header-icon,
+  .legal-entity-step {
+    margin-inline:
+      auto;
+  }
+
+  .legal-entity-progress {
+    overflow-x:
+      auto;
+
+    justify-content:
+      flex-start;
+
+    padding-bottom:
+      5px;
+  }
+
+  .legal-entity-grid,
+  .legal-entity-upload-grid {
+    padding:
+      15px;
+  }
+
+  .legal-entity-actions {
+    flex-direction:
+      column-reverse;
+
+    align-items:
+      stretch;
+  }
+
+  .legal-entity-actions > a,
+  .legal-entity-actions > button {
+    width:
+      100%;
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+    reduce
+) {
+  .legal-entity-spinner {
+    animation:
+      none;
+  }
+}

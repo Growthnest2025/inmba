@@ -1,0 +1,1323 @@
+/* =========================================================
+   INMBA ADMIN LOGIN
+   File: AdminLogin.css
+========================================================= */
+
+.inmba-admin-login-page,
+.inmba-admin-login-page * {
+  box-sizing: border-box;
+}
+
+.inmba-admin-login-page {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 72px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px 24px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f4faf5 0%,
+      #eaf5ec 50%,
+      #f8fbf8 100%
+    );
+
+  overflow: hidden;
+
+  font-family:
+    "Poppins",
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  color: #102b16;
+}
+
+/* =========================================================
+   DECORATIVE BACKGROUND
+========================================================= */
+
+.inmba-admin-login-background {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.inmba-admin-login-background span {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background: rgba(20, 112, 43, 0.06);
+}
+
+.inmba-admin-login-background span:nth-child(1) {
+  width: 340px;
+  height: 340px;
+  top: -130px;
+  right: -90px;
+}
+
+.inmba-admin-login-background span:nth-child(2) {
+  width: 240px;
+  height: 240px;
+  bottom: -80px;
+  left: -80px;
+}
+
+.inmba-admin-login-background span:nth-child(3) {
+  width: 130px;
+  height: 130px;
+  top: 35%;
+  left: 8%;
+  background: rgba(20, 112, 43, 0.04);
+}
+
+/* =========================================================
+   MAIN LOGIN SHELL
+========================================================= */
+
+.inmba-admin-login-shell {
+  position: relative;
+  z-index: 2;
+
+  width: min(1120px, 100%);
+  min-height: 680px;
+
+  display: grid;
+  grid-template-columns:
+    minmax(360px, 0.9fr)
+    minmax(520px, 1.1fr);
+
+  background: #ffffff;
+
+  border: 1px solid rgba(21, 89, 35, 0.12);
+  border-radius: 28px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 30px 70px rgba(10, 52, 19, 0.16);
+}
+
+/* =========================================================
+   LEFT BRAND PANEL
+========================================================= */
+
+.inmba-admin-login-brand-panel {
+  position: relative;
+
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 44px;
+
+  color: #ffffff;
+
+  background:
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(255, 255, 255, 0.13),
+      transparent 35%
+    ),
+    linear-gradient(
+      145deg,
+      #063d10 0%,
+      #0a5517 50%,
+      #176c27 100%
+    );
+}
+
+/* BRAND LOGO */
+
+.inmba-admin-login-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.inmba-admin-login-brand > span {
+  width: 52px;
+  height: 52px;
+
+  flex: 0 0 52px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 15px;
+
+  background: #ffffff;
+  color: #0c621d;
+
+  font-size: 18px;
+  font-weight: 800;
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.inmba-admin-login-brand > div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.inmba-admin-login-brand strong {
+  color: #ffffff;
+  font-size: 23px;
+  font-weight: 800;
+}
+
+.inmba-admin-login-brand small {
+  margin-top: 3px;
+
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* BRAND CONTENT */
+
+.inmba-admin-login-brand-content {
+  margin: auto 0;
+  padding: 55px 0;
+}
+
+.inmba-admin-login-security-icon {
+  width: 64px;
+  height: 64px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 24px;
+
+  border-radius: 19px;
+
+  color: #0a5517;
+  background: #ffffff;
+
+  font-size: 25px;
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.inmba-admin-login-brand-content > p {
+  margin: 0 0 12px;
+
+  color: #d5f2db;
+
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.inmba-admin-login-brand-content h1 {
+  margin: 0 0 20px;
+
+  color: #ffffff;
+
+  font-size: clamp(34px, 4vw, 48px);
+  font-weight: 800;
+  line-height: 1.13;
+  letter-spacing: -0.03em;
+}
+
+.inmba-admin-login-brand-content > span:last-child {
+  display: block;
+
+  max-width: 430px;
+
+  color: rgba(255, 255, 255, 0.82);
+
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.8;
+}
+
+/* =========================================================
+   BRAND FEATURES
+========================================================= */
+
+.inmba-admin-login-features {
+  display: grid;
+  gap: 12px;
+
+  margin-bottom: 32px;
+}
+
+.inmba-admin-login-features > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 13px;
+
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.inmba-admin-login-features i {
+  width: 32px;
+  height: 32px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.12);
+
+  font-size: 14px;
+}
+
+.inmba-admin-login-features span {
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   BRAND FOOTER
+========================================================= */
+
+.inmba-admin-login-brand-footer {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding-top: 22px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
+
+  color: rgba(255, 255, 255, 0.68);
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* =========================================================
+   RIGHT FORM PANEL
+========================================================= */
+
+.inmba-admin-login-form-panel {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 42px 48px;
+
+  background: #ffffff;
+}
+
+.inmba-admin-login-form-wrap {
+  width: 100%;
+  max-width: 560px;
+}
+
+/* =========================================================
+   FORM HEADER
+========================================================= */
+
+.inmba-admin-login-form-header {
+  margin-bottom: 28px;
+
+  text-align: center;
+}
+
+.inmba-admin-login-form-icon {
+  width: 62px;
+  height: 62px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 13px;
+
+  border-radius: 18px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      145deg,
+      #0d561a,
+      #17802b
+    );
+
+  box-shadow:
+    0 10px 25px rgba(12, 101, 31, 0.22);
+
+  font-size: 23px;
+}
+
+.inmba-admin-login-form-header > p {
+  margin: 0 0 7px;
+
+  color: #117127;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.inmba-admin-login-form-header h2 {
+  margin: 0 0 8px;
+
+  color: #12351a;
+
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.inmba-admin-login-form-header > span:last-child {
+  display: block;
+
+  max-width: 430px;
+
+  margin: 0 auto;
+
+  color: #728078;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   ADMIN ROLE SELECTOR
+========================================================= */
+
+.inmba-admin-login-role-section {
+  margin-bottom: 22px;
+}
+
+.inmba-admin-login-role-section > label {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: #243d29;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.inmba-admin-login-role-grid {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.inmba-admin-login-role-option {
+  appearance: none;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 112px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 14px 10px;
+
+  border: 1px solid #dce7de;
+  border-radius: 14px;
+
+  outline: none;
+
+  background: #ffffff;
+  color: #34473a;
+
+  cursor: pointer;
+
+  text-align: center;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.inmba-admin-login-role-option:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  border-color: #6eb27b;
+
+  box-shadow:
+    0 8px 18px rgba(18, 94, 34, 0.1);
+}
+
+.inmba-admin-login-role-option > span {
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 36px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #edf7ef;
+  color: #18752c;
+
+  font-size: 15px;
+}
+
+.inmba-admin-login-role-option > div {
+  min-width: 0;
+}
+
+.inmba-admin-login-role-option strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #203926;
+
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.inmba-admin-login-role-option small {
+  display: block;
+
+  color: #7b897e;
+
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.inmba-admin-login-role-option > i {
+  color: #879188;
+
+  font-size: 13px;
+}
+
+.inmba-admin-login-role-option-active {
+  border-color: #16802d;
+
+  background:
+    linear-gradient(
+      180deg,
+      #f3fbf4,
+      #e8f6eb
+    );
+
+  box-shadow:
+    0 7px 20px rgba(17, 112, 38, 0.12);
+}
+
+.inmba-admin-login-role-option-active > span {
+  background: #147329;
+  color: #ffffff;
+}
+
+.inmba-admin-login-role-option-active > i {
+  color: #147329;
+}
+
+.inmba-admin-login-role-option-active strong {
+  color: #0a5b1b;
+}
+
+.inmba-admin-login-role-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* =========================================================
+   LOGIN FORM
+========================================================= */
+
+.inmba-admin-login-form {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.inmba-admin-login-field {
+  width: 100%;
+}
+
+.inmba-admin-login-field > label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #273e2c;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   INPUT WRAPPER
+========================================================= */
+
+.inmba-admin-login-input-wrap {
+  position: relative;
+
+  width: 100%;
+  min-height: 52px;
+
+  display: flex;
+  align-items: center;
+
+  border: 1px solid #d7e3d9;
+  border-radius: 13px;
+
+  background: #fbfdfb;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.inmba-admin-login-input-wrap:focus-within {
+  border-color: #1c8332;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 4px rgba(24, 128, 45, 0.09);
+}
+
+.inmba-admin-login-input-wrap > i {
+  position: absolute;
+  left: 17px;
+
+  z-index: 1;
+
+  color: #79907e;
+
+  font-size: 13px;
+
+  pointer-events: none;
+}
+
+.inmba-admin-login-input-wrap input {
+  width: 100%;
+  height: 50px;
+
+  margin: 0;
+
+  padding: 0 48px 0 46px;
+
+  border: none !important;
+  outline: none !important;
+
+  border-radius: 13px;
+
+  background: transparent !important;
+  color: #18321f;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+
+  box-shadow: none !important;
+}
+
+.inmba-admin-login-input-wrap input::placeholder {
+  color: #98a79b;
+  opacity: 1;
+}
+
+.inmba-admin-login-input-wrap input:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* =========================================================
+   PASSWORD TOGGLE
+========================================================= */
+
+.inmba-admin-login-password-toggle {
+  position: absolute;
+  right: 8px;
+
+  width: 36px;
+  height: 36px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 9px;
+
+  outline: none;
+
+  background: transparent;
+  color: #6c7d70;
+
+  cursor: pointer;
+
+  font-size: 13px;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.inmba-admin-login-password-toggle:hover:not(:disabled) {
+  color: #14742a;
+  background: #edf7ef;
+}
+
+.inmba-admin-login-password-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* =========================================================
+   FIELD NOTE
+========================================================= */
+
+.inmba-admin-login-field-note {
+  display: block;
+
+  margin-top: 7px;
+
+  color: #839087;
+
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.inmba-admin-login-error {
+  width: 100%;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  margin-bottom: 17px;
+
+  padding: 12px 14px;
+
+  border: 1px solid #f1c8c8;
+  border-radius: 12px;
+
+  background: #fff3f3;
+  color: #b42a2a;
+
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.inmba-admin-login-error i {
+  margin-top: 2px;
+}
+
+/* =========================================================
+   ROLE INFO
+========================================================= */
+
+.inmba-admin-login-role-info {
+  width: 100%;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  padding: 14px;
+
+  border: 1px solid #dce9de;
+  border-radius: 13px;
+
+  background: #f6fbf7;
+}
+
+.inmba-admin-login-role-info > span {
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 36px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #e6f5e9;
+  color: #126d27;
+
+  font-size: 14px;
+}
+
+.inmba-admin-login-role-info > div {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.inmba-admin-login-role-info strong {
+  color: #1c3922;
+
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.inmba-admin-login-role-info small {
+  color: #728077;
+
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   SUBMIT BUTTON
+========================================================= */
+
+.inmba-admin-login-submit {
+  width: 100%;
+  min-height: 52px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 13px 20px;
+
+  border: none;
+  border-radius: 13px;
+
+  outline: none;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0b5b1c,
+      #17802d
+    );
+
+  color: #ffffff;
+
+  cursor: pointer;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 750;
+
+  box-shadow:
+    0 9px 22px rgba(16, 103, 34, 0.2);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.inmba-admin-login-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 12px 26px rgba(16, 103, 34, 0.25);
+}
+
+.inmba-admin-login-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.inmba-admin-login-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  box-shadow: none;
+}
+
+/* =========================================================
+   FORM FOOTER
+========================================================= */
+
+.inmba-admin-login-form-footer {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+
+  margin-top: 24px;
+  padding-top: 18px;
+
+  border-top: 1px solid #e6ece7;
+
+  color: #7a897e;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.inmba-admin-login-form-footer a,
+.inmba-admin-login-form-footer > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.inmba-admin-login-form-footer a {
+  color: #166d28;
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+}
+
+.inmba-admin-login-form-footer a:hover {
+  color: #0a4917;
+}
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.inmba-admin-login-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 24px;
+  padding: 8px 11px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: #edf6ef;
+  color: #176d28;
+
+  cursor: pointer;
+
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.inmba-admin-login-back-button:hover:not(:disabled) {
+  background: #dff0e3;
+  color: #0d531c;
+}
+
+.inmba-admin-login-back-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   OTP EMAIL
+========================================================= */
+
+.inmba-admin-login-otp-email {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 20px;
+
+  padding: 13px 15px;
+
+  border: 1px solid #dce8de;
+  border-radius: 13px;
+
+  background: #f6faf7;
+}
+
+.inmba-admin-login-otp-email > i {
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 36px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #e4f4e7;
+  color: #117027;
+
+  font-size: 14px;
+}
+
+.inmba-admin-login-otp-email > div {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.inmba-admin-login-otp-email small {
+  color: #849087;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.inmba-admin-login-otp-email strong {
+  color: #203a26;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   OTP INPUT
+========================================================= */
+
+.inmba-admin-login-otp-input-wrap input {
+  text-align: center;
+
+  padding-left: 48px;
+  padding-right: 48px;
+
+  font-size: 23px;
+  font-weight: 800;
+
+  letter-spacing: 0.35em;
+}
+
+.inmba-admin-login-otp-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 8px;
+
+  color: #7b897f;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.inmba-admin-login-otp-meta strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #206a30;
+}
+
+.inmba-admin-login-otp-expiring {
+  color: #c77812 !important;
+}
+
+.inmba-admin-login-otp-expired {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 11px 13px;
+
+  border: 1px solid #f0d5ad;
+  border-radius: 11px;
+
+  background: #fff8eb;
+  color: #a65f08;
+
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   GLOBAL COLLISION PROTECTION
+========================================================= */
+
+/*
+  Existing App.css / common CSS-la button, input,
+  section styles இருந்தாலும் Admin Login layout break
+  ஆகாமல் இருக்க scoped reset.
+*/
+
+.inmba-admin-login-page button {
+  font-family: inherit;
+}
+
+.inmba-admin-login-page section,
+.inmba-admin-login-page aside,
+.inmba-admin-login-page main,
+.inmba-admin-login-page form,
+.inmba-admin-login-page header,
+.inmba-admin-login-page footer,
+.inmba-admin-login-page div {
+  max-width: none;
+}
+
+.inmba-admin-login-page input {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* =========================================================
+   LAPTOP
+========================================================= */
+
+@media (max-width: 1180px) {
+  .inmba-admin-login-page {
+    padding: 28px 20px;
+  }
+
+  .inmba-admin-login-shell {
+    width: min(1000px, 100%);
+
+    grid-template-columns:
+      minmax(320px, 0.85fr)
+      minmax(500px, 1.15fr);
+  }
+
+  .inmba-admin-login-brand-panel {
+    padding: 38px;
+  }
+
+  .inmba-admin-login-form-panel {
+    padding: 38px;
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+  .inmba-admin-login-page {
+    align-items: flex-start;
+
+    padding: 24px 18px;
+  }
+
+  .inmba-admin-login-shell {
+    min-height: 0;
+
+    grid-template-columns: 1fr;
+
+    border-radius: 24px;
+  }
+
+  .inmba-admin-login-brand-panel {
+    min-height: auto;
+
+    padding: 32px;
+  }
+
+  .inmba-admin-login-brand-content {
+    padding: 38px 0 30px;
+  }
+
+  .inmba-admin-login-brand-content h1 {
+    font-size: 36px;
+  }
+
+  .inmba-admin-login-features {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .inmba-admin-login-features > div {
+    justify-content: center;
+  }
+
+  .inmba-admin-login-brand-footer {
+    margin-top: 8px;
+  }
+
+  .inmba-admin-login-form-panel {
+    padding: 40px 32px;
+  }
+
+  .inmba-admin-login-form-wrap {
+    max-width: 600px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+  .inmba-admin-login-page {
+    padding: 14px;
+
+    min-height: 100vh;
+  }
+
+  .inmba-admin-login-shell {
+    border-radius: 20px;
+  }
+
+  .inmba-admin-login-brand-panel {
+    padding: 26px 22px;
+  }
+
+  .inmba-admin-login-brand > span {
+    width: 46px;
+    height: 46px;
+    flex-basis: 46px;
+
+    border-radius: 13px;
+  }
+
+  .inmba-admin-login-brand strong {
+    font-size: 20px;
+  }
+
+  .inmba-admin-login-brand-content {
+    padding: 30px 0 24px;
+  }
+
+  .inmba-admin-login-security-icon {
+    width: 54px;
+    height: 54px;
+
+    border-radius: 15px;
+
+    font-size: 21px;
+  }
+
+  .inmba-admin-login-brand-content h1 {
+    font-size: 31px;
+  }
+
+  .inmba-admin-login-brand-content > span:last-child {
+    font-size: 13px;
+  }
+
+  .inmba-admin-login-features {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-admin-login-features > div {
+    justify-content: flex-start;
+  }
+
+  .inmba-admin-login-form-panel {
+    padding: 32px 20px;
+  }
+
+  .inmba-admin-login-form-header h2 {
+    font-size: 26px;
+  }
+
+  .inmba-admin-login-role-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-admin-login-role-option {
+    min-height: 78px;
+
+    display: grid;
+    grid-template-columns: 40px 1fr 20px;
+    align-items: center;
+
+    text-align: left;
+
+    padding: 12px 14px;
+  }
+
+  .inmba-admin-login-role-option > div {
+    text-align: left;
+  }
+
+  .inmba-admin-login-role-option small {
+    font-size: 10px;
+  }
+
+  .inmba-admin-login-form-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+  .inmba-admin-login-page {
+    padding: 0;
+  }
+
+  .inmba-admin-login-shell {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .inmba-admin-login-brand-panel {
+    padding: 24px 18px;
+  }
+
+  .inmba-admin-login-form-panel {
+    padding: 28px 16px;
+  }
+
+  .inmba-admin-login-form-header {
+    margin-bottom: 23px;
+  }
+
+  .inmba-admin-login-form-header h2 {
+    font-size: 24px;
+  }
+
+  .inmba-admin-login-input-wrap {
+    min-height: 50px;
+  }
+
+  .inmba-admin-login-input-wrap input {
+    height: 48px;
+  }
+}

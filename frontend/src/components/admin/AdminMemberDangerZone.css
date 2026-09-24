@@ -1,0 +1,738 @@
+/* =========================================================
+   DANGER ZONE
+========================================================= */
+
+.inmba-admin-danger-zone {
+  overflow: hidden;
+
+  border:
+    1px solid #edc3c7;
+
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 9px 27px
+    rgba(
+      95,
+      35,
+      40,
+      0.06
+    );
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.inmba-admin-danger-zone-header {
+  min-height: 68px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 14px 17px;
+
+  border-bottom:
+    1px solid #f0d4d7;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff7f7,
+      #ffffff
+    );
+}
+
+.inmba-admin-danger-zone-header
+  > div {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.inmba-admin-danger-zone-header
+  > div
+  > span {
+  width: 40px;
+  height: 40px;
+
+  flex: 0 0 40px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #9c303a,
+      #c44952
+    );
+
+  font-size: 0.73rem;
+}
+
+.inmba-admin-danger-zone-header
+  p {
+  margin:
+    0 0 2px;
+
+  color: #9a6c70;
+
+  font-size: 0.52rem;
+
+  font-weight: 900;
+
+  letter-spacing: 0.7px;
+
+  text-transform: uppercase;
+}
+
+.inmba-admin-danger-zone-header
+  h3 {
+  margin: 0;
+
+  color: #773239;
+
+  font-size: 0.73rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-danger-zone-badge {
+  display: inline-flex;
+
+  padding:
+    6px 9px;
+
+  border:
+    1px solid #e8bdc1;
+
+  border-radius: 999px;
+
+  color: #a33b44;
+
+  background: #fff0f1;
+
+  font-size: 0.49rem;
+
+  font-weight: 900;
+}
+
+/* =========================================================
+   BODY
+========================================================= */
+
+.inmba-admin-danger-zone-body {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 18px;
+}
+
+.inmba-admin-danger-zone-content {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 12px;
+}
+
+.inmba-admin-danger-zone-content
+  > span {
+  width: 46px;
+  height: 46px;
+
+  flex: 0 0 46px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 13px;
+
+  color: #a33942;
+
+  background: #fff0f1;
+
+  font-size: 0.81rem;
+}
+
+.inmba-admin-danger-zone-content
+  h4 {
+  margin:
+    0 0 5px;
+
+  color: #63383c;
+
+  font-size: 0.67rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-danger-zone-content
+  p {
+  max-width: 620px;
+
+  margin: 0;
+
+  color: #8d7779;
+
+  font-size: 0.55rem;
+
+  line-height: 1.55;
+}
+
+/* =========================================================
+   MEMBER
+========================================================= */
+
+.inmba-admin-danger-zone-member {
+  width: fit-content;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  margin-top: 9px;
+
+  padding:
+    6px 9px;
+
+  border:
+    1px solid #ead3d5;
+
+  border-radius: 8px;
+
+  color: #75555a;
+
+  background: #fffafa;
+
+  font-size: 0.51rem;
+}
+
+.inmba-admin-danger-zone-member
+  strong {
+  color: #9a3c44;
+}
+
+/* =========================================================
+   SOFT DELETE BUTTON
+========================================================= */
+
+.inmba-admin-soft-delete-button {
+  min-height: 42px;
+
+  flex: 0 0 auto;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  padding:
+    8px 14px;
+
+  border:
+    1px solid #cf6068;
+
+  border-radius: 10px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #9d313a,
+      #be414b
+    );
+
+  font-size: 0.57rem;
+
+  font-weight: 900;
+
+  box-shadow:
+    0 8px 18px
+    rgba(
+      158,
+      49,
+      58,
+      0.17
+    );
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.inmba-admin-soft-delete-button:hover:not(:disabled) {
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 11px 22px
+    rgba(
+      158,
+      49,
+      58,
+      0.22
+    );
+}
+
+.inmba-admin-soft-delete-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.5;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.inmba-admin-danger-zone-footer {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  padding:
+    10px 17px;
+
+  border-top:
+    1px solid #f0d9db;
+
+  color: #947b7d;
+
+  background: #fffafa;
+
+  font-size: 0.49rem;
+}
+
+.inmba-admin-danger-zone-footer
+  i {
+  color: #a44149;
+}
+
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+
+.inmba-admin-delete-modal-overlay {
+  position: fixed;
+
+  z-index: 5000;
+
+  inset: 0;
+
+  display: grid;
+
+  place-items: center;
+
+  padding: 20px;
+
+  background:
+    rgba(
+      35,
+      8,
+      11,
+      0.65
+    );
+
+  backdrop-filter:
+    blur(5px);
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.inmba-admin-delete-modal {
+  width:
+    min(
+      100%,
+      440px
+    );
+
+  padding: 28px;
+
+  border:
+    1px solid #ead1d4;
+
+  border-radius: 21px;
+
+  background: #ffffff;
+
+  text-align: center;
+
+  box-shadow:
+    0 30px 75px
+    rgba(
+      0,
+      0,
+      0,
+      0.25
+    );
+}
+
+/* =========================================================
+   MODAL ICON
+========================================================= */
+
+.inmba-admin-delete-modal-icon {
+  width: 65px;
+  height: 65px;
+
+  margin:
+    0 auto 13px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 19px;
+
+  color: #a53740;
+
+  background: #ffebed;
+
+  font-size: 1.25rem;
+}
+
+/* =========================================================
+   MODAL TEXT
+========================================================= */
+
+.inmba-admin-delete-modal
+  > p {
+  margin:
+    0 0 4px;
+
+  color: #9a6f73;
+
+  font-size: 0.51rem;
+
+  font-weight: 900;
+
+  letter-spacing: 0.7px;
+
+  text-transform: uppercase;
+}
+
+.inmba-admin-delete-modal
+  h2 {
+  margin:
+    0 0 7px;
+
+  color: #63383d;
+
+  font-size: 1rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-delete-modal-description {
+  display: block;
+
+  color: #8b797b;
+
+  font-size: 0.56rem;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   MODAL MEMBER
+========================================================= */
+
+.inmba-admin-delete-modal-member {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 16px;
+
+  padding: 12px;
+
+  border:
+    1px solid #ead8da;
+
+  border-radius: 12px;
+
+  background: #fffafa;
+
+  text-align: left;
+}
+
+.inmba-admin-delete-modal-member
+  > span {
+  width: 42px;
+  height: 42px;
+
+  flex: 0 0 42px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #9d333c,
+      #c54a53
+    );
+
+  font-size: 0.74rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-delete-modal-member
+  strong,
+.inmba-admin-delete-modal-member
+  small {
+  display: block;
+}
+
+.inmba-admin-delete-modal-member
+  strong {
+  margin-bottom: 3px;
+
+  color: #654045;
+
+  font-size: 0.6rem;
+}
+
+.inmba-admin-delete-modal-member
+  small {
+  color: #967f82;
+
+  font-size: 0.5rem;
+}
+
+/* =========================================================
+   MODAL WARNING
+========================================================= */
+
+.inmba-admin-delete-modal-warning {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 8px;
+
+  margin-top: 12px;
+
+  padding: 11px;
+
+  border:
+    1px solid #e6d293;
+
+  border-radius: 11px;
+
+  color: #775d13;
+
+  background: #fff8df;
+
+  text-align: left;
+}
+
+.inmba-admin-delete-modal-warning
+  > i {
+  margin-top: 2px;
+}
+
+.inmba-admin-delete-modal-warning
+  strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 0.55rem;
+}
+
+.inmba-admin-delete-modal-warning
+  p {
+  margin: 0;
+
+  font-size: 0.49rem;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.inmba-admin-delete-modal-error {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 7px;
+
+  margin-top: 12px;
+
+  padding: 10px;
+
+  border:
+    1px solid #e7b7bc;
+
+  border-radius: 10px;
+
+  color: #a3353e;
+
+  background: #fff0f1;
+
+  font-size: 0.53rem;
+
+  line-height: 1.5;
+
+  text-align: left;
+}
+
+/* =========================================================
+   MODAL ACTIONS
+========================================================= */
+
+.inmba-admin-delete-modal-actions {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 9px;
+
+  margin-top: 18px;
+}
+
+.inmba-admin-delete-modal-actions
+  button {
+  min-height: 42px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+
+  border-radius: 10px;
+
+  font-size: 0.56rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-delete-modal-cancel {
+  border:
+    1px solid #d6dfd5;
+
+  color: #687768;
+
+  background: #f7faf6;
+}
+
+.inmba-admin-delete-modal-confirm {
+  border: 0;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #9e303a,
+      #c34851
+    );
+}
+
+.inmba-admin-delete-modal-actions
+  button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.5;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (
+  max-width: 650px
+) {
+  .inmba-admin-danger-zone-body {
+    align-items:
+      stretch;
+
+    flex-direction:
+      column;
+  }
+
+  .inmba-admin-soft-delete-button {
+    width: 100%;
+  }
+}
+
+@media (
+  max-width: 480px
+) {
+  .inmba-admin-danger-zone-header {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+  .inmba-admin-danger-zone-body {
+    padding: 15px;
+  }
+
+  .inmba-admin-danger-zone-content
+    > span {
+    width: 38px;
+    height: 38px;
+
+    flex-basis: 38px;
+  }
+
+  .inmba-admin-delete-modal {
+    padding:
+      23px 16px;
+  }
+
+  .inmba-admin-delete-modal-actions {
+    grid-template-columns:
+      1fr;
+  }
+}

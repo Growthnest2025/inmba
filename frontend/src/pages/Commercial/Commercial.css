@@ -1,0 +1,3173 @@
+/* =========================================================
+   COMMERCIAL PAGE - PART 1
+   GLOBAL STYLES + HERO SECTION
+========================================================= */
+
+/* =========================================================
+   ROOT VARIABLES
+========================================================= */
+
+:root {
+  --commercial-primary: #6b8e23;
+  --commercial-primary-dark: #4f6f1d;
+  --commercial-primary-light: #9fbd55;
+
+  --commercial-secondary: #0f4d0f;
+  --commercial-secondary-dark: #082e08;
+  --commercial-secondary-light: #1a6e1a;
+
+  --commercial-accent: #d4af37;
+  --commercial-white: #ffffff;
+
+  --commercial-text-dark: #17331b;
+  --commercial-text-medium: #4f6653;
+  --commercial-text-light: #718075;
+
+  --commercial-background: #f4f7f2;
+  --commercial-background-soft: #f8fbf7;
+  --commercial-border: rgba(107, 142, 35, 0.16);
+
+  --commercial-shadow-small:
+    0 10px 25px rgba(26, 70, 32, 0.08);
+
+  --commercial-shadow-medium:
+    0 20px 45px rgba(26, 70, 32, 0.12);
+
+  --commercial-shadow-large:
+    0 32px 75px rgba(7, 45, 15, 0.2);
+
+  --commercial-radius-small: 14px;
+  --commercial-radius-medium: 22px;
+  --commercial-radius-large: 32px;
+
+  --commercial-transition:
+    all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* =========================================================
+   PAGE RESET
+========================================================= */
+
+.commercial-page {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--commercial-background);
+  color: var(--commercial-text-dark);
+  font-family:
+    "Poppins",
+    "Inter",
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+
+.commercial-page,
+.commercial-page *,
+.commercial-page *::before,
+.commercial-page *::after {
+  box-sizing: border-box;
+}
+
+.commercial-page main {
+  width: 100%;
+  display: block;
+}
+
+.commercial-page img {
+  max-width: 100%;
+  display: block;
+}
+
+.commercial-page button,
+.commercial-page a {
+  font: inherit;
+}
+
+.commercial-page button {
+  border: 0;
+}
+
+.commercial-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =========================================================
+   COMMON CONTAINER
+========================================================= */
+
+.commercial-container {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================================
+   COMMON SECTION HEADING
+========================================================= */
+
+.commercial-section-heading {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto 56px;
+  text-align: center;
+}
+
+.commercial-section-heading h2 {
+  margin: 0;
+  color: var(--commercial-text-dark);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: -1.2px;
+}
+
+.commercial-section-heading p {
+  max-width: 700px;
+  margin: 18px auto 0;
+  color: var(--commercial-text-medium);
+  font-size: 1.04rem;
+  font-weight: 400;
+  line-height: 1.8;
+}
+
+/* =========================================================
+   COMMON SECTION BADGE
+========================================================= */
+
+.commercial-section-badge,
+.commercial-hero-badge {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(107, 142, 35, 0.2);
+  border-radius: 999px;
+  background: rgba(107, 142, 35, 0.1);
+  color: var(--commercial-primary-dark);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.commercial-section-badge {
+  padding: 10px 17px;
+}
+
+.commercial-section-badge svg {
+  font-size: 0.88rem;
+}
+
+/* =========================================================
+   GRADIENT TEXT
+========================================================= */
+
+.commercial-gradient-text,
+.commercial-hero-highlight {
+  background:
+    linear-gradient(
+      135deg,
+      #b7da68 0%,
+      #d9ef9c 45%,
+      #ffffff 100%
+    );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* =========================================================
+   HERO SECTION
+========================================================= */
+
+.commercial-hero-section {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #092d0c;
+}
+
+/* =========================================================
+   HERO BACKGROUND IMAGE
+========================================================= */
+
+.commercial-hero-background {
+  position: absolute;
+  inset: 0;
+  z-index: -4;
+  background:
+    url("../../assets/images/inmba_comm.jpg")
+    center center / cover
+    no-repeat;
+  transform: scale(1.03);
+  animation:
+    commercialHeroBackgroundZoom
+    14s
+    ease-in-out
+    infinite alternate;
+}
+
+/* =========================================================
+   HERO OVERLAY
+========================================================= */
+
+.commercial-hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  background:
+    linear-gradient(
+      120deg,
+      rgba(3, 30, 8, 0.94) 0%,
+      rgba(9, 54, 16, 0.82) 46%,
+      rgba(8, 44, 14, 0.72) 100%
+    );
+}
+
+.commercial-hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(
+      circle at 20% 30%,
+      rgba(170, 212, 88, 0.2),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(212, 175, 55, 0.14),
+      transparent 26%
+    );
+  pointer-events: none;
+}
+
+.commercial-hero-section::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.18;
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px
+    );
+  background-size: 52px 52px;
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 20%,
+      black 80%,
+      transparent 100%
+    );
+  -webkit-mask-image:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 20%,
+      black 80%,
+      transparent 100%
+    );
+  pointer-events: none;
+}
+
+/* =========================================================
+   HERO CONTAINER
+========================================================= */
+
+.commercial-hero-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 120px;
+  padding-bottom: 100px;
+}
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
+.commercial-hero-content {
+  width: 100%;
+  max-width: 920px;
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: var(--commercial-white);
+}
+
+.commercial-hero-badge {
+  margin-inline: auto;
+  padding: 11px 18px;
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 12px 28px rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.commercial-hero-badge svg {
+  color: #c5e583;
+  font-size: 0.92rem;
+}
+
+.commercial-hero-content h1 {
+  max-width: 960px;
+  margin: 0 auto;
+  color: var(--commercial-white);
+  font-size: clamp(3rem, 7vw, 6.4rem);
+  font-weight: 800;
+  line-height: 1.03;
+  letter-spacing: -3.6px;
+  text-wrap: balance;
+  text-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.34);
+}
+
+.commercial-hero-content p {
+  max-width: 720px;
+  margin: 26px auto 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-weight: 400;
+  line-height: 1.75;
+  letter-spacing: 0.1px;
+}
+
+/* =========================================================
+   HERO PRIMARY BUTTON
+========================================================= */
+
+.commercial-primary-button {
+  min-height: 58px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  overflow: hidden;
+  margin-top: 38px;
+  padding: 16px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      135deg,
+      #759a28 0%,
+      #5f7f20 100%
+    );
+  color: var(--commercial-white);
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow:
+    0 18px 38px rgba(40, 74, 18, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    background 0.35s ease;
+}
+
+.commercial-primary-button::before {
+  content: "";
+  width: 70px;
+  height: 170%;
+  position: absolute;
+  top: -35%;
+  left: -100px;
+  transform: rotate(20deg);
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.35),
+      transparent
+    );
+  transition: left 0.7s ease;
+}
+
+.commercial-primary-button span,
+.commercial-primary-button svg {
+  position: relative;
+  z-index: 2;
+}
+
+.commercial-primary-button svg {
+  font-size: 0.9rem;
+  transition: transform 0.35s ease;
+}
+
+.commercial-primary-button:hover {
+  transform: translateY(-5px);
+  background:
+    linear-gradient(
+      135deg,
+      #83a936 0%,
+      #678823 100%
+    );
+  box-shadow:
+    0 24px 46px rgba(38, 78, 15, 0.44),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.commercial-primary-button:hover::before {
+  left: calc(100% + 35px);
+}
+
+.commercial-primary-button:hover svg {
+  transform: translateX(5px);
+}
+
+.commercial-primary-button:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.commercial-primary-button:focus-visible {
+  outline: 3px solid rgba(210, 239, 145, 0.65);
+  outline-offset: 5px;
+}
+
+/* =========================================================
+   HERO SCROLL INDICATOR
+========================================================= */
+
+.commercial-scroll-indicator {
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  padding: 5px;
+  transform: translateX(-50%);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.commercial-scroll-indicator span {
+  transition: color 0.3s ease;
+}
+
+.commercial-scroll-indicator i {
+  width: 28px;
+  height: 44px;
+  position: relative;
+  display: block;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 999px;
+}
+
+.commercial-scroll-indicator i::before {
+  content: "";
+  width: 4px;
+  height: 8px;
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  border-radius: 999px;
+  transform: translateX(-50%);
+  background: #d6ee9a;
+  animation:
+    commercialScrollIndicatorMove
+    1.8s
+    ease-in-out
+    infinite;
+}
+
+.commercial-scroll-indicator:hover span {
+  color: var(--commercial-white);
+}
+
+.commercial-scroll-indicator:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 4px;
+  border-radius: 10px;
+}
+
+/* =========================================================
+   HERO DECORATIVE SHAPES
+========================================================= */
+
+.commercial-hero-decoration {
+  position: absolute;
+  z-index: -1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+.commercial-hero-decoration-one {
+  width: 220px;
+  height: 220px;
+  top: 18%;
+  left: -65px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(151, 194, 65, 0.16),
+      transparent 68%
+    );
+  animation:
+    commercialHeroDecorationFloat
+    7s
+    ease-in-out
+    infinite;
+}
+
+.commercial-hero-decoration-two {
+  width: 160px;
+  height: 160px;
+  right: 5%;
+  bottom: 14%;
+  border-radius:
+    36% 64% 54% 46% /
+    42% 38% 62% 58%;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(212, 175, 55, 0.1),
+      rgba(107, 142, 35, 0.08)
+    );
+  animation:
+    commercialHeroDecorationRotate
+    16s
+    linear
+    infinite;
+}
+
+/* =========================================================
+   HERO ANIMATIONS
+========================================================= */
+
+@keyframes commercialHeroBackgroundZoom {
+  0% {
+    transform: scale(1.03);
+  }
+
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes commercialHeroDecorationFloat {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+
+  50% {
+    transform: translateY(-18px) translateX(12px);
+  }
+}
+
+@keyframes commercialHeroDecorationRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes commercialScrollIndicatorMove {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 19px);
+  }
+}
+
+/* =========================================================
+   LARGE DESKTOP RESPONSIVE
+========================================================= */
+
+@media (min-width: 1400px) {
+  .commercial-container {
+    width: min(1280px, calc(100% - 64px));
+  }
+
+  .commercial-hero-content {
+    max-width: 1040px;
+  }
+
+  .commercial-hero-content h1 {
+    font-size: 6.8rem;
+  }
+}
+
+/* =========================================================
+   TABLET RESPONSIVE
+========================================================= */
+
+@media (max-width: 992px) {
+  .commercial-container {
+    width: min(100% - 34px, 920px);
+  }
+
+  .commercial-hero-container {
+    padding-top: 110px;
+    padding-bottom: 95px;
+  }
+
+  .commercial-hero-content h1 {
+    font-size: clamp(3rem, 8vw, 5.3rem);
+    letter-spacing: -2.8px;
+  }
+
+  .commercial-hero-decoration-one {
+    width: 170px;
+    height: 170px;
+  }
+
+  .commercial-hero-decoration-two {
+    width: 125px;
+    height: 125px;
+  }
+}
+
+/* =========================================================
+   MOBILE RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+  .commercial-container {
+    width: calc(100% - 28px);
+  }
+
+  .commercial-section-heading {
+    margin-bottom: 42px;
+  }
+
+  .commercial-section-heading h2 {
+    font-size: clamp(1.9rem, 8vw, 2.7rem);
+    letter-spacing: -0.8px;
+  }
+
+  .commercial-section-heading p {
+    margin-top: 14px;
+    font-size: 0.94rem;
+    line-height: 1.7;
+  }
+
+  .commercial-hero-section {
+    min-height: 92vh;
+  }
+
+  .commercial-hero-container {
+    min-height: 92vh;
+    padding-top: 105px;
+    padding-bottom: 95px;
+  }
+
+  .commercial-hero-badge {
+    padding: 10px 15px;
+    font-size: 0.69rem;
+    letter-spacing: 0.8px;
+  }
+
+  .commercial-hero-content h1 {
+    max-width: 650px;
+    font-size: clamp(2.7rem, 12vw, 4.4rem);
+    line-height: 1.08;
+    letter-spacing: -2px;
+  }
+
+  .commercial-hero-content p {
+    max-width: 560px;
+    margin-top: 20px;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .commercial-primary-button {
+    min-height: 54px;
+    margin-top: 30px;
+    padding: 14px 25px;
+    font-size: 0.91rem;
+  }
+
+  .commercial-scroll-indicator {
+    bottom: 19px;
+  }
+
+  .commercial-scroll-indicator span {
+    display: none;
+  }
+
+  .commercial-scroll-indicator i {
+    width: 25px;
+    height: 39px;
+  }
+
+  .commercial-hero-decoration-one {
+    width: 125px;
+    height: 125px;
+    top: 18%;
+    left: -60px;
+  }
+
+  .commercial-hero-decoration-two {
+    width: 95px;
+    height: 95px;
+    right: -15px;
+    bottom: 17%;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE RESPONSIVE
+========================================================= */
+
+@media (max-width: 480px) {
+  .commercial-container {
+    width: calc(100% - 22px);
+  }
+
+  .commercial-hero-container {
+    padding-top: 95px;
+    padding-bottom: 85px;
+  }
+
+  .commercial-hero-badge {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .commercial-hero-content h1 {
+    font-size: clamp(2.35rem, 13vw, 3.4rem);
+    letter-spacing: -1.5px;
+  }
+
+  .commercial-hero-content p {
+    font-size: 0.9rem;
+  }
+
+  .commercial-primary-button {
+    width: 100%;
+    max-width: 245px;
+  }
+
+  .commercial-hero-decoration-two {
+    display: none;
+  }
+}
+
+/* =========================================================
+   VERY SMALL MOBILE RESPONSIVE
+========================================================= */
+
+@media (max-width: 360px) {
+  .commercial-container {
+    width: calc(100% - 18px);
+  }
+
+  .commercial-hero-content h1 {
+    font-size: 2.2rem;
+    letter-spacing: -1px;
+  }
+
+  .commercial-hero-content p {
+    font-size: 0.84rem;
+  }
+
+  .commercial-primary-button {
+    min-height: 50px;
+    padding: 12px 20px;
+    font-size: 0.84rem;
+  }
+}
+
+/* =========================================================
+   LANDSCAPE MOBILE
+========================================================= */
+
+@media (max-height: 620px) and (orientation: landscape) {
+  .commercial-hero-section,
+  .commercial-hero-container {
+    min-height: 720px;
+  }
+
+  .commercial-hero-container {
+    padding-top: 105px;
+    padding-bottom: 85px;
+  }
+
+  .commercial-scroll-indicator {
+    display: none;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION SUPPORT
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .commercial-hero-background,
+  .commercial-hero-decoration-one,
+  .commercial-hero-decoration-two,
+  .commercial-scroll-indicator i::before {
+    animation: none !important;
+  }
+
+  .commercial-primary-button,
+  .commercial-primary-button::before,
+  .commercial-primary-button svg {
+    transition: none !important;
+  }
+
+  .commercial-hero-background {
+    transform: none;
+  }
+}
+
+/* =========================================================
+   COMMERCIAL PAGE - PART 2
+   COMMERCIAL SECTORS SECTION
+========================================================= */
+
+/* =========================================================
+   COMMERCIAL SECTORS SECTION
+========================================================= */
+
+.commercial-sectors-section {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  padding: 110px 0;
+  background:
+    linear-gradient(
+      180deg,
+      #f7faf5 0%,
+      #eef5ea 100%
+    );
+  scroll-margin-top: 90px;
+}
+
+.commercial-sectors-section::before {
+  content: "";
+  width: 420px;
+  height: 420px;
+  position: absolute;
+  top: -190px;
+  left: -180px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(107, 142, 35, 0.12) 0%,
+      rgba(107, 142, 35, 0.04) 38%,
+      transparent 72%
+    );
+  pointer-events: none;
+}
+
+.commercial-sectors-section::after {
+  content: "";
+  width: 360px;
+  height: 360px;
+  position: absolute;
+  right: -150px;
+  bottom: -170px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(212, 175, 55, 0.1) 0%,
+      rgba(212, 175, 55, 0.03) 42%,
+      transparent 72%
+    );
+  pointer-events: none;
+}
+
+/* =========================================================
+   COMMERCIAL SECTORS GRID
+========================================================= */
+
+.commercial-sectors-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================================
+   COMMERCIAL SECTOR CARD
+========================================================= */
+
+.commercial-sector-card {
+  min-height: 340px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 34px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--commercial-radius-large);
+  background:
+    linear-gradient(
+      145deg,
+      #769a2e 0%,
+      #59771f 52%,
+      #395713 100%
+    );
+  color: var(--commercial-white);
+  box-shadow:
+    0 24px 55px rgba(64, 92, 28, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.4s ease,
+    border-color 0.4s ease;
+}
+
+.commercial-sector-card::before {
+  content: "";
+  width: 240px;
+  height: 240px;
+  position: absolute;
+  top: -105px;
+  right: -95px;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.18) 0%,
+      rgba(255, 255, 255, 0.05) 45%,
+      transparent 72%
+    );
+  transition:
+    transform 0.45s ease,
+    opacity 0.45s ease;
+}
+
+.commercial-sector-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  opacity: 0;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.1),
+      transparent 50%
+    );
+  transition: opacity 0.4s ease;
+}
+
+/* =========================================================
+   SECTOR NUMBER
+========================================================= */
+
+.commercial-sector-number {
+  position: absolute;
+  top: 22px;
+  right: 25px;
+  color: rgba(255, 255, 255, 0.16);
+  font-size: 4.2rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -3px;
+  pointer-events: none;
+  transition:
+    color 0.4s ease,
+    transform 0.4s ease;
+}
+
+/* =========================================================
+   SECTOR ICON
+========================================================= */
+
+.commercial-sector-icon {
+  width: 76px;
+  height: 76px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--commercial-white);
+  font-size: 2rem;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 14px 28px rgba(33, 65, 15, 0.24);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition:
+    transform 0.4s ease,
+    background 0.4s ease,
+    color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.commercial-sector-icon::before {
+  content: "";
+  width: 38px;
+  height: 38px;
+  position: absolute;
+  inset: 50% auto auto 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.1);
+  filter: blur(10px);
+}
+
+.commercial-sector-icon svg {
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================================
+   SECTOR CONTENT
+========================================================= */
+
+.commercial-sector-card h3 {
+  margin: 0;
+  color: var(--commercial-white);
+  font-size: 1.65rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.4px;
+}
+
+.commercial-sector-card p {
+  margin: 14px 0 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.96rem;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+/* =========================================================
+   SECTOR DECORATIVE LINE
+========================================================= */
+
+.commercial-sector-line {
+  width: 48px;
+  height: 4px;
+  margin-top: 26px;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      90deg,
+      #d8eb9c 0%,
+      rgba(255, 255, 255, 0.28) 100%
+    );
+  transition:
+    width 0.4s ease,
+    background 0.4s ease;
+}
+
+/* =========================================================
+   SECTOR CARD HOVER EFFECTS
+========================================================= */
+
+.commercial-sector-card:hover {
+  transform: translateY(-12px);
+  border-color: rgba(255, 255, 255, 0.32);
+  box-shadow:
+    0 34px 70px rgba(60, 94, 25, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.commercial-sector-card:hover::before {
+  opacity: 1;
+  transform: scale(1.16);
+}
+
+.commercial-sector-card:hover::after {
+  opacity: 1;
+}
+
+.commercial-sector-card:hover .commercial-sector-number {
+  color: rgba(255, 255, 255, 0.23);
+  transform: translateY(-4px);
+}
+
+.commercial-sector-card:hover .commercial-sector-icon {
+  transform: translateY(-5px) rotate(-4deg);
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--commercial-primary-dark);
+  box-shadow:
+    0 18px 36px rgba(33, 68, 13, 0.32);
+}
+
+.commercial-sector-card:hover .commercial-sector-line {
+  width: 82px;
+  background:
+    linear-gradient(
+      90deg,
+      #ffffff 0%,
+      #d7ed97 100%
+    );
+}
+
+/* =========================================================
+   INDIVIDUAL CARD COLOR VARIATIONS
+========================================================= */
+
+.commercial-sector-card:nth-child(1) {
+  background:
+    linear-gradient(
+      145deg,
+      #789f2c 0%,
+      #5d7b21 52%,
+      #3d5b16 100%
+    );
+}
+
+.commercial-sector-card:nth-child(2) {
+  background:
+    linear-gradient(
+      145deg,
+      #477b41 0%,
+      #2f6638 52%,
+      #1c4828 100%
+    );
+}
+
+.commercial-sector-card:nth-child(3) {
+  background:
+    linear-gradient(
+      145deg,
+      #4c7554 0%,
+      #345e43 52%,
+      #1d4330 100%
+    );
+}
+
+/* =========================================================
+   SECTOR CARD FOCUS SUPPORT
+========================================================= */
+
+.commercial-sector-card:focus-within {
+  outline: 3px solid rgba(107, 142, 35, 0.34);
+  outline-offset: 5px;
+}
+
+/* =========================================================
+   TABLET RESPONSIVE
+========================================================= */
+
+@media (max-width: 992px) {
+  .commercial-sectors-section {
+    padding: 90px 0;
+  }
+
+  .commercial-sectors-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .commercial-sector-card {
+    min-height: 320px;
+  }
+
+  .commercial-sector-card:last-child {
+    grid-column: 1 / -1;
+    width: min(100%, 560px);
+    justify-self: center;
+  }
+}
+
+/* =========================================================
+   MOBILE RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+  .commercial-sectors-section {
+    padding: 74px 0;
+  }
+
+  .commercial-sectors-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .commercial-sector-card,
+  .commercial-sector-card:last-child {
+    width: 100%;
+    min-height: 285px;
+    grid-column: auto;
+    padding: 28px 24px;
+  }
+
+  .commercial-sector-number {
+    top: 18px;
+    right: 20px;
+    font-size: 3.5rem;
+  }
+
+  .commercial-sector-icon {
+    width: 68px;
+    height: 68px;
+    margin-bottom: 24px;
+    border-radius: 21px;
+    font-size: 1.75rem;
+  }
+
+  .commercial-sector-card h3 {
+    font-size: 1.45rem;
+  }
+
+  .commercial-sector-card p {
+    font-size: 0.91rem;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE RESPONSIVE
+========================================================= */
+
+@media (max-width: 480px) {
+  .commercial-sectors-section {
+    padding: 64px 0;
+  }
+
+  .commercial-sector-card {
+    min-height: 265px;
+    padding: 24px 20px;
+    border-radius: 26px;
+  }
+
+  .commercial-sector-number {
+    font-size: 3rem;
+  }
+
+  .commercial-sector-icon {
+    width: 62px;
+    height: 62px;
+    margin-bottom: 21px;
+    border-radius: 19px;
+    font-size: 1.55rem;
+  }
+
+  .commercial-sector-card h3 {
+    font-size: 1.3rem;
+  }
+
+  .commercial-sector-card p {
+    margin-top: 11px;
+    font-size: 0.86rem;
+    line-height: 1.68;
+  }
+
+  .commercial-sector-line {
+    margin-top: 22px;
+  }
+}
+
+/* =========================================================
+   HOVER-FREE DEVICE SUPPORT
+========================================================= */
+
+@media (hover: none) {
+  .commercial-sector-card:hover {
+    transform: none;
+  }
+
+  .commercial-sector-card:hover::before {
+    transform: none;
+  }
+
+  .commercial-sector-card:hover .commercial-sector-number,
+  .commercial-sector-card:hover .commercial-sector-icon {
+    transform: none;
+  }
+
+  .commercial-sector-card:hover .commercial-sector-line {
+    width: 48px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION SUPPORT
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .commercial-sector-card,
+  .commercial-sector-card::before,
+  .commercial-sector-card::after,
+  .commercial-sector-number,
+  .commercial-sector-icon,
+  .commercial-sector-line {
+    transition: none !important;
+  }
+
+  .commercial-sector-card:hover,
+  .commercial-sector-card:hover::before,
+  .commercial-sector-card:hover .commercial-sector-number,
+  .commercial-sector-card:hover .commercial-sector-icon {
+    transform: none !important;
+  }
+}
+
+/* =========================================================
+   COMMERCIAL PAGE - PART 3
+   INNOVATION & PROFESSIONAL CARDS
+========================================================= */
+
+/* =========================================================
+   INNOVATION SECTION
+========================================================= */
+
+.commercial-innovation-section {
+  width: 100%;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 112px 0;
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff 0%,
+      #f7faf5 48%,
+      #eef5e9 100%
+    );
+}
+
+.commercial-innovation-background {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+
+.commercial-innovation-background::before {
+  content: "";
+  width: 520px;
+  height: 520px;
+  position: absolute;
+  top: -240px;
+  left: -220px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(107, 142, 35, 0.13) 0%,
+      rgba(107, 142, 35, 0.05) 34%,
+      transparent 70%
+    );
+}
+
+.commercial-innovation-background::after {
+  content: "";
+  width: 460px;
+  height: 460px;
+  position: absolute;
+  right: -190px;
+  bottom: -210px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(212, 175, 55, 0.12) 0%,
+      rgba(212, 175, 55, 0.04) 38%,
+      transparent 72%
+    );
+}
+
+.commercial-innovation-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.42;
+  background-image:
+    linear-gradient(
+      rgba(107, 142, 35, 0.04) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(107, 142, 35, 0.04) 1px,
+      transparent 1px
+    );
+  background-size: 44px 44px;
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 18%,
+      black 82%,
+      transparent 100%
+    );
+  -webkit-mask-image:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 18%,
+      black 82%,
+      transparent 100%
+    );
+  pointer-events: none;
+}
+
+/* =========================================================
+   INNOVATION HEADING
+========================================================= */
+
+.commercial-innovation-heading {
+  margin-bottom: 60px;
+}
+
+.commercial-innovation-heading .commercial-section-badge {
+  color: var(--commercial-primary-dark);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(107, 142, 35, 0.13),
+      rgba(155, 190, 80, 0.08)
+    );
+  border-color: rgba(107, 142, 35, 0.24);
+}
+
+.commercial-innovation-heading h2 {
+  color: #18381e;
+}
+
+.commercial-innovation-heading .commercial-gradient-text {
+  background:
+    linear-gradient(
+      135deg,
+      #6b8e23 0%,
+      #8db33f 45%,
+      #3f6c20 100%
+    );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* =========================================================
+   INNOVATION GRID
+========================================================= */
+
+.commercial-innovation-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================================
+   INNOVATION CARD
+========================================================= */
+
+.commercial-innovation-card {
+  min-height: 390px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 38px 28px 30px;
+  border: 1px solid rgba(107, 142, 35, 0.18);
+  border-radius: 30px;
+  background:
+    linear-gradient(
+      150deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      rgba(251, 253, 249, 0.98) 100%
+    );
+  text-align: center;
+  box-shadow:
+    0 22px 48px rgba(25, 66, 32, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition:
+    transform 0.42s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.42s ease,
+    border-color 0.42s ease;
+}
+
+.commercial-innovation-card::before {
+  content: "";
+  width: 220px;
+  height: 220px;
+  position: absolute;
+  top: -130px;
+  right: -110px;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(107, 142, 35, 0.13) 0%,
+      rgba(107, 142, 35, 0.04) 45%,
+      transparent 72%
+    );
+  transition:
+    transform 0.5s ease,
+    opacity 0.5s ease;
+}
+
+.commercial-innovation-card::after {
+  content: "";
+  width: 180px;
+  height: 180px;
+  position: absolute;
+  left: -110px;
+  bottom: -115px;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(212, 175, 55, 0.11),
+      transparent 70%
+    );
+  transition:
+    transform 0.5s ease,
+    opacity 0.5s ease;
+}
+
+/* =========================================================
+   INNOVATION CARD NUMBER
+========================================================= */
+
+.commercial-innovation-card-number {
+  position: absolute;
+  top: 21px;
+  right: 24px;
+  color: rgba(107, 142, 35, 0.13);
+  font-size: 3.4rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -2px;
+  pointer-events: none;
+  transition:
+    color 0.4s ease,
+    transform 0.4s ease;
+}
+
+/* =========================================================
+   INNOVATION ICON
+========================================================= */
+
+.commercial-innovation-icon {
+  width: 88px;
+  height: 88px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin: 10px auto 26px;
+  border: 1px solid rgba(107, 142, 35, 0.18);
+  border-radius: 50%;
+  background:
+    linear-gradient(
+      145deg,
+      #f4f9e8 0%,
+      #e8f1dd 100%
+    );
+  color: var(--commercial-primary);
+  font-size: 2.25rem;
+  box-shadow:
+    0 16px 34px rgba(82, 120, 39, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  transition:
+    transform 0.42s ease,
+    background 0.42s ease,
+    color 0.42s ease,
+    box-shadow 0.42s ease,
+    border-color 0.42s ease;
+}
+
+.commercial-innovation-icon::before {
+  content: "";
+  width: 112px;
+  height: 112px;
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: -1;
+  border: 1px dashed rgba(107, 142, 35, 0.17);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition:
+    transform 0.5s ease,
+    border-color 0.4s ease;
+}
+
+.commercial-innovation-icon svg {
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================================
+   INNOVATION CARD CONTENT
+========================================================= */
+
+.commercial-innovation-card h3 {
+  margin: 0;
+  color: #18331c;
+  font-size: 1.42rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.3px;
+}
+
+.commercial-innovation-card p {
+  margin: 15px 0 0;
+  color: var(--commercial-text-medium);
+  font-size: 0.94rem;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+/* =========================================================
+   PROFESSIONAL BADGE
+========================================================= */
+
+.commercial-professional-badge {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+  padding: 8px 16px;
+  border: 1px solid rgba(107, 142, 35, 0.16);
+  border-radius: 999px;
+  background: rgba(107, 142, 35, 0.09);
+  color: var(--commercial-primary-dark);
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  transition:
+    background 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease,
+    transform 0.35s ease;
+}
+
+/* =========================================================
+   INNOVATION CARD HOVER
+========================================================= */
+
+.commercial-innovation-card:hover {
+  transform: translateY(-13px);
+  border-color: rgba(107, 142, 35, 0.42);
+  box-shadow:
+    0 34px 70px rgba(65, 104, 36, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.commercial-innovation-card:hover::before {
+  transform: scale(1.18);
+}
+
+.commercial-innovation-card:hover::after {
+  transform: scale(1.16);
+}
+
+.commercial-innovation-card:hover
+  .commercial-innovation-card-number {
+  color: rgba(107, 142, 35, 0.2);
+  transform: translateY(-4px);
+}
+
+.commercial-innovation-card:hover
+  .commercial-innovation-icon {
+  transform: translateY(-5px) scale(1.06);
+  border-color: var(--commercial-primary);
+  background:
+    linear-gradient(
+      145deg,
+      #7a9f2e 0%,
+      #58771e 100%
+    );
+  color: var(--commercial-white);
+  box-shadow:
+    0 22px 42px rgba(74, 112, 34, 0.3);
+}
+
+.commercial-innovation-card:hover
+  .commercial-innovation-icon::before {
+  transform:
+    translate(-50%, -50%)
+    rotate(20deg)
+    scale(1.08);
+  border-color: rgba(107, 142, 35, 0.34);
+}
+
+.commercial-innovation-card:hover
+  .commercial-professional-badge {
+  transform: translateY(-2px);
+  border-color: var(--commercial-primary);
+  background: var(--commercial-primary);
+  color: var(--commercial-white);
+}
+
+/* =========================================================
+   INDIVIDUAL INNOVATION CARD ACCENTS
+========================================================= */
+
+.commercial-innovation-card:nth-child(1)
+  .commercial-innovation-icon {
+  background:
+    linear-gradient(
+      145deg,
+      #eff7dd 0%,
+      #e3efcf 100%
+    );
+}
+
+.commercial-innovation-card:nth-child(2)
+  .commercial-innovation-icon {
+  background:
+    linear-gradient(
+      145deg,
+      #eef6e9 0%,
+      #dcebd7 100%
+    );
+}
+
+.commercial-innovation-card:nth-child(3)
+  .commercial-innovation-icon {
+  background:
+    linear-gradient(
+      145deg,
+      #f7f4df 0%,
+      #ece8ca 100%
+    );
+}
+
+.commercial-innovation-card:nth-child(1):hover
+  .commercial-innovation-icon,
+.commercial-innovation-card:nth-child(2):hover
+  .commercial-innovation-icon,
+.commercial-innovation-card:nth-child(3):hover
+  .commercial-innovation-icon {
+  background:
+    linear-gradient(
+      145deg,
+      #789d2d 0%,
+      #55751d 100%
+    );
+}
+
+/* =========================================================
+   KEYBOARD FOCUS SUPPORT
+========================================================= */
+
+.commercial-innovation-card:focus-within {
+  outline: 3px solid rgba(107, 142, 35, 0.32);
+  outline-offset: 5px;
+}
+
+/* =========================================================
+   TABLET RESPONSIVE
+========================================================= */
+
+@media (max-width: 992px) {
+  .commercial-innovation-section {
+    padding: 94px 0;
+  }
+
+  .commercial-innovation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .commercial-innovation-card {
+    min-height: 370px;
+  }
+
+  .commercial-innovation-card:last-child {
+    width: min(100%, 560px);
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+}
+
+/* =========================================================
+   MOBILE RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+  .commercial-innovation-section {
+    padding: 76px 0;
+  }
+
+  .commercial-innovation-heading {
+    margin-bottom: 44px;
+  }
+
+  .commercial-innovation-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .commercial-innovation-card,
+  .commercial-innovation-card:last-child {
+    width: 100%;
+    min-height: 340px;
+    grid-column: auto;
+    padding: 32px 24px 26px;
+  }
+
+  .commercial-innovation-card-number {
+    top: 18px;
+    right: 20px;
+    font-size: 3rem;
+  }
+
+  .commercial-innovation-icon {
+    width: 78px;
+    height: 78px;
+    margin-bottom: 22px;
+    font-size: 2rem;
+  }
+
+  .commercial-innovation-icon::before {
+    width: 100px;
+    height: 100px;
+  }
+
+  .commercial-innovation-card h3 {
+    font-size: 1.28rem;
+  }
+
+  .commercial-innovation-card p {
+    font-size: 0.9rem;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE RESPONSIVE
+========================================================= */
+
+@media (max-width: 480px) {
+  .commercial-innovation-section {
+    padding: 64px 0;
+  }
+
+  .commercial-innovation-card {
+    min-height: 320px;
+    padding: 28px 20px 24px;
+    border-radius: 25px;
+  }
+
+  .commercial-innovation-card-number {
+    font-size: 2.7rem;
+  }
+
+  .commercial-innovation-icon {
+    width: 70px;
+    height: 70px;
+    margin-top: 6px;
+    margin-bottom: 20px;
+    font-size: 1.75rem;
+  }
+
+  .commercial-innovation-icon::before {
+    width: 90px;
+    height: 90px;
+  }
+
+  .commercial-innovation-card h3 {
+    font-size: 1.18rem;
+  }
+
+  .commercial-innovation-card p {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    line-height: 1.68;
+  }
+
+  .commercial-professional-badge {
+    padding: 7px 13px;
+    font-size: 0.68rem;
+  }
+}
+
+/* =========================================================
+   HOVER-FREE DEVICE SUPPORT
+========================================================= */
+
+@media (hover: none) {
+  .commercial-innovation-card:hover {
+    transform: none;
+  }
+
+  .commercial-innovation-card:hover::before,
+  .commercial-innovation-card:hover::after {
+    transform: none;
+  }
+
+  .commercial-innovation-card:hover
+    .commercial-innovation-card-number,
+  .commercial-innovation-card:hover
+    .commercial-innovation-icon,
+  .commercial-innovation-card:hover
+    .commercial-professional-badge {
+    transform: none;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION SUPPORT
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .commercial-innovation-card,
+  .commercial-innovation-card::before,
+  .commercial-innovation-card::after,
+  .commercial-innovation-card-number,
+  .commercial-innovation-icon,
+  .commercial-innovation-icon::before,
+  .commercial-professional-badge {
+    transition: none !important;
+  }
+
+  .commercial-innovation-card:hover,
+  .commercial-innovation-card:hover::before,
+  .commercial-innovation-card:hover::after,
+  .commercial-innovation-card:hover
+    .commercial-innovation-card-number,
+  .commercial-innovation-card:hover
+    .commercial-innovation-icon,
+  .commercial-innovation-card:hover
+    .commercial-professional-badge {
+    transform: none !important;
+  }
+}
+
+/* =========================================================
+   COMMERCIAL PAGE - PART 4
+   PROFESSIONAL STATS + EXPERTISE TAGS
+========================================================= */
+
+/* =========================================================
+   PROFESSIONAL EXPERTISE WRAPPER
+========================================================= */
+
+.commercial-professional-expertise {
+  width: 100%;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin-top: 64px;
+  padding: 46px 34px 40px;
+  border: 1px solid rgba(107, 142, 35, 0.16);
+  border-radius: 38px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.96) 0%,
+      rgba(249, 252, 247, 0.96) 100%
+    );
+  box-shadow:
+    0 26px 58px rgba(38, 75, 35, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.commercial-professional-expertise::before {
+  content: "";
+  width: 260px;
+  height: 260px;
+  position: absolute;
+  top: -125px;
+  left: -115px;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(107, 142, 35, 0.13) 0%,
+      rgba(107, 142, 35, 0.04) 45%,
+      transparent 72%
+    );
+}
+
+.commercial-professional-expertise::after {
+  content: "";
+  width: 240px;
+  height: 240px;
+  position: absolute;
+  right: -105px;
+  bottom: -120px;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(212, 175, 55, 0.12) 0%,
+      rgba(212, 175, 55, 0.03) 48%,
+      transparent 72%
+    );
+}
+
+/* =========================================================
+   PROFESSIONAL HEADER
+========================================================= */
+
+.commercial-professional-header {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto 42px;
+  text-align: center;
+}
+
+.commercial-professional-symbol {
+  width: 54px;
+  height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  border: 1px solid rgba(107, 142, 35, 0.17);
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      145deg,
+      #f3f8e8 0%,
+      #e4efd4 100%
+    );
+  font-size: 1.55rem;
+  box-shadow:
+    0 12px 25px rgba(72, 105, 40, 0.12);
+}
+
+.commercial-professional-header h3 {
+  margin: 0;
+  color: #17371c;
+  font-size: clamp(1.55rem, 3vw, 2.15rem);
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: -0.6px;
+}
+
+.commercial-professional-header h3::after {
+  content: "";
+  width: 84px;
+  height: 4px;
+  display: block;
+  margin: 16px auto 0;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      90deg,
+      var(--commercial-primary),
+      #b6d878
+    );
+}
+
+/* =========================================================
+   PROFESSIONAL STATS GRID
+========================================================= */
+
+.commercial-professional-stats {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  position: relative;
+  margin-top: 10px;
+}
+
+/* =========================================================
+   STAT ITEM
+========================================================= */
+
+.commercial-stat-item {
+  min-height: 138px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 22px;
+  text-align: center;
+}
+
+.commercial-stat-item:not(:last-child)::after {
+  content: "";
+  width: 1px;
+  height: 74px;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background:
+    linear-gradient(
+      to bottom,
+      transparent,
+      rgba(107, 142, 35, 0.25),
+      transparent
+    );
+}
+
+/* =========================================================
+   STAT NUMBER
+========================================================= */
+
+.commercial-stat-number {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  color: var(--commercial-primary);
+  font-size: clamp(2.15rem, 4vw, 3.15rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1.5px;
+}
+
+.commercial-stat-number span {
+  display: inline-block;
+}
+
+.commercial-stat-number strong {
+  display: inline-block;
+  margin-top: 2px;
+  color: var(--commercial-primary-dark);
+  font-size: 0.72em;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* =========================================================
+   STAT LABEL
+========================================================= */
+
+.commercial-stat-label {
+  margin: 12px 0 0;
+  color: var(--commercial-text-medium);
+  font-size: 0.93rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   STAT HOVER EFFECT
+========================================================= */
+
+.commercial-stat-item {
+  transition:
+    transform 0.35s ease,
+    background 0.35s ease;
+}
+
+.commercial-stat-item:hover {
+  transform: translateY(-5px);
+}
+
+.commercial-stat-item:hover .commercial-stat-number {
+  color: #7da52d;
+}
+
+/* =========================================================
+   EXPERTISE TAGS WRAPPER
+========================================================= */
+
+.commercial-expertise-tags {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 36px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(107, 142, 35, 0.13);
+}
+
+/* =========================================================
+   EXPERTISE TAG
+========================================================= */
+
+.commercial-expertise-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 9px 18px;
+  border: 1px solid rgba(107, 142, 35, 0.16);
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      145deg,
+      #f2f7ec 0%,
+      #eaf2e2 100%
+    );
+  color: #3c5f2c;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  box-shadow:
+    0 8px 18px rgba(56, 95, 45, 0.07);
+  transition:
+    transform 0.28s ease,
+    background 0.28s ease,
+    color 0.28s ease,
+    border-color 0.28s ease,
+    box-shadow 0.28s ease;
+}
+
+.commercial-expertise-tag:hover {
+  transform: translateY(-4px);
+  border-color: var(--commercial-primary);
+  background:
+    linear-gradient(
+      145deg,
+      #789d2d 0%,
+      #5d7d20 100%
+    );
+  color: var(--commercial-white);
+  box-shadow:
+    0 14px 25px rgba(75, 110, 37, 0.2);
+}
+
+/* =========================================================
+   TABLET RESPONSIVE
+========================================================= */
+
+@media (max-width: 992px) {
+  .commercial-professional-expertise {
+    margin-top: 54px;
+    padding: 42px 28px 36px;
+  }
+
+  .commercial-professional-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 16px;
+  }
+
+  .commercial-stat-item:nth-child(2)::after {
+    display: none;
+  }
+
+  .commercial-stat-item:nth-child(1)::before,
+  .commercial-stat-item:nth-child(2)::before {
+    content: "";
+    width: 72%;
+    height: 1px;
+    position: absolute;
+    left: 50%;
+    bottom: -8px;
+    transform: translateX(-50%);
+    background:
+      linear-gradient(
+        90deg,
+        transparent,
+        rgba(107, 142, 35, 0.2),
+        transparent
+      );
+  }
+
+  .commercial-stat-item:nth-child(3)::after {
+    display: block;
+  }
+}
+
+/* =========================================================
+   MOBILE RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+  .commercial-professional-expertise {
+    margin-top: 44px;
+    padding: 34px 20px 30px;
+    border-radius: 28px;
+  }
+
+  .commercial-professional-header {
+    margin-bottom: 32px;
+  }
+
+  .commercial-professional-symbol {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    font-size: 1.35rem;
+  }
+
+  .commercial-professional-header h3 {
+    font-size: 1.5rem;
+  }
+
+  .commercial-professional-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .commercial-stat-item {
+    min-height: 126px;
+    padding: 18px 14px;
+  }
+
+  .commercial-stat-number {
+    font-size: 2.35rem;
+  }
+
+  .commercial-stat-label {
+    font-size: 0.85rem;
+  }
+
+  .commercial-expertise-tags {
+    gap: 10px;
+    margin-top: 28px;
+    padding-top: 26px;
+  }
+
+  .commercial-expertise-tag {
+    min-height: 38px;
+    padding: 8px 15px;
+    font-size: 0.76rem;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE RESPONSIVE
+========================================================= */
+
+@media (max-width: 480px) {
+  .commercial-professional-expertise {
+    margin-top: 38px;
+    padding: 30px 16px 26px;
+    border-radius: 24px;
+  }
+
+  .commercial-professional-header {
+    margin-bottom: 28px;
+  }
+
+  .commercial-professional-header h3 {
+    font-size: 1.3rem;
+  }
+
+  .commercial-professional-stats {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+  }
+
+  .commercial-stat-item {
+    min-height: 108px;
+  }
+
+  .commercial-stat-item::after,
+  .commercial-stat-item:nth-child(3)::after {
+    display: none;
+  }
+
+  .commercial-stat-item:not(:last-child)::before,
+  .commercial-stat-item:nth-child(1)::before,
+  .commercial-stat-item:nth-child(2)::before {
+    content: "";
+    width: 72%;
+    height: 1px;
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    background:
+      linear-gradient(
+        90deg,
+        transparent,
+        rgba(107, 142, 35, 0.2),
+        transparent
+      );
+  }
+
+  .commercial-stat-item:last-child::before {
+    display: none;
+  }
+
+  .commercial-stat-number {
+    font-size: 2.2rem;
+  }
+
+  .commercial-stat-label {
+    margin-top: 9px;
+    font-size: 0.82rem;
+  }
+
+  .commercial-expertise-tags {
+    gap: 8px;
+    margin-top: 24px;
+    padding-top: 22px;
+  }
+
+  .commercial-expertise-tag {
+    width: 100%;
+    min-height: 39px;
+    padding: 8px 12px;
+    font-size: 0.75rem;
+  }
+}
+
+/* =========================================================
+   HOVER-FREE DEVICE SUPPORT
+========================================================= */
+
+@media (hover: none) {
+  .commercial-stat-item:hover,
+  .commercial-expertise-tag:hover {
+    transform: none;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION SUPPORT
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .commercial-stat-item,
+  .commercial-expertise-tag {
+    transition: none !important;
+  }
+
+  .commercial-stat-item:hover,
+  .commercial-expertise-tag:hover {
+    transform: none !important;
+  }
+}
+
+/* =========================================================
+   HIGH CONTRAST SUPPORT
+========================================================= */
+
+@media (prefers-contrast: high) {
+  .commercial-professional-expertise {
+    border: 2px solid var(--commercial-primary-dark);
+  }
+
+  .commercial-expertise-tag {
+    border: 2px solid var(--commercial-primary-dark);
+  }
+
+  .commercial-stat-number,
+  .commercial-stat-number strong {
+    color: #335c10;
+  }
+}
+
+/* =========================================================
+   COMMERCIAL PAGE - PART 5
+   BUSINESS SERVICES + FINAL POLISH
+========================================================= */
+
+/* =========================================================
+   SERVICES SECTION
+========================================================= */
+
+.commercial-services-section {
+  width: 100%;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 108px 0 118px;
+  background:
+    linear-gradient(
+      180deg,
+      #f2f7ef 0%,
+      #e8f1e4 100%
+    );
+}
+
+.commercial-services-section::before {
+  content: "";
+  width: 430px;
+  height: 430px;
+  position: absolute;
+  top: -200px;
+  right: -180px;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(107, 142, 35, 0.14) 0%,
+      rgba(107, 142, 35, 0.04) 42%,
+      transparent 72%
+    );
+  pointer-events: none;
+}
+
+.commercial-services-section::after {
+  content: "";
+  width: 360px;
+  height: 360px;
+  position: absolute;
+  left: -150px;
+  bottom: -170px;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(212, 175, 55, 0.11) 0%,
+      rgba(212, 175, 55, 0.03) 42%,
+      transparent 72%
+    );
+  pointer-events: none;
+}
+
+/* =========================================================
+   SERVICES GRID
+========================================================= */
+
+.commercial-services-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================================
+   SERVICE CARD
+========================================================= */
+
+.commercial-service-card {
+  min-height: 290px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 34px 24px 30px;
+  border: 1px solid rgba(107, 142, 35, 0.17);
+  border-radius: 28px;
+  background:
+    linear-gradient(
+      150deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      rgba(247, 251, 245, 0.98) 100%
+    );
+  text-align: center;
+  box-shadow:
+    0 20px 44px rgba(33, 75, 37, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.4s ease,
+    border-color 0.4s ease;
+}
+
+.commercial-service-card::before {
+  content: "";
+  width: 190px;
+  height: 190px;
+  position: absolute;
+  top: -115px;
+  right: -95px;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(107, 142, 35, 0.12) 0%,
+      rgba(107, 142, 35, 0.04) 42%,
+      transparent 72%
+    );
+  transition:
+    transform 0.45s ease,
+    opacity 0.45s ease;
+}
+
+.commercial-service-card::after {
+  content: "";
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  left: -90px;
+  bottom: -95px;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(212, 175, 55, 0.1),
+      transparent 70%
+    );
+  transition:
+    transform 0.45s ease;
+}
+
+/* =========================================================
+   SERVICE ICON
+========================================================= */
+
+.commercial-service-icon {
+  width: 78px;
+  height: 78px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-bottom: 24px;
+  border: 1px solid rgba(107, 142, 35, 0.2);
+  border-radius: 24px;
+  background:
+    linear-gradient(
+      145deg,
+      #eef6e3 0%,
+      #e1edd6 100%
+    );
+  color: var(--commercial-primary);
+  font-size: 1.95rem;
+  box-shadow:
+    0 14px 30px rgba(76, 112, 45, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  transition:
+    transform 0.4s ease,
+    background 0.4s ease,
+    color 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.commercial-service-icon::before {
+  content: "";
+  width: 96px;
+  height: 96px;
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: -1;
+  border: 1px dashed rgba(107, 142, 35, 0.15);
+  border-radius: 30px;
+  transform:
+    translate(-50%, -50%)
+    rotate(8deg);
+  transition:
+    transform 0.45s ease,
+    border-color 0.4s ease;
+}
+
+.commercial-service-icon svg {
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================================
+   SERVICE CONTENT
+========================================================= */
+
+.commercial-service-card h3 {
+  margin: 0;
+  color: #17371c;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.3px;
+}
+
+.commercial-service-card p {
+  margin: 14px 0 0;
+  color: var(--commercial-text-medium);
+  font-size: 0.91rem;
+  font-weight: 400;
+  line-height: 1.72;
+}
+
+/* =========================================================
+   SERVICE DECORATION
+========================================================= */
+
+.commercial-service-decoration {
+  width: 42px;
+  height: 4px;
+  display: block;
+  margin-top: auto;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      90deg,
+      var(--commercial-primary),
+      #b7d67b
+    );
+  transition:
+    width 0.38s ease,
+    background 0.38s ease;
+}
+
+/* =========================================================
+   SERVICE CARD HOVER
+========================================================= */
+
+.commercial-service-card:hover {
+  transform: translateY(-11px);
+  border-color: rgba(107, 142, 35, 0.4);
+  box-shadow:
+    0 32px 64px rgba(50, 90, 40, 0.19),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+.commercial-service-card:hover::before {
+  transform: scale(1.18);
+}
+
+.commercial-service-card:hover::after {
+  transform: scale(1.15);
+}
+
+.commercial-service-card:hover
+  .commercial-service-icon {
+  transform:
+    translateY(-5px)
+    rotate(-4deg)
+    scale(1.05);
+  border-color: var(--commercial-primary);
+  background:
+    linear-gradient(
+      145deg,
+      #789d2d 0%,
+      #55751d 100%
+    );
+  color: var(--commercial-white);
+  box-shadow:
+    0 20px 38px rgba(70, 106, 38, 0.28);
+}
+
+.commercial-service-card:hover
+  .commercial-service-icon::before {
+  transform:
+    translate(-50%, -50%)
+    rotate(24deg)
+    scale(1.07);
+  border-color: rgba(107, 142, 35, 0.34);
+}
+
+.commercial-service-card:hover
+  .commercial-service-decoration {
+  width: 74px;
+  background:
+    linear-gradient(
+      90deg,
+      #58791f,
+      #9bc257
+    );
+}
+
+/* =========================================================
+   INDIVIDUAL SERVICE CARD ACCENTS
+========================================================= */
+
+.commercial-service-card:nth-child(1)
+  .commercial-service-icon {
+  background:
+    linear-gradient(
+      145deg,
+      #f2f8df 0%,
+      #e5efce 100%
+    );
+}
+
+.commercial-service-card:nth-child(2)
+  .commercial-service-icon {
+  background:
+    linear-gradient(
+      145deg,
+      #e9f4e7 0%,
+      #dcebd8 100%
+    );
+}
+
+.commercial-service-card:nth-child(3)
+  .commercial-service-icon {
+  background:
+    linear-gradient(
+      145deg,
+      #edf4eb 0%,
+      #dfe9dd 100%
+    );
+}
+
+.commercial-service-card:nth-child(4)
+  .commercial-service-icon {
+  background:
+    linear-gradient(
+      145deg,
+      #f6f3dc 0%,
+      #ece6c9 100%
+    );
+}
+
+.commercial-service-card:nth-child(1):hover
+  .commercial-service-icon,
+.commercial-service-card:nth-child(2):hover
+  .commercial-service-icon,
+.commercial-service-card:nth-child(3):hover
+  .commercial-service-icon,
+.commercial-service-card:nth-child(4):hover
+  .commercial-service-icon {
+  background:
+    linear-gradient(
+      145deg,
+      #789d2d 0%,
+      #55751d 100%
+    );
+}
+
+/* =========================================================
+   KEYBOARD FOCUS
+========================================================= */
+
+.commercial-service-card:focus-within {
+  outline: 3px solid rgba(107, 142, 35, 0.32);
+  outline-offset: 5px;
+}
+
+/* =========================================================
+   TABLET RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+  .commercial-services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .commercial-service-card {
+    min-height: 275px;
+  }
+}
+
+@media (max-width: 992px) {
+  .commercial-services-section {
+    padding: 92px 0 100px;
+  }
+
+  .commercial-services-grid {
+    gap: 22px;
+  }
+}
+
+/* =========================================================
+   MOBILE RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+  .commercial-services-section {
+    padding: 76px 0 82px;
+  }
+
+  .commercial-services-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .commercial-service-card {
+    min-height: 260px;
+    padding: 30px 24px 26px;
+  }
+
+  .commercial-service-icon {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 21px;
+    border-radius: 21px;
+    font-size: 1.75rem;
+  }
+
+  .commercial-service-icon::before {
+    width: 88px;
+    height: 88px;
+    border-radius: 27px;
+  }
+
+  .commercial-service-card h3 {
+    font-size: 1.2rem;
+  }
+
+  .commercial-service-card p {
+    font-size: 0.88rem;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE RESPONSIVE
+========================================================= */
+
+@media (max-width: 480px) {
+  .commercial-services-section {
+    padding: 64px 0 70px;
+  }
+
+  .commercial-service-card {
+    min-height: 245px;
+    padding: 27px 20px 23px;
+    border-radius: 24px;
+  }
+
+  .commercial-service-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 19px;
+    border-radius: 19px;
+    font-size: 1.55rem;
+  }
+
+  .commercial-service-icon::before {
+    width: 80px;
+    height: 80px;
+    border-radius: 24px;
+  }
+
+  .commercial-service-card h3 {
+    font-size: 1.12rem;
+  }
+
+  .commercial-service-card p {
+    margin-top: 11px;
+    font-size: 0.84rem;
+    line-height: 1.66;
+  }
+}
+
+/* =========================================================
+   GLOBAL FINAL PAGE POLISH
+========================================================= */
+
+.commercial-page section {
+  scroll-margin-top: 90px;
+}
+
+.commercial-page ::selection {
+  background: rgba(107, 142, 35, 0.28);
+  color: #17371c;
+}
+
+.commercial-page button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.commercial-page button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.commercial-page svg {
+  pointer-events: none;
+}
+
+.commercial-page h1,
+.commercial-page h2,
+.commercial-page h3,
+.commercial-page p {
+  overflow-wrap: break-word;
+}
+
+.commercial-page h1,
+.commercial-page h2,
+.commercial-page h3 {
+  text-wrap: balance;
+}
+
+/* =========================================================
+   AOS OVERFLOW FIX
+========================================================= */
+
+.commercial-page [data-aos] {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* =========================================================
+   TOUCH DEVICE SUPPORT
+========================================================= */
+
+@media (hover: none) {
+  .commercial-service-card:hover {
+    transform: none;
+  }
+
+  .commercial-service-card:hover::before,
+  .commercial-service-card:hover::after {
+    transform: none;
+  }
+
+  .commercial-service-card:hover
+    .commercial-service-icon,
+  .commercial-service-card:hover
+    .commercial-service-icon::before {
+    transform: none;
+  }
+
+  .commercial-service-card:hover
+    .commercial-service-decoration {
+    width: 42px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION SUPPORT
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .commercial-service-card,
+  .commercial-service-card::before,
+  .commercial-service-card::after,
+  .commercial-service-icon,
+  .commercial-service-icon::before,
+  .commercial-service-decoration {
+    transition: none !important;
+  }
+
+  .commercial-service-card:hover,
+  .commercial-service-card:hover::before,
+  .commercial-service-card:hover::after,
+  .commercial-service-card:hover
+    .commercial-service-icon,
+  .commercial-service-card:hover
+    .commercial-service-icon::before {
+    transform: none !important;
+  }
+}
+
+/* =========================================================
+   HIGH CONTRAST SUPPORT
+========================================================= */
+
+@media (prefers-contrast: high) {
+  .commercial-service-card {
+    border: 2px solid var(--commercial-primary-dark);
+  }
+
+  .commercial-service-icon {
+    border: 2px solid var(--commercial-primary-dark);
+  }
+
+  .commercial-service-card h3 {
+    color: #102d15;
+  }
+}
+
+/* =========================================================
+   PRINT STYLES
+========================================================= */
+
+@media print {
+  .commercial-page {
+    background: #ffffff;
+    color: #000000;
+  }
+
+  .commercial-page nav,
+  .commercial-page footer,
+  .commercial-scroll-indicator,
+  .commercial-primary-button,
+  .commercial-hero-decoration {
+    display: none !important;
+  }
+
+  .commercial-hero-section,
+  .commercial-hero-container {
+    min-height: auto;
+  }
+
+  .commercial-hero-section {
+    padding: 70px 0;
+    background: #ffffff;
+  }
+
+  .commercial-hero-background,
+  .commercial-hero-overlay,
+  .commercial-hero-section::before,
+  .commercial-hero-section::after {
+    display: none;
+  }
+
+  .commercial-hero-content,
+  .commercial-hero-content h1,
+  .commercial-hero-content p {
+    color: #000000;
+    text-shadow: none;
+  }
+
+  .commercial-gradient-text,
+  .commercial-hero-highlight {
+    color: #000000;
+    -webkit-text-fill-color: #000000;
+  }
+
+  .commercial-sectors-section,
+  .commercial-innovation-section,
+  .commercial-services-section {
+    padding: 45px 0;
+    background: #ffffff;
+  }
+
+  .commercial-sectors-grid,
+  .commercial-innovation-grid,
+  .commercial-services-grid,
+  .commercial-professional-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .commercial-sector-card,
+  .commercial-innovation-card,
+  .commercial-service-card,
+  .commercial-professional-expertise {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+}

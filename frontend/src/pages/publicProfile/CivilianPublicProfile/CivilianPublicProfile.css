@@ -1,0 +1,6937 @@
+/* =========================================================
+   CIVILIAN PUBLIC PROFILE
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+.civ-page {
+  --civ-green-950: #0a4812;
+  --civ-green-900: #0d5315;
+  --civ-green-800: #105d18;
+  --civ-green-700: #14661c;
+  --civ-green-600: #1d7627;
+  --civ-green-500: #31823b;
+  --civ-green-100: #e8f4e5;
+  --civ-green-50: #f3f8f0;
+
+  --civ-text: #113719;
+  --civ-muted: #6f7e70;
+  --civ-border: #dfe8dd;
+  --civ-bg: #eef5eb;
+
+  min-height: 100vh;
+  width: 100%;
+
+  background:
+    linear-gradient(
+      180deg,
+      #edf5e9 0%,
+      #f5f8f2 44%,
+      #f7f9f5 100%
+    );
+
+  color: var(--civ-text);
+
+  font-family:
+    "Segoe UI Variable",
+    "Segoe UI",
+    Inter,
+    Arial,
+    sans-serif;
+
+  letter-spacing:
+    -0.01em;
+
+  -webkit-font-smoothing:
+    antialiased;
+
+  text-rendering:
+    optimizeLegibility;
+
+  padding: 28px 18px 50px;
+}
+
+.civ-page button,
+.civ-page input,
+.civ-page textarea {
+  font: inherit;
+}
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.civ-container {
+  width: min(100%, 1420px);
+  margin: 0 auto;
+}
+
+/* =========================================================
+   OWNER TOOLBAR
+========================================================= */
+
+.civ-owner-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+
+  padding: 14px 18px;
+  margin-bottom: 16px;
+
+  background: #ffffff;
+
+  border:
+    1px solid
+    var(--civ-border);
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 8px 28px
+    rgba(28, 72, 32, 0.07);
+}
+
+.civ-owner-toolbar > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.civ-owner-toolbar span {
+  color:
+    var(--civ-green-800);
+
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.civ-owner-toolbar span i {
+  margin-right: 7px;
+}
+
+.civ-owner-toolbar small {
+  color:
+    var(--civ-muted);
+}
+
+.civ-owner-toolbar button {
+  border: 0;
+
+  padding: 11px 17px;
+
+  border-radius: 9px;
+
+  background:
+    var(--civ-green-700);
+
+  color: #ffffff;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  transition: 0.2s;
+}
+
+.civ-owner-toolbar button:hover {
+  background:
+    var(--civ-green-800);
+
+  transform:
+    translateY(-1px);
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.civ-hero {
+  min-height: 310px;
+
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    290px
+    1fr
+    250px;
+
+  align-items: center;
+
+  gap: 26px;
+
+  padding:
+    46px
+    42px;
+
+  overflow: hidden;
+
+  border-radius:
+    18px;
+
+  color:
+    #ffffff;
+
+  background:
+    linear-gradient(
+      110deg,
+      #145b17 0%,
+      #155f18 55%,
+      #17641a 100%
+    );
+
+  background-size: cover;
+
+  background-position:
+    center;
+
+  box-shadow:
+    0 16px 46px
+    rgba(20, 88, 25, 0.18);
+}
+
+.civ-hero::after {
+  content: "";
+
+  position: absolute;
+
+  width: 500px;
+  height: 500px;
+
+  right: -150px;
+  top: -220px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.09
+    );
+
+  border-radius:
+    50%;
+}
+
+.civ-hero-pattern {
+  position: absolute;
+  inset: 0;
+
+  pointer-events:
+    none;
+
+  opacity: 0.25;
+
+  background-image:
+    radial-gradient(
+      rgba(
+        255,
+        255,
+        255,
+        0.22
+      )
+      1px,
+      transparent 1px
+    );
+
+  background-size:
+    35px 35px;
+
+  mask-image:
+    linear-gradient(
+      to left,
+      #000,
+      transparent 65%
+    );
+}
+
+.civ-profile-photo-area,
+.civ-hero-main,
+.civ-hero-right {
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================================
+   PROFILE PHOTO
+========================================================= */
+
+.civ-profile-photo-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.civ-profile-photo {
+  width: 220px;
+  height: 220px;
+
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  overflow: visible;
+
+  border-radius: 50%;
+
+  background:
+    #e7f3e9;
+
+  border:
+    7px solid
+    #ffffff;
+
+  box-shadow:
+    0 12px 34px
+    rgba(
+      0,
+      0,
+      0,
+      0.2
+    );
+
+  color:
+    var(--civ-green-800);
+
+  font-size: 55px;
+  font-weight: 900;
+}
+
+.civ-profile-photo img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+}
+
+.civ-photo-verified {
+  position: absolute;
+
+  right: 4px;
+  bottom: 14px;
+
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  background:
+    #1aaa52;
+
+  color:
+    #ffffff;
+
+  border:
+    5px solid
+    #ffffff;
+
+  border-radius:
+    50%;
+
+  font-size: 17px;
+}
+
+.civ-photo-edit {
+  margin-top:
+    12px;
+
+  padding:
+    8px 13px;
+
+  border-radius:
+    8px;
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.26
+    );
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.32
+    );
+
+  color:
+    #ffffff;
+
+  font-size:
+    13px;
+
+  font-weight:
+    700;
+
+  cursor:
+    pointer;
+}
+
+.civ-photo-edit i {
+  margin-right:
+    6px;
+}
+
+.civ-photo-edit input {
+  display:
+    none;
+}
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
+.civ-member-pill {
+  width:
+    fit-content;
+
+  padding:
+    7px 13px;
+
+  border-radius:
+    999px;
+
+  background:
+    rgba(
+      26,
+      202,
+      83,
+      0.9
+    );
+
+  color:
+    #ffffff;
+
+  font-size:
+    13px;
+
+  font-weight:
+    800;
+
+  margin-bottom:
+    13px;
+}
+
+.civ-member-pill i {
+  margin-right:
+    6px;
+}
+
+.civ-title-line {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    16px;
+
+  flex-wrap:
+    wrap;
+}
+
+.civ-title-line h1 {
+  margin:
+    0;
+
+  font-size:
+    clamp(
+      34px,
+      4vw,
+      48px
+    );
+
+  line-height:
+    1.08;
+
+  letter-spacing:
+    -1.1px;
+
+  color:
+    #ffffff;
+}
+
+.civ-username {
+  display:
+    block;
+
+  margin-top:
+    6px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.8
+    );
+
+  font-size:
+    14px;
+}
+
+.civ-hero-main > h3 {
+  margin:
+    14px 0 0;
+
+  color:
+    #ffffff;
+
+  font-size:
+    18px;
+
+  font-weight:
+    600;
+}
+
+.civ-hero-location {
+  margin:
+    20px 0 0;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    9px;
+
+  font-size:
+    15px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.92
+    );
+}
+
+.civ-hero-badges {
+  display:
+    flex;
+
+  gap:
+    8px;
+
+  flex-wrap:
+    wrap;
+
+  margin-top:
+    18px;
+}
+
+.civ-hero-badges span {
+  padding:
+    7px 11px;
+
+  border-radius:
+    999px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.2
+    );
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.12
+    );
+
+  font-size:
+    12px;
+
+  font-weight:
+    700;
+}
+
+.civ-hero-badges i {
+  margin-right:
+    5px;
+}
+
+/* =========================================================
+   HERO RIGHT
+========================================================= */
+
+.civ-hero-right {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    18px;
+}
+
+.civ-hero-right > div {
+  position:
+    relative;
+
+  padding-left:
+    46px;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    3px;
+}
+
+.civ-hero-right > div > i {
+  position:
+    absolute;
+
+  left:
+    0;
+
+  top:
+    4px;
+
+  width:
+    32px;
+  height:
+    32px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.3
+    );
+
+  border-radius:
+    6px;
+
+  color:
+    #ffffff;
+}
+
+.civ-hero-right span {
+  font-size:
+    12px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.77
+    );
+}
+
+.civ-hero-right strong {
+  color:
+    #ffffff;
+
+  font-size:
+    15px;
+}
+
+.civ-hero-edit-media {
+  border: 0;
+
+  border-radius:
+    9px;
+
+  padding:
+    12px;
+
+  color:
+    #ffffff;
+
+  background:
+    #229a45;
+
+  font-weight:
+    800;
+
+  cursor:
+    pointer;
+}
+
+.civ-hero-edit-media i {
+  margin-right:
+    7px;
+}
+
+/* =========================================================
+   STANDARD EDIT BUTTON
+========================================================= */
+
+.civ-edit-button {
+  border:
+    1px solid
+    #bfe3c7;
+
+  background:
+    #edf9f0;
+
+  color:
+    #087136;
+
+  padding:
+    7px 11px;
+
+  border-radius:
+    8px;
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  gap:
+    6px;
+
+  font-size:
+    12px;
+
+  font-weight:
+    800;
+
+  cursor:
+    pointer;
+
+  transition:
+    0.18s ease;
+}
+
+.civ-edit-button:hover {
+  color:
+    #ffffff;
+
+  background:
+    #0a7a3c;
+
+  border-color:
+    #0a7a3c;
+}
+
+.civ-hero .civ-edit-button {
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.15
+    );
+
+  color:
+    #ffffff;
+
+  border-color:
+    rgba(
+      255,
+      255,
+      255,
+      0.38
+    );
+}
+
+.civ-hero .civ-edit-button:hover {
+  background:
+    #ffffff;
+
+  color:
+    #087136;
+}
+
+/* =========================================================
+   CONTENT LAYOUT
+========================================================= */
+
+.civ-layout {
+  display:
+    grid;
+
+  grid-template-columns:
+    320px
+    minmax(
+      0,
+      1fr
+    );
+
+  gap:
+    28px;
+
+  margin-top:
+    26px;
+}
+
+.civ-sidebar,
+.civ-content {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    20px;
+}
+
+/* =========================================================
+   RANK CARD
+========================================================= */
+
+.civ-rank-card {
+  text-align:
+    center;
+
+  padding:
+    26px 20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #f6faf6
+    );
+
+  border:
+    1px solid
+    var(--civ-border);
+
+  border-radius:
+    15px;
+
+  box-shadow:
+    0 8px 28px
+    rgba(
+      30,
+      55,
+      40,
+      0.06
+    );
+}
+
+.civ-rank-medal {
+  width:
+    70px;
+
+  height:
+    70px;
+
+  margin:
+    0 auto 12px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    18px;
+
+  background:
+    #eaf7ed;
+
+  color:
+    #087438;
+
+  font-size:
+    32px;
+}
+
+.civ-rank-card small {
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    0.8px;
+
+  color:
+    var(--civ-muted);
+
+  font-weight:
+    800;
+
+  font-size:
+    11px;
+}
+
+.civ-rank-card h2 {
+  margin:
+    6px 0 10px;
+
+  color:
+    #104727;
+
+  font-size:
+    23px;
+}
+
+.civ-rank-card > span {
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  gap:
+    5px;
+
+  padding:
+    6px 10px;
+
+  border-radius:
+    999px;
+
+  background:
+    #dcf4df;
+
+  color:
+    #17923f;
+
+  font-size:
+    12px;
+
+  font-weight:
+    800;
+}
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.civ-card {
+  background:
+    #ffffff;
+
+  border:
+    1px solid
+    var(--civ-border);
+
+  border-radius:
+    15px;
+
+  overflow:
+    hidden;
+
+  box-shadow:
+    0 8px 28px
+    rgba(
+      20,
+      50,
+      30,
+      0.055
+    );
+}
+
+.civ-card-header {
+  min-height:
+    64px;
+
+  padding:
+    15px 20px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    16px;
+
+  border-bottom:
+    1px solid
+    #edf1ee;
+}
+
+.civ-card-title {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    12px;
+}
+
+.civ-card-title > span {
+  width:
+    36px;
+  height:
+    36px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  background:
+    #edf8ef;
+
+  color:
+    #139143;
+
+  border-radius:
+    9px;
+}
+
+.civ-card-title h2 {
+  margin:
+    0;
+
+  font-size:
+    17px;
+
+  color:
+    #183226;
+
+  font-weight:
+    800;
+}
+
+.civ-card-body {
+  padding:
+    20px;
+}
+
+/* =========================================================
+   CONTACT
+========================================================= */
+
+.civ-contact-list {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    16px;
+}
+
+.civ-contact-list a,
+.civ-muted-row {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    11px;
+
+  color:
+    #27392e;
+
+  text-decoration:
+    none;
+
+  font-size:
+    13px;
+}
+
+.civ-contact-list i {
+  color:
+    #118b41;
+}
+
+.civ-contact-list a small {
+  margin-left:
+    auto;
+
+  color:
+    #16843d;
+
+  background:
+    #e7f6ea;
+
+  padding:
+    4px 6px;
+
+  border-radius:
+    999px;
+
+  font-size:
+    9px;
+
+  font-weight:
+    800;
+}
+
+/* =========================================================
+   NETWORK
+========================================================= */
+
+.civ-network-list {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    15px;
+}
+
+.civ-network-list div {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    3px;
+}
+
+.civ-network-list span {
+  font-size:
+    11px;
+
+  color:
+    var(--civ-muted);
+}
+
+.civ-network-list strong {
+  color:
+    #263c30;
+
+  font-size:
+    13px;
+}
+
+/* =========================================================
+   SOCIAL
+========================================================= */
+
+.civ-social-icons {
+  display:
+    flex;
+
+  gap:
+    10px;
+
+  flex-wrap:
+    wrap;
+}
+
+.civ-social-icons a {
+  width:
+    38px;
+
+  height:
+    38px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    50%;
+
+  color:
+    #08783b;
+
+  background:
+    #edf8f0;
+
+  border:
+    1px solid
+    #d8ecdc;
+
+  text-decoration:
+    none;
+
+  transition:
+    0.18s;
+}
+
+.civ-social-icons a:hover {
+  color:
+    #ffffff;
+
+  background:
+    #08783b;
+
+  transform:
+    translateY(
+      -2px
+    );
+}
+
+.civ-website {
+  margin-top:
+    16px;
+
+  display:
+    flex;
+
+  justify-content:
+    space-between;
+
+  align-items:
+    center;
+
+  padding:
+    11px;
+
+  border:
+    1px solid
+    #e5ebe6;
+
+  border-radius:
+    9px;
+
+  color:
+    #34493b;
+
+  text-decoration:
+    none;
+
+  font-size:
+    12px;
+
+  font-weight:
+    700;
+}
+
+.civ-website span i {
+  color:
+    #168f42;
+
+  margin-right:
+    7px;
+}
+
+/* =========================================================
+   ABOUT
+========================================================= */
+
+.civ-about {
+  margin:
+    0;
+
+  color:
+    #4a5d50;
+
+  font-size:
+    14px;
+
+  line-height:
+    1.8;
+}
+
+/* =========================================================
+   EDUCATION
+========================================================= */
+
+.civ-education-grid {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      1fr
+    );
+
+  gap:
+    0;
+}
+
+.civ-education-grid > div {
+  padding:
+    5px 22px;
+
+  min-height:
+    70px;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    8px;
+
+  border-right:
+    1px solid
+    #e6ebe7;
+}
+
+.civ-education-grid > div:first-child {
+  padding-left:
+    0;
+}
+
+.civ-education-grid > div:last-child {
+  border-right:
+    none;
+}
+
+.civ-education-grid small {
+  color:
+    var(--civ-muted);
+
+  font-size:
+    11px;
+}
+
+.civ-education-grid strong {
+  color:
+    #24382c;
+
+  font-size:
+    13px;
+}
+
+.civ-subsection {
+  margin-top:
+    19px;
+
+  padding-top:
+    16px;
+
+  border-top:
+    1px solid
+    #edf1ee;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    10px;
+}
+
+.civ-subsection > strong {
+  font-size:
+    12px;
+}
+
+/* =========================================================
+   TAGS
+========================================================= */
+
+.civ-tags {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    7px;
+}
+
+.civ-tags > span {
+  padding:
+    6px 11px;
+
+  border-radius:
+    999px;
+
+  background:
+    #f0f3f0;
+
+  color:
+    #455649;
+
+  font-size:
+    11px;
+
+  font-weight:
+    600;
+}
+
+.civ-empty {
+  color:
+    #94a299;
+
+  font-size:
+    12px;
+
+  font-style:
+    italic;
+}
+
+/* =========================================================
+   ACHIEVEMENTS
+========================================================= */
+
+.civ-achievement-grid {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap:
+    18px;
+}
+
+.civ-achievement-grid > div {
+  min-width:
+    0;
+
+  display:
+    grid;
+
+  grid-template-columns:
+    34px
+    1fr;
+
+  align-items:
+    start;
+
+  column-gap:
+    9px;
+
+  row-gap:
+    7px;
+}
+
+.civ-achievement-grid > div > i {
+  grid-row:
+    1 / 3;
+
+  width:
+    32px;
+
+  height:
+    32px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    50%;
+
+  background:
+    #e8f6eb;
+
+  color:
+    #139544;
+}
+
+.civ-achievement-grid > div > span {
+  font-size:
+    11px;
+
+  font-weight:
+    800;
+
+  color:
+    #314237;
+}
+
+.civ-achievement-grid .civ-tags {
+  grid-column:
+    2;
+}
+
+/* =========================================================
+   SKILLS
+========================================================= */
+
+.civ-skill-row {
+  display:
+    grid;
+
+  grid-template-columns:
+    145px
+    1fr;
+
+  gap:
+    12px;
+
+  align-items:
+    start;
+
+  padding:
+    10px 0;
+}
+
+.civ-skill-row > strong {
+  font-size:
+    12px;
+
+  color:
+    #24392d;
+}
+
+/* =========================================================
+   MEDIA
+========================================================= */
+
+.civ-media-grid {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      5,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap:
+    10px;
+}
+
+.civ-media-grid a,
+.civ-media-grid video {
+  height:
+    150px;
+
+  border-radius:
+    9px;
+
+  overflow:
+    hidden;
+
+  background:
+    #e8eee9;
+}
+
+.civ-media-grid img {
+  display:
+    block;
+
+  width:
+    100%;
+
+  height:
+    100%;
+
+  object-fit:
+    cover;
+
+  transition:
+    0.2s;
+}
+
+.civ-media-grid a:hover img {
+  transform:
+    scale(
+      1.035
+    );
+}
+
+.civ-media-grid video {
+  width:
+    100%;
+
+  object-fit:
+    cover;
+}
+
+/* =========================================================
+   PRIVATE OWNER SECTION
+========================================================= */
+
+.civ-private-notice {
+  margin-bottom:
+    15px;
+
+  padding:
+    10px;
+
+  border-radius:
+    8px;
+
+  background:
+    #fff6df;
+
+  color:
+    #72551b;
+
+  font-size:
+    11px;
+
+  line-height:
+    1.5;
+}
+
+.civ-private-notice i {
+  margin-right:
+    6px;
+}
+
+.civ-private-row {
+  display:
+    flex;
+
+  justify-content:
+    space-between;
+
+  align-items:
+    flex-start;
+
+  gap:
+    12px;
+
+  padding:
+    10px 0;
+
+  border-bottom:
+    1px solid
+    #edf1ee;
+}
+
+.civ-private-row:last-child {
+  border-bottom:
+    0;
+}
+
+.civ-private-row span {
+  color:
+    var(--civ-muted);
+
+  font-size:
+    11px;
+}
+
+.civ-private-row strong {
+  max-width:
+    55%;
+
+  color:
+    #2e4235;
+
+  font-size:
+    11px;
+
+  text-align:
+    right;
+
+  overflow-wrap:
+    anywhere;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.civ-footer {
+  margin-top:
+    26px;
+
+  min-height:
+    66px;
+
+  padding:
+    15px 24px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    12px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #f1f7ef,
+      #f8faf5
+    );
+
+  border:
+    1px solid
+    #e0e9dd;
+
+  border-radius:
+    14px;
+
+  color:
+    #66766b;
+
+  font-size:
+    12px;
+}
+
+.civ-footer > i {
+  color:
+    #159447;
+
+  font-size:
+    18px;
+}
+
+.civ-footer strong {
+  color:
+    #45584b;
+}
+
+.civ-footer > span {
+  height:
+    25px;
+
+  width:
+    1px;
+
+  background:
+    #d3ddd3;
+}
+
+.civ-footer p {
+  margin:
+    0;
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.civ-modal-overlay {
+  position:
+    fixed;
+
+  inset:
+    0;
+
+  z-index:
+    99999;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  padding:
+    20px;
+
+  background:
+    rgba(
+      4,
+      29,
+      17,
+      0.6
+    );
+
+  backdrop-filter:
+    blur(
+      5px
+    );
+}
+
+.civ-modal {
+  width:
+    min(
+      720px,
+      100%
+    );
+
+  max-height:
+    90vh;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  background:
+    #ffffff;
+
+  border-radius:
+    18px;
+
+  box-shadow:
+    0 26px 80px
+    rgba(
+      0,
+      0,
+      0,
+      0.28
+    );
+
+  overflow:
+    hidden;
+
+  animation:
+    civModalIn
+    0.18s ease;
+}
+
+@keyframes civModalIn {
+  from {
+    opacity:
+      0;
+
+    transform:
+      translateY(
+        15px
+      )
+      scale(
+        0.985
+      );
+  }
+
+  to {
+    opacity:
+      1;
+
+    transform:
+      translateY(
+        0
+      )
+      scale(
+        1
+      );
+  }
+}
+
+.civ-modal-header {
+  padding:
+    20px 22px;
+
+  background:
+    linear-gradient(
+      110deg,
+      #07522e,
+      #0c7c3d
+    );
+
+  color:
+    #ffffff;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+}
+
+.civ-modal-header small {
+  display:
+    block;
+
+  margin-bottom:
+    4px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.68
+    );
+
+  font-size:
+    9px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    1px;
+}
+
+.civ-modal-header h2 {
+  margin:
+    0;
+
+  color:
+    #ffffff;
+
+  font-size:
+    20px;
+}
+
+.civ-modal-close {
+  width:
+    37px;
+
+  height:
+    37px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.28
+    );
+
+  border-radius:
+    8px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.09
+    );
+
+  color:
+    #ffffff;
+
+  cursor:
+    pointer;
+}
+
+.civ-modal-content {
+  padding:
+    22px;
+
+  overflow-y:
+    auto;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    16px;
+}
+
+.civ-form-grid {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap:
+    14px;
+}
+
+.civ-field {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    7px;
+}
+
+.civ-field > span {
+  color:
+    #44584b;
+
+  font-size:
+    11px;
+
+  font-weight:
+    800;
+}
+
+.civ-field input,
+.civ-field textarea {
+  width:
+    100%;
+
+  border:
+    1px solid
+    #dce7de;
+
+  border-radius:
+    9px;
+
+  padding:
+    11px 12px;
+
+  outline:
+    none;
+
+  color:
+    #283a2e;
+
+  background:
+    #ffffff;
+
+  transition:
+    0.18s;
+}
+
+.civ-field textarea {
+  min-height:
+    95px;
+
+  resize:
+    vertical;
+}
+
+.civ-field input:focus,
+.civ-field textarea:focus {
+  border-color:
+    #25a152;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      37,
+      161,
+      82,
+      0.12
+    );
+}
+
+.civ-toggle-box {
+  min-height:
+    78px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    20px;
+
+  padding:
+    14px;
+
+  border:
+    1px solid
+    #dfe9e0;
+
+  border-radius:
+    10px;
+
+  background:
+    #f7fbf8;
+}
+
+.civ-toggle-box > div {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    4px;
+}
+
+.civ-toggle-box strong {
+  color:
+    #25412f;
+
+  font-size:
+    13px;
+}
+
+.civ-toggle-box small {
+  color:
+    #748177;
+
+  font-size:
+    11px;
+}
+
+.civ-toggle-box input {
+  width:
+    19px;
+
+  height:
+    19px;
+
+  accent-color:
+    #118c42;
+}
+
+.civ-modal-error {
+  padding:
+    10px 12px;
+
+  border:
+    1px solid
+    #f1c6c6;
+
+  border-radius:
+    8px;
+
+  background:
+    #fff0f0;
+
+  color:
+    #a52e2e;
+
+  font-size:
+    12px;
+}
+
+.civ-modal-footer {
+  display:
+    flex;
+
+  justify-content:
+    flex-end;
+
+  gap:
+    10px;
+
+  padding:
+    15px 22px;
+
+  background:
+    #f8faf8;
+
+  border-top:
+    1px solid
+    #e7ece8;
+}
+
+.civ-button-light,
+.civ-button-green {
+  border:
+    0;
+
+  border-radius:
+    8px;
+
+  padding:
+    10px 15px;
+
+  font-weight:
+    800;
+
+  cursor:
+    pointer;
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  gap:
+    7px;
+}
+
+.civ-button-light {
+  background:
+    #e9eeea;
+
+  color:
+    #405047;
+}
+
+.civ-button-green {
+  background:
+    #0c7a3d;
+
+  color:
+    #ffffff;
+}
+
+.civ-button-green:hover {
+  background:
+    #075d31;
+}
+
+/* =========================================================
+   LOAD / ERROR STATE
+========================================================= */
+
+.civ-state {
+  min-height:
+    80vh;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    12px;
+
+  background:
+    #eef5eb;
+
+  color:
+    #274231;
+}
+
+.civ-state > i {
+  color:
+    #148e42;
+
+  font-size:
+    36px;
+}
+
+.civ-state h2,
+.civ-state p {
+  margin:
+    0;
+}
+
+.civ-state button {
+  border:
+    0;
+
+  border-radius:
+    8px;
+
+  padding:
+    10px 18px;
+
+  background:
+    #087239;
+
+  color:
+    #ffffff;
+
+  cursor:
+    pointer;
+}
+
+.civ-spinner {
+  width:
+    38px;
+
+  height:
+    38px;
+
+  border:
+    4px solid
+    #d9e9dc;
+
+  border-top-color:
+    #0a7a3d;
+
+  border-radius:
+    50%;
+
+  animation:
+    civSpin
+    0.75s linear
+    infinite;
+}
+
+@keyframes civSpin {
+  to {
+    transform:
+      rotate(
+        360deg
+      );
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (
+  max-width:
+    1100px
+) {
+  .civ-hero {
+    grid-template-columns:
+      210px
+      1fr;
+
+    padding:
+      34px 28px;
+  }
+
+  .civ-profile-photo {
+    width:
+      175px;
+
+    height:
+      175px;
+  }
+
+  .civ-hero-right {
+    grid-column:
+      1 / -1;
+
+    flex-direction:
+      row;
+
+    flex-wrap:
+      wrap;
+
+    padding-left:
+      225px;
+  }
+
+  .civ-layout {
+    grid-template-columns:
+      280px
+      minmax(
+        0,
+        1fr
+      );
+  }
+
+  .civ-achievement-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        1fr
+      );
+  }
+
+  .civ-media-grid {
+    grid-template-columns:
+      repeat(
+        3,
+        1fr
+      );
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (
+  max-width:
+    780px
+) {
+  .civ-page {
+    padding:
+      12px 10px
+      35px;
+  }
+
+  .civ-owner-toolbar {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+  .civ-owner-toolbar button {
+    width:
+      100%;
+
+    justify-content:
+      center;
+  }
+
+  .civ-hero {
+    grid-template-columns:
+      1fr;
+
+    text-align:
+      center;
+
+    padding:
+      32px 18px;
+  }
+
+  .civ-profile-photo {
+    width:
+      155px;
+
+    height:
+      155px;
+  }
+
+  .civ-hero-main {
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    align-items:
+      center;
+  }
+
+  .civ-title-line {
+    justify-content:
+      center;
+  }
+
+  .civ-hero-location {
+    justify-content:
+      center;
+  }
+
+  .civ-hero-badges {
+    justify-content:
+      center;
+  }
+
+  .civ-hero-right {
+    grid-column:
+      auto;
+
+    padding-left:
+      0;
+
+    flex-direction:
+      column;
+
+    align-items:
+      center;
+  }
+
+  .civ-hero-right > div {
+    min-width:
+      180px;
+
+    text-align:
+      left;
+  }
+
+  .civ-layout {
+    grid-template-columns:
+      1fr;
+  }
+
+  .civ-education-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .civ-education-grid > div {
+    padding:
+      13px 0;
+
+    border-right:
+      0;
+
+    border-bottom:
+      1px solid
+      #e8eee9;
+  }
+
+  .civ-achievement-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .civ-skill-row {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      8px;
+  }
+
+  .civ-media-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        1fr
+      );
+  }
+
+  .civ-media-grid a,
+  .civ-media-grid video {
+    height:
+      130px;
+  }
+
+  .civ-footer {
+    align-items:
+      flex-start;
+
+    flex-wrap:
+      wrap;
+  }
+
+  .civ-footer > span {
+    display:
+      none;
+  }
+
+  .civ-form-grid {
+    grid-template-columns:
+      1fr;
+  }
+}
+.civ-field select {
+  width: 100%;
+  border: 1px solid #dce7de;
+  border-radius: 9px;
+  padding: 11px 12px;
+  outline: none;
+  color: #283a2e;
+  background: #ffffff;
+}
+
+.civ-field select:focus {
+  border-color: #25a152;
+  box-shadow: 0 0 0 3px rgba(37, 161, 82, 0.12);
+}
+
+.civ-name-degree {
+  font-size: 0.58em;
+  font-weight: 600;
+  opacity: 0.9;
+  white-space: nowrap;
+}
+.civ-field select {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 12px;
+  border: 1px solid #dce7de;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #283a2e;
+  font: inherit;
+  outline: none;
+}
+
+.civ-field select:focus {
+  border-color: #25a152;
+  box-shadow: 0 0 0 3px rgba(37, 161, 82, 0.12);
+}
+
+.civ-name-degree {
+  font-size: 0.58em;
+  font-weight: 600;
+  opacity: 0.92;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   DASHBOARD COLOR MATCH OVERRIDES
+   Matches the Civilian dashboard screenshot palette
+========================================================= */
+
+.civ-page {
+  background:
+    linear-gradient(
+      180deg,
+      #edf5e9 0%,
+      #f4f8f1 48%,
+      #f7f9f5 100%
+    );
+
+  color:
+    #12371a;
+}
+
+.civ-owner-toolbar,
+.civ-card,
+.civ-modal {
+  background:
+    #ffffff;
+
+  border-color:
+    #dde7da;
+
+  box-shadow:
+    0 10px 30px
+    rgba(31, 77, 33, 0.055);
+}
+
+.civ-owner-toolbar {
+  border-radius:
+    18px;
+}
+
+.civ-owner-toolbar span {
+  color:
+    #5f745f;
+}
+
+.civ-owner-toolbar button,
+.civ-button-green {
+  background:
+    #2f7d36;
+
+  color:
+    #ffffff;
+
+  border:
+    1px solid
+    rgba(255,255,255,.22);
+
+  border-radius:
+    28px;
+
+  font-weight:
+    700;
+
+  box-shadow:
+    none;
+}
+
+.civ-owner-toolbar button:hover,
+.civ-button-green:hover {
+  background:
+    #246b2c;
+}
+
+.civ-hero {
+  background:
+    linear-gradient(
+      100deg,
+      #145b17 0%,
+      #155f18 58%,
+      #176419 100%
+    );
+
+  border-radius:
+    28px;
+
+  box-shadow:
+    0 16px 42px
+    rgba(20, 88, 25, 0.16);
+}
+
+.civ-hero-pattern {
+  opacity:
+    0.18;
+}
+
+.civ-profile-photo {
+  background:
+    #ffffff;
+
+  border:
+    4px solid
+    rgba(255,255,255,.97);
+
+  box-shadow:
+    0 12px 28px
+    rgba(7, 64, 17, .16);
+}
+
+.civ-profile-photo span {
+  color:
+    #155f18;
+
+  font-weight:
+    800;
+}
+
+.civ-photo-edit {
+  background:
+    #ffffff;
+
+  color:
+    #155f18;
+
+  border:
+    1px solid
+    #dce8d8;
+
+  font-weight:
+    700;
+}
+
+.civ-member-pill {
+  background:
+    rgba(255,255,255,.14);
+
+  border:
+    1px solid
+    rgba(255,255,255,.28);
+
+  color:
+    #ffffff;
+
+  font-weight:
+    700;
+}
+
+.civ-hero-main h1,
+.civ-title-line h1 {
+  font-weight:
+    800;
+
+  letter-spacing:
+    -0.035em;
+
+  color:
+    #ffffff;
+}
+
+.civ-hero-main h3 {
+  color:
+    rgba(255,255,255,.86);
+
+  font-weight:
+    500;
+}
+
+.civ-name-degree,
+.civ-username,
+.civ-hero-location {
+  color:
+    rgba(255,255,255,.82);
+}
+
+.civ-edit-button {
+  background:
+    #eef6ea;
+
+  color:
+    #17651e;
+
+  border:
+    1px solid
+    #dcebd8;
+
+  border-radius:
+    24px;
+
+  font-weight:
+    700;
+}
+
+.civ-edit-button:hover {
+  background:
+    #e2f0dd;
+}
+
+.civ-card,
+.civ-rank-card {
+  border-radius:
+    24px;
+
+  border:
+    1px solid
+    #dfe8dd;
+
+  box-shadow:
+    0 8px 24px
+    rgba(35, 75, 36, 0.055);
+}
+
+.civ-card-header {
+  border-bottom:
+    1px solid
+    #e7eee5;
+}
+
+.civ-card-title h2 {
+  color:
+    #153a1d;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    -0.02em;
+}
+
+.civ-card-title > span {
+  background:
+    #e8f4e5;
+
+  color:
+    #14661c;
+}
+
+.civ-rank-card {
+  background:
+    #ffffff;
+}
+
+.civ-rank-medal {
+  background:
+    #e8f4e5;
+
+  color:
+    #14661c;
+}
+
+.civ-rank-card small {
+  color:
+    #6f7e70;
+
+  font-weight:
+    700;
+}
+
+.civ-rank-card h2 {
+  color:
+    #153a1d;
+}
+
+.civ-tags span {
+  background:
+    #e8f4e5;
+
+  color:
+    #155f1d;
+
+  border:
+    1px solid
+    #d8ead4;
+
+  font-weight:
+    700;
+}
+
+.civ-contact-list a,
+.civ-muted-row,
+.civ-network-list > div,
+.civ-private-row {
+  background:
+    #fbfcfa;
+
+  border-color:
+    #e1e9df;
+}
+
+.civ-contact-list a {
+  color:
+    #153a1d;
+}
+
+.civ-contact-list a i,
+.civ-muted-row i {
+  color:
+    #14661c;
+}
+
+.civ-social-icons a {
+  background:
+    #e8f4e5;
+
+  color:
+    #14661c;
+
+  border:
+    1px solid
+    #d8ead4;
+}
+
+.civ-social-icons a:hover {
+  background:
+    #155f18;
+
+  color:
+    #ffffff;
+}
+
+.civ-field > span {
+  color:
+    #617061;
+
+  font-weight:
+    700;
+}
+
+.civ-field input,
+.civ-field textarea,
+.civ-field select {
+  background:
+    #ffffff;
+
+  color:
+    #153a1d;
+
+  border:
+    1px solid
+    #dbe6d8;
+
+  border-radius:
+    14px;
+}
+
+.civ-field input:focus,
+.civ-field textarea:focus,
+.civ-field select:focus {
+  border-color:
+    #2f7d36;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(47,125,54,.10);
+
+  outline:
+    none;
+}
+
+.civ-toggle-box {
+  background:
+    #f2f7ef;
+
+  border:
+    1px solid
+    #dfeadd;
+}
+
+.civ-toggle-box strong {
+  color:
+    #153a1d;
+}
+
+.civ-button-light {
+  background:
+    #f4f6f3;
+
+  color:
+    #244128;
+
+  border:
+    1px solid
+    #dfe7dd;
+
+  border-radius:
+    26px;
+}
+
+.civ-modal {
+  border-radius:
+    24px;
+}
+
+.civ-modal-header {
+  background:
+    #f7faf5;
+}
+
+.civ-modal-header small {
+  color:
+    #657765;
+}
+
+.civ-modal-header h2 {
+  color:
+    #143a1c;
+}
+
+.civ-modal-close {
+  background:
+    #e8f4e5;
+
+  color:
+    #155f18;
+}
+
+.civ-state {
+  color:
+    #153a1d;
+}
+
+.civ-spinner {
+  border-color:
+    #dcead8;
+
+  border-top-color:
+    #155f18;
+}
+
+/* =========================================================
+   SCREENSHOT-LIKE TYPOGRAPHY
+========================================================= */
+
+.civ-page h1,
+.civ-page h2,
+.civ-page h3,
+.civ-page strong,
+.civ-page button {
+  font-family:
+    "Segoe UI Variable",
+    "Segoe UI",
+    Inter,
+    Arial,
+    sans-serif;
+}
+
+.civ-page h1 {
+  font-weight:
+    800;
+}
+
+.civ-page h2 {
+  font-weight:
+    800;
+}
+
+.civ-page h3 {
+  font-weight:
+    600;
+}
+
+@media (max-width: 900px) {
+  .civ-hero {
+    border-radius:
+      22px;
+  }
+
+  .civ-card,
+  .civ-rank-card {
+    border-radius:
+      18px;
+  }
+}
+
+
+/* =========================================================
+   CLEAN TYPOGRAPHY OVERRIDE
+   Removes the rounded/heavy Poppins look
+========================================================= */
+
+.civ-page,
+.civ-page input,
+.civ-page textarea,
+.civ-page select,
+.civ-page button {
+  font-family:
+    "Segoe UI Variable",
+    "Segoe UI",
+    Inter,
+    Arial,
+    sans-serif !important;
+
+  letter-spacing:
+    -0.01em;
+}
+
+.civ-page {
+  font-size:
+    15px;
+
+  line-height:
+    1.55;
+}
+
+.civ-page h1,
+.civ-page h2,
+.civ-page h3,
+.civ-page h4,
+.civ-page strong {
+  font-family:
+    "Segoe UI Variable",
+    "Segoe UI",
+    Inter,
+    Arial,
+    sans-serif !important;
+}
+
+.civ-page h1 {
+  font-weight:
+    750;
+
+  letter-spacing:
+    -0.035em;
+}
+
+.civ-page h2 {
+  font-weight:
+    700;
+
+  letter-spacing:
+    -0.025em;
+}
+
+.civ-page h3 {
+  font-weight:
+    650;
+
+  letter-spacing:
+    -0.018em;
+}
+
+.civ-card-title h2 {
+  font-size:
+    17px;
+
+  font-weight:
+    700;
+}
+
+.civ-rank-card h2 {
+  font-size:
+    22px;
+
+  font-weight:
+    700;
+}
+
+.civ-owner-toolbar span,
+.civ-member-pill,
+.civ-tags span,
+.civ-edit-button,
+.civ-button-green,
+.civ-button-light {
+  font-weight:
+    650 !important;
+}
+
+.civ-field > span,
+.civ-private-row span,
+.civ-network-list span,
+.civ-contact-list small {
+  font-size:
+    13px;
+
+  font-weight:
+    600;
+}
+
+.civ-field input,
+.civ-field textarea,
+.civ-field select {
+  font-size:
+    15px;
+
+  font-weight:
+    450;
+}
+
+.civ-hero-main h3 {
+  font-size:
+    17px;
+
+  font-weight:
+    450;
+}
+
+.civ-name-degree,
+.civ-username,
+.civ-hero-location {
+  font-weight:
+    450;
+}
+
+.civ-card-body,
+.civ-contact-list,
+.civ-network-list,
+.civ-private-row {
+  font-weight:
+    450;
+}
+
+
+/* =========================================================
+   FINAL MOBILE + TYPOGRAPHY POLISH
+   Keeps the Civilian Dashboard green palette
+========================================================= */
+
+/* ---------- TYPOGRAPHY ---------- */
+
+.civ-page,
+.civ-page input,
+.civ-page textarea,
+.civ-page select,
+.civ-page button {
+  font-family:
+    "Segoe UI Variable Text",
+    "Segoe UI Variable",
+    "Segoe UI",
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    Arial,
+    sans-serif !important;
+
+  letter-spacing:
+    -0.012em;
+}
+
+.civ-page {
+  font-size:
+    15px;
+
+  line-height:
+    1.5;
+}
+
+.civ-page h1,
+.civ-page h2,
+.civ-page h3 {
+  margin-top:
+    0;
+
+  text-wrap:
+    balance;
+}
+
+.civ-page h1 {
+  font-weight:
+    720 !important;
+
+  letter-spacing:
+    -0.036em !important;
+}
+
+.civ-page h2 {
+  font-weight:
+    680 !important;
+
+  letter-spacing:
+    -0.024em !important;
+}
+
+.civ-page h3 {
+  font-weight:
+    620 !important;
+
+  letter-spacing:
+    -0.018em !important;
+}
+
+.civ-card-title h2 {
+  font-size:
+    17px !important;
+
+  line-height:
+    1.25;
+}
+
+.civ-card-body {
+  font-size:
+    14.5px;
+
+  line-height:
+    1.55;
+}
+
+/* ---------- HERO DESKTOP ---------- */
+
+.civ-hero {
+  min-height:
+    300px;
+
+  padding:
+    34px 36px;
+
+  gap:
+    28px;
+
+  align-items:
+    center;
+
+  background:
+    linear-gradient(
+      105deg,
+      #145b17 0%,
+      #155f18 58%,
+      #176419 100%
+    );
+
+  border-radius:
+    28px;
+
+  overflow:
+    hidden;
+}
+
+.civ-profile-photo-area {
+  align-self:
+    center;
+}
+
+.civ-profile-photo {
+  width:
+    176px;
+
+  height:
+    176px;
+
+  flex:
+    0 0 176px;
+}
+
+.civ-hero-main {
+  min-width:
+    0;
+}
+
+.civ-title-line h1,
+.civ-hero-main h1 {
+  font-size:
+    clamp(
+      34px,
+      3vw,
+      50px
+    ) !important;
+
+  line-height:
+    1.05;
+
+  margin-bottom:
+    8px;
+}
+
+.civ-hero-main h3 {
+  font-size:
+    16px;
+
+  line-height:
+    1.45;
+
+  margin:
+    10px 0 0;
+}
+
+.civ-hero-location {
+  margin-top:
+    12px;
+
+  font-size:
+    14px;
+}
+
+.civ-hero-right {
+  min-width:
+    190px;
+}
+
+.civ-hero-right > div {
+  border:
+    1px solid
+    rgba(255,255,255,.14);
+
+  background:
+    rgba(255,255,255,.08);
+
+  backdrop-filter:
+    blur(10px);
+}
+
+/* ---------- CARD SPACING ---------- */
+
+.civ-layout {
+  gap:
+    24px;
+}
+
+.civ-sidebar {
+  gap:
+    20px;
+}
+
+.civ-card {
+  margin-bottom:
+    0;
+}
+
+.civ-card-header {
+  min-height:
+    68px;
+
+  padding:
+    18px 22px;
+}
+
+.civ-card-body {
+  padding:
+    22px;
+}
+
+.civ-private-row,
+.civ-network-list > div,
+.civ-muted-row {
+  border-radius:
+    12px;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (
+  max-width:
+    768px
+) {
+  .civ-page {
+    padding:
+      12px 0 28px;
+
+    font-size:
+      14px;
+  }
+
+  .civ-container {
+    width:
+      100%;
+
+    padding:
+      0 12px;
+  }
+
+  .civ-owner-toolbar {
+    margin-bottom:
+      12px;
+
+    padding:
+      12px 14px;
+
+    border-radius:
+      16px;
+
+    gap:
+      10px;
+  }
+
+  .civ-owner-toolbar > div {
+    min-width:
+      0;
+  }
+
+  .civ-owner-toolbar span {
+    font-size:
+      13px;
+  }
+
+  .civ-owner-toolbar small {
+    font-size:
+      11.5px;
+
+    line-height:
+      1.35;
+  }
+
+  .civ-owner-toolbar button {
+    min-height:
+      38px;
+
+    padding:
+      8px 12px;
+
+    font-size:
+      12px;
+
+    white-space:
+      nowrap;
+  }
+
+  /* Mobile hero becomes a compact centered profile card */
+  .civ-hero {
+    min-height:
+      auto;
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    align-items:
+      center;
+
+    text-align:
+      center;
+
+    padding:
+      26px 18px 22px;
+
+    gap:
+      16px;
+
+    border-radius:
+      22px;
+
+    background:
+      linear-gradient(
+        155deg,
+        #145b17 0%,
+        #155f18 58%,
+        #176419 100%
+      );
+
+    box-shadow:
+      0 14px 34px
+      rgba(20, 88, 25, .15);
+  }
+
+  .civ-hero-pattern {
+    opacity:
+      .10;
+  }
+
+  .civ-profile-photo-area {
+    width:
+      100%;
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    align-items:
+      center;
+
+    gap:
+      8px;
+  }
+
+  .civ-profile-photo {
+    width:
+      112px;
+
+    height:
+      112px;
+
+    flex:
+      0 0 112px;
+
+    border-width:
+      4px;
+
+    box-shadow:
+      0 10px 24px
+      rgba(5, 55, 14, .18);
+  }
+
+  .civ-profile-photo span {
+    font-size:
+      34px;
+  }
+
+  .civ-photo-edit {
+    position:
+      static !important;
+
+    width:
+      auto;
+
+    min-height:
+      34px;
+
+    padding:
+      7px 12px;
+
+    border-radius:
+      999px;
+
+    font-size:
+      12px;
+  }
+
+  .civ-hero-main {
+    width:
+      100%;
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    align-items:
+      center;
+  }
+
+  .civ-member-pill {
+    margin:
+      0 auto 6px;
+
+    padding:
+      6px 11px;
+
+    font-size:
+      11px;
+  }
+
+  .civ-title-line {
+    width:
+      100%;
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    align-items:
+      center;
+
+    gap:
+      10px;
+  }
+
+  .civ-title-line > div {
+    width:
+      100%;
+  }
+
+  .civ-title-line h1,
+  .civ-hero-main h1 {
+    max-width:
+      100%;
+
+    font-size:
+      clamp(
+        28px,
+        9vw,
+        36px
+      ) !important;
+
+    line-height:
+      1.08;
+
+    margin:
+      0;
+
+    overflow-wrap:
+      anywhere;
+  }
+
+  .civ-name-degree {
+    display:
+      block;
+
+    margin-top:
+      5px;
+
+    font-size:
+      15px;
+
+    line-height:
+      1.3;
+  }
+
+  .civ-username {
+    display:
+      inline-block;
+
+    margin-top:
+      7px;
+
+    font-size:
+      13px;
+  }
+
+  .civ-title-line .civ-edit-button {
+    min-height:
+      36px;
+
+    padding:
+      7px 13px;
+
+    font-size:
+      12px;
+  }
+
+  .civ-hero-main h3 {
+    max-width:
+      290px;
+
+    margin:
+      10px auto 0;
+
+    font-size:
+      14px;
+
+    line-height:
+      1.4;
+  }
+
+  .civ-hero-location {
+    justify-content:
+      center;
+
+    margin-top:
+      10px;
+
+    font-size:
+      12.5px;
+
+    line-height:
+      1.35;
+  }
+
+  .civ-hero-right {
+    width:
+      100%;
+
+    min-width:
+      0;
+
+    display:
+      grid;
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      );
+
+    gap:
+      8px;
+  }
+
+  .civ-hero-right > div {
+    min-width:
+      0;
+
+    min-height:
+      66px;
+
+    padding:
+      10px;
+
+    border-radius:
+      14px;
+  }
+
+  .civ-hero-right > div > i {
+    font-size:
+      14px;
+  }
+
+  .civ-hero-right span {
+    font-size:
+      10px;
+  }
+
+  .civ-hero-right strong {
+    max-width:
+      100%;
+
+    font-size:
+      11.5px;
+
+    overflow:
+      hidden;
+
+    text-overflow:
+      ellipsis;
+
+    white-space:
+      nowrap;
+  }
+
+  .civ-hero-edit-media {
+    grid-column:
+      1 / -1;
+
+    min-height:
+      38px;
+
+    border-radius:
+      999px;
+
+    font-size:
+      12px;
+  }
+
+  /* Force a single-column clean mobile layout */
+  .civ-layout {
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    gap:
+      14px;
+
+    margin-top:
+      14px;
+  }
+
+  .civ-sidebar,
+  .civ-content {
+    width:
+      100%;
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    gap:
+      14px;
+  }
+
+  .civ-card,
+  .civ-rank-card {
+    width:
+      100%;
+
+    border-radius:
+      18px;
+  }
+
+  .civ-card-header {
+    min-height:
+      58px;
+
+    padding:
+      14px 15px;
+
+    gap:
+      10px;
+  }
+
+  .civ-card-title {
+    min-width:
+      0;
+
+    gap:
+      10px;
+  }
+
+  .civ-card-title > span {
+    width:
+      38px;
+
+    height:
+      38px;
+
+    flex:
+      0 0 38px;
+
+    border-radius:
+      11px;
+  }
+
+  .civ-card-title h2 {
+    font-size:
+      15px !important;
+
+    line-height:
+      1.2;
+
+    overflow-wrap:
+      anywhere;
+  }
+
+  .civ-edit-button {
+    min-height:
+      34px;
+
+    padding:
+      6px 10px;
+
+    font-size:
+      11.5px;
+  }
+
+  .civ-card-body {
+    padding:
+      16px;
+  }
+
+  .civ-contact-list,
+  .civ-network-list {
+    gap:
+      8px;
+  }
+
+  .civ-muted-row,
+  .civ-network-list > div,
+  .civ-private-row {
+    min-height:
+      44px;
+
+    padding:
+      10px 11px;
+
+    font-size:
+      13px;
+  }
+
+  .civ-tags {
+    gap:
+      7px;
+  }
+
+  .civ-tags span {
+    padding:
+      6px 9px;
+
+    font-size:
+      11.5px;
+  }
+
+  .civ-social-icons {
+    gap:
+      8px;
+  }
+
+  .civ-social-icons a {
+    width:
+      40px;
+
+    height:
+      40px;
+  }
+
+  .civ-gallery {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      );
+
+    gap:
+      8px;
+  }
+
+  .civ-modal {
+    width:
+      calc(
+        100% - 18px
+      );
+
+    max-height:
+      calc(
+        100dvh - 20px
+      );
+
+    border-radius:
+      18px;
+  }
+
+  .civ-modal-header {
+    padding:
+      16px;
+  }
+
+  .civ-modal-content {
+    padding:
+      16px;
+  }
+
+  .civ-modal-footer {
+    padding:
+      12px 16px;
+
+    gap:
+      8px;
+  }
+
+  .civ-form-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .civ-field input,
+  .civ-field textarea,
+  .civ-field select {
+    font-size:
+      16px;
+  }
+}
+
+/* Small phones */
+@media (
+  max-width:
+    420px
+) {
+  .civ-container {
+    padding:
+      0 9px;
+  }
+
+  .civ-owner-toolbar {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+  .civ-owner-toolbar button {
+    width:
+      100%;
+  }
+
+  .civ-hero {
+    padding:
+      22px 14px 18px;
+  }
+
+  .civ-profile-photo {
+    width:
+      100px;
+
+    height:
+      100px;
+
+    flex-basis:
+      100px;
+  }
+
+  .civ-title-line h1,
+  .civ-hero-main h1 {
+    font-size:
+      29px !important;
+  }
+
+  .civ-hero-right {
+    grid-template-columns:
+      1fr;
+  }
+
+  .civ-hero-edit-media {
+    grid-column:
+      auto;
+  }
+
+  .civ-card-header {
+    align-items:
+      flex-start;
+  }
+}
+
+
+/* =========================================================
+   HERO REDESIGN + PRIVATE EDIT UI
+   Mobile-first premium Civilian profile
+========================================================= */
+
+.civ-hero {
+  position:
+    relative;
+
+  min-height:
+    auto;
+
+  display:
+    grid;
+
+  grid-template-columns:
+    auto minmax(0, 1fr) auto;
+
+  align-items:
+    center;
+
+  gap:
+    24px;
+
+  padding:
+    26px 28px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff 0%,
+      #f7fbf5 100%
+    ) !important;
+
+  border:
+    1px solid
+    #dce8d8;
+
+  border-radius:
+    24px;
+
+  box-shadow:
+    0 12px 34px
+    rgba(24, 76, 31, .075);
+}
+
+.civ-hero-pattern {
+  display:
+    none !important;
+}
+
+.civ-profile-photo {
+  width:
+    132px;
+
+  height:
+    132px;
+
+  flex:
+    0 0 132px;
+
+  background:
+    #eef6ea;
+
+  border:
+    4px solid
+    #ffffff;
+
+  box-shadow:
+    0 10px 30px
+    rgba(21, 95, 24, .13);
+}
+
+.civ-profile-photo span {
+  color:
+    #155f18;
+}
+
+.civ-photo-edit {
+  background:
+    #ffffff;
+
+  color:
+    #155f18;
+
+  border:
+    1px solid
+    #d6e6d2;
+}
+
+.civ-member-pill {
+  width:
+    fit-content;
+
+  background:
+    #e8f4e5 !important;
+
+  color:
+    #155f18 !important;
+
+  border:
+    1px solid
+    #d4e7cf !important;
+}
+
+.civ-title-line h1,
+.civ-hero-main h1 {
+  color:
+    #123a18 !important;
+
+  font-size:
+    clamp(
+      30px,
+      3vw,
+      44px
+    ) !important;
+
+  line-height:
+    1.08;
+
+  font-weight:
+    700 !important;
+}
+
+.civ-name-degree {
+  color:
+    #5d745f !important;
+
+  font-size:
+    .48em;
+
+  font-weight:
+    500 !important;
+}
+
+.civ-username {
+  color:
+    #547158 !important;
+}
+
+.civ-hero-main h3 {
+  color:
+    #34563a !important;
+
+  font-size:
+    15px;
+
+  font-weight:
+    500 !important;
+}
+
+.civ-hero-location {
+  color:
+    #647467 !important;
+}
+
+.civ-hero-right {
+  min-width:
+    176px;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    8px;
+}
+
+.civ-hero-right > div {
+  min-height:
+    62px;
+
+  padding:
+    10px 12px;
+
+  background:
+    #f3f8f0 !important;
+
+  color:
+    #143b1a !important;
+
+  border:
+    1px solid
+    #dce9d9 !important;
+
+  border-radius:
+    14px;
+
+  backdrop-filter:
+    none;
+}
+
+.civ-hero-right span,
+.civ-hero-right strong,
+.civ-hero-right i {
+  color:
+    inherit !important;
+}
+
+.civ-hero-edit-media {
+  background:
+    #155f18 !important;
+
+  color:
+    #ffffff !important;
+
+  border:
+    0 !important;
+}
+
+/* ---------- PRIVATE EDIT ---------- */
+
+.civ-private-edit-note {
+  display:
+    flex;
+
+  gap:
+    12px;
+
+  align-items:
+    flex-start;
+
+  margin-bottom:
+    20px;
+
+  padding:
+    14px;
+
+  background:
+    #f3f8f0;
+
+  border:
+    1px solid
+    #dbe8d8;
+
+  border-radius:
+    14px;
+
+  color:
+    #284d2e;
+}
+
+.civ-private-edit-note > i {
+  margin-top:
+    2px;
+
+  color:
+    #155f18;
+}
+
+.civ-private-edit-note strong,
+.civ-private-edit-note small {
+  display:
+    block;
+}
+
+.civ-private-edit-note small {
+  margin-top:
+    4px;
+
+  color:
+    #68776a;
+
+  line-height:
+    1.45;
+}
+
+.civ-form-section-title {
+  margin:
+    22px 0 12px !important;
+
+  padding-bottom:
+    8px;
+
+  border-bottom:
+    1px solid
+    #e5ece3;
+
+  color:
+    #153c1b !important;
+
+  font-size:
+    14px !important;
+
+  font-weight:
+    700 !important;
+
+  letter-spacing:
+    .02em !important;
+
+  text-transform:
+    uppercase;
+}
+
+/* =========================================================
+   MOBILE HERO — COMPACT WHITE CARD
+========================================================= */
+
+@media (
+  max-width:
+    768px
+) {
+  .civ-owner-toolbar {
+    background:
+      #ffffff;
+  }
+
+  .civ-hero {
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    align-items:
+      center;
+
+    gap:
+      12px;
+
+    padding:
+      22px 16px 16px;
+
+    text-align:
+      center;
+
+    background:
+      #ffffff !important;
+
+    border-radius:
+      20px;
+
+    box-shadow:
+      0 8px 24px
+      rgba(25, 74, 30, .07);
+  }
+
+  .civ-profile-photo {
+    width:
+      96px;
+
+    height:
+      96px;
+
+    flex-basis:
+      96px;
+
+    margin:
+      0 auto;
+  }
+
+  .civ-photo-edit {
+    min-height:
+      32px;
+
+    padding:
+      6px 11px;
+  }
+
+  .civ-member-pill {
+    margin:
+      2px auto 0;
+  }
+
+  .civ-title-line h1,
+  .civ-hero-main h1 {
+    font-size:
+      28px !important;
+
+    color:
+      #123a18 !important;
+  }
+
+  .civ-name-degree {
+    display:
+      block;
+
+    margin-top:
+      3px;
+
+    font-size:
+      14px;
+  }
+
+  .civ-hero-main h3 {
+    max-width:
+      100%;
+
+    margin-top:
+      7px;
+
+    color:
+      #355b3b !important;
+  }
+
+  .civ-hero-location {
+    margin-top:
+      7px;
+
+    color:
+      #68796a !important;
+  }
+
+  .civ-hero-right {
+    width:
+      100%;
+
+    display:
+      grid;
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+
+    gap:
+      8px;
+  }
+
+  .civ-hero-right > div {
+    min-height:
+      58px;
+
+    background:
+      #f4f8f2 !important;
+
+    text-align:
+      left;
+  }
+
+  .civ-hero-edit-media {
+    grid-column:
+      1 / -1;
+
+    min-height:
+      38px;
+
+    border-radius:
+      999px;
+  }
+
+  .civ-card-title h2 {
+    font-size:
+      14.5px !important;
+  }
+
+  .civ-card-body {
+    font-size:
+      13.5px;
+  }
+
+  .civ-private-row {
+    display:
+      grid;
+
+    grid-template-columns:
+      minmax(105px, 42%) minmax(0, 1fr);
+
+    gap:
+      10px;
+
+    align-items:
+      start;
+  }
+
+  .civ-private-row strong {
+    overflow-wrap:
+      anywhere;
+  }
+}
+
+@media (
+  max-width:
+    420px
+) {
+  .civ-hero {
+    padding:
+      18px 13px 14px;
+  }
+
+  .civ-title-line h1,
+  .civ-hero-main h1 {
+    font-size:
+      25px !important;
+  }
+
+  .civ-hero-right {
+    grid-template-columns:
+      1fr;
+  }
+
+  .civ-hero-edit-media {
+    grid-column:
+      auto;
+  }
+}
+
+
+/* =========================================================
+   MOBILE = DESKTOP ALIGNMENT, ONLY SCALED DOWN
+   Keeps the same left-photo / right-content structure
+========================================================= */
+
+@media (max-width: 768px) {
+  .civ-hero {
+    display: grid !important;
+    grid-template-columns: 82px minmax(0, 1fr) !important;
+    align-items: center !important;
+    text-align: left !important;
+    gap: 12px 14px !important;
+    padding: 16px 14px !important;
+    background: #ffffff !important;
+    border-radius: 18px !important;
+  }
+
+  .civ-profile-photo-area {
+    width: 82px !important;
+    align-self: start !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 7px !important;
+  }
+
+  .civ-profile-photo {
+    width: 76px !important;
+    height: 76px !important;
+    flex: 0 0 76px !important;
+    margin: 0 !important;
+  }
+
+  .civ-profile-photo span {
+    font-size: 25px !important;
+  }
+
+  .civ-photo-edit {
+    width: 100% !important;
+    min-height: 28px !important;
+    padding: 5px 6px !important;
+    font-size: 9.5px !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+  }
+
+  .civ-hero-main {
+    width: 100% !important;
+    min-width: 0 !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+  }
+
+  .civ-member-pill {
+    margin: 0 0 7px 0 !important;
+    padding: 5px 8px !important;
+    font-size: 9.5px !important;
+  }
+
+  .civ-title-line {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+  }
+
+  .civ-title-line > div {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+
+  .civ-title-line h1,
+  .civ-hero-main h1 {
+    margin: 0 !important;
+    max-width: 100% !important;
+    font-size: 22px !important;
+    line-height: 1.08 !important;
+    text-align: left !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .civ-name-degree {
+    display: inline !important;
+    margin-top: 0 !important;
+    font-size: 12px !important;
+  }
+
+  .civ-username {
+    display: block !important;
+    margin-top: 4px !important;
+    font-size: 11px !important;
+    text-align: left !important;
+  }
+
+  .civ-title-line .civ-edit-button {
+    flex: 0 0 auto !important;
+    min-height: 30px !important;
+    padding: 5px 8px !important;
+    font-size: 10px !important;
+    white-space: nowrap !important;
+  }
+
+  .civ-hero-main h3 {
+    max-width: 100% !important;
+    margin: 7px 0 0 !important;
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+    text-align: left !important;
+  }
+
+  .civ-hero-location {
+    justify-content: flex-start !important;
+    margin-top: 7px !important;
+    font-size: 10.5px !important;
+    line-height: 1.3 !important;
+    text-align: left !important;
+  }
+
+  .civ-hero-right {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+    margin-top: 2px !important;
+  }
+
+  .civ-hero-right > div {
+    min-height: 50px !important;
+    padding: 8px 9px !important;
+    border-radius: 11px !important;
+    text-align: left !important;
+  }
+
+  .civ-hero-right > div > i {
+    font-size: 11px !important;
+  }
+
+  .civ-hero-right span {
+    font-size: 9px !important;
+  }
+
+  .civ-hero-right strong {
+    font-size: 10.5px !important;
+  }
+
+  .civ-hero-edit-media {
+    grid-column: 1 / -1 !important;
+    min-height: 32px !important;
+    font-size: 10.5px !important;
+    border-radius: 12px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .civ-hero {
+    grid-template-columns: 72px minmax(0, 1fr) !important;
+    gap: 10px 12px !important;
+    padding: 14px 12px !important;
+  }
+
+  .civ-profile-photo-area {
+    width: 72px !important;
+  }
+
+  .civ-profile-photo {
+    width: 68px !important;
+    height: 68px !important;
+    flex-basis: 68px !important;
+  }
+
+  .civ-title-line h1,
+  .civ-hero-main h1 {
+    font-size: 20px !important;
+  }
+
+  .civ-title-line {
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+
+  .civ-title-line .civ-edit-button {
+    align-self: flex-start !important;
+  }
+
+  .civ-hero-right {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* =========================================================
+   OWNER HEADER + SMALL ACTION BUTTONS
+========================================================= */
+
+/* OWNER HEADER */
+.civ-owner-toolbar {
+  background:
+    linear-gradient(
+      100deg,
+      #145b17 0%,
+      #17651c 100%
+    ) !important;
+
+  color:
+    #ffffff !important;
+
+  border:
+    none !important;
+
+  box-shadow:
+    0 8px 22px
+    rgba(
+      20,
+      91,
+      23,
+      0.16
+    ) !important;
+}
+
+.civ-owner-toolbar span,
+.civ-owner-toolbar small,
+.civ-owner-toolbar i {
+  color:
+    #ffffff !important;
+}
+
+/* PREVIEW BUTTON */
+.civ-owner-toolbar button {
+  width:
+    auto !important;
+
+  min-width:
+    160px !important;
+
+  min-height:
+    36px !important;
+
+  padding:
+    7px 16px !important;
+
+  font-size:
+    12px !important;
+
+  border-radius:
+    20px !important;
+
+  background:
+    #ffffff !important;
+
+  color:
+    #155f18 !important;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.8
+    ) !important;
+}
+
+.civ-owner-toolbar button i {
+  color:
+    #155f18 !important;
+}
+
+/* EDIT MEDIA BUTTON */
+.civ-hero-edit-media {
+  width:
+    auto !important;
+
+  min-width:
+    145px !important;
+
+  min-height:
+    34px !important;
+
+  padding:
+    7px 15px !important;
+
+  margin:
+    0 auto !important;
+
+  font-size:
+    12px !important;
+
+  border-radius:
+    18px !important;
+
+  background:
+    #155f18 !important;
+
+  color:
+    #ffffff !important;
+
+  border:
+    none !important;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (
+  max-width:
+    768px
+) {
+  .civ-owner-toolbar {
+    padding:
+      12px 14px !important;
+
+    border-radius:
+      16px !important;
+  }
+
+  .civ-owner-toolbar button {
+    width:
+      auto !important;
+
+    min-width:
+      150px !important;
+
+    align-self:
+      center !important;
+
+    min-height:
+      34px !important;
+
+    padding:
+      6px 14px !important;
+
+    font-size:
+      11px !important;
+  }
+
+  .civ-hero-edit-media {
+    width:
+      auto !important;
+
+    min-width:
+      135px !important;
+
+    min-height:
+      32px !important;
+
+    padding:
+      6px 13px !important;
+
+    font-size:
+      11px !important;
+
+    margin:
+      6px auto 0 !important;
+  }
+}
+
+/* SMALL MOBILE */
+@media (
+  max-width:
+    420px
+) {
+  .civ-owner-toolbar button {
+    min-width:
+      135px !important;
+
+    min-height:
+      32px !important;
+
+    padding:
+      5px 12px !important;
+
+    font-size:
+      10.5px !important;
+  }
+
+  .civ-hero-edit-media {
+    min-width:
+      125px !important;
+
+    min-height:
+      30px !important;
+
+    padding:
+      5px 11px !important;
+
+    font-size:
+      10.5px !important;
+  }
+}
+/* =========================================================
+   PROFILE CAMERA ICON + MEMBER META ALIGNMENT
+========================================================= */
+
+/* PROFILE PHOTO AREA */
+.civ-profile-photo-area {
+  position: relative;
+}
+
+/* Hide long change photo style */
+.civ-photo-edit {
+  position: absolute !important;
+
+  right: -2px !important;
+  bottom: 2px !important;
+
+  width: 34px !important;
+  height: 34px !important;
+
+  min-width: 34px !important;
+  min-height: 34px !important;
+
+  padding: 0 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border-radius: 50% !important;
+
+  background: #ffffff !important;
+
+  color: #155f18 !important;
+
+  border: 2px solid #d8e9d5 !important;
+
+  box-shadow:
+    0 5px 14px
+    rgba(21, 95, 24, 0.16) !important;
+
+  font-size: 0 !important;
+
+  z-index: 5;
+}
+
+/* Camera icon */
+.civ-photo-edit i {
+  font-size: 14px !important;
+
+  color: #155f18 !important;
+
+  margin: 0 !important;
+}
+
+/* MEMBER SINCE / MEMBER ID */
+.civ-hero-right > div {
+  display: grid !important;
+
+  grid-template-columns:
+    30px minmax(0, 1fr) !important;
+
+  grid-template-rows:
+    auto auto !important;
+
+  column-gap: 8px !important;
+
+  align-items: center !important;
+
+  min-height: 66px !important;
+
+  padding: 10px 12px !important;
+}
+
+/* icon left */
+.civ-hero-right > div > i {
+  grid-column: 1 !important;
+
+  grid-row: 1 / 3 !important;
+
+  align-self: center !important;
+
+  justify-self: center !important;
+
+  font-size: 15px !important;
+
+  color: #155f18 !important;
+}
+
+/* label */
+.civ-hero-right > div > span {
+  grid-column: 2 !important;
+
+  grid-row: 1 !important;
+
+  display: block !important;
+
+  margin: 0 !important;
+
+  font-size: 10px !important;
+
+  line-height: 1.2 !important;
+
+  color: #6a786c !important;
+
+  white-space: nowrap !important;
+}
+
+/* value */
+.civ-hero-right > div > strong {
+  grid-column: 2 !important;
+
+  grid-row: 2 !important;
+
+  display: block !important;
+
+  margin: 2px 0 0 !important;
+
+  font-size: 12px !important;
+
+  line-height: 1.2 !important;
+
+  color: #123a18 !important;
+
+  font-weight: 700 !important;
+
+  overflow: hidden !important;
+
+  text-overflow: ellipsis !important;
+}
+
+/* Edit Media should not use the meta-card grid */
+.civ-hero-right .civ-hero-edit-media {
+  display: flex !important;
+
+  align-items: center !important;
+
+  justify-content: center !important;
+
+  gap: 7px !important;
+
+  grid-template-columns: none !important;
+
+  grid-template-rows: none !important;
+}
+
+.civ-hero-right .civ-hero-edit-media i {
+  position: static !important;
+
+  grid-column: auto !important;
+
+  grid-row: auto !important;
+
+  font-size: 12px !important;
+
+  color: #ffffff !important;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+  .civ-profile-photo-area {
+    position: relative !important;
+  }
+
+  .civ-photo-edit {
+    right: -1px !important;
+    bottom: 0 !important;
+
+    width: 30px !important;
+    height: 30px !important;
+
+    min-width: 30px !important;
+    min-height: 30px !important;
+  }
+
+  .civ-photo-edit i {
+    font-size: 12px !important;
+  }
+
+  .civ-hero-right > div {
+    min-height: 62px !important;
+
+    grid-template-columns:
+      28px minmax(0, 1fr) !important;
+
+    column-gap: 7px !important;
+
+    padding: 9px 10px !important;
+  }
+
+  .civ-hero-right > div > span {
+    font-size: 9.5px !important;
+  }
+
+  .civ-hero-right > div > strong {
+    font-size: 11.5px !important;
+  }
+}
+
+/* =========================================================
+   CIVILIAN PUBLIC PROFILE
+   PROFESSIONAL / COMMERCIAL UI STRUCTURE
+   CIVILIAN GREEN THEME
+   UI ONLY — EXISTING FIELDS / DATA / API LOGIC UNCHANGED
+========================================================= */
+
+.civ-page {
+  --civ-pro-green: #2c8a2c;
+  --civ-pro-green-dark: #0f4d0f;
+  --civ-pro-green-mid: #1f6b1f;
+  --civ-pro-green-soft: #eff9ef;
+  --civ-pro-green-border: #cce8cc;
+  --civ-pro-ink: #101828;
+  --civ-pro-muted: #667085;
+
+  position: relative;
+  overflow-x: hidden;
+  min-height: 100vh;
+  padding: 28px 16px 100px;
+
+  background:
+    radial-gradient(
+      circle at 15% 5%,
+      rgba(44, 138, 44, 0.12),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 40%,
+      rgba(91, 181, 91, 0.11),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      #f7fff7 0%,
+      #eef8ee 55%,
+      #fbfffb 100%
+    );
+
+  color: var(--civ-pro-ink);
+
+  font-family:
+    "Outfit",
+    "Poppins",
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+
+.civ-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* OWNER TOOLBAR */
+
+.civ-owner-toolbar {
+  margin-bottom: 18px;
+  padding: 14px 18px;
+
+  border:
+    1px solid
+    rgba(44, 138, 44, 0.18);
+
+  border-radius: 18px;
+
+  background:
+    rgba(255, 255, 255, 0.94);
+
+  box-shadow:
+    0 12px 34px
+    rgba(15, 77, 15, 0.08);
+
+  backdrop-filter: blur(12px);
+}
+
+.civ-owner-toolbar span {
+  color: var(--civ-pro-green-dark);
+}
+
+.civ-owner-toolbar button {
+  border: none;
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--civ-pro-green-dark),
+      var(--civ-pro-green)
+    );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 8px 18px
+    rgba(15, 77, 15, 0.18);
+}
+
+/* =========================================================
+   PROFESSIONAL-STYLE HERO
+========================================================= */
+
+.civ-pro-hero {
+  overflow: hidden;
+  margin-bottom: 30px;
+
+  border:
+    1px solid
+    rgba(44, 138, 44, 0.17);
+
+  border-radius: 30px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 18px 50px
+    rgba(15, 77, 15, 0.11);
+}
+
+.civ-pro-banner {
+  position: relative;
+  height: 190px;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      130deg,
+      #0f4d0f 0%,
+      #2c8a2c 50%,
+      #58aa58 100%
+    );
+
+  background-size: cover;
+  background-position: center;
+}
+
+.civ-pro-banner span {
+  position: absolute;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.13);
+
+  border-radius: 999px;
+}
+
+.civ-pro-banner span:first-child {
+  width: 390px;
+  height: 390px;
+  top: -260px;
+  right: -100px;
+}
+
+.civ-pro-banner span:last-child {
+  width: 260px;
+  height: 260px;
+  top: -150px;
+  right: -40px;
+}
+
+.civ-pro-hero-body {
+  position: relative;
+
+  padding:
+    0
+    46px
+    38px;
+}
+
+.civ-pro-avatar-wrap {
+  position: relative;
+
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+
+  margin-top: -82px;
+  margin-bottom: 20px;
+}
+
+.civ-pro-avatar-ring {
+  width: 164px;
+  height: 164px;
+
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+
+  border:
+    3px solid
+    rgba(44, 138, 44, 0.23);
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 10px 30px
+    rgba(15, 77, 15, 0.17);
+}
+
+.civ-pro-avatar {
+  width: 138px;
+  height: 138px;
+
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+
+  border:
+    5px solid
+    #ffffff;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      145deg,
+      #0f4d0f,
+      #2c8a2c
+    );
+
+  box-shadow:
+    inset
+    0
+    0
+    0
+    3px
+    rgba(255, 255, 255, 0.20);
+}
+
+.civ-pro-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.civ-pro-avatar > span {
+  color: #ffffff;
+
+  font-size: 2.45rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+
+.civ-pro-avatar-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  padding-bottom: 16px;
+}
+
+.civ-pro-member-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 16px;
+
+  border:
+    1px solid
+    #a9d8a9;
+
+  border-radius: 999px;
+
+  background: #eff9ef;
+
+  color: #176a17;
+
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.civ-pro-member-pill > span {
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  background: #2c8a2c;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(44, 138, 44, 0.12);
+}
+
+.civ-pro-photo-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 8px 12px;
+
+  border:
+    1px solid
+    #d6e8d6;
+
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  color: #366036;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.civ-pro-photo-edit input {
+  display: none;
+}
+
+.civ-pro-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.civ-pro-name {
+  margin: 0 0 6px;
+
+  color: #111827;
+
+  font-size:
+    clamp(
+      2rem,
+      5vw,
+      3.2rem
+    );
+
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
+.civ-pro-degree {
+  font-size: 0.58em;
+  font-weight: 600;
+
+  color: #344054;
+}
+
+.civ-pro-role {
+  margin-top: 14px;
+  margin-bottom: 16px;
+
+  color: #238023;
+
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.civ-pro-bio {
+  max-width: 700px;
+
+  margin: 0;
+
+  color: #667085;
+
+  font-size: 0.96rem;
+  line-height: 1.7;
+}
+
+.civ-pro-login {
+  margin-top: 4px;
+
+  color: #667085;
+
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+
+.civ-pro-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+
+  margin-top: 20px;
+}
+
+.civ-pro-chips > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 8px 12px;
+
+  border:
+    1px solid
+    #d8ead8;
+
+  border-radius: 999px;
+
+  background: #f7fcf7;
+
+  color: #355335;
+
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.civ-pro-chips i {
+  color: #2c8a2c;
+}
+
+.civ-pro-owner-actions {
+  display: flex;
+  gap: 10px;
+
+  margin-top: 18px;
+}
+
+.civ-pro-media-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+
+  border: none;
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #0f4d0f,
+      #2c8a2c
+    );
+
+  color: #ffffff;
+
+  font-weight: 750;
+
+  cursor: pointer;
+}
+
+/* Existing EditButton component — new theme only */
+
+.civ-pro-title-row .civ-edit-button {
+  border:
+    1px solid
+    #b9dfb9;
+
+  background: #eff9ef;
+
+  color: #176a17;
+
+  border-radius: 10px;
+}
+
+.civ-pro-title-row .civ-edit-button:hover {
+  border-color: #2c8a2c;
+  background: #2c8a2c;
+  color: #ffffff;
+}
+
+/* =========================================================
+   CONTENT — SAME FIELDS, NEW PROFESSIONAL CARD STRUCTURE
+========================================================= */
+
+.civ-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+
+  margin-top: 0;
+}
+
+.civ-sidebar,
+.civ-content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.civ-rank-card,
+.civ-card {
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(44, 138, 44, 0.14);
+
+  border-radius: 22px;
+
+  background:
+    rgba(255, 255, 255, 0.98);
+
+  box-shadow:
+    0 12px 36px
+    rgba(15, 77, 15, 0.075);
+}
+
+.civ-rank-card {
+  padding: 24px;
+}
+
+.civ-rank-medal {
+  background:
+    linear-gradient(
+      145deg,
+      #e9f7e9,
+      #f5fbf5
+    );
+
+  color: #2c8a2c;
+}
+
+.civ-rank-card h2 {
+  color: #164d16;
+}
+
+.civ-card-header {
+  min-height: 70px;
+
+  padding: 18px 22px;
+
+  border-bottom:
+    1px solid
+    #edf3ed;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #fbfefb
+    );
+}
+
+.civ-card-title > span {
+  width: 38px;
+  height: 38px;
+
+  border-radius: 11px;
+
+  background:
+    #eff9ef;
+
+  color:
+    #2c8a2c;
+}
+
+.civ-card-title h2 {
+  color: #1d2939;
+
+  font-size: 17px !important;
+  font-weight: 750 !important;
+}
+
+.civ-card-body {
+  padding: 22px;
+}
+
+.civ-edit-button {
+  border:
+    1px solid
+    #c9e4c9;
+
+  border-radius: 9px;
+
+  background:
+    #f4fbf4;
+
+  color:
+    #176a17;
+}
+
+.civ-edit-button:hover {
+  border-color: #2c8a2c;
+  background: #2c8a2c;
+  color: #ffffff;
+}
+
+/* Rows / values */
+
+.civ-private-row,
+.civ-network-list > div,
+.civ-muted-row,
+.civ-website {
+  border-color: #e6eee6;
+}
+
+.civ-contact-list i,
+.civ-website span i,
+.civ-social-icons a,
+.civ-achievement-grid > div > i {
+  color: #2c8a2c;
+}
+
+.civ-social-icons a {
+  border-color: #d7ead7;
+  background: #f2faf2;
+}
+
+.civ-social-icons a:hover {
+  background: #2c8a2c;
+  color: #ffffff;
+}
+
+/* =========================================================
+   MODAL — KEEP ALL FIELDS, ONLY MATCH THE NEW THEME
+========================================================= */
+
+.civ-modal {
+  border:
+    1px solid
+    rgba(44, 138, 44, 0.18);
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 24px 70px
+    rgba(15, 77, 15, 0.18);
+}
+
+.civ-modal-header {
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2c8a2c
+    );
+}
+
+.civ-modal-header small,
+.civ-modal-header h2 {
+  color: #ffffff;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 760px) {
+  .civ-page {
+    padding:
+      16px
+      10px
+      60px;
+  }
+
+  .civ-container {
+    max-width: 100%;
+  }
+
+  .civ-owner-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .civ-owner-toolbar button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .civ-pro-hero {
+    border-radius: 22px;
+  }
+
+  .civ-pro-banner {
+    height: 150px;
+  }
+
+  .civ-pro-hero-body {
+    padding:
+      0
+      22px
+      28px;
+  }
+
+  .civ-pro-avatar-wrap {
+    align-items: flex-start;
+    flex-direction: column;
+
+    margin-top: -62px;
+  }
+
+  .civ-pro-avatar-ring {
+    width: 126px;
+    height: 126px;
+  }
+
+  .civ-pro-avatar {
+    width: 106px;
+    height: 106px;
+  }
+
+  .civ-pro-avatar-side {
+    margin-top: -4px;
+    padding-bottom: 0;
+  }
+
+  .civ-pro-title-row {
+    flex-direction: column;
+  }
+
+  .civ-pro-title-row .civ-edit-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .civ-pro-name {
+    font-size: 2rem;
+  }
+
+  .civ-pro-chips {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .civ-pro-chips > span {
+    width: 100%;
+    border-radius: 10px;
+  }
+
+  .civ-pro-owner-actions,
+  .civ-pro-media-button {
+    width: 100%;
+  }
+
+  .civ-pro-media-button {
+    justify-content: center;
+  }
+
+  .civ-card,
+  .civ-rank-card {
+    border-radius: 17px;
+  }
+
+  .civ-card-header,
+  .civ-card-body {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .civ-pro-banner {
+    height: 132px;
+  }
+
+  .civ-pro-hero-body {
+    padding:
+      0
+      16px
+      22px;
+  }
+
+  .civ-pro-name {
+    font-size: 1.75rem;
+  }
+
+  .civ-pro-avatar-ring {
+    width: 112px;
+    height: 112px;
+  }
+
+  .civ-pro-avatar {
+    width: 94px;
+    height: 94px;
+  }
+}
+
+
+/* =========================================================
+   SALUTATION + PROFILE PICTURE CONTROLS
+========================================================= */
+
+.civ-pro-salutation {
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+}
+
+.civ-pro-avatar-side {
+  max-width: 320px;
+}
+
+.civ-pro-photo-edit {
+  min-height: 38px;
+}
+
+.civ-pro-photo-hint {
+  display: block;
+  width: 100%;
+
+  margin-top: 2px;
+
+  color: #748574;
+
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+@media (max-width: 760px) {
+  .civ-pro-photo-hint {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   FULL BOTTOM PROFILE REDESIGN
+   MATCHES PROFESSIONAL / COMMERCIAL ACCORDION UI
+   FIELDS + API + DATA MAPPING ARE UNCHANGED
+========================================================= */
+
+/* Remove the old sidebar/content visual split. */
+.civ-pro-sections-layout,
+.civ-layout.civ-pro-sections-layout {
+  display: block !important;
+  margin-top: 0 !important;
+}
+
+.civ-pro-sections-layout .civ-sidebar,
+.civ-pro-sections-layout .civ-content {
+  display: contents !important;
+}
+
+/* Rank becomes a premium summary strip, not an old sidebar card. */
+.civ-pro-sections-layout .civ-rank-card {
+  position: relative;
+
+  display: grid;
+  grid-template-columns:
+    58px
+    minmax(0, 1fr)
+    auto;
+  align-items: center;
+  gap: 16px;
+
+  width: 100%;
+
+  margin:
+    0
+    0
+    16px;
+
+  padding:
+    16px
+    20px;
+
+  text-align: left;
+
+  border:
+    1px solid
+    rgba(44, 138, 44, 0.18);
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff 0%,
+      #f6fcf6 100%
+    );
+
+  box-shadow:
+    0
+    10px
+    30px
+    rgba(15, 77, 15, 0.07);
+}
+
+.civ-pro-sections-layout .civ-rank-medal {
+  width: 50px;
+  height: 50px;
+  margin: 0;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #e9f8e9,
+      #dff2df
+    );
+
+  color: #2c8a2c;
+
+  font-size: 22px;
+}
+
+.civ-pro-sections-layout .civ-rank-card small {
+  grid-column: 2;
+  grid-row: 1;
+
+  color: #667085;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.civ-pro-rank-label {
+  grid-column: 2;
+  grid-row: 1;
+
+  align-self: end;
+
+  margin-top: 18px;
+
+  color: #98a29a;
+
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.civ-pro-sections-layout .civ-rank-card h2 {
+  grid-column: 3;
+  grid-row: 1;
+
+  margin: 0;
+
+  color: #0f4d0f;
+
+  font-size: 20px;
+  font-weight: 800;
+}
+
+/* =========================================================
+   ACCORDION SECTION
+========================================================= */
+
+.civ-pro-sections-layout .civ-card.civ-pro-section {
+  width: 100%;
+  margin:
+    0
+    0
+    14px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    #e3e9e3;
+
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0
+    8px
+    28px
+    rgba(16, 24, 40, 0.055);
+
+  transition:
+    border-color
+      0.2s ease,
+    box-shadow
+      0.2s ease,
+    transform
+      0.2s ease;
+}
+
+.civ-pro-sections-layout
+.civ-card.civ-pro-section:hover {
+  border-color:
+    rgba(44, 138, 44, 0.28);
+
+  box-shadow:
+    0
+    12px
+    34px
+    rgba(15, 77, 15, 0.08);
+}
+
+.civ-pro-sections-layout
+.civ-card.civ-pro-section-open {
+  border-color:
+    rgba(44, 138, 44, 0.32);
+
+  box-shadow:
+    0
+    14px
+    38px
+    rgba(15, 77, 15, 0.09);
+}
+
+.civ-pro-section-header {
+  width: 100%;
+  min-height: 82px;
+
+  display: grid;
+  grid-template-columns:
+    48px
+    minmax(0, 1fr)
+    auto;
+  align-items: center;
+  gap: 14px;
+
+  padding:
+    15px
+    18px;
+
+  border: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #fbfdfb
+    );
+
+  color: #1d2939;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.civ-pro-section-open
+.civ-pro-section-header {
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #f8fcf8
+    );
+}
+
+.civ-pro-section-icon {
+  width: 44px;
+  height: 44px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 12px;
+
+  background:
+    #edf8ed;
+
+  color:
+    #2c8a2c;
+
+  font-size: 17px;
+}
+
+.civ-pro-section-heading {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.civ-pro-section-heading strong {
+  color:
+    #1d2939;
+
+  font-size:
+    15px;
+
+  font-weight:
+    780;
+
+  line-height:
+    1.25;
+}
+
+.civ-pro-section-heading small {
+  color:
+    #98a2b3;
+
+  font-size:
+    11px;
+
+  font-weight:
+    500;
+}
+
+.civ-pro-section-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.civ-pro-inline-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding:
+    7px
+    10px;
+
+  border:
+    1px solid
+    #cbe5cb;
+
+  border-radius: 9px;
+
+  background:
+    #f2faf2;
+
+  color:
+    #176a17;
+
+  font-size:
+    11px;
+
+  font-weight:
+    750;
+
+  cursor: pointer;
+}
+
+.civ-pro-inline-edit:hover {
+  border-color:
+    #2c8a2c;
+
+  background:
+    #2c8a2c;
+
+  color:
+    #ffffff;
+}
+
+.civ-pro-section-arrow {
+  color:
+    #98a2b3;
+
+  font-size:
+    13px;
+
+  transition:
+    transform
+      0.22s ease,
+    color
+      0.22s ease;
+}
+
+.civ-pro-section-arrow.is-open {
+  color:
+    #2c8a2c;
+
+  transform:
+    rotate(180deg);
+}
+
+/* =========================================================
+   OPENED CONTENT
+========================================================= */
+
+.civ-pro-sections-layout
+.civ-pro-section-content {
+  padding:
+    22px !important;
+
+  border-top:
+    1px solid
+    #eef2ee;
+
+  background:
+    #ffffff;
+}
+
+/* Make all existing field/value groups visually match the zip UI. */
+.civ-pro-sections-layout
+.civ-detail-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(
+        0,
+        1fr
+      )
+    );
+  gap: 12px;
+}
+
+.civ-pro-sections-layout
+.civ-detail-grid > div,
+.civ-pro-sections-layout
+.civ-network-list > div,
+.civ-pro-sections-layout
+.civ-private-row,
+.civ-pro-sections-layout
+.civ-muted-row {
+  min-height: 60px;
+
+  padding:
+    12px
+    14px;
+
+  border:
+    1px solid
+    #edf1ed;
+
+  border-radius:
+    12px;
+
+  background:
+    #fbfdfb;
+}
+
+.civ-pro-sections-layout
+.civ-detail-grid span,
+.civ-pro-sections-layout
+.civ-network-list span,
+.civ-pro-sections-layout
+.civ-private-row > span {
+  color:
+    #98a2b3;
+
+  font-size:
+    10px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.035em;
+
+  text-transform:
+    uppercase;
+}
+
+.civ-pro-sections-layout
+.civ-detail-grid strong,
+.civ-pro-sections-layout
+.civ-network-list strong,
+.civ-pro-sections-layout
+.civ-private-row > strong {
+  margin-top:
+    5px;
+
+  color:
+    #344054;
+
+  font-size:
+    13px;
+
+  font-weight:
+    700;
+}
+
+/* Contact */
+.civ-pro-sections-layout
+.civ-contact-list {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(
+        0,
+        1fr
+      )
+    );
+  gap: 10px;
+}
+
+.civ-pro-sections-layout
+.civ-contact-list a {
+  min-height: 60px;
+
+  padding:
+    12px
+    14px;
+
+  border:
+    1px solid
+    #edf1ed;
+
+  border-radius:
+    12px;
+
+  background:
+    #fbfdfb;
+}
+
+/* About */
+.civ-pro-sections-layout
+.civ-about {
+  margin: 0;
+
+  padding:
+    16px;
+
+  border:
+    1px solid
+    #edf1ed;
+
+  border-radius:
+    12px;
+
+  background:
+    #fbfdfb;
+
+  color:
+    #475467;
+
+  line-height:
+    1.75;
+}
+
+/* Tags / sub sections */
+.civ-pro-sections-layout
+.civ-subsection,
+.civ-pro-sections-layout
+.civ-achievement-group {
+  margin-top:
+    14px;
+
+  padding:
+    15px;
+
+  border:
+    1px solid
+    #edf1ed;
+
+  border-radius:
+    12px;
+
+  background:
+    #fbfdfb;
+}
+
+.civ-pro-sections-layout
+.civ-subsection:first-child,
+.civ-pro-sections-layout
+.civ-achievement-group:first-child {
+  margin-top: 0;
+}
+
+.civ-pro-sections-layout
+.civ-subsection h4,
+.civ-pro-sections-layout
+.civ-achievement-group h4 {
+  margin:
+    0
+    0
+    10px;
+
+  color:
+    #344054;
+
+  font-size:
+    12px;
+
+  font-weight:
+    780;
+}
+
+.civ-pro-sections-layout
+.civ-tags > span {
+  border:
+    1px solid
+    #dceadc;
+
+  background:
+    #f1f8f1;
+
+  color:
+    #315331;
+}
+
+/* Social */
+.civ-pro-sections-layout
+.civ-social-icons {
+  padding:
+    4px
+    0
+    10px;
+}
+
+.civ-pro-sections-layout
+.civ-website {
+  padding:
+    12px
+    14px;
+
+  border:
+    1px solid
+    #e2ebe2;
+
+  border-radius:
+    11px;
+
+  background:
+    #fbfdfb;
+}
+
+/* Private owner section */
+.civ-pro-sections-layout
+.civ-private-notice {
+  margin-bottom:
+    14px;
+
+  padding:
+    12px
+    14px;
+
+  border:
+    1px solid
+    #f2dfb5;
+
+  border-radius:
+    11px;
+
+  background:
+    #fff9ea;
+
+  color:
+    #7a5a16;
+}
+
+/* Gallery */
+.civ-pro-sections-layout
+.civ-gallery {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(
+        0,
+        1fr
+      )
+    );
+  gap: 10px;
+}
+
+.civ-pro-sections-layout
+.civ-gallery img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+
+  object-fit: cover;
+
+  border-radius:
+    12px;
+
+  border:
+    1px solid
+    #e7ece7;
+}
+
+/* =========================================================
+   MOBILE — SAME ACCORDION STYLE
+========================================================= */
+
+@media (
+  max-width:
+    760px
+) {
+  .civ-pro-sections-layout
+  .civ-rank-card {
+    grid-template-columns:
+      48px
+      1fr;
+
+    gap:
+      12px;
+
+    padding:
+      14px;
+  }
+
+  .civ-pro-sections-layout
+  .civ-rank-medal {
+    width:
+      44px;
+
+    height:
+      44px;
+  }
+
+  .civ-pro-sections-layout
+  .civ-rank-card h2 {
+    grid-column:
+      2;
+
+    grid-row:
+      2;
+
+    font-size:
+      18px;
+  }
+
+  .civ-pro-section-header {
+    grid-template-columns:
+      42px
+      minmax(
+        0,
+        1fr
+      )
+      auto;
+
+    min-height:
+      74px;
+
+    padding:
+      13px
+      14px;
+  }
+
+  .civ-pro-section-icon {
+    width:
+      40px;
+
+    height:
+      40px;
+  }
+
+  .civ-pro-section-heading small {
+    display:
+      none;
+  }
+
+  .civ-pro-inline-edit {
+    width:
+      32px;
+
+    height:
+      32px;
+
+    justify-content:
+      center;
+
+    padding:
+      0;
+
+    font-size:
+      0;
+  }
+
+  .civ-pro-inline-edit i {
+    font-size:
+      12px;
+  }
+
+  .civ-pro-sections-layout
+  .civ-pro-section-content {
+    padding:
+      16px !important;
+  }
+
+  .civ-pro-sections-layout
+  .civ-detail-grid,
+  .civ-pro-sections-layout
+  .civ-contact-list {
+    grid-template-columns:
+      1fr;
+  }
+
+  .civ-pro-sections-layout
+  .civ-gallery {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      );
+  }
+}
+
+@media (
+  max-width:
+    480px
+) {
+  .civ-pro-sections-layout
+  .civ-gallery {
+    grid-template-columns:
+      1fr;
+  }
+}
+
+
+/* =========================================================
+   FINAL TOP PROFILE FIX
+   - Salutation before name
+   - Camera overlay for profile picture edit
+   - Single Civilian Member label only
+========================================================= */
+
+.civ-pro-avatar-ring {
+  position: relative;
+}
+
+.civ-pro-camera-button {
+  position: absolute;
+  right: 4px;
+  bottom: 8px;
+
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    4px solid
+    #ffffff;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2c8a2c
+    );
+
+  color:
+    #ffffff;
+
+  box-shadow:
+    0 8px
+    22px
+    rgba(15, 77, 15, 0.28);
+
+  cursor:
+    pointer;
+
+  z-index: 5;
+
+  transition:
+    transform
+      0.18s ease,
+    box-shadow
+      0.18s ease;
+}
+
+.civ-pro-camera-button:hover {
+  transform:
+    scale(1.06);
+
+  box-shadow:
+    0 10px
+    26px
+    rgba(15, 77, 15, 0.34);
+}
+
+.civ-pro-camera-button:disabled {
+  opacity:
+    0.6;
+
+  cursor:
+    not-allowed;
+}
+
+.civ-pro-hidden-photo-input {
+  display:
+    none !important;
+}
+
+.civ-pro-avatar-side {
+  padding-bottom:
+    16px;
+}
+
+.civ-pro-salutation {
+  display:
+    inline;
+
+  color:
+    inherit;
+
+  font:
+    inherit;
+
+  font-weight:
+    inherit;
+}
+
+.civ-pro-bio {
+  margin-top:
+    14px;
+}
+
+@media (
+  max-width:
+    760px
+) {
+  .civ-pro-camera-button {
+    width:
+      36px;
+
+    height:
+      36px;
+
+    right:
+      1px;
+
+    bottom:
+      5px;
+
+    border-width:
+      3px;
+  }
+}
+
+
+/* =========================================================
+   PUBLIC PROFILE PRIVACY / VISIBILITY
+========================================================= */
+
+.civ-visibility-list {
+  display: grid;
+  gap: 10px;
+}
+
+.civ-visibility-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  padding: 14px 16px;
+
+  border:
+    1px solid
+    #dce9dc;
+
+  border-radius:
+    12px;
+
+  background:
+    #f8fcf8;
+}
+
+.civ-visibility-item > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.civ-visibility-item strong {
+  color:
+    #1d2939;
+
+  font-size:
+    13px;
+}
+
+.civ-visibility-item small {
+  color:
+    #667085;
+
+  font-size:
+    11px;
+}
+
+.civ-visibility-item input {
+  width:
+    19px;
+
+  height:
+    19px;
+
+  accent-color:
+    #2c8a2c;
+
+  cursor:
+    pointer;
+}

@@ -1,0 +1,1213 @@
+/* ========================================
+   ROYALTY REWARDS PAGE
+======================================== */
+
+.inmba-royalty-page {
+  min-height: 100vh;
+  padding: 125px 22px 70px;
+  background:
+    radial-gradient(
+      circle at 8% 15%,
+      rgba(15, 77, 15, 0.1),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 92% 80%,
+      rgba(190, 145, 25, 0.09),
+      transparent 35%
+    ),
+    linear-gradient(
+      145deg,
+      #edf6ea 0%,
+      #f9fcf8 52%,
+      #eef3e7 100%
+    );
+}
+
+.inmba-royalty-container {
+  width: min(100%, 1180px);
+  margin: 0 auto;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.inmba-royalty-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding: 28px 30px;
+  border-radius: 26px;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 88% 10%,
+      rgba(255, 224, 128, 0.2),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      #0b410b,
+      #126012 55%,
+      #278327
+    );
+  box-shadow:
+    0 22px 48px rgba(15, 77, 15, 0.21);
+}
+
+.inmba-royalty-header p {
+  margin: 0 0 5px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.73rem;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.inmba-royalty-header h1 {
+  margin: 0 0 6px;
+  font-size: clamp(1.7rem, 4vw, 2.45rem);
+  font-weight: 900;
+}
+
+.inmba-royalty-header > div:first-child > span {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.6;
+}
+
+.inmba-royalty-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inmba-royalty-header-actions button,
+.inmba-royalty-header-actions a {
+  min-height: 43px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.13);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.inmba-royalty-header-actions button:hover,
+.inmba-royalty-header-actions a:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.inmba-royalty-header-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+/* ========================================
+   MEMBER SUMMARY
+======================================== */
+
+.inmba-royalty-member-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 18px 21px;
+  border: 1px solid rgba(15, 77, 15, 0.12);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 12px 30px rgba(35, 70, 35, 0.08);
+}
+
+.inmba-royalty-avatar {
+  width: 57px;
+  height: 57px;
+  flex: 0 0 57px;
+  display: grid;
+  place-items: center;
+  border-radius: 17px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #288428
+    );
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.inmba-royalty-member-card > div:nth-child(2) {
+  flex: 1;
+}
+
+.inmba-royalty-member-card p {
+  margin: 0 0 2px;
+  color: #798779;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.inmba-royalty-member-card h2 {
+  margin: 0 0 3px;
+  color: #193819;
+  font-size: 1.08rem;
+  font-weight: 900;
+}
+
+.inmba-royalty-member-card div > span {
+  color: #6e7d6e;
+  font-size: 0.74rem;
+}
+
+.inmba-royalty-rate {
+  min-width: 220px;
+  padding: 12px 15px;
+  border: 1px solid #e3d59a;
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      135deg,
+      #fff9df,
+      #fffdf3
+    );
+  text-align: center;
+}
+
+.inmba-royalty-rate span,
+.inmba-royalty-rate strong,
+.inmba-royalty-rate small {
+  display: block;
+}
+
+.inmba-royalty-rate span {
+  color: #8a741f;
+  font-size: 0.63rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.inmba-royalty-rate strong {
+  margin: 3px 0;
+  color: #725b0e;
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.inmba-royalty-rate small {
+  color: #8b8055;
+  font-size: 0.63rem;
+}
+
+/* ========================================
+   TOTAL ROYALTY HERO
+======================================== */
+
+.inmba-royalty-total-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 20px;
+  padding: 27px;
+  overflow: hidden;
+  border: 1px solid rgba(218, 174, 43, 0.44);
+  border-radius: 24px;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 90% 15%,
+      rgba(255, 235, 157, 0.25),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      #74600e,
+      #a78114 55%,
+      #c89f24
+    );
+  box-shadow:
+    0 18px 40px rgba(126, 94, 10, 0.2);
+}
+
+.inmba-royalty-total-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.inmba-royalty-total-content > span {
+  width: 62px;
+  height: 62px;
+  flex: 0 0 62px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 19px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 1.5rem;
+}
+
+.inmba-royalty-total-content p {
+  margin: 0 0 4px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.inmba-royalty-total-content h2 {
+  margin: 0 0 4px;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  font-weight: 900;
+}
+
+.inmba-royalty-total-content small {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.68rem;
+}
+
+.inmba-royalty-total-stats {
+  display: flex;
+  gap: 10px;
+}
+
+.inmba-royalty-total-stats article {
+  min-width: 130px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  text-align: center;
+}
+
+.inmba-royalty-total-stats span,
+.inmba-royalty-total-stats strong {
+  display: block;
+}
+
+.inmba-royalty-total-stats span {
+  margin-bottom: 5px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+.inmba-royalty-total-stats strong {
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+/* ========================================
+   STATISTICS GRID
+======================================== */
+
+.inmba-royalty-stat-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.inmba-royalty-stat-grid article {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 18px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 10px 27px rgba(35, 70, 35, 0.07);
+}
+
+.inmba-royalty-stat-grid article > span {
+  width: 49px;
+  height: 49px;
+  flex: 0 0 49px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2d872d
+    );
+}
+
+.inmba-royalty-stat-grid p {
+  margin: 0 0 3px;
+  color: #788678;
+  font-size: 0.64rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.inmba-royalty-stat-grid h2 {
+  margin: 0 0 3px;
+  color: #1b3d1b;
+  font-size: 1.03rem;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.inmba-royalty-stat-grid small {
+  color: #839083;
+  font-size: 0.64rem;
+}
+
+.inmba-royalty-stat-grid
+  .inmba-royalty-stat-direct
+  > span {
+  background:
+    linear-gradient(
+      135deg,
+      #ad7b10,
+      #d9a52a
+    );
+}
+
+.inmba-royalty-stat-grid
+  .inmba-royalty-stat-business
+  > span {
+  background:
+    linear-gradient(
+      135deg,
+      #315d97,
+      #4c84c7
+    );
+}
+
+/* ========================================
+   DISTRIBUTION CARD
+======================================== */
+
+.inmba-royalty-distribution-card,
+.inmba-royalty-members-card {
+  margin-bottom: 20px;
+  padding: 22px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow:
+    0 14px 34px rgba(34, 68, 34, 0.08);
+}
+
+.inmba-royalty-distribution-card > header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.inmba-royalty-distribution-card
+  > header
+  > span {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #288428
+    );
+}
+
+.inmba-royalty-distribution-card h2 {
+  margin: 0;
+  color: #1d3b1d;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.inmba-royalty-distribution-card header p {
+  margin: 3px 0 0;
+  color: #788678;
+  font-size: 0.7rem;
+}
+
+.inmba-royalty-distribution-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.inmba-royalty-distribution-grid article {
+  padding: 16px;
+  border: 1px solid #dbe8d9;
+  border-radius: 15px;
+  background: #f8fbf7;
+}
+
+.inmba-royalty-distribution-grid
+  article
+  > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.inmba-royalty-distribution-grid span {
+  color: #4c664c;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.inmba-royalty-distribution-grid strong {
+  color: #174d17;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.inmba-royalty-progress-track {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dfeade;
+}
+
+.inmba-royalty-progress-track > span {
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      90deg,
+      #a6780e,
+      #dbad35
+    );
+}
+
+.inmba-royalty-distribution-grid small {
+  display: block;
+  margin-top: 8px;
+  color: #7d8b7d;
+  font-size: 0.65rem;
+}
+
+/* ========================================
+   FORMULA CARD
+======================================== */
+
+.inmba-royalty-formula-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding: 18px;
+  border: 1px solid #decf95;
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      135deg,
+      #fff9df,
+      #fffdf5
+    );
+}
+
+.inmba-royalty-formula-card > span {
+  width: 47px;
+  height: 47px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #8d6a0e,
+      #c19420
+    );
+}
+
+.inmba-royalty-formula-card h3 {
+  margin: 0 0 4px;
+  color: #66520e;
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.inmba-royalty-formula-card p {
+  margin: 0;
+  color: #786d42;
+  font-size: 0.7rem;
+}
+
+.inmba-royalty-formula-card code {
+  display: block;
+  padding: 10px 13px;
+  border: 1px solid #e4d69f;
+  border-radius: 11px;
+  color: #67500b;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+/* ========================================
+   MEMBERS HEADER
+======================================== */
+
+.inmba-royalty-members-card {
+  border-radius: 23px;
+}
+
+.inmba-royalty-members-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.inmba-royalty-members-header > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.inmba-royalty-members-header
+  > div
+  > span {
+  width: 45px;
+  height: 45px;
+  flex: 0 0 45px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #298529
+    );
+}
+
+.inmba-royalty-members-header h2 {
+  margin: 0;
+  color: #193819;
+  font-size: 1.02rem;
+  font-weight: 900;
+}
+
+.inmba-royalty-members-header p {
+  margin: 3px 0 0;
+  color: #798779;
+  font-size: 0.7rem;
+}
+
+.inmba-royalty-members-header > strong {
+  padding: 7px 11px;
+  border-radius: 999px;
+  color: #176027;
+  background: #e4f3e4;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+/* ========================================
+   FILTERS
+======================================== */
+
+.inmba-royalty-filters {
+  display: grid;
+  grid-template-columns:
+    minmax(240px, 1fr)
+    minmax(180px, 250px)
+    auto;
+  gap: 10px;
+  margin-bottom: 17px;
+}
+
+.inmba-royalty-search {
+  position: relative;
+}
+
+.inmba-royalty-search > i {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #698169;
+  font-size: 0.74rem;
+}
+
+.inmba-royalty-search input,
+.inmba-royalty-filters select {
+  width: 100%;
+  min-height: 43px;
+  padding: 8px 12px;
+  border: 1px solid #d4e2d2;
+  border-radius: 11px;
+  color: #294129;
+  background: #fbfdfb;
+  font-size: 0.74rem;
+  outline: none;
+}
+
+.inmba-royalty-search input {
+  padding-left: 38px;
+}
+
+.inmba-royalty-search input:focus,
+.inmba-royalty-filters select:focus {
+  border-color: #6ba76b;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(15, 77, 15, 0.08);
+}
+
+.inmba-royalty-filters > button {
+  min-height: 43px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid #e1c7ca;
+  border-radius: 11px;
+  color: #9a3440;
+  background: #fff4f5;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+/* ========================================
+   TABLE
+======================================== */
+
+.inmba-royalty-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #dde8db;
+  border-radius: 15px;
+}
+
+.inmba-royalty-table {
+  width: 100%;
+  min-width: 850px;
+  border-collapse: collapse;
+}
+
+.inmba-royalty-table th,
+.inmba-royalty-table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid #e4ece2;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.inmba-royalty-table th {
+  color: #527052;
+  background: #f2f7f1;
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.inmba-royalty-table td {
+  color: #344b34;
+  background: #ffffff;
+  font-size: 0.72rem;
+}
+
+.inmba-royalty-table tbody tr:hover td {
+  background: #fafdfa;
+}
+
+.inmba-royalty-table-member {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inmba-royalty-table-member > span {
+  width: 39px;
+  height: 39px;
+  flex: 0 0 39px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #328d32
+    );
+  font-weight: 900;
+}
+
+.inmba-royalty-table-member strong,
+.inmba-royalty-table-member small {
+  display: block;
+}
+
+.inmba-royalty-table-member strong {
+  margin-bottom: 3px;
+  color: #284328;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.inmba-royalty-table-member small {
+  color: #849084;
+  font-size: 0.61rem;
+}
+
+.inmba-royalty-table code {
+  padding: 5px 8px;
+  border-radius: 7px;
+  color: #245424;
+  background: #edf6ec;
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.inmba-royalty-amount {
+  color: #385338;
+  font-size: 0.72rem;
+}
+
+.inmba-royalty-percentage {
+  display: inline-flex;
+  padding: 6px 9px;
+  border-radius: 999px;
+  color: #735d0e;
+  background: #fff3c3;
+  font-size: 0.65rem;
+  font-weight: 900;
+}
+
+.inmba-royalty-earned {
+  color: #1b7027;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.inmba-royalty-view-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1px solid #c9dfc7;
+  border-radius: 9px;
+  color: #176027;
+  background: #eef7ed;
+  font-size: 0.66rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.inmba-royalty-view-button:hover {
+  color: #ffffff;
+  background: #0f4d0f;
+}
+
+.inmba-royalty-unavailable {
+  color: #8a958a;
+  font-size: 0.64rem;
+}
+
+.inmba-royalty-table tfoot td {
+  border-bottom: 0;
+  color: #244924;
+  background: #eef7ed;
+  font-weight: 900;
+}
+
+/* ========================================
+   EMPTY STATE
+======================================== */
+
+.inmba-royalty-empty-state {
+  min-height: 270px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  border: 1px dashed #b8ceb6;
+  border-radius: 16px;
+  background: #f8fbf7;
+  text-align: center;
+}
+
+.inmba-royalty-empty-state > span {
+  width: 65px;
+  height: 65px;
+  margin-bottom: 15px;
+  display: grid;
+  place-items: center;
+  border-radius: 19px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #96700c,
+      #d3a325
+    );
+  font-size: 1.4rem;
+}
+
+.inmba-royalty-empty-state h3 {
+  margin: 0 0 7px;
+  color: #244224;
+  font-size: 0.98rem;
+  font-weight: 900;
+}
+
+.inmba-royalty-empty-state p {
+  max-width: 480px;
+  margin: 0;
+  color: #748374;
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+.inmba-royalty-empty-state button {
+  min-height: 38px;
+  margin-top: 14px;
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 10px;
+  color: #ffffff;
+  background: #0f4d0f;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+/* ========================================
+   INDIRECT PRIVACY
+======================================== */
+
+.inmba-royalty-indirect-card {
+  display: grid;
+  grid-template-columns:
+    auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #c8dfc6;
+  border-radius: 18px;
+  background: #edf7eb;
+}
+
+.inmba-royalty-indirect-card > span {
+  width: 45px;
+  height: 45px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #1e6824;
+  background: #d6ecd4;
+}
+
+.inmba-royalty-indirect-card h3 {
+  margin: 0 0 4px;
+  color: #285328;
+  font-size: 0.83rem;
+  font-weight: 900;
+}
+
+.inmba-royalty-indirect-card p {
+  margin: 0;
+  color: #627562;
+  font-size: 0.69rem;
+  line-height: 1.55;
+}
+
+.inmba-royalty-indirect-stats {
+  display: flex;
+  gap: 9px;
+}
+
+.inmba-royalty-indirect-stats article {
+  min-width: 100px;
+  padding: 9px 12px;
+  border-radius: 11px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.inmba-royalty-indirect-stats span,
+.inmba-royalty-indirect-stats strong {
+  display: block;
+}
+
+.inmba-royalty-indirect-stats span {
+  margin-bottom: 4px;
+  color: #718071;
+  font-size: 0.59rem;
+  font-weight: 800;
+}
+
+.inmba-royalty-indirect-stats strong {
+  color: #195b22;
+  font-size: 0.76rem;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+/* ========================================
+   COMMON BUTTONS
+======================================== */
+
+.inmba-royalty-primary-button,
+.inmba-royalty-secondary-button {
+  min-height: 43px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.inmba-royalty-primary-button {
+  border: 0;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #278327
+    );
+}
+
+.inmba-royalty-secondary-button {
+  border: 1px solid #cee1cb;
+  color: #0f4d0f;
+  background: #edf6ec;
+}
+
+/* ========================================
+   LOADING / ERROR
+======================================== */
+
+.inmba-royalty-state {
+  width: min(100%, 540px);
+  min-height: 350px;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 35px;
+  border: 1px solid rgba(15, 77, 15, 0.12);
+  border-radius: 25px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow:
+    0 20px 45px rgba(35, 68, 35, 0.1);
+}
+
+.inmba-royalty-state .spinner-border {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 19px;
+  color: #0f4d0f;
+}
+
+.inmba-royalty-state h1 {
+  margin: 0 0 8px;
+  color: #193719;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.inmba-royalty-state p {
+  max-width: 390px;
+  margin: 0 0 20px;
+  color: #718071;
+  line-height: 1.65;
+}
+
+.inmba-royalty-state-icon {
+  width: 67px;
+  height: 67px;
+  margin-bottom: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #8c6910;
+  background: #fff2c8;
+  font-size: 1.5rem;
+}
+
+.inmba-royalty-state-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1000px) {
+  .inmba-royalty-stat-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .inmba-royalty-indirect-card {
+    grid-template-columns:
+      auto 1fr;
+  }
+
+  .inmba-royalty-indirect-stats {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 850px) {
+  .inmba-royalty-total-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .inmba-royalty-total-stats {
+    width: 100%;
+  }
+
+  .inmba-royalty-total-stats article {
+    flex: 1;
+  }
+
+  .inmba-royalty-member-card {
+    flex-wrap: wrap;
+  }
+
+  .inmba-royalty-rate {
+    width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .inmba-royalty-page {
+    padding:
+      98px 14px 50px;
+  }
+
+  .inmba-royalty-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 23px;
+  }
+
+  .inmba-royalty-header-actions {
+    width: 100%;
+  }
+
+  .inmba-royalty-header-actions button,
+  .inmba-royalty-header-actions a {
+    flex: 1;
+  }
+
+  .inmba-royalty-distribution-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-royalty-formula-card {
+    grid-template-columns:
+      auto 1fr;
+  }
+
+  .inmba-royalty-formula-card
+    > div:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .inmba-royalty-filters {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 575px) {
+  .inmba-royalty-page {
+    padding-right: 11px;
+    padding-left: 11px;
+  }
+
+  .inmba-royalty-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-royalty-total-content {
+    align-items: flex-start;
+  }
+
+  .inmba-royalty-total-stats {
+    flex-direction: column;
+  }
+
+  .inmba-royalty-members-card {
+    padding: 17px;
+    border-radius: 20px;
+  }
+
+  .inmba-royalty-members-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .inmba-royalty-members-header > strong {
+    width: 100%;
+    text-align: center;
+  }
+
+  .inmba-royalty-indirect-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .inmba-royalty-indirect-card > span {
+    margin: 0 auto;
+  }
+
+  .inmba-royalty-indirect-stats {
+    grid-column: auto;
+    flex-direction: column;
+  }
+
+  .inmba-royalty-state-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .inmba-royalty-primary-button,
+  .inmba-royalty-secondary-button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,862 @@
+/* ========================================
+   QR CODE PAGE
+======================================== */
+
+.inmba-qr-page {
+  min-height: 100vh;
+  padding: 125px 22px 65px;
+  background:
+    radial-gradient(
+      circle at 8% 15%,
+      rgba(15, 77, 15, 0.1),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 92% 78%,
+      rgba(57, 145, 57, 0.08),
+      transparent 35%
+    ),
+    linear-gradient(
+      145deg,
+      #edf6ea 0%,
+      #f9fcf8 52%,
+      #eaf3e6 100%
+    );
+}
+
+.inmba-qr-container {
+  width: min(100%, 1100px);
+  margin: 0 auto;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.inmba-qr-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+  padding: 28px 30px;
+  border-radius: 26px;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 88% 10%,
+      rgba(255, 255, 255, 0.15),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      #0b410b,
+      #126012 55%,
+      #278327
+    );
+  box-shadow:
+    0 22px 48px rgba(15, 77, 15, 0.21);
+}
+
+.inmba-qr-header p {
+  margin: 0 0 5px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.73rem;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.inmba-qr-header h1 {
+  margin: 0 0 6px;
+  font-size: clamp(1.7rem, 4vw, 2.45rem);
+  font-weight: 900;
+}
+
+.inmba-qr-header > div > span {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.6;
+}
+
+.inmba-qr-header-button {
+  min-height: 43px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.13);
+  font-size: 0.79rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.inmba-qr-header-button:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ========================================
+   MAIN GRID
+======================================== */
+
+.inmba-qr-main-grid {
+  display: grid;
+  grid-template-columns: 430px 1fr;
+  align-items: start;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+/* ========================================
+   MEMBER QR CARD
+======================================== */
+
+.inmba-qr-card {
+  overflow: hidden;
+  border: 1px solid rgba(15, 77, 15, 0.15);
+  border-radius: 28px;
+  background: #ffffff;
+  box-shadow:
+    0 22px 50px rgba(30, 68, 30, 0.13);
+}
+
+.inmba-qr-card-top {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 20px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0c430c,
+      #166616,
+      #298529
+    );
+}
+
+.inmba-qr-brand-icon {
+  width: 43px;
+  height: 43px;
+  flex: 0 0 43px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.inmba-qr-card-top > div {
+  flex: 1;
+}
+
+.inmba-qr-card-top p {
+  margin: 0 0 2px;
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.inmba-qr-card-top div > span {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.67rem;
+}
+
+.inmba-qr-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.inmba-qr-status-verified {
+  color: #175d23;
+  background: #e2f5e5;
+}
+
+.inmba-qr-status-pending,
+.inmba-qr-status-submitted {
+  color: #775600;
+  background: #ffefbb;
+}
+
+.inmba-qr-status-rejected {
+  color: #942633;
+  background: #fde4e7;
+}
+
+/* ========================================
+   QR PREVIEW
+======================================== */
+
+.inmba-qr-preview-wrapper {
+  padding: 28px 28px 15px;
+}
+
+.inmba-qr-preview {
+  width: 285px;
+  height: 285px;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 14px;
+  border: 1px solid #d4e5d1;
+  border-radius: 23px;
+  background: #ffffff;
+  box-shadow:
+    0 15px 32px rgba(15, 77, 15, 0.12);
+}
+
+.inmba-qr-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 13px;
+}
+
+.inmba-qr-placeholder {
+  align-content: center;
+  gap: 8px;
+  color: #0f4d0f;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #f6faf5,
+      #f6faf5 10px,
+      #edf5eb 10px,
+      #edf5eb 20px
+    );
+}
+
+.inmba-qr-placeholder > i {
+  font-size: 5.8rem;
+}
+
+.inmba-qr-placeholder strong {
+  font-size: 0.9rem;
+}
+
+.inmba-qr-placeholder span {
+  color: #718071;
+  font-size: 0.7rem;
+}
+
+.inmba-qr-scan-guide {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.inmba-qr-scan-guide > span {
+  display: block;
+  width: 55px;
+  height: 3px;
+  margin: 0 auto 9px;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      90deg,
+      #0f4d0f,
+      #48a848
+    );
+}
+
+.inmba-qr-scan-guide p {
+  margin: 0;
+  color: #748174;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* ========================================
+   MEMBER DETAILS
+======================================== */
+
+.inmba-qr-member-details {
+  padding: 5px 25px 22px;
+  text-align: center;
+}
+
+.inmba-qr-member-details h2 {
+  margin: 0 0 4px;
+  color: #173717;
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.inmba-qr-member-details > p {
+  margin: 0 0 15px;
+  color: #397539;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.inmba-qr-member-details > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 12px 14px;
+  border: 1px solid #dce9da;
+  border-radius: 13px;
+  background: #f7fbf6;
+}
+
+.inmba-qr-member-details div span {
+  color: #748174;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.inmba-qr-member-details div strong {
+  color: #0f4d0f;
+  font-size: 0.89rem;
+  font-weight: 900;
+}
+
+.inmba-qr-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 13px 18px;
+  color: #5f735f;
+  background: #edf6eb;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+/* ========================================
+   DETAILS CARD
+======================================== */
+
+.inmba-qr-details-card {
+  padding: 25px;
+  border: 1px solid rgba(15, 77, 15, 0.12);
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 18px 42px rgba(34, 68, 34, 0.1);
+}
+
+.inmba-qr-details-card > header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 21px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e4ece2;
+}
+
+.inmba-qr-details-card > header > span {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #288428
+    );
+  box-shadow:
+    0 9px 20px rgba(15, 77, 15, 0.18);
+}
+
+.inmba-qr-details-card header h2 {
+  margin: 0;
+  color: #183718;
+  font-size: 1.18rem;
+  font-weight: 900;
+}
+
+.inmba-qr-details-card header p {
+  margin: 4px 0 0;
+  color: #778677;
+  font-size: 0.76rem;
+}
+
+/* ========================================
+   INFORMATION LIST
+======================================== */
+
+.inmba-qr-info-list {
+  margin-bottom: 20px;
+}
+
+.inmba-qr-info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px 2px;
+  border-bottom: 1px solid #e6eee4;
+}
+
+.inmba-qr-info-item:last-child {
+  border-bottom: 0;
+}
+
+.inmba-qr-info-item span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #718071;
+  font-size: 0.79rem;
+  font-weight: 600;
+}
+
+.inmba-qr-info-item span i {
+  width: 18px;
+  color: #367736;
+  text-align: center;
+}
+
+.inmba-qr-info-item strong {
+  max-width: 58%;
+  color: #213a21;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* ========================================
+   PROFILE LINK
+======================================== */
+
+.inmba-qr-profile-link {
+  margin-bottom: 18px;
+}
+
+.inmba-qr-profile-link label {
+  display: block;
+  margin-bottom: 8px;
+  color: #304730;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.inmba-qr-profile-link > div {
+  display: grid;
+  grid-template-columns: 1fr 45px;
+  overflow: hidden;
+  border: 1px solid #d3e3d1;
+  border-radius: 12px;
+  background: #f8fbf7;
+}
+
+.inmba-qr-profile-link input {
+  min-width: 0;
+  height: 45px;
+  padding: 10px 12px;
+  border: 0;
+  outline: none;
+  color: #536753;
+  background: transparent;
+  font-size: 0.75rem;
+}
+
+.inmba-qr-profile-link button {
+  border: 0;
+  color: #ffffff;
+  background: #0f4d0f;
+}
+
+/* ========================================
+   ACTIONS
+======================================== */
+
+.inmba-qr-actions,
+.inmba-qr-state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.inmba-qr-primary-button,
+.inmba-qr-secondary-button {
+  min-height: 43px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 15px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition:
+    transform 0.24s ease,
+    box-shadow 0.24s ease,
+    background 0.24s ease;
+}
+
+.inmba-qr-primary-button {
+  border: 0;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #278327
+    );
+  box-shadow:
+    0 10px 22px rgba(15, 77, 15, 0.2);
+}
+
+.inmba-qr-primary-button:hover {
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+
+.inmba-qr-secondary-button {
+  border: 1px solid #cee1cb;
+  color: #0f4d0f;
+  background: #edf6ec;
+}
+
+.inmba-qr-secondary-button:hover {
+  transform: translateY(-2px);
+  color: #0f4d0f;
+  background: #e2f0e0;
+}
+
+.inmba-qr-primary-button:disabled,
+.inmba-qr-secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ========================================
+   SECURITY NOTE
+======================================== */
+
+.inmba-qr-security-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 19px;
+  padding: 14px;
+  border: 1px solid #cfe2cc;
+  border-radius: 14px;
+  background: #f1f8ef;
+}
+
+.inmba-qr-security-note > span {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: #246b24;
+  background: #dcefd9;
+}
+
+.inmba-qr-security-note h3 {
+  margin: 0 0 4px;
+  color: #285128;
+  font-size: 0.83rem;
+  font-weight: 900;
+}
+
+.inmba-qr-security-note p {
+  margin: 0;
+  color: #657665;
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+/* ========================================
+   HOW IT WORKS
+======================================== */
+
+.inmba-qr-steps {
+  padding: 25px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 15px 35px rgba(35, 70, 35, 0.08);
+}
+
+.inmba-qr-steps > header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.inmba-qr-steps header p {
+  margin: 0 0 4px;
+  color: #3c783c;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.inmba-qr-steps header h2 {
+  margin: 0;
+  color: #193919;
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+
+.inmba-qr-steps-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.inmba-qr-steps-grid article {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 18px;
+  border: 1px solid #dbe8d8;
+  border-radius: 17px;
+  background: #f8fbf7;
+}
+
+.inmba-qr-steps-grid article > span {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  color: #ffffff;
+  background: #0f4d0f;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.inmba-qr-steps-grid article i {
+  margin-bottom: 9px;
+  color: #347634;
+  font-size: 1.15rem;
+}
+
+.inmba-qr-steps-grid h3 {
+  margin: 0 0 5px;
+  color: #244024;
+  font-size: 0.87rem;
+  font-weight: 900;
+}
+
+.inmba-qr-steps-grid p {
+  margin: 0;
+  color: #718071;
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+/* ========================================
+   LOADING / ERROR
+======================================== */
+
+.inmba-qr-state {
+  width: min(100%, 540px);
+  min-height: 350px;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 35px;
+  border: 1px solid rgba(15, 77, 15, 0.12);
+  border-radius: 25px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow:
+    0 20px 45px rgba(35, 68, 35, 0.1);
+}
+
+.inmba-qr-state .spinner-border {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 19px;
+  color: #0f4d0f;
+}
+
+.inmba-qr-state h1 {
+  margin: 0 0 8px;
+  color: #193719;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.inmba-qr-state p {
+  max-width: 390px;
+  margin: 0 0 20px;
+  color: #718071;
+  line-height: 1.65;
+}
+
+.inmba-qr-state-icon {
+  width: 67px;
+  height: 67px;
+  margin-bottom: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #a92d39;
+  background: #fde8ea;
+  font-size: 1.5rem;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 991px) {
+  .inmba-qr-page {
+    padding-top: 110px;
+  }
+
+  .inmba-qr-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-qr-card {
+    width: min(100%, 480px);
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .inmba-qr-page {
+    padding:
+      98px 14px 45px;
+  }
+
+  .inmba-qr-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 23px;
+  }
+
+  .inmba-qr-header-button {
+    width: 100%;
+  }
+
+  .inmba-qr-steps-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 575px) {
+  .inmba-qr-page {
+    padding-right: 11px;
+    padding-left: 11px;
+  }
+
+  .inmba-qr-card-top {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .inmba-qr-status {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .inmba-qr-preview-wrapper {
+    padding:
+      22px 17px 14px;
+  }
+
+  .inmba-qr-preview {
+    width: 250px;
+    height: 250px;
+  }
+
+  .inmba-qr-details-card,
+  .inmba-qr-steps {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .inmba-qr-info-item {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .inmba-qr-info-item strong {
+    max-width: 100%;
+    padding-left: 26px;
+    text-align: left;
+  }
+
+  .inmba-qr-actions,
+  .inmba-qr-state-actions {
+    flex-direction: column;
+  }
+
+  .inmba-qr-primary-button,
+  .inmba-qr-secondary-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .inmba-qr-preview {
+    width: 220px;
+    height: 220px;
+  }
+}
+
+/* ========================================
+   PROFESSIONAL QR THEME
+======================================== */
+
+.inmba-qr-page-professional {
+  background:
+    radial-gradient(circle at 8% 15%, rgba(13, 71, 161, 0.12), transparent 32%),
+    radial-gradient(circle at 92% 78%, rgba(37, 99, 235, 0.1), transparent 35%),
+    linear-gradient(145deg, #eaf2ff 0%, #f8fbff 52%, #e4efff 100%);
+}
+
+.inmba-qr-page-professional .inmba-qr-header,
+.inmba-qr-page-professional .inmba-qr-card-top {
+  background: linear-gradient(135deg, #082f75, #0d47a1 55%, #2563eb);
+  box-shadow: 0 22px 48px rgba(13, 71, 161, 0.22);
+}
+
+.inmba-qr-page-professional .inmba-qr-card,
+.inmba-qr-page-professional .inmba-qr-details-card {
+  border-color: rgba(13, 71, 161, 0.18);
+  box-shadow: 0 22px 50px rgba(13, 71, 161, 0.12);
+}
+
+.inmba-qr-page-professional .inmba-qr-preview {
+  border-color: #c7dcff;
+  box-shadow: 0 15px 32px rgba(13, 71, 161, 0.13);
+}
+
+.inmba-qr-page-professional .inmba-qr-primary-button,
+.inmba-qr-page-professional .inmba-qr-details-card > header > span {
+  background: #0d47a1;
+}
+
+.inmba-qr-page-professional .inmba-qr-info-item i,
+.inmba-qr-page-professional .inmba-qr-member-details h2,
+.inmba-qr-page-professional .inmba-qr-details-card h2 {
+  color: #0d47a1;
+}

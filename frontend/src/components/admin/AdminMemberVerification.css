@@ -1,0 +1,1185 @@
+/* =========================================================
+   ADMIN MEMBER VERIFICATION
+========================================================= */
+
+.inmba-admin-verification-card {
+  overflow: hidden;
+
+  border:
+    1px solid #d8e5d6;
+
+  border-radius: 19px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 10px 30px
+    rgba(30, 70, 30, 0.06);
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.inmba-admin-verification-header {
+  min-height: 74px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 18px;
+
+  padding: 16px 19px;
+
+  border-bottom:
+    1px solid #e0e9de;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f7fbf6,
+      #ffffff
+    );
+}
+
+.inmba-admin-verification-header
+  > div {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.inmba-admin-verification-header-icon {
+  width: 43px;
+  height: 43px;
+
+  flex:
+    0 0 43px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 12px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #318c38
+    );
+
+  font-size: 0.78rem;
+}
+
+.inmba-admin-verification-header
+  p {
+  margin:
+    0 0 3px;
+
+  color: #688068;
+
+  font-size: 0.54rem;
+
+  font-weight: 900;
+
+  letter-spacing: 0.7px;
+
+  text-transform: uppercase;
+}
+
+.inmba-admin-verification-header
+  h3 {
+  margin: 0;
+
+  color: #294729;
+
+  font-size: 0.78rem;
+
+  font-weight: 900;
+}
+
+/* =========================================================
+   CURRENT STATUS
+========================================================= */
+
+.inmba-admin-verification-current-status {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 7px 10px;
+
+  border-radius: 999px;
+
+  font-size: 0.53rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-verification-current-approved {
+  color: #21702a;
+
+  background: #e8f7e9;
+}
+
+.inmba-admin-verification-current-pending {
+  color: #8e6a11;
+
+  background: #fff5d8;
+}
+
+.inmba-admin-verification-current-rejected {
+  color: #a4343e;
+
+  background: #ffedef;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.inmba-admin-verification-form {
+  display: grid;
+
+  gap: 18px;
+
+  padding: 19px;
+}
+
+/* =========================================================
+   MEMBER
+========================================================= */
+
+.inmba-admin-verification-member {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 13px;
+
+  border:
+    1px solid #d9e6d7;
+
+  border-radius: 13px;
+
+  background: #f8fbf7;
+}
+
+.inmba-admin-verification-member
+  > span {
+  width: 44px;
+  height: 44px;
+
+  flex:
+    0 0 44px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 12px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #338d3a
+    );
+
+  font-size: 0.8rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-verification-member
+  small,
+.inmba-admin-verification-member
+  strong,
+.inmba-admin-verification-member
+  p {
+  display: block;
+}
+
+.inmba-admin-verification-member
+  small {
+  margin-bottom: 2px;
+
+  color: #849184;
+
+  font-size: 0.5rem;
+}
+
+.inmba-admin-verification-member
+  strong {
+  color: #395139;
+
+  font-size: 0.64rem;
+}
+
+.inmba-admin-verification-member
+  p {
+  margin:
+    2px 0 0;
+
+  color: #8c978c;
+
+  font-size: 0.51rem;
+}
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.inmba-admin-verification-section {
+  display: grid;
+
+  gap: 12px;
+}
+
+.inmba-admin-verification-section-title {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+}
+
+.inmba-admin-verification-section-title
+  > span {
+  width: 27px;
+  height: 27px;
+
+  flex:
+    0 0 27px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 8px;
+
+  color: #ffffff;
+
+  background: #236e2a;
+
+  font-size: 0.54rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-verification-section-title
+  strong,
+.inmba-admin-verification-section-title
+  small {
+  display: block;
+}
+
+.inmba-admin-verification-section-title
+  strong {
+  margin-bottom: 2px;
+
+  color: #405840;
+
+  font-size: 0.61rem;
+}
+
+.inmba-admin-verification-section-title
+  small {
+  color: #899589;
+
+  font-size: 0.5rem;
+}
+
+/* =========================================================
+   STATUS OPTIONS
+========================================================= */
+
+.inmba-admin-verification-status-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 9px;
+}
+
+.inmba-admin-verification-status-option {
+  min-height: 96px;
+
+  display: grid;
+
+  grid-template-columns:
+    auto 1fr auto;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 12px;
+
+  border:
+    1px solid #dae5d8;
+
+  border-radius: 12px;
+
+  color: #526752;
+
+  background: #ffffff;
+
+  text-align: left;
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.inmba-admin-verification-status-option:hover:not(:disabled) {
+  transform:
+    translateY(-2px);
+}
+
+.inmba-admin-verification-status-option
+  > span {
+  width: 37px;
+  height: 37px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 10px;
+
+  font-size: 0.68rem;
+}
+
+.inmba-admin-verification-status-option
+  strong,
+.inmba-admin-verification-status-option
+  small {
+  display: block;
+}
+
+.inmba-admin-verification-status-option
+  strong {
+  margin-bottom: 3px;
+
+  font-size: 0.59rem;
+}
+
+.inmba-admin-verification-status-option
+  small {
+  color: #899589;
+
+  font-size: 0.48rem;
+
+  line-height: 1.4;
+}
+
+.inmba-admin-verification-status-option
+  > i {
+  color: #a1aca1;
+
+  font-size: 0.59rem;
+}
+
+/* APPROVED */
+
+.inmba-admin-verification-status-approved
+  > span {
+  color: #23732b;
+
+  background: #e6f6e8;
+}
+
+/* PENDING */
+
+.inmba-admin-verification-status-pending
+  > span {
+  color: #956d11;
+
+  background: #fff3d4;
+}
+
+/* REJECTED */
+
+.inmba-admin-verification-status-rejected
+  > span {
+  color: #ac343e;
+
+  background: #ffebed;
+}
+
+.inmba-admin-verification-status-approved.inmba-admin-verification-status-selected {
+  border-color: #3f9447;
+
+  background: #f0faf1;
+}
+
+.inmba-admin-verification-status-pending.inmba-admin-verification-status-selected {
+  border-color: #cca540;
+
+  background: #fffaf0;
+}
+
+.inmba-admin-verification-status-rejected.inmba-admin-verification-status-selected {
+  border-color: #ce6871;
+
+  background: #fff5f6;
+}
+
+.inmba-admin-verification-status-selected
+  > i {
+  color: #27782e;
+}
+
+/* =========================================================
+   APPROVAL OPTIONS
+========================================================= */
+
+.inmba-admin-verification-approval-options {
+  display: grid;
+
+  gap: 17px;
+
+  padding: 15px;
+
+  border:
+    1px solid #cfe1cc;
+
+  border-radius: 14px;
+
+  background: #f8fcf7;
+}
+
+/* =========================================================
+   REFERRAL INPUT
+========================================================= */
+
+.inmba-admin-verification-field
+  label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #536853;
+
+  font-size: 0.55rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-verification-field
+  > div {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+}
+
+.inmba-admin-verification-field
+  > div
+  > i {
+  position: absolute;
+
+  left: 13px;
+
+  color: #718771;
+
+  font-size: 0.62rem;
+}
+
+.inmba-admin-verification-field
+  input {
+  width: 100%;
+
+  min-height: 43px;
+
+  padding:
+    9px 12px 9px 37px;
+
+  border:
+    1px solid #c9dcc7;
+
+  border-radius: 10px;
+
+  color: #365036;
+
+  background: #ffffff;
+
+  font-size: 0.61rem;
+
+  outline: none;
+}
+
+.inmba-admin-verification-field
+  input:focus {
+  border-color: #67a06a;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(15, 77, 15, 0.06);
+}
+
+.inmba-admin-verification-field
+  > small {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #8a968a;
+
+  font-size: 0.49rem;
+}
+
+.inmba-admin-verification-field
+  > small
+  strong {
+  color: #557155;
+}
+
+/* =========================================================
+   METHOD
+========================================================= */
+
+.inmba-admin-verification-method-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 8px;
+}
+
+.inmba-admin-verification-method {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    auto 1fr;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 11px;
+
+  border:
+    1px solid #d4e2d2;
+
+  border-radius: 11px;
+
+  background: #ffffff;
+
+  cursor: pointer;
+}
+
+.inmba-admin-verification-method
+  input {
+  position: absolute;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.inmba-admin-verification-method
+  > span {
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 10px;
+
+  color: #39743d;
+
+  background: #eaf4e8;
+}
+
+.inmba-admin-verification-method
+  strong,
+.inmba-admin-verification-method
+  small {
+  display: block;
+}
+
+.inmba-admin-verification-method
+  strong {
+  margin-bottom: 2px;
+
+  color: #455d45;
+
+  font-size: 0.56rem;
+}
+
+.inmba-admin-verification-method
+  small {
+  color: #8b968b;
+
+  font-size: 0.47rem;
+
+  line-height: 1.4;
+}
+
+.inmba-admin-verification-method-active {
+  border-color: #54985a;
+
+  background: #f1f9f0;
+}
+
+/* =========================================================
+   PAYMENT RULE
+========================================================= */
+
+.inmba-admin-verification-payment-rule {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 9px;
+
+  padding: 12px;
+
+  border:
+    1px solid #e0ce8e;
+
+  border-radius: 11px;
+
+  color: #765e17;
+
+  background: #fff9e4;
+}
+
+.inmba-admin-verification-payment-rule
+  > span {
+  width: 34px;
+  height: 34px;
+
+  flex:
+    0 0 34px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 9px;
+
+  color: #ffffff;
+
+  background: #a77d16;
+}
+
+.inmba-admin-verification-payment-rule
+  strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 0.57rem;
+}
+
+.inmba-admin-verification-payment-rule
+  p {
+  margin: 0;
+
+  font-size: 0.5rem;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   CONTEXT
+========================================================= */
+
+.inmba-admin-verification-context {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 9px;
+
+  padding: 13px;
+
+  border-radius: 11px;
+}
+
+.inmba-admin-verification-context
+  > i {
+  margin-top: 2px;
+}
+
+.inmba-admin-verification-context
+  strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 0.58rem;
+}
+
+.inmba-admin-verification-context
+  p {
+  margin: 0;
+
+  font-size: 0.5rem;
+
+  line-height: 1.5;
+}
+
+.inmba-admin-verification-context-pending {
+  border:
+    1px solid #e8d49c;
+
+  color: #7f6518;
+
+  background: #fff9e7;
+}
+
+.inmba-admin-verification-context-rejected {
+  border:
+    1px solid #e7bec2;
+
+  color: #943942;
+
+  background: #fff2f3;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.inmba-admin-verification-error {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 7px;
+
+  padding: 11px;
+
+  border:
+    1px solid #e8b9bd;
+
+  border-radius: 10px;
+
+  color: #a2353e;
+
+  background: #fff1f2;
+
+  font-size: 0.54rem;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   SUBMIT ROW
+========================================================= */
+
+.inmba-admin-verification-submit-row {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding-top: 15px;
+
+  border-top:
+    1px solid #e2ebe0;
+}
+
+.inmba-admin-verification-submit-row
+  > div
+  small,
+.inmba-admin-verification-submit-row
+  > div
+  strong {
+  display: block;
+}
+
+.inmba-admin-verification-submit-row
+  > div
+  small {
+  margin-bottom: 3px;
+
+  color: #8a968a;
+
+  font-size: 0.49rem;
+}
+
+.inmba-admin-verification-submit-row
+  > div
+  strong {
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  color: #4b634b;
+
+  font-size: 0.59rem;
+}
+
+.inmba-admin-verification-submit {
+  min-height: 42px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding:
+    8px 16px;
+
+  border: 0;
+
+  border-radius: 10px;
+
+  color: #ffffff;
+
+  font-size: 0.59rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-verification-submit-approved {
+  background:
+    linear-gradient(
+      135deg,
+      #12611d,
+      #348d3b
+    );
+}
+
+.inmba-admin-verification-submit-pending {
+  background:
+    linear-gradient(
+      135deg,
+      #a17818,
+      #c59625
+    );
+}
+
+.inmba-admin-verification-submit-rejected {
+  background:
+    linear-gradient(
+      135deg,
+      #98313a,
+      #c24550
+    );
+}
+
+.inmba-admin-verification-submit:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.55;
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.inmba-admin-verification-modal-overlay {
+  position: fixed;
+
+  z-index: 3000;
+
+  inset: 0;
+
+  display: grid;
+
+  place-items: center;
+
+  padding: 20px;
+
+  background:
+    rgba(
+      6,
+      25,
+      8,
+      0.6
+    );
+
+  backdrop-filter:
+    blur(5px);
+}
+
+.inmba-admin-verification-modal {
+  width:
+    min(
+      100%,
+      430px
+    );
+
+  padding: 27px;
+
+  border:
+    1px solid #d9e6d7;
+
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  text-align: center;
+
+  box-shadow:
+    0 30px 75px
+    rgba(0, 0, 0, 0.22);
+}
+
+.inmba-admin-verification-modal-icon {
+  width: 59px;
+  height: 59px;
+
+  margin:
+    0 auto 12px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 17px;
+
+  font-size: 1.1rem;
+}
+
+.inmba-admin-verification-modal-icon-approved {
+  color: #23732b;
+
+  background: #e6f6e8;
+}
+
+.inmba-admin-verification-modal-icon-pending {
+  color: #916c13;
+
+  background: #fff4d7;
+}
+
+.inmba-admin-verification-modal-icon-rejected {
+  color: #aa3741;
+
+  background: #ffebed;
+}
+
+.inmba-admin-verification-modal
+  > p {
+  margin:
+    0 0 4px;
+
+  color: #718471;
+
+  font-size: 0.51rem;
+
+  font-weight: 900;
+
+  text-transform: uppercase;
+}
+
+.inmba-admin-verification-modal
+  h3 {
+  margin:
+    0 0 8px;
+
+  color: #344e34;
+
+  font-size: 0.9rem;
+}
+
+.inmba-admin-verification-modal-description {
+  color: #7f8d7f;
+
+  font-size: 0.56rem;
+
+  line-height: 1.5;
+}
+
+.inmba-admin-verification-modal-summary {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 8px;
+
+  margin-top: 15px;
+}
+
+.inmba-admin-verification-modal-summary
+  > div {
+  padding: 10px;
+
+  border:
+    1px solid #dde8db;
+
+  border-radius: 10px;
+
+  background: #f8fbf7;
+}
+
+.inmba-admin-verification-modal-summary
+  span,
+.inmba-admin-verification-modal-summary
+  strong {
+  display: block;
+}
+
+.inmba-admin-verification-modal-summary
+  span {
+  margin-bottom: 3px;
+
+  color: #8b978b;
+
+  font-size: 0.47rem;
+}
+
+.inmba-admin-verification-modal-summary
+  strong {
+  color: #496049;
+
+  font-size: 0.54rem;
+}
+
+.inmba-admin-verification-modal-actions {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 8px;
+
+  margin-top: 19px;
+}
+
+.inmba-admin-verification-modal-actions
+  button {
+  min-height: 41px;
+
+  border-radius: 10px;
+
+  font-size: 0.56rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-verification-modal-actions
+  > button:first-child {
+  border:
+    1px solid #d2dfd0;
+
+  color: #657765;
+
+  background: #f7faf6;
+}
+
+.inmba-admin-verification-modal-confirm {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  border: 0;
+
+  color: #ffffff;
+}
+
+.inmba-admin-verification-modal-confirm-approved {
+  background: #20742a;
+}
+
+.inmba-admin-verification-modal-confirm-pending {
+  background: #a87d19;
+}
+
+.inmba-admin-verification-modal-confirm-rejected {
+  background: #a93842;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (
+  max-width: 760px
+) {
+  .inmba-admin-verification-status-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .inmba-admin-verification-method-grid {
+    grid-template-columns:
+      1fr;
+  }
+}
+
+@media (
+  max-width: 520px
+) {
+  .inmba-admin-verification-header {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+  .inmba-admin-verification-form {
+    padding: 15px;
+  }
+
+  .inmba-admin-verification-submit-row {
+    align-items:
+      stretch;
+
+    flex-direction:
+      column;
+  }
+
+  .inmba-admin-verification-submit {
+    width: 100%;
+  }
+
+  .inmba-admin-verification-modal {
+    padding: 22px 16px;
+  }
+
+  .inmba-admin-verification-modal-summary {
+    grid-template-columns:
+      1fr;
+  }
+}

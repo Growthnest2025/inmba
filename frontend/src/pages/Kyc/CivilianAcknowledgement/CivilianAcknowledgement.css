@@ -1,0 +1,1251 @@
+.civilian-ack-page,
+.civilian-ack-page * {
+  box-sizing: border-box;
+}
+
+.civilian-ack-page {
+  min-height: 100vh;
+
+  padding:
+    60px 20px;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  color:
+    #25362a;
+
+  background:
+    radial-gradient(
+      circle at 5% 10%,
+      rgba(
+        15,
+        77,
+        15,
+        0.08
+      ),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 95% 90%,
+      rgba(
+        45,
+        128,
+        60,
+        0.08
+      ),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      #eef5e9,
+      #f8fbf6,
+      #edf4e9
+    );
+}
+
+
+.civilian-ack-container {
+  width:
+    min(
+      100%,
+      950px
+    );
+
+  margin:
+    0 auto;
+}
+
+
+/* =========================================
+   HERO
+========================================= */
+
+.civilian-ack-hero {
+  position:
+    relative;
+
+  overflow:
+    hidden;
+
+  padding:
+    42px 30px;
+
+  margin-bottom:
+    20px;
+
+  border-radius:
+    26px;
+
+  text-align:
+    center;
+
+  color:
+    #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0c420f,
+      #12601b,
+      #267c35
+    );
+
+  box-shadow:
+    0 22px 45px
+    rgba(
+      15,
+      77,
+      15,
+      0.2
+    );
+}
+
+
+.civilian-ack-hero::before {
+  content:
+    "";
+
+  position:
+    absolute;
+
+  width:
+    240px;
+
+  height:
+    240px;
+
+  top:
+    -120px;
+
+  right:
+    -70px;
+
+  border-radius:
+    50%;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.06
+    );
+}
+
+
+.civilian-ack-success-icon {
+  position:
+    relative;
+
+  width:
+    72px;
+
+  height:
+    72px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  margin:
+    0 auto 18px;
+
+  border-radius:
+    50%;
+
+  color:
+    #12601b;
+
+  background:
+    #ffffff;
+
+  font-size:
+    32px;
+
+  font-weight:
+    900;
+
+  box-shadow:
+    0 10px 25px
+    rgba(
+      0,
+      0,
+      0,
+      0.12
+    );
+}
+
+
+.civilian-ack-eyebrow {
+  position:
+    relative;
+
+  margin:
+    0 0 8px;
+
+  font-size:
+    11px;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    1.7px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.75
+    );
+}
+
+
+.civilian-ack-hero h1 {
+  position:
+    relative;
+
+  margin:
+    0;
+
+  font-size:
+    clamp(
+      25px,
+      5vw,
+      38px
+    );
+
+  font-weight:
+    850;
+}
+
+
+.civilian-ack-hero-text {
+  position:
+    relative;
+
+  max-width:
+    620px;
+
+  margin:
+    12px auto 18px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.82
+    );
+
+  font-size:
+    14px;
+
+  line-height:
+    1.7;
+}
+
+
+.civilian-ack-submitted-badge {
+  position:
+    relative;
+
+  width:
+    fit-content;
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  gap:
+    8px;
+
+  padding:
+    8px 15px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.25
+    );
+
+  border-radius:
+    999px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.12
+    );
+
+  font-size:
+    12px;
+
+  font-weight:
+    800;
+}
+
+
+.civilian-ack-badge-dot {
+  width:
+    7px;
+
+  height:
+    7px;
+
+  border-radius:
+    50%;
+
+  background:
+    #8cff9d;
+}
+
+
+/* =========================================
+   MAIN CARD
+========================================= */
+
+.civilian-ack-card {
+  overflow:
+    hidden;
+
+  margin-bottom:
+    18px;
+
+  border:
+    1px solid
+    #d9e7d6;
+
+  border-radius:
+    20px;
+
+  background:
+    #ffffff;
+
+  box-shadow:
+    0 12px 32px
+    rgba(
+      15,
+      77,
+      15,
+      0.06
+    );
+}
+
+
+.civilian-ack-card-heading {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    13px;
+
+  padding:
+    20px 23px;
+}
+
+
+.civilian-ack-heading-icon {
+  width:
+    44px;
+
+  height:
+    44px;
+
+  flex:
+    0 0 44px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    13px;
+
+  color:
+    #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2d803c
+    );
+
+  font-weight:
+    900;
+}
+
+
+.civilian-ack-card-heading h2 {
+  margin:
+    0 0 4px;
+
+  color:
+    #29472f;
+
+  font-size:
+    16px;
+
+  font-weight:
+    850;
+}
+
+
+.civilian-ack-card-heading p {
+  margin:
+    0;
+
+  color:
+    #78867b;
+
+  font-size:
+    12px;
+}
+
+
+.civilian-ack-divider {
+  height:
+    1px;
+
+  background:
+    #e6eee4;
+}
+
+
+/* =========================================
+   ACK NUMBER
+========================================= */
+
+.civilian-ack-number-box {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    15px;
+
+  margin:
+    20px 23px 0;
+
+  padding:
+    15px 17px;
+
+  border:
+    1px solid
+    #cfe0cd;
+
+  border-radius:
+    13px;
+
+  background:
+    #f2f8f0;
+}
+
+
+.civilian-ack-number-box span {
+  color:
+    #748177;
+
+  font-size:
+    11px;
+
+  font-weight:
+    750;
+}
+
+
+.civilian-ack-number-box strong {
+  color:
+    #0f4d0f;
+
+  font-size:
+    14px;
+
+  font-weight:
+    900;
+
+  overflow-wrap:
+    anywhere;
+}
+
+
+/* =========================================
+   INFO
+========================================= */
+
+.civilian-ack-info-grid {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap:
+    13px;
+
+  padding:
+    20px 23px 24px;
+}
+
+
+.civilian-ack-info {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    12px;
+
+  min-width:
+    0;
+
+  padding:
+    14px;
+
+  border:
+    1px solid
+    #e1eae0;
+
+  border-radius:
+    13px;
+
+  background:
+    #fcfdfb;
+}
+
+
+.civilian-ack-info-icon {
+  width:
+    38px;
+
+  height:
+    38px;
+
+  flex:
+    0 0 38px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    11px;
+
+  color:
+    #237237;
+
+  background:
+    #e8f4e7;
+
+  font-size:
+    11px;
+
+  font-weight:
+    900;
+}
+
+
+.civilian-ack-info > div {
+  min-width:
+    0;
+
+  display:
+    grid;
+
+  gap:
+    4px;
+}
+
+
+.civilian-ack-info small {
+  color:
+    #7c897e;
+
+  font-size:
+    10px;
+
+  font-weight:
+    700;
+}
+
+
+.civilian-ack-info strong {
+  color:
+    #304b35;
+
+  font-size:
+    13px;
+
+  font-weight:
+    850;
+
+  overflow-wrap:
+    anywhere;
+}
+
+
+.civilian-ack-green-text {
+  color:
+    #1e7a36
+    !important;
+}
+
+
+/* =========================================
+   VERIFICATION
+========================================= */
+
+.civilian-ack-verification {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    17px;
+
+  margin-bottom:
+    18px;
+
+  padding:
+    22px 24px;
+
+  border:
+    1px solid
+    #cce1cb;
+
+  border-radius:
+    18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f0f8ee,
+      #f8fcf6
+    );
+}
+
+
+.civilian-ack-verification-icon {
+  width:
+    54px;
+
+  height:
+    54px;
+
+  flex:
+    0 0 54px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    50%;
+
+  color:
+    #ffffff;
+
+  background:
+    #23813c;
+
+  font-size:
+    22px;
+
+  font-weight:
+    900;
+}
+
+
+.civilian-ack-verification-content span {
+  color:
+    #338047;
+
+  font-size:
+    10px;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    1.2px;
+}
+
+
+.civilian-ack-verification-content h2 {
+  margin:
+    5px 0;
+
+  color:
+    #294b30;
+
+  font-size:
+    16px;
+}
+
+
+.civilian-ack-verification-content p {
+  margin:
+    0;
+
+  color:
+    #6d7d70;
+
+  font-size:
+    12px;
+
+  line-height:
+    1.65;
+}
+
+
+/* =========================================
+   NOTE
+========================================= */
+
+.civilian-ack-note {
+  display:
+    flex;
+
+  gap:
+    13px;
+
+  margin-bottom:
+    20px;
+
+  padding:
+    16px 18px;
+
+  border:
+    1px solid
+    #d7e5d5;
+
+  border-radius:
+    14px;
+
+  background:
+    #ffffff;
+}
+
+
+.civilian-ack-note-icon {
+  width:
+    34px;
+
+  height:
+    34px;
+
+  flex:
+    0 0 34px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    50%;
+
+  color:
+    #ffffff;
+
+  background:
+    #397c45;
+
+  font-weight:
+    900;
+}
+
+
+.civilian-ack-note strong {
+  color:
+    #335139;
+
+  font-size:
+    12px;
+}
+
+
+.civilian-ack-note p {
+  margin:
+    4px 0 0;
+
+  color:
+    #758178;
+
+  font-size:
+    11px;
+
+  line-height:
+    1.55;
+}
+
+
+/* =========================================
+   ACTIONS
+========================================= */
+
+.civilian-ack-actions {
+  display:
+    flex;
+
+  flex-wrap:
+    wrap;
+
+  justify-content:
+    center;
+
+  gap:
+    10px;
+
+  margin-top:
+    22px;
+}
+
+
+.civilian-ack-actions button {
+  min-height:
+    44px;
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    8px;
+
+  padding:
+    10px 18px;
+
+  border-radius:
+    11px;
+
+  font-size:
+    12px;
+
+  font-weight:
+    850;
+
+  cursor:
+    pointer;
+
+  transition:
+    0.2s ease;
+}
+
+
+.civilian-ack-actions button:hover {
+  transform:
+    translateY(-2px);
+}
+
+
+.civilian-ack-primary {
+  border:
+    0;
+
+  color:
+    #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2d803c
+    );
+
+  box-shadow:
+    0 9px 20px
+    rgba(
+      15,
+      77,
+      15,
+      0.16
+    );
+}
+
+
+.civilian-ack-secondary {
+  border:
+    1px solid
+    #ccdccc;
+
+  color:
+    #35623d;
+
+  background:
+    #ffffff;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.civilian-ack-footer {
+  display:
+    flex;
+
+  justify-content:
+    center;
+
+  align-items:
+    center;
+
+  gap:
+    10px;
+
+  margin-top:
+    30px;
+
+  color:
+    #849087;
+
+  font-size:
+    10px;
+}
+
+
+.civilian-ack-footer strong {
+  color:
+    #236433;
+
+  font-size:
+    13px;
+}
+
+
+/* =========================================
+   LOADING / ERROR
+========================================= */
+
+.civilian-ack-state-page {
+  min-height:
+    100vh;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  padding:
+    20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #eef5e9,
+      #f8fbf6
+    );
+}
+
+
+.civilian-ack-state-card {
+  width:
+    min(
+      100%,
+      430px
+    );
+
+  padding:
+    35px;
+
+  border:
+    1px solid
+    #d8e7d6;
+
+  border-radius:
+    20px;
+
+  text-align:
+    center;
+
+  background:
+    #ffffff;
+
+  box-shadow:
+    0 18px 45px
+    rgba(
+      15,
+      77,
+      15,
+      0.08
+    );
+}
+
+
+.civilian-ack-state-card h1 {
+  margin:
+    15px 0 8px;
+
+  color:
+    #29472f;
+
+  font-size:
+    19px;
+}
+
+
+.civilian-ack-state-card p {
+  color:
+    #748077;
+
+  font-size:
+    13px;
+
+  line-height:
+    1.6;
+}
+
+
+.civilian-ack-state-card button {
+  margin-top:
+    8px;
+
+  padding:
+    10px 18px;
+
+  border:
+    0;
+
+  border-radius:
+    10px;
+
+  color:
+    #ffffff;
+
+  background:
+    #0f4d0f;
+
+  font-weight:
+    800;
+
+  cursor:
+    pointer;
+}
+
+
+.civilian-ack-spinner {
+  width:
+    46px;
+
+  height:
+    46px;
+
+  margin:
+    auto;
+
+  border:
+    4px solid
+    #e0eadf;
+
+  border-top-color:
+    #0f4d0f;
+
+  border-radius:
+    50%;
+
+  animation:
+    civilianAckSpin
+    0.8s
+    linear
+    infinite;
+}
+
+
+.civilian-ack-error-icon {
+  width:
+    50px;
+
+  height:
+    50px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  margin:
+    auto;
+
+  border-radius:
+    50%;
+
+  color:
+    #ffffff;
+
+  background:
+    #b84545;
+
+  font-size:
+    22px;
+
+  font-weight:
+    900;
+}
+
+
+@keyframes civilianAckSpin {
+  to {
+    transform:
+      rotate(
+        360deg
+      );
+  }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (
+  max-width: 700px
+) {
+
+  .civilian-ack-page {
+    padding:
+      30px 13px
+      45px;
+  }
+
+
+  .civilian-ack-hero {
+    padding:
+      32px 18px;
+
+    border-radius:
+      20px;
+  }
+
+
+  .civilian-ack-info-grid {
+    grid-template-columns:
+      1fr;
+
+    padding:
+      16px;
+  }
+
+
+  .civilian-ack-number-box {
+    margin:
+      16px 16px 0;
+
+    flex-direction:
+      column;
+
+    align-items:
+      flex-start;
+  }
+
+
+  .civilian-ack-verification {
+    align-items:
+      flex-start;
+
+    padding:
+      18px;
+  }
+
+
+  .civilian-ack-actions {
+    display:
+      grid;
+  }
+
+
+  .civilian-ack-actions button {
+    width:
+      100%;
+  }
+
+
+  .civilian-ack-footer {
+    flex-direction:
+      column;
+
+    text-align:
+      center;
+  }
+}
+
+
+/* =========================================
+   PRINT
+========================================= */
+
+@media print {
+
+  .civilian-ack-page {
+    padding:
+      0;
+
+    background:
+      #ffffff;
+  }
+
+
+  .civilian-ack-actions {
+    display:
+      none;
+  }
+
+
+  .civilian-ack-hero,
+  .civilian-ack-card {
+    box-shadow:
+      none;
+  }
+
+
+  .civilian-ack-footer {
+    margin-top:
+      20px;
+  }
+}

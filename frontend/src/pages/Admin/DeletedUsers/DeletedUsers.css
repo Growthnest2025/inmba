@@ -1,0 +1,943 @@
+/* =========================================================
+   DELETED USERS PAGE
+========================================================= */
+
+.inmba-deleted-users-page {
+  width: 100%;
+  display: grid;
+  gap: 18px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.inmba-deleted-users-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 23px;
+
+  border: 1px solid #d8e6d6;
+  border-radius: 19px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #f6faf5
+    );
+
+  box-shadow:
+    0 9px 28px
+    rgba(28, 68, 29, 0.06);
+}
+
+.inmba-deleted-users-header p {
+  margin: 0 0 4px;
+
+  color: #4f7952;
+
+  font-size: 0.54rem;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+
+  text-transform: uppercase;
+}
+
+.inmba-deleted-users-header h2 {
+  margin: 0 0 5px;
+
+  color: #213f24;
+
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.inmba-deleted-users-header > div:first-child > span {
+  color: #7f8d7f;
+
+  font-size: 0.59rem;
+}
+
+/* =========================================================
+   HEADER ACTIONS
+========================================================= */
+
+.inmba-deleted-users-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inmba-deleted-users-header-actions > span,
+.inmba-deleted-users-header-actions > button {
+  min-height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 8px 12px;
+
+  border-radius: 10px;
+
+  font-size: 0.55rem;
+  font-weight: 900;
+}
+
+.inmba-deleted-users-header-actions > span {
+  border: 1px solid #d8dfd6;
+
+  color: #687768;
+
+  background: #f8faf7;
+}
+
+.inmba-deleted-users-header-actions > button {
+  border: 1px solid #c5dac3;
+
+  color: #286c2e;
+
+  background: #ffffff;
+}
+
+/* =========================================================
+   INFO
+========================================================= */
+
+.inmba-deleted-users-info {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  padding: 13px 15px;
+
+  border: 1px solid #c9dfc6;
+  border-radius: 13px;
+
+  color: #416c44;
+
+  background: #eff8ed;
+}
+
+.inmba-deleted-users-info > span {
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 36px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 10px;
+
+  color: #ffffff;
+
+  background: #347c3a;
+}
+
+.inmba-deleted-users-info strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 0.59rem;
+}
+
+.inmba-deleted-users-info p {
+  margin: 0;
+
+  font-size: 0.52rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   PANEL
+========================================================= */
+
+.inmba-deleted-users-panel {
+  overflow: hidden;
+
+  border: 1px solid #dbe7d9;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 9px 28px
+    rgba(31, 67, 31, 0.05);
+}
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.inmba-deleted-users-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 17px 19px;
+
+  border-bottom: 1px solid #e3ece2;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f8fbf7,
+      #ffffff
+    );
+}
+
+.inmba-deleted-users-toolbar small {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #768876;
+
+  font-size: 0.49rem;
+  font-weight: 900;
+
+  text-transform: uppercase;
+}
+
+.inmba-deleted-users-toolbar h3 {
+  margin: 0;
+
+  color: #344e35;
+
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.inmba-deleted-users-search {
+  position: relative;
+
+  width: min(
+    100%,
+    340px
+  );
+
+  display: flex;
+  align-items: center;
+}
+
+.inmba-deleted-users-search > i {
+  position: absolute;
+
+  left: 13px;
+
+  color: #809080;
+
+  font-size: 0.6rem;
+}
+
+.inmba-deleted-users-search input {
+  width: 100%;
+  min-height: 41px;
+
+  padding:
+    8px 39px 8px 37px;
+
+  border: 1px solid #cedfcb;
+  border-radius: 10px;
+
+  color: #3c543d;
+  background: #ffffff;
+
+  font-size: 0.58rem;
+
+  outline: none;
+}
+
+.inmba-deleted-users-search input:focus {
+  border-color: #619d65;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(15, 77, 15, 0.06);
+}
+
+.inmba-deleted-users-search button {
+  position: absolute;
+
+  right: 6px;
+
+  width: 29px;
+  height: 29px;
+
+  display: grid;
+  place-items: center;
+
+  border: 0;
+  border-radius: 8px;
+
+  color: #738173;
+  background: #eef4ed;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.inmba-deleted-users-table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.inmba-deleted-users-table {
+  width: 100%;
+  min-width: 960px;
+
+  border-collapse: collapse;
+}
+
+.inmba-deleted-users-table th {
+  padding: 12px 14px;
+
+  border-bottom: 1px solid #dce7da;
+
+  color: #718271;
+  background: #f7faf6;
+
+  font-size: 0.51rem;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.inmba-deleted-users-table td {
+  padding: 14px;
+
+  border-bottom: 1px solid #edf2ec;
+
+  color: #536653;
+
+  font-size: 0.58rem;
+
+  vertical-align: middle;
+}
+
+.inmba-deleted-users-table tbody tr:hover {
+  background: #fbfdfb;
+}
+
+/* =========================================================
+   MEMBER
+========================================================= */
+
+.inmba-deleted-user-id {
+  color: #567057;
+
+  font-family: monospace;
+  font-weight: 900;
+}
+
+.inmba-deleted-user-profile {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+}
+
+.inmba-deleted-user-profile > span {
+  width: 38px;
+  height: 38px;
+
+  flex: 0 0 38px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #58755a,
+      #7d947e
+    );
+
+  font-size: 0.58rem;
+  font-weight: 900;
+}
+
+.inmba-deleted-user-profile strong,
+.inmba-deleted-user-profile small {
+  display: block;
+}
+
+.inmba-deleted-user-profile strong {
+  margin-bottom: 2px;
+
+  color: #3d573e;
+
+  font-size: 0.61rem;
+}
+
+.inmba-deleted-user-profile small {
+  color: #909b90;
+
+  font-size: 0.48rem;
+}
+
+.inmba-deleted-user-login {
+  display: inline-flex;
+
+  padding: 5px 8px;
+
+  border: 1px solid #d2dfd0;
+  border-radius: 7px;
+
+  color: #587058;
+  background: #f7faf6;
+
+  font-size: 0.53rem;
+  font-weight: 900;
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.inmba-deleted-user-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+}
+
+.inmba-deleted-user-actions button {
+  min-height: 32px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  padding: 6px 9px;
+
+  border-radius: 8px;
+
+  font-size: 0.52rem;
+  font-weight: 900;
+}
+
+.inmba-deleted-user-restore {
+  border: 1px solid #a9d0aa;
+
+  color: #27722e;
+  background: #eaf7e9;
+}
+
+.inmba-deleted-user-permanent {
+  border: 1px solid #e6b7bc;
+
+  color: #a83740;
+  background: #fff0f1;
+}
+
+/* =========================================================
+   STATE
+========================================================= */
+
+.inmba-deleted-users-state,
+.inmba-deleted-users-empty {
+  min-height: 330px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  padding: 35px;
+
+  text-align: center;
+}
+
+.inmba-deleted-users-spinner {
+  width: 41px;
+  height: 41px;
+
+  margin-bottom: 12px;
+
+  border: 4px solid #deeadc;
+  border-top-color: #24732b;
+
+  border-radius: 50%;
+
+  animation:
+    inmbaDeletedUsersSpin
+    0.8s linear infinite;
+}
+
+@keyframes inmbaDeletedUsersSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.inmba-deleted-users-error-icon,
+.inmba-deleted-users-empty > span {
+  width: 58px;
+  height: 58px;
+
+  margin-bottom: 12px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 17px;
+
+  font-size: 1.05rem;
+}
+
+.inmba-deleted-users-error-icon {
+  color: #a83942;
+  background: #fff0f1;
+}
+
+.inmba-deleted-users-empty > span {
+  color: #3f7e44;
+  background: #edf7eb;
+}
+
+.inmba-deleted-users-state h3,
+.inmba-deleted-users-empty h3 {
+  margin: 0 0 5px;
+
+  color: #3c543d;
+
+  font-size: 0.76rem;
+}
+
+.inmba-deleted-users-state p,
+.inmba-deleted-users-empty p {
+  max-width: 430px;
+
+  margin: 0;
+
+  color: #879487;
+
+  font-size: 0.56rem;
+  line-height: 1.5;
+}
+
+.inmba-deleted-users-state button,
+.inmba-deleted-users-empty button,
+.inmba-deleted-users-empty a {
+  min-height: 37px;
+
+  margin-top: 12px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 7px 12px;
+
+  border-radius: 9px;
+
+  font-size: 0.54rem;
+  font-weight: 900;
+
+  text-decoration: none;
+}
+
+.inmba-deleted-users-state button {
+  border: 0;
+
+  color: #ffffff;
+  background: #24732b;
+}
+
+.inmba-deleted-users-empty button,
+.inmba-deleted-users-empty a {
+  border: 1px solid #bdd7bb;
+
+  color: #2f7135;
+  background: #f2f9f0;
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.inmba-deleted-user-modal-overlay {
+  position: fixed;
+
+  z-index: 5000;
+
+  inset: 0;
+
+  display: grid;
+  place-items: center;
+
+  padding: 20px;
+
+  background:
+    rgba(8, 27, 10, 0.66);
+
+  backdrop-filter: blur(5px);
+}
+
+.inmba-deleted-user-modal {
+  width: min(
+    100%,
+    460px
+  );
+
+  padding: 27px;
+
+  border: 1px solid #d9e3d7;
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  text-align: center;
+
+  box-shadow:
+    0 30px 75px
+    rgba(0, 0, 0, 0.26);
+}
+
+.inmba-deleted-user-modal-icon {
+  width: 62px;
+  height: 62px;
+
+  margin: 0 auto 12px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 18px;
+
+  font-size: 1.15rem;
+}
+
+.inmba-deleted-user-modal-restore-icon {
+  color: #287531;
+  background: #e7f7e8;
+}
+
+.inmba-deleted-user-modal-delete-icon {
+  color: #ad3640;
+  background: #ffebed;
+}
+
+.inmba-deleted-user-modal > p {
+  margin: 0 0 4px;
+
+  color: #728472;
+
+  font-size: 0.49rem;
+  font-weight: 900;
+  letter-spacing: 0.7px;
+
+  text-transform: uppercase;
+}
+
+.inmba-deleted-user-modal h2 {
+  margin: 0 0 6px;
+
+  color: #344d35;
+
+  font-size: 0.92rem;
+}
+
+.inmba-deleted-user-modal-description {
+  color: #879387;
+
+  font-size: 0.54rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   MODAL MEMBER
+========================================================= */
+
+.inmba-deleted-user-modal-member {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 15px;
+
+  padding: 11px;
+
+  border: 1px solid #dce7da;
+  border-radius: 11px;
+
+  background: #f8fbf7;
+
+  text-align: left;
+}
+
+.inmba-deleted-user-modal-member > span {
+  width: 42px;
+  height: 42px;
+
+  flex: 0 0 42px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: #ffffff;
+
+  background: #477b4b;
+
+  font-size: 0.6rem;
+  font-weight: 900;
+}
+
+.inmba-deleted-user-modal-member strong,
+.inmba-deleted-user-modal-member small {
+  display: block;
+}
+
+.inmba-deleted-user-modal-member strong {
+  margin-bottom: 3px;
+
+  color: #405841;
+
+  font-size: 0.59rem;
+}
+
+.inmba-deleted-user-modal-member small {
+  margin-top: 2px;
+
+  color: #899589;
+
+  font-size: 0.48rem;
+}
+
+/* =========================================================
+   PERMANENT WARNING
+========================================================= */
+
+.inmba-deleted-user-permanent-warning {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 8px;
+
+  margin-top: 12px;
+
+  padding: 11px;
+
+  border: 1px solid #e9bfc3;
+  border-radius: 10px;
+
+  color: #913b43;
+  background: #fff3f4;
+
+  text-align: left;
+}
+
+.inmba-deleted-user-permanent-warning > i {
+  margin-top: 2px;
+}
+
+.inmba-deleted-user-permanent-warning strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 0.53rem;
+}
+
+.inmba-deleted-user-permanent-warning p {
+  margin: 0;
+
+  font-size: 0.48rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   DELETE CONFIRM INPUT
+========================================================= */
+
+.inmba-deleted-user-confirm-field {
+  margin-top: 13px;
+
+  text-align: left;
+}
+
+.inmba-deleted-user-confirm-field label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #665456;
+
+  font-size: 0.52rem;
+}
+
+.inmba-deleted-user-confirm-field input {
+  width: 100%;
+  min-height: 42px;
+
+  padding: 8px 11px;
+
+  border: 1px solid #e1bdc0;
+  border-radius: 10px;
+
+  color: #98353e;
+  background: #fffafa;
+
+  font-size: 0.61rem;
+  font-weight: 900;
+
+  outline: none;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.inmba-deleted-user-modal-error {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 7px;
+
+  margin-top: 11px;
+
+  padding: 10px;
+
+  border: 1px solid #e8b7bc;
+  border-radius: 10px;
+
+  color: #a1353e;
+  background: #fff0f1;
+
+  font-size: 0.51rem;
+
+  text-align: left;
+}
+
+/* =========================================================
+   MODAL ACTIONS
+========================================================= */
+
+.inmba-deleted-user-modal-actions {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 8px;
+
+  margin-top: 17px;
+}
+
+.inmba-deleted-user-modal-actions button {
+  min-height: 41px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  border-radius: 10px;
+
+  font-size: 0.54rem;
+  font-weight: 900;
+}
+
+.inmba-deleted-user-modal-actions > button:first-child {
+  border: 1px solid #d2dfd0;
+
+  color: #6b786b;
+  background: #f7faf6;
+}
+
+.inmba-deleted-user-confirm-restore {
+  border: 0;
+
+  color: #ffffff;
+  background: #24752c;
+}
+
+.inmba-deleted-user-confirm-delete {
+  border: 0;
+
+  color: #ffffff;
+  background: #ad3540;
+}
+
+.inmba-deleted-user-modal-actions button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.48;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 760px) {
+  .inmba-deleted-users-header,
+  .inmba-deleted-users-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .inmba-deleted-users-search {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .inmba-deleted-users-header {
+    padding: 18px;
+  }
+
+  .inmba-deleted-users-header-actions {
+    display: grid;
+
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .inmba-deleted-user-modal {
+    padding: 22px 16px;
+  }
+
+  .inmba-deleted-user-modal-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+    reduce
+) {
+  .inmba-deleted-users-spinner {
+    animation: none;
+  }
+}

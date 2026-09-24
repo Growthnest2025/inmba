@@ -1,0 +1,1417 @@
+/* =========================================================
+   COMMERCIAL PROFILE UPGRADE / FULL KYC
+   ZOMATO RED PREMIUM THEME
+========================================================= */
+
+.commercial-kyc-page,
+.commercial-kyc-page * {
+  box-sizing: border-box;
+}
+
+.commercial-kyc-page {
+  --ck-primary: #e23744;
+  --ck-primary-dark: #c91f2d;
+  --ck-primary-deep: #a81724;
+
+  --ck-bg: #fff7f8;
+  --ck-soft: #ffeef0;
+  --ck-soft-two: #fffafb;
+
+  --ck-white: #ffffff;
+
+  --ck-text: #1c1c1c;
+  --ck-muted: #696969;
+  --ck-subtle: #949494;
+
+  --ck-border: #f3d4d7;
+  --ck-border-strong: #ecb7bd;
+
+  min-height: 100vh;
+
+  padding:
+    38px
+    22px
+    50px;
+
+  background:
+    radial-gradient(
+      circle at 8% 5%,
+      rgba(226, 55, 68, 0.13),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 94% 10%,
+      rgba(201, 31, 45, 0.1),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      #fffafa 0%,
+      #fff4f5 48%,
+      #fffafa 100%
+    );
+
+  color: var(--ck-text);
+
+  font-family:
+    "Poppins",
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+
+/* =========================================================
+   SHELL
+========================================================= */
+
+.commercial-kyc-shell {
+  width:
+    min(
+      1120px,
+      100%
+    );
+
+  margin:
+    0 auto;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.commercial-kyc-header {
+  position: relative;
+
+  overflow: hidden;
+
+  padding:
+    36px
+    38px;
+
+  border-radius:
+    26px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #a81724 0%,
+      #c91f2d 48%,
+      #e23744 100%
+    );
+
+  color:
+    #ffffff;
+
+  box-shadow:
+    0 24px 65px
+      rgba(
+        170,
+        23,
+        36,
+        0.22
+      );
+}
+
+.commercial-kyc-header::before {
+  content: "";
+
+  position: absolute;
+
+  width: 320px;
+  height: 320px;
+
+  right: -130px;
+  top: -185px;
+
+  border-radius: 50%;
+
+  border:
+    50px solid
+      rgba(
+        255,
+        255,
+        255,
+        0.06
+      );
+}
+
+.commercial-kyc-header::after {
+  content: "";
+
+  position: absolute;
+
+  width: 180px;
+  height: 180px;
+
+  right: 150px;
+  bottom: -130px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.04
+    );
+}
+
+.commercial-kyc-header > * {
+  position: relative;
+
+  z-index: 2;
+}
+
+.commercial-kyc-header > span {
+  display: inline-block;
+
+  margin-bottom:
+    10px;
+
+  font-size:
+    10px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    1.8px;
+
+  opacity:
+    0.9;
+}
+
+.commercial-kyc-header h1 {
+  max-width:
+    700px;
+
+  margin:
+    0 0 11px;
+
+  font-size:
+    clamp(
+      30px,
+      4vw,
+      45px
+    );
+
+  line-height:
+    1.15;
+
+  letter-spacing:
+    -1.5px;
+
+  font-weight:
+    800;
+}
+
+.commercial-kyc-header p {
+  max-width:
+    700px;
+
+  margin: 0;
+
+  font-size:
+    12px;
+
+  line-height:
+    1.8;
+
+  opacity:
+    0.87;
+}
+
+/* =========================================================
+   KYC STEPS
+========================================================= */
+
+.commercial-kyc-steps {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      7,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap:
+    10px;
+
+  margin:
+    24px 0;
+
+  padding:
+    14px;
+
+  border:
+    1px solid
+      var(--ck-border);
+
+  border-radius:
+    20px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.92
+    );
+
+  box-shadow:
+    0 14px 40px
+      rgba(
+        101,
+        17,
+        27,
+        0.07
+      );
+}
+
+.commercial-kyc-steps button {
+  min-height:
+    78px;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    7px;
+
+  padding:
+    10px 7px;
+
+  border:
+    1px solid
+      transparent;
+
+  border-radius:
+    15px;
+
+  background:
+    transparent;
+
+  color:
+    var(--ck-muted);
+
+  font-family:
+    inherit;
+
+  cursor:
+    pointer;
+
+  transition:
+    all
+    0.2s ease;
+}
+
+.commercial-kyc-steps button:hover {
+  background:
+    var(--ck-soft-two);
+
+  color:
+    var(--ck-primary);
+}
+
+.commercial-kyc-steps button b {
+  width:
+    30px;
+
+  height:
+    30px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border:
+    1px solid
+      #e4e4e4;
+
+  border-radius:
+    50%;
+
+  background:
+    #ffffff;
+
+  color:
+    #858585;
+
+  font-size:
+    10px;
+
+  font-weight:
+    800;
+
+  transition:
+    all
+    0.2s ease;
+}
+
+.commercial-kyc-steps button span {
+  text-align:
+    center;
+
+  font-size:
+    8.5px;
+
+  line-height:
+    1.35;
+
+  font-weight:
+    700;
+}
+
+.commercial-kyc-steps button.active {
+  border-color:
+    var(--ck-border-strong);
+
+  background:
+    var(--ck-soft);
+
+  color:
+    var(--ck-primary-dark);
+
+  box-shadow:
+    0 9px 20px
+      rgba(
+        226,
+        55,
+        68,
+        0.09
+      );
+}
+
+.commercial-kyc-steps button.active b {
+  border-color:
+    var(--ck-primary);
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--ck-primary),
+      var(--ck-primary-dark)
+    );
+
+  color:
+    #ffffff;
+
+  box-shadow:
+    0 7px 17px
+      rgba(
+        226,
+        55,
+        68,
+        0.22
+      );
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.commercial-kyc-error {
+  margin-bottom:
+    17px;
+
+  padding:
+    13px
+    15px;
+
+  border:
+    1px solid
+      #f1b7bd;
+
+  border-radius:
+    13px;
+
+  background:
+    #fff0f1;
+
+  color:
+    #b71927;
+
+  font-size:
+    10px;
+
+  line-height:
+    1.6;
+
+  font-weight:
+    600;
+}
+
+/* =========================================================
+   MAIN FORM CARD
+========================================================= */
+
+.commercial-kyc-card {
+  padding:
+    32px;
+
+  border:
+    1px solid
+      rgba(
+        226,
+        55,
+        68,
+        0.13
+      );
+
+  border-radius:
+    24px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.96
+    );
+
+  box-shadow:
+    0 22px 60px
+      rgba(
+        103,
+        16,
+        27,
+        0.08
+      );
+
+  backdrop-filter:
+    blur(
+      15px
+    );
+}
+
+.commercial-kyc-card h2 {
+  margin:
+    0 0 26px;
+
+  padding-bottom:
+    17px;
+
+  border-bottom:
+    1px solid
+      var(--ck-border);
+
+  color:
+    var(--ck-text);
+
+  font-size:
+    21px;
+
+  font-weight:
+    800;
+}
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.commercial-kyc-card input,
+.commercial-kyc-card select,
+.commercial-kyc-card textarea {
+  width:
+    100%;
+
+  min-height:
+    50px;
+
+  margin-bottom:
+    15px;
+
+  padding:
+    13px
+    15px;
+
+  border:
+    1.5px solid
+      #e9e9e9;
+
+  border-radius:
+    13px;
+
+  outline:
+    none;
+
+  background:
+    #ffffff;
+
+  color:
+    var(--ck-text);
+
+  font-family:
+    inherit;
+
+  font-size:
+    11px;
+
+  transition:
+    border-color
+      0.2s ease,
+    box-shadow
+      0.2s ease,
+    background
+      0.2s ease;
+}
+
+.commercial-kyc-card input::placeholder,
+.commercial-kyc-card textarea::placeholder {
+  color:
+    #a0a0a0;
+}
+
+.commercial-kyc-card input:hover,
+.commercial-kyc-card select:hover,
+.commercial-kyc-card textarea:hover {
+  border-color:
+    var(--ck-border-strong);
+}
+
+.commercial-kyc-card input:focus,
+.commercial-kyc-card select:focus,
+.commercial-kyc-card textarea:focus {
+  border-color:
+    var(--ck-primary);
+
+  background:
+    #ffffff;
+
+  box-shadow:
+    0 0 0 4px
+      rgba(
+        226,
+        55,
+        68,
+        0.08
+      );
+}
+
+.commercial-kyc-card textarea {
+  min-height:
+    110px;
+
+  resize:
+    vertical;
+
+  line-height:
+    1.7;
+}
+
+/* =========================================================
+   FILE INPUT
+========================================================= */
+
+.commercial-kyc-card input[type="file"] {
+  min-height:
+    auto;
+
+  padding:
+    12px;
+
+  border-style:
+    dashed;
+
+  background:
+    var(--ck-soft-two);
+
+  cursor:
+    pointer;
+}
+
+.commercial-kyc-card
+  input[type="file"]::file-selector-button {
+  margin-right:
+    12px;
+
+  padding:
+    8px
+    12px;
+
+  border:
+    none;
+
+  border-radius:
+    9px;
+
+  background:
+    var(--ck-primary);
+
+  color:
+    #ffffff;
+
+  font-family:
+    inherit;
+
+  font-size:
+    9px;
+
+  font-weight:
+    700;
+
+  cursor:
+    pointer;
+}
+
+/* =========================================================
+   CHECKBOX
+========================================================= */
+
+.commercial-kyc-card
+  input[type="checkbox"] {
+  width:
+    17px;
+
+  height:
+    17px;
+
+  min-height:
+    0;
+
+  margin:
+    0;
+
+  accent-color:
+    var(--ck-primary);
+}
+
+/* =========================================================
+   NEXT BUTTON
+========================================================= */
+
+.commercial-kyc-next {
+  width:
+    100%;
+
+  min-height:
+    52px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  margin-top:
+    15px;
+
+  padding:
+    13px
+    20px;
+
+  border:
+    none;
+
+  border-radius:
+    14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--ck-primary),
+      var(--ck-primary-dark)
+    );
+
+  color:
+    #ffffff;
+
+  font-family:
+    inherit;
+
+  font-size:
+    11px;
+
+  font-weight:
+    800;
+
+  cursor:
+    pointer;
+
+  box-shadow:
+    0 15px 32px
+      rgba(
+        226,
+        55,
+        68,
+        0.23
+      );
+
+  transition:
+    transform
+      0.2s ease,
+    box-shadow
+      0.2s ease,
+    opacity
+      0.2s ease;
+}
+
+.commercial-kyc-next:hover:not(:disabled) {
+  transform:
+    translateY(
+      -2px
+    );
+
+  box-shadow:
+    0 18px 38px
+      rgba(
+        226,
+        55,
+        68,
+        0.3
+      );
+}
+
+.commercial-kyc-next:disabled {
+  opacity:
+    0.65;
+
+  cursor:
+    not-allowed;
+}
+
+/* =========================================================
+   GENERAL BUTTONS INSIDE CARD
+========================================================= */
+
+.commercial-kyc-card button:not(.commercial-kyc-next) {
+  font-family:
+    inherit;
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.commercial-kyc-loading {
+  min-height:
+    100vh;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  position:
+    relative;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fffafa,
+      #fff3f4
+    );
+
+  color:
+    #e23744;
+
+  font-family:
+    "Poppins",
+    "Segoe UI",
+    sans-serif;
+
+  font-size:
+    13px;
+
+  font-weight:
+    700;
+}
+
+.commercial-kyc-loading::before {
+  content: "";
+
+  width:
+    28px;
+
+  height:
+    28px;
+
+  margin-right:
+    11px;
+
+  border:
+    3px solid
+      #f6d4d7;
+
+  border-top-color:
+    #e23744;
+
+  border-radius:
+    50%;
+
+  animation:
+    commercial-kyc-spin
+    0.7s
+    linear
+    infinite;
+}
+
+@keyframes commercial-kyc-spin {
+  to {
+    transform:
+      rotate(
+        360deg
+      );
+  }
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.commercial-kyc-page::-webkit-scrollbar {
+  width:
+    8px;
+}
+
+.commercial-kyc-page::-webkit-scrollbar-track {
+  background:
+    #fff7f8;
+}
+
+.commercial-kyc-page::-webkit-scrollbar-thumb {
+  border-radius:
+    999px;
+
+  background:
+    #efabb1;
+}
+
+.commercial-kyc-page::-webkit-scrollbar-thumb:hover {
+  background:
+    #e23744;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (
+  max-width: 900px
+) {
+  .commercial-kyc-steps {
+    grid-template-columns:
+      repeat(
+        4,
+        1fr
+      );
+  }
+
+  .commercial-kyc-card {
+    padding:
+      26px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (
+  max-width: 600px
+) {
+  .commercial-kyc-page {
+    padding:
+      18px
+      12px
+      32px;
+  }
+
+  .commercial-kyc-header {
+    padding:
+      25px
+      20px;
+
+    border-radius:
+      20px;
+  }
+
+  .commercial-kyc-header h1 {
+    font-size:
+      29px;
+
+    letter-spacing:
+      -1px;
+  }
+
+  .commercial-kyc-header p {
+    font-size:
+      10.5px;
+  }
+
+  .commercial-kyc-steps {
+    grid-template-columns:
+      repeat(
+        2,
+        1fr
+      );
+
+    padding:
+      10px;
+
+    border-radius:
+      17px;
+  }
+
+  .commercial-kyc-steps button {
+    min-height:
+      65px;
+  }
+
+  .commercial-kyc-card {
+    padding:
+      21px
+      16px;
+
+    border-radius:
+      19px;
+  }
+
+  .commercial-kyc-card h2 {
+    font-size:
+      18px;
+  }
+
+  .commercial-kyc-card input,
+  .commercial-kyc-card select,
+  .commercial-kyc-card textarea {
+    font-size:
+      10px;
+  }
+}
+
+
+/* =========================================================
+   FULL KYC JSX - FINAL ADDON
+========================================================= */
+
+/* =========================
+   PROGRESS
+========================= */
+
+.commercial-kyc-progress-wrap {
+  max-width: 650px;
+  margin-top: 24px;
+}
+
+.commercial-kyc-progress-wrap > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 8px;
+  font-size: 10px;
+}
+
+.commercial-kyc-progress-wrap strong {
+  font-weight: 800;
+}
+
+.commercial-kyc-progress-track {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.commercial-kyc-progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #ffffff;
+  transition: width 0.3s ease;
+}
+
+/* =========================
+   COMPLETED STEPS
+========================= */
+
+.commercial-kyc-steps button.completed:not(.active) {
+  color: #16763b;
+  background: #f1fbf4;
+}
+
+.commercial-kyc-steps button.completed:not(.active) b {
+  border-color: #bce1c8;
+  background: #e7f7ec;
+  color: #16763b;
+}
+
+/* =========================
+   SUCCESS
+========================= */
+
+.commercial-kyc-success {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 17px;
+  padding: 13px 15px;
+  border: 1px solid #bce1c8;
+  border-radius: 13px;
+  background: #f1fbf4;
+  color: #16763b;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* =========================
+   SECTION HEADING
+========================= */
+
+.commercial-kyc-section-heading {
+  margin-bottom: 25px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--ck-border);
+}
+
+.commercial-kyc-section-heading > span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--ck-primary);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.commercial-kyc-section-heading h2 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* =========================
+   FORM GRID
+========================= */
+
+.commercial-kyc-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 18px;
+}
+
+.commercial-kyc-field {
+  min-width: 0;
+}
+
+.commercial-kyc-field-full {
+  grid-column: 1 / -1;
+}
+
+.commercial-kyc-field label,
+.commercial-kyc-file-field > label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--ck-text);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.commercial-kyc-field label span,
+.commercial-kyc-file-field > label span {
+  margin-left: 3px;
+  color: var(--ck-primary);
+}
+
+.commercial-kyc-field input,
+.commercial-kyc-field select,
+.commercial-kyc-field textarea {
+  margin-bottom: 0;
+}
+
+/* =========================
+   FIELD ERROR
+========================= */
+
+.commercial-kyc-field-error {
+  display: block !important;
+  margin-top: 6px !important;
+  color: #c91f2d !important;
+  font-size: 8.5px !important;
+  font-weight: 600;
+}
+
+/* =========================
+   UPLOAD GRID
+========================= */
+
+.commercial-kyc-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  margin-top: 22px;
+}
+
+.commercial-kyc-file-field {
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid var(--ck-border);
+  border-radius: 15px;
+  background: var(--ck-soft-two);
+}
+
+.commercial-kyc-file-field input[type="file"] {
+  width: 100%;
+  margin: 0;
+}
+
+.commercial-kyc-file-field > small {
+  display: block;
+  margin-top: 7px;
+  color: var(--ck-muted);
+  font-size: 8px;
+}
+
+.commercial-kyc-file-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 9px;
+  color: #16763b;
+  font-size: 8.5px;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.commercial-kyc-file-status.existing {
+  color: var(--ck-primary);
+}
+
+/* =========================
+   TOGGLE
+========================= */
+
+.commercial-kyc-toggle-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.commercial-kyc-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 13px;
+  border: 1px solid var(--ck-border);
+  border-radius: 12px;
+  background: #fffafb;
+  color: var(--ck-text);
+  font-size: 9px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.commercial-kyc-toggle input {
+  width: 16px !important;
+  height: 16px !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+}
+
+/* =========================
+   NETWORK
+========================= */
+
+.commercial-kyc-network-panel {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.commercial-kyc-network-panel > div {
+  padding: 15px;
+  border: 1px solid var(--ck-border);
+  border-radius: 14px;
+  background: var(--ck-soft-two);
+}
+
+.commercial-kyc-network-panel span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--ck-muted);
+  font-size: 8px;
+}
+
+.commercial-kyc-network-panel strong {
+  color: var(--ck-text);
+  font-size: 10px;
+}
+
+.commercial-kyc-readonly-note {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 5px 0 0;
+  padding: 11px 13px;
+  border-radius: 11px;
+  background: #f7f7f7;
+  color: #696969;
+  font-size: 8.5px;
+}
+
+/* =========================
+   CONSENT
+========================= */
+
+.commercial-kyc-consent-box {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin-top: 22px;
+  padding: 17px;
+  border: 1px solid var(--ck-border);
+  border-radius: 15px;
+  background: var(--ck-soft-two);
+}
+
+.commercial-kyc-consent-box label {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: var(--ck-text);
+  font-size: 9px;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.commercial-kyc-consent-box input {
+  width: 16px !important;
+  height: 16px !important;
+  min-height: 0 !important;
+  margin: 1px 0 0 !important;
+  flex: 0 0 16px;
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+.commercial-kyc-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--ck-border);
+}
+
+.commercial-kyc-draft {
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border: 1.5px solid var(--ck-primary);
+  border-radius: 13px;
+  background: #ffffff;
+  color: var(--ck-primary);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.commercial-kyc-actions .commercial-kyc-next {
+  width: auto;
+  min-width: 180px;
+  margin-top: 0;
+}
+
+.commercial-kyc-draft:disabled,
+.commercial-kyc-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================
+   LOCKED
+========================= */
+
+.commercial-kyc-locked-card {
+  padding: 60px 25px;
+  text-align: center;
+}
+
+.commercial-kyc-locked-card > i {
+  margin-bottom: 17px;
+  color: #16763b;
+  font-size: 52px;
+}
+
+.commercial-kyc-locked-card h2 {
+  margin-bottom: 8px;
+  border: 0;
+  padding: 0;
+}
+
+.commercial-kyc-locked-card p {
+  max-width: 520px;
+  margin: 0 auto 22px;
+  color: var(--ck-muted);
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.commercial-kyc-locked-card .commercial-kyc-next {
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 850px) {
+  .commercial-kyc-network-panel {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  .commercial-kyc-form-grid,
+  .commercial-kyc-upload-grid,
+  .commercial-kyc-network-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .commercial-kyc-actions {
+    flex-direction: column;
+  }
+
+  .commercial-kyc-draft,
+  .commercial-kyc-actions .commercial-kyc-next {
+    width: 100%;
+  }
+
+  .commercial-kyc-progress-wrap > div:first-child {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+}

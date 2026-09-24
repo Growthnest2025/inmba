@@ -1,0 +1,1430 @@
+/* =========================================================
+   ABOUT PAGE ROOT
+========================================================= */
+
+.about-page {
+  width: 100%;
+  overflow-x: hidden;
+  background: var(--white);
+  color: var(--text);
+}
+
+.about-page img {
+  max-width: 100%;
+  display: block;
+}
+
+.about-page a {
+  text-decoration: none;
+}
+
+.about-section-space {
+  padding: 90px 0;
+}
+
+.about-section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  margin-bottom: 16px;
+  border-radius: 999px;
+  background: var(--green-soft);
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.about-section-label::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+.about-section-title {
+  margin-bottom: 16px;
+  color: var(--primary-dark);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.18;
+}
+
+.about-section-description {
+  max-width: 680px;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.about-btn-premium {
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border: 1px solid var(--primary);
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--white);
+  font-weight: 700;
+  transition: var(--transition);
+  box-shadow: 0 12px 28px rgba(15, 77, 15, 0.2);
+}
+
+.about-btn-premium:hover {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: var(--white);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 35px rgba(8, 47, 11, 0.26);
+}
+
+.about-btn-outline-premium {
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--primary);
+  font-weight: 700;
+  transition: var(--transition);
+}
+
+.about-btn-outline-premium:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--white);
+  transform: translateY(-3px);
+}
+
+/* =========================================================
+   HERO SECTION
+========================================================= */
+
+.about-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 140px 0 90px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 12% 18%,
+      rgba(31, 122, 53, 0.12),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 88% 80%,
+      rgba(15, 77, 15, 0.1),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      #ffffff 0%,
+      #f6fbf7 52%,
+      #eaf6ec 100%
+    );
+}
+
+.about-hero::before,
+.about-hero::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.about-hero::before {
+  width: 380px;
+  height: 380px;
+  top: 90px;
+  left: -170px;
+  border: 1px solid rgba(15, 77, 15, 0.12);
+}
+
+.about-hero::after {
+  width: 520px;
+  height: 520px;
+  right: -260px;
+  bottom: -210px;
+  background: rgba(15, 77, 15, 0.05);
+}
+
+.about-hero .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
+.about-hero-copy {
+  position: relative;
+  z-index: 2;
+  padding-right: 30px;
+}
+
+.about-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+  padding: 9px 15px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--primary);
+  font-size: 0.84rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+.about-hero-badge i {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--green-soft);
+}
+
+.about-hero-title {
+  margin-bottom: 24px;
+  color: var(--primary-dark);
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.05em;
+}
+
+.about-hero-title span {
+  position: relative;
+  z-index: 1;
+  color: var(--primary);
+  white-space: nowrap;
+}
+
+.about-hero-title span::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(31, 122, 53, 0.14);
+}
+
+.about-hero-text {
+  max-width: 650px;
+  margin-bottom: 30px;
+  color: var(--muted);
+  font-size: 1.08rem;
+  line-height: 1.9;
+}
+
+.about-hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+/* =========================================================
+   HERO STATISTICS
+========================================================= */
+
+.about-hero-stats {
+  max-width: 620px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 38px;
+}
+
+.about-hero-stat {
+  padding: 18px 16px;
+  border: 1px solid rgba(15, 77, 15, 0.09);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.about-hero-stat:hover {
+  transform: translateY(-5px);
+  border-color: rgba(15, 77, 15, 0.18);
+  box-shadow: var(--shadow-md);
+}
+
+.about-hero-stat strong {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--primary-dark);
+  font-size: 1.15rem;
+}
+
+.about-hero-stat span {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+/* =========================================================
+   HERO VISUAL
+========================================================= */
+
+.about-hero-visual {
+  position: relative;
+  z-index: 2;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-hero-image-main {
+  width: min(100%, 450px);
+  height: 510px;
+  object-fit: cover;
+  border: 8px solid rgba(255, 255, 255, 0.92);
+  border-radius: 42px 42px 120px 42px;
+  box-shadow: var(--shadow-lg);
+}
+
+.about-hero-small-image {
+  position: absolute;
+  top: 38px;
+  right: -12px;
+  width: 170px;
+  height: 150px;
+  object-fit: cover;
+  border: 7px solid var(--white);
+  border-radius: 28px;
+  box-shadow: var(--shadow-md);
+  animation: aboutFloatImage 6s ease-in-out infinite;
+}
+
+.about-hero-floating-card {
+  position: absolute;
+  left: -5px;
+  bottom: 46px;
+  width: 250px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 18px;
+  border: 1px solid rgba(15, 77, 15, 0.1);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-md);
+  animation: aboutFloatCard 5s ease-in-out infinite;
+}
+
+.about-floating-card-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 15px;
+  background: var(--green-soft);
+  color: var(--primary);
+  font-size: 1.15rem;
+}
+
+.about-floating-card-content {
+  min-width: 0;
+}
+
+.about-floating-card-content strong {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--primary-dark);
+  font-size: 0.92rem;
+}
+
+.about-floating-card-content span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.about-hero-dots {
+  position: absolute;
+  right: 8px;
+  bottom: 32px;
+  width: 110px;
+  height: 110px;
+  opacity: 0.4;
+  background-image: radial-gradient(
+    var(--primary) 1.5px,
+    transparent 1.5px
+  );
+  background-size: 13px 13px;
+}
+
+/* =========================================================
+   HERO ANIMATIONS
+========================================================= */
+
+@keyframes aboutFloatCard {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes aboutFloatImage {
+  0%,
+  100% {
+    transform: translateY(0) rotate(1deg);
+  }
+
+  50% {
+    transform: translateY(-12px) rotate(-1deg);
+  }
+}
+
+/* =========================================================
+   INMBA CREED SECTION
+========================================================= */
+
+.about-creed-section {
+  background: var(--white);
+}
+
+.about-creed-card {
+  position: relative;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 52px 54px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(245, 251, 246, 0.98)
+  );
+  box-shadow: var(--shadow-md);
+}
+
+.about-creed-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 28px;
+  bottom: 28px;
+  width: 7px;
+  border-radius: 999px;
+  background: linear-gradient(
+    var(--primary),
+    var(--primary-light)
+  );
+}
+
+.about-creed-card::after {
+  content: "\f10d";
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 5rem;
+  color: rgba(15, 77, 15, 0.06);
+}
+
+.about-creed-text {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  text-align: center;
+  font-family: "Noto Sans Tamil", sans-serif;
+  color: #314936;
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 2.15;
+}
+
+/* =========================================================
+   MISSION SECTION
+========================================================= */
+
+.about-mission-section {
+  position: relative;
+  overflow: hidden;
+  background: var(--green-soft-2);
+}
+
+.about-mission-section::before {
+  content: "";
+  position: absolute;
+  left: -180px;
+  top: -130px;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: rgba(15, 77, 15, 0.05);
+}
+
+/* =========================================================
+   MISSION & VISION CARD
+========================================================= */
+
+.about-mv-card {
+  position: relative;
+  height: 100%;
+  padding: 36px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.about-mv-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    var(--primary),
+    var(--primary-light)
+  );
+}
+
+.about-mv-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-md);
+}
+
+/* =========================================================
+   MISSION & VISION ICON
+========================================================= */
+
+.about-mv-icon {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 24px;
+  border-radius: 20px;
+  background: var(--green-soft);
+  color: var(--primary);
+  font-size: 1.45rem;
+  transition: var(--transition);
+}
+
+.about-mv-card:hover .about-mv-icon {
+  background: var(--primary);
+  color: var(--white);
+  transform: rotate(-6deg) scale(1.08);
+}
+
+/* =========================================================
+   MISSION & VISION CONTENT
+========================================================= */
+
+.about-mv-card h3 {
+  margin-bottom: 14px;
+  color: var(--primary-dark);
+  font-size: 1.55rem;
+  font-weight: 800;
+}
+
+.about-mv-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.85;
+}
+
+/* =========================================================
+   OPTIONAL CARD ANIMATION
+========================================================= */
+
+.about-mv-card:hover h3 {
+  color: var(--primary);
+}
+
+.about-mv-card:hover p {
+  color: #4f6254;
+}
+
+/* =========================================================
+   CORE PILLARS SECTION
+========================================================= */
+
+.about-pillars-section {
+  background: var(--white);
+}
+
+.about-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 46px;
+}
+
+/* =========================================================
+   CORE PILLAR CARD
+========================================================= */
+
+.about-pillar-card {
+  position: relative;
+  min-height: 190px;
+  padding: 28px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.about-pillar-card::before {
+  content: "";
+  position: absolute;
+  right: -34px;
+  bottom: -34px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: rgba(15, 77, 15, 0.05);
+  transition: var(--transition);
+}
+
+.about-pillar-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(15, 77, 15, 0.2);
+  box-shadow: var(--shadow-md);
+}
+
+.about-pillar-card:hover::before {
+  background: rgba(15, 77, 15, 0.08);
+  transform: scale(1.35);
+}
+
+/* =========================================================
+   CORE PILLAR ICON
+========================================================= */
+
+.about-pillar-icon {
+  position: relative;
+  z-index: 1;
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 24px;
+  border-radius: 17px;
+  background: var(--green-soft);
+  color: var(--primary);
+  font-size: 1.25rem;
+  transition: var(--transition);
+}
+
+.about-pillar-card:hover .about-pillar-icon {
+  background: var(--primary);
+  color: var(--white);
+  transform: rotate(-6deg) scale(1.08);
+}
+
+/* =========================================================
+   CORE PILLAR CONTENT
+========================================================= */
+
+.about-pillar-card h5 {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: var(--primary-dark);
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.5;
+  transition: var(--transition);
+}
+
+.about-pillar-card:hover h5 {
+  color: var(--primary);
+}
+
+/* =========================================================
+   FOUNDATION ACTIVITIES SECTION
+========================================================= */
+
+.about-foundation-section {
+  background: var(--green-soft-2);
+}
+
+.about-foundation-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 46px;
+}
+
+/* =========================================================
+   FOUNDATION ACTIVITY CARD
+========================================================= */
+
+.about-foundation-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.about-foundation-card:hover {
+  transform: translateY(-7px);
+  border-color: rgba(15, 77, 15, 0.18);
+  box-shadow: var(--shadow-md);
+}
+
+/* =========================================================
+   FOUNDATION ACTIVITY ICON
+========================================================= */
+
+.about-foundation-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 18px;
+  background: var(--primary);
+  color: var(--white);
+  font-size: 1.2rem;
+  transition: var(--transition);
+}
+
+.about-foundation-card:hover .about-foundation-icon {
+  background: var(--primary-dark);
+  transform: rotate(-6deg) scale(1.05);
+}
+
+/* =========================================================
+   FOUNDATION ACTIVITY CONTENT
+========================================================= */
+
+.about-foundation-card h5 {
+  margin: 0;
+  color: var(--primary-dark);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  transition: var(--transition);
+}
+
+.about-foundation-card:hover h5 {
+  color: var(--primary);
+}
+
+/* =========================================================
+   CALL TO ACTION WRAPPER
+========================================================= */
+
+.about-cta-wrap {
+  padding: 90px 0;
+  background: var(--white);
+}
+
+/* =========================================================
+   CALL TO ACTION SECTION
+========================================================= */
+
+.about-cta-section {
+  position: relative;
+  padding: 74px 40px;
+  overflow: hidden;
+  border-radius: 38px;
+  background:
+    radial-gradient(
+      circle at 10% 20%,
+      rgba(255, 255, 255, 0.13),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at 90% 75%,
+      rgba(255, 255, 255, 0.09),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      var(--primary-dark),
+      var(--primary),
+      var(--primary-light)
+    );
+  color: var(--white);
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.about-cta-section::before,
+.about-cta-section::after {
+  content: "";
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.about-cta-section::before {
+  width: 260px;
+  height: 260px;
+  top: -100px;
+  left: -100px;
+}
+
+.about-cta-section::after {
+  width: 340px;
+  height: 340px;
+  right: -150px;
+  bottom: -180px;
+}
+
+/* =========================================================
+   CALL TO ACTION CONTENT
+========================================================= */
+
+.about-cta-content {
+  position: relative;
+  z-index: 1;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.about-cta-content h2 {
+  margin-bottom: 18px;
+  color: var(--white);
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.about-cta-content p {
+  max-width: 720px;
+  margin: 0 auto 28px;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.8;
+}
+
+/* =========================================================
+   CALL TO ACTION BUTTON
+========================================================= */
+
+.about-btn-light-premium {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 13px 25px;
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--primary);
+  font-weight: 800;
+  transition: var(--transition);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.about-btn-light-premium:hover {
+  background: var(--white);
+  color: var(--primary-dark);
+  transform: translateY(-3px);
+  box-shadow: 0 20px 36px rgba(0, 0, 0, 0.2);
+}
+
+/* =========================================================
+   REVEAL ANIMATION
+========================================================= */
+
+.about-reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition:
+    opacity 0.75s ease,
+    transform 0.75s ease;
+  will-change: opacity, transform;
+}
+
+.about-reveal.about-reveal-show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================================
+   SMOOTH SECTION SCROLL
+========================================================= */
+
+html {
+  scroll-behavior: smooth;
+}
+
+#mission {
+  scroll-margin-top: 100px;
+}
+
+/* =========================================================
+   LARGE SCREEN RESPONSIVE
+   MAX WIDTH: 1199px
+========================================================= */
+
+@media (max-width: 1199px) {
+  .about-section-space {
+    padding: 80px 0;
+  }
+
+  .about-hero {
+    min-height: auto;
+    padding: 130px 0 80px;
+  }
+
+  .about-hero-copy {
+    padding-right: 15px;
+  }
+
+  .about-hero-title {
+    font-size: clamp(2.7rem, 5vw, 4.3rem);
+  }
+
+  .about-hero-visual {
+    min-height: 480px;
+  }
+
+  .about-hero-image-main {
+    width: min(100%, 410px);
+    height: 470px;
+  }
+
+  .about-hero-small-image {
+    width: 150px;
+    height: 135px;
+    right: -4px;
+  }
+
+  .about-hero-floating-card {
+    width: 230px;
+    left: -12px;
+    bottom: 38px;
+  }
+
+  .about-pillars-grid,
+  .about-foundation-grid {
+    gap: 18px;
+  }
+
+  .about-pillar-card {
+    min-height: 180px;
+    padding: 25px;
+  }
+
+  .about-foundation-card {
+    padding: 24px;
+  }
+
+  .about-cta-wrap {
+    padding: 80px 0;
+  }
+
+  .about-cta-section {
+    padding: 65px 35px;
+  }
+}
+
+/* =========================================================
+   TABLET RESPONSIVE
+   MAX WIDTH: 991px
+========================================================= */
+
+@media (max-width: 991px) {
+  .about-section-space {
+    padding: 72px 0;
+  }
+
+  .about-hero {
+    padding: 120px 0 72px;
+  }
+
+  .about-hero-copy {
+    padding-right: 0;
+    text-align: center;
+  }
+
+  .about-hero-badge {
+    justify-content: center;
+  }
+
+  .about-hero-text {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .about-hero-actions {
+    justify-content: center;
+  }
+
+  .about-hero-stats {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .about-hero-visual {
+    min-height: 500px;
+    margin-top: 20px;
+  }
+
+  .about-hero-image-main {
+    width: min(100%, 440px);
+    height: 480px;
+  }
+
+  .about-hero-small-image {
+    right: 7%;
+  }
+
+  .about-hero-floating-card {
+    left: 7%;
+  }
+
+  .about-hero-dots {
+    right: 9%;
+  }
+
+  .about-creed-card {
+    padding: 46px 42px;
+  }
+
+  .about-mv-card {
+    padding: 32px;
+  }
+
+  .about-pillars-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-foundation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-cta-wrap {
+    padding: 72px 0;
+  }
+
+  .about-cta-section {
+    padding: 60px 32px;
+    border-radius: 32px;
+  }
+}
+
+/* =========================================================
+   MOBILE RESPONSIVE
+   MAX WIDTH: 767px
+========================================================= */
+
+@media (max-width: 767px) {
+  .about-section-space {
+    padding: 62px 0;
+  }
+
+  .about-section-label {
+    padding: 7px 12px;
+    font-size: 0.72rem;
+  }
+
+  .about-section-title {
+    margin-bottom: 14px;
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
+  }
+
+  .about-section-description {
+    font-size: 0.94rem;
+    line-height: 1.75;
+  }
+
+  .about-hero {
+    padding: 105px 0 62px;
+  }
+
+  .about-hero::before {
+    width: 260px;
+    height: 260px;
+    top: 90px;
+    left: -150px;
+  }
+
+  .about-hero::after {
+    width: 350px;
+    height: 350px;
+    right: -210px;
+    bottom: -160px;
+  }
+
+  .about-hero-badge {
+    max-width: 100%;
+    padding: 8px 12px;
+    font-size: 0.76rem;
+    text-align: left;
+  }
+
+  .about-hero-title {
+    margin-bottom: 20px;
+    font-size: clamp(2.35rem, 12vw, 3.3rem);
+    letter-spacing: -0.04em;
+  }
+
+  .about-hero-title span::after {
+    height: 8px;
+  }
+
+  .about-hero-text {
+    margin-bottom: 26px;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .about-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .about-btn-premium,
+  .about-btn-outline-premium,
+  .about-btn-light-premium {
+    width: 100%;
+  }
+
+  .about-hero-stats {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 30px;
+  }
+
+  .about-hero-stat {
+    padding: 16px;
+    text-align: left;
+  }
+
+  .about-hero-visual {
+    min-height: 425px;
+    margin-top: 15px;
+  }
+
+  .about-hero-image-main {
+    width: min(100%, 360px);
+    height: 390px;
+    border-width: 6px;
+    border-radius: 32px 32px 85px 32px;
+  }
+
+  .about-hero-small-image {
+    top: 15px;
+    right: 0;
+    width: 120px;
+    height: 110px;
+    border-width: 5px;
+    border-radius: 20px;
+  }
+
+  .about-hero-floating-card {
+    left: 0;
+    bottom: 18px;
+    width: 220px;
+    padding: 14px;
+  }
+
+  .about-floating-card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    font-size: 1rem;
+  }
+
+  .about-floating-card-content strong {
+    font-size: 0.82rem;
+  }
+
+  .about-floating-card-content span {
+    font-size: 0.7rem;
+  }
+
+  .about-hero-dots {
+    width: 80px;
+    height: 80px;
+    right: 3px;
+    bottom: 8px;
+    background-size: 11px 11px;
+  }
+
+  .about-creed-card {
+    padding: 42px 25px 36px;
+    border-radius: 24px;
+  }
+
+  .about-creed-card::before {
+    top: 22px;
+    bottom: 22px;
+    width: 5px;
+  }
+
+  .about-creed-card::after {
+    top: 14px;
+    right: 18px;
+    font-size: 3.8rem;
+  }
+
+  .about-creed-text {
+    font-size: 0.98rem;
+    line-height: 2;
+  }
+
+  .about-mv-card {
+    padding: 28px 24px;
+  }
+
+  .about-mv-icon {
+    width: 58px;
+    height: 58px;
+    margin-bottom: 20px;
+    border-radius: 18px;
+    font-size: 1.3rem;
+  }
+
+  .about-mv-card h3 {
+    font-size: 1.38rem;
+  }
+
+  .about-mv-card p {
+    font-size: 0.94rem;
+    line-height: 1.8;
+  }
+
+  .about-pillars-grid,
+  .about-foundation-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 36px;
+  }
+
+  .about-pillar-card {
+    min-height: auto;
+    padding: 24px;
+  }
+
+  .about-pillar-icon {
+    margin-bottom: 18px;
+  }
+
+  .about-foundation-card {
+    padding: 22px;
+  }
+
+  .about-cta-wrap {
+    padding: 62px 0;
+  }
+
+  .about-cta-section {
+    padding: 50px 24px;
+    border-radius: 26px;
+  }
+
+  .about-cta-content h2 {
+    font-size: clamp(1.85rem, 8vw, 2.5rem);
+  }
+
+  .about-cta-content p {
+    font-size: 0.94rem;
+    line-height: 1.75;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE RESPONSIVE
+   MAX WIDTH: 480px
+========================================================= */
+
+@media (max-width: 480px) {
+  .about-section-space {
+    padding: 54px 0;
+  }
+
+  .about-hero {
+    padding: 95px 0 55px;
+  }
+
+  .about-hero-badge {
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: 16px;
+  }
+
+  .about-hero-title {
+    font-size: clamp(2.15rem, 13vw, 2.85rem);
+  }
+
+  .about-hero-text {
+    font-size: 0.95rem;
+  }
+
+  .about-hero-visual {
+    min-height: 370px;
+  }
+
+  .about-hero-image-main {
+    width: calc(100% - 18px);
+    height: 340px;
+    border-radius: 26px 26px 70px 26px;
+  }
+
+  .about-hero-small-image {
+    width: 100px;
+    height: 92px;
+    right: 0;
+  }
+
+  .about-hero-floating-card {
+    width: 190px;
+    left: 0;
+    bottom: 8px;
+    gap: 9px;
+    padding: 12px;
+  }
+
+  .about-floating-card-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .about-floating-card-content strong {
+    font-size: 0.74rem;
+  }
+
+  .about-floating-card-content span {
+    display: none;
+  }
+
+  .about-hero-dots {
+    display: none;
+  }
+
+  .about-creed-card {
+    padding: 38px 20px 30px;
+  }
+
+  .about-creed-text {
+    font-size: 0.9rem;
+    line-height: 1.95;
+  }
+
+  .about-mv-card {
+    padding: 25px 21px;
+  }
+
+  .about-pillar-card {
+    padding: 22px;
+  }
+
+  .about-pillar-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .about-foundation-card {
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .about-foundation-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+  }
+
+  .about-cta-wrap {
+    padding: 54px 0;
+  }
+
+  .about-cta-section {
+    padding: 44px 20px;
+    border-radius: 22px;
+  }
+}
+
+/* =========================================================
+   ACCESSIBILITY - REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .about-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .about-hero-small-image,
+  .about-hero-floating-card {
+    animation: none;
+  }
+
+  .about-btn-premium,
+  .about-btn-outline-premium,
+  .about-btn-light-premium,
+  .about-hero-stat,
+  .about-mv-card,
+  .about-pillar-card,
+  .about-foundation-card,
+  .about-mv-icon,
+  .about-pillar-icon,
+  .about-foundation-icon {
+    transition: none;
+  }
+
+  .about-btn-premium:hover,
+  .about-btn-outline-premium:hover,
+  .about-btn-light-premium:hover,
+  .about-hero-stat:hover,
+  .about-mv-card:hover,
+  .about-pillar-card:hover,
+  .about-foundation-card:hover {
+    transform: none;
+  }
+}

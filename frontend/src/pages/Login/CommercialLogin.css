@@ -1,0 +1,953 @@
+/* =========================================================
+   COMMERCIAL LOGIN - ZOMATO RED THEME
+========================================================= */
+
+.commercial-login-page,
+.commercial-login-page *,
+.commercial-login-page *::before,
+.commercial-login-page *::after {
+  box-sizing: border-box;
+}
+
+.commercial-login-page {
+  position: relative;
+
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  padding: 32px 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #7f1320 0%,
+      #b91f30 42%,
+      #e23744 100%
+    );
+
+  font-family:
+    "Poppins",
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+.commercial-login-background {
+  position: absolute;
+  inset: 0;
+
+  overflow: hidden;
+
+  pointer-events: none;
+}
+
+.commercial-login-glow {
+  position: absolute;
+
+  border-radius: 50%;
+
+  filter: blur(10px);
+}
+
+.commercial-login-glow-one {
+  width: 520px;
+  height: 520px;
+
+  top: -250px;
+  right: -150px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 180, 187, 0.4),
+      transparent 70%
+    );
+}
+
+.commercial-login-glow-two {
+  width: 500px;
+  height: 500px;
+
+  left: -250px;
+  bottom: -270px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 135, 145, 0.32),
+      transparent 70%
+    );
+}
+
+.commercial-login-pattern {
+  position: absolute;
+
+  inset: 0;
+
+  opacity: 0.035;
+
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.8) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.8) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    42px 42px;
+}
+
+/* =========================================================
+   WRAPPER
+========================================================= */
+
+.commercial-login-wrapper {
+  position: relative;
+
+  z-index: 2;
+
+  width: min(
+    1050px,
+    100%
+  );
+
+  min-height: 640px;
+
+  display: grid;
+
+  grid-template-columns:
+    0.95fr
+    1.05fr;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border-radius: 28px;
+
+  box-shadow:
+    0 28px 80px
+    rgba(78, 4, 15, 0.3);
+}
+
+/* =========================================================
+   LEFT PANEL
+========================================================= */
+
+.commercial-login-brand-panel {
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  padding:
+    36px
+    38px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      145deg,
+      #a71929 0%,
+      #d92c3b 55%,
+      #e23744 100%
+    );
+}
+
+.commercial-login-logo {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  color: #ffffff;
+
+  text-decoration: none;
+}
+
+.commercial-login-logo-icon {
+  width: 45px;
+  height: 45px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.16
+    );
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.2
+    );
+
+  border-radius: 13px;
+
+  font-size: 18px;
+}
+
+.commercial-login-logo strong {
+  display: block;
+
+  font-size: 19px;
+
+  font-weight: 800;
+}
+
+.commercial-login-logo span {
+  display: block;
+
+  margin-top: 1px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.78
+    );
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   BRAND CONTENT
+========================================================= */
+
+.commercial-login-brand-content {
+  padding:
+    40px
+    0;
+}
+
+.commercial-login-brand-label {
+  display: inline-flex;
+
+  margin-bottom: 18px;
+
+  padding:
+    7px
+    12px;
+
+  color: #ffffff;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.13
+    );
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.16
+    );
+
+  border-radius: 999px;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.09em;
+}
+
+.commercial-login-brand-content h1 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size:
+    clamp(
+      35px,
+      4vw,
+      48px
+    );
+
+  font-weight: 800;
+
+  line-height: 1.12;
+
+  letter-spacing:
+    -0.045em;
+}
+
+.commercial-login-brand-content h1 span {
+  color: #ffdadd;
+}
+
+.commercial-login-brand-content > p {
+  max-width: 390px;
+
+  margin:
+    20px
+    0
+    0;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.8
+    );
+
+  font-size: 14px;
+
+  line-height: 1.75;
+}
+
+/* =========================================================
+   BENEFITS
+========================================================= */
+
+.commercial-login-benefits {
+  display: grid;
+
+  gap: 13px;
+
+  margin-top: 28px;
+}
+
+.commercial-login-benefit {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+}
+
+.commercial-login-benefit span {
+  width: 25px;
+  height: 25px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #a71929;
+
+  background: #ffffff;
+
+  border-radius: 50%;
+
+  font-size: 10px;
+}
+
+.commercial-login-benefit p {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+/* =========================================================
+   LEFT FOOTER
+========================================================= */
+
+.commercial-login-brand-footer {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.75
+    );
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   FORM PANEL
+========================================================= */
+
+.commercial-login-form-panel {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding:
+    42px
+    48px;
+
+  background:
+    #fffafa;
+}
+
+.commercial-login-card {
+  width: 100%;
+
+  max-width: 390px;
+}
+
+/* =========================================================
+   MOBILE BRAND
+========================================================= */
+
+.commercial-login-mobile-brand {
+  display: none;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 26px;
+}
+
+.commercial-login-mobile-brand-icon {
+  width: 43px;
+  height: 43px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #ffffff;
+
+  background: #e23744;
+
+  border-radius: 12px;
+}
+
+.commercial-login-mobile-brand strong {
+  display: block;
+
+  color: #5b1118;
+
+  font-size: 15px;
+}
+
+.commercial-login-mobile-brand span {
+  color: #977177;
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   HEADING
+========================================================= */
+
+.commercial-login-heading > span {
+  color: #e23744;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.09em;
+}
+
+.commercial-login-heading h2 {
+  margin:
+    7px
+    0
+    7px;
+
+  color: #4b1218;
+
+  font-size: 29px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    -0.04em;
+}
+
+.commercial-login-heading p {
+  margin: 0;
+
+  color: #86686c;
+
+  font-size: 13px;
+
+  line-height: 1.65;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.commercial-login-error {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 9px;
+
+  margin-top: 20px;
+
+  padding:
+    11px
+    13px;
+
+  color: #b4232d;
+
+  background: #fff0f1;
+
+  border:
+    1px solid #f5c6cb;
+
+  border-radius: 11px;
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.commercial-login-form {
+  display: grid;
+
+  gap: 19px;
+
+  margin-top: 26px;
+}
+
+.commercial-login-field {
+  display: grid;
+
+  gap: 7px;
+}
+
+.commercial-login-field label {
+  color: #502128;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.commercial-login-label-row {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+.commercial-login-forgot {
+  color: #e23744;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  text-decoration: none;
+}
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.commercial-login-input-wrapper {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+}
+
+.commercial-login-input-wrapper > i {
+  position: absolute;
+
+  left: 14px;
+
+  z-index: 2;
+
+  color: #c26870;
+
+  font-size: 14px;
+}
+
+.commercial-login-input-wrapper input {
+  width: 100%;
+  height: 48px;
+
+  padding:
+    0
+    45px
+    0
+    42px;
+
+  color: #451319;
+
+  background: #ffffff;
+
+  border:
+    1px solid #ead3d6;
+
+  border-radius: 12px;
+
+  outline: none;
+
+  font-size: 13px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.commercial-login-input-wrapper input:focus {
+  border-color: #e23744;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      226,
+      55,
+      68,
+      0.11
+    );
+}
+
+.commercial-login-input-wrapper input:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.7;
+}
+
+.commercial-login-id-help {
+  color: #a38689;
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   PASSWORD
+========================================================= */
+
+.commercial-login-password-toggle {
+  position: absolute;
+
+  right: 11px;
+
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #9d777b;
+
+  background: transparent;
+
+  border: 0;
+
+  border-radius: 9px;
+
+  cursor: pointer;
+}
+
+.commercial-login-password-toggle:hover {
+  color: #e23744;
+
+  background: #fff1f2;
+}
+
+/* =========================================================
+   SUBMIT
+========================================================= */
+
+.commercial-login-submit {
+  min-height: 50px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  margin-top: 3px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #d72d3a,
+      #e23744
+    );
+
+  border: 0;
+
+  border-radius: 13px;
+
+  box-shadow:
+    0 10px 24px
+    rgba(
+      226,
+      55,
+      68,
+      0.24
+    );
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    all 0.25s ease;
+}
+
+.commercial-login-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 28px
+    rgba(
+      226,
+      55,
+      68,
+      0.32
+    );
+}
+
+.commercial-login-submit:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.7;
+}
+
+/* =========================================================
+   DIVIDER / REGISTER
+========================================================= */
+
+.commercial-login-divider {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin:
+    24px
+    0
+    16px;
+
+  color: #a88b8f;
+
+  font-size: 10px;
+}
+
+.commercial-login-divider::before,
+.commercial-login-divider::after {
+  content: "";
+
+  height: 1px;
+
+  flex: 1;
+
+  background: #eadcdf;
+}
+
+.commercial-login-register {
+  min-height: 46px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  color: #c52634;
+
+  background: #fff5f5;
+
+  border:
+    1px solid #f0cdd1;
+
+  border-radius: 12px;
+
+  text-decoration: none;
+
+  font-size: 11px;
+
+  font-weight: 800;
+}
+
+.commercial-login-register:hover {
+  background: #ffebed;
+}
+
+/* =========================================================
+   LINKS
+========================================================= */
+
+.commercial-login-other-member {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 5px;
+
+  margin-top: 20px;
+
+  color: #9a7e82;
+
+  font-size: 10px;
+}
+
+.commercial-login-other-member a {
+  color: #e23744;
+
+  font-weight: 800;
+
+  text-decoration: none;
+}
+
+.commercial-login-home {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  margin-top: 18px;
+
+  color: #93787c;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+  text-decoration: none;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (
+  max-width: 850px
+) {
+  .commercial-login-wrapper {
+    grid-template-columns:
+      1fr;
+
+    max-width: 620px;
+  }
+
+  .commercial-login-brand-panel {
+    display: none;
+  }
+
+  .commercial-login-form-panel {
+    min-height: 650px;
+  }
+
+  .commercial-login-mobile-brand {
+    display: flex;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (
+  max-width: 560px
+) {
+  .commercial-login-page {
+    padding:
+      14px;
+  }
+
+  .commercial-login-wrapper {
+    min-height: calc(
+      100vh - 28px
+    );
+
+    border-radius: 21px;
+  }
+
+  .commercial-login-form-panel {
+    min-height: auto;
+
+    padding:
+      32px
+      20px;
+  }
+
+  .commercial-login-heading h2 {
+    font-size: 25px;
+  }
+}
+/* INMBA mark directly on the side panel without an icon container. */
+.commercial-login-brand-logo {
+  display: block;
+  width: 45px;
+  height: 45px;
+  flex: 0 0 45px;
+  object-fit: contain;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}

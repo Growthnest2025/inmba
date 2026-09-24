@@ -1,0 +1,73 @@
+{
+  "name": "inmba-backend",
+  "version": "1.0.0",
+  "description": "INMBA Node.js, Express and MySQL backend API",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "schema:run": "node scripts/run-schema.js",
+    "schema:check": "node scripts/check-schema.js",
+    "verify:backend": "node scripts/verify-backend.js",
+    "test": "node --test",
+    "db:setup": "node scripts/setupDatabase.js",
+    "db:inspect": "node scripts/inspectDatabase.js",
+    "db:test-repositories": "node scripts/testRepositories.js",
+    "registration:test-utils": "node scripts/testRegistrationUtilities.js",
+    "registration:test-validation": "node scripts/testRegistrationValidation.js",
+    "registration:test-repository": "node scripts/testRegistrationRepository.js",
+    "registration:test-service": "node scripts/testRegistrationService.js",
+    "db:migrate": "node src/database/runMigrations.js",
+    "superadmin:create": "node scripts/createSuperAdmin.js",
+    "admin:create": "node scripts/createAdmin.js",
+    "password:hash": "node scripts/hashPassword.js",
+    "flask:migrate": "node scripts/migrateFlaskData.js",
+    "auth:test-foundation": "node scripts/testAuthFoundation.js",
+    "auth:test-service": "node scripts/testAuthService.js",
+    "auth:test-routes": "node scripts/testAuthRoutes.js",
+    "password-reset:test-foundation": "node scripts/testPasswordResetFoundation.js"
+  },
+  "keywords": [
+    "inmba",
+    "nodejs",
+    "express",
+    "mysql",
+    "backend",
+    "rest-api",
+    "membership"
+  ],
+  "author": "INMBA",
+  "license": "ISC",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.6",
+    "archiver": "^8.0.0",
+    "bcryptjs": "^3.0.3",
+    "compression": "^1.8.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dayjs": "^1.11.21",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-mysql-session": "^3.0.3",
+    "express-session": "^1.19.0",
+    "express-validator": "^7.3.2",
+    "formidable": "^3.5.4",
+    "helmet": "^8.3.0",
+    "html-pdf": "^3.0.1",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.11.0",
+    "mysql2": "^3.23.2",
+    "pdfkit": "^0.19.1",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.35.3",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

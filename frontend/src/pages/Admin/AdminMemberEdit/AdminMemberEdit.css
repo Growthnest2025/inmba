@@ -1,0 +1,914 @@
+/* =========================================================
+   ADMIN MEMBER EDIT PAGE
+========================================================= */
+
+.inmba-admin-edit-page {
+  width: 100%;
+
+  display: grid;
+
+  gap: 18px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.inmba-admin-edit-header {
+  display: flex;
+
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 22px;
+
+  padding: 23px;
+
+  border:
+    1px solid
+    #d8e5d6;
+
+  border-radius: 19px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #f6faf5
+    );
+
+  box-shadow:
+    0 9px 28px
+    rgba(
+      30,
+      68,
+      30,
+      0.06
+    );
+}
+
+.inmba-admin-edit-back {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  margin-bottom: 10px;
+
+  color: #327039;
+
+  font-size: 0.59rem;
+
+  font-weight: 900;
+
+  text-decoration: none;
+}
+
+.inmba-admin-edit-header
+  > div:first-child
+  > p {
+  margin:
+    0 0 3px;
+
+  color: #5b805d;
+
+  font-size: 0.56rem;
+
+  font-weight: 900;
+
+  letter-spacing: 0.8px;
+
+  text-transform: uppercase;
+}
+
+.inmba-admin-edit-header
+  h2 {
+  margin:
+    0 0 4px;
+
+  color: #223f24;
+
+  font-size: 1.35rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-edit-header
+  > div:first-child
+  > span {
+  color: #7f8c7f;
+
+  font-size: 0.61rem;
+}
+
+/* =========================================================
+   MEMBER CHIP
+========================================================= */
+
+.inmba-admin-edit-member-chip {
+  min-width: 210px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 12px;
+
+  border:
+    1px solid #d4e3d2;
+
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+.inmba-admin-edit-member-chip
+  > span {
+  width: 44px;
+  height: 44px;
+
+  flex:
+    0 0 44px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 12px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #328b38
+    );
+
+  font-size: 0.85rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-edit-member-chip
+  strong,
+.inmba-admin-edit-member-chip
+  small {
+  display: block;
+}
+
+.inmba-admin-edit-member-chip
+  strong {
+  margin-bottom: 3px;
+
+  color: #3e563f;
+
+  font-size: 0.61rem;
+}
+
+.inmba-admin-edit-member-chip
+  small {
+  color: #899589;
+
+  font-size: 0.51rem;
+}
+
+/* =========================================================
+   NOTICE
+========================================================= */
+
+.inmba-admin-edit-warning,
+.inmba-admin-edit-information {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 10px;
+
+  padding: 13px 15px;
+
+  border-radius: 13px;
+}
+
+.inmba-admin-edit-warning {
+  border:
+    1px solid #e7d098;
+
+  color: #745b15;
+
+  background: #fff8df;
+}
+
+.inmba-admin-edit-information {
+  border:
+    1px solid #b8d5e6;
+
+  color: #426f86;
+
+  background: #eff8fd;
+}
+
+.inmba-admin-edit-warning
+  > i,
+.inmba-admin-edit-information
+  > i {
+  margin-top: 3px;
+}
+
+.inmba-admin-edit-warning
+  strong,
+.inmba-admin-edit-information
+  strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 0.61rem;
+}
+
+.inmba-admin-edit-warning
+  p,
+.inmba-admin-edit-information
+  p {
+  margin: 0;
+
+  font-size: 0.55rem;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.inmba-admin-edit-form-error {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 8px;
+
+  padding: 12px 14px;
+
+  border:
+    1px solid #e8b9be;
+
+  border-radius: 12px;
+
+  color: #a0353f;
+
+  background: #fff1f2;
+
+  font-size: 0.58rem;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.inmba-admin-edit-form {
+  display: grid;
+
+  gap: 14px;
+}
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.inmba-admin-edit-section {
+  overflow: hidden;
+
+  border:
+    1px solid #d9e6d7;
+
+  border-radius: 17px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 7px 23px
+    rgba(
+      29,
+      67,
+      29,
+      0.045
+    );
+}
+
+.inmba-admin-edit-section
+  > header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 14px 17px;
+
+  border-bottom:
+    1px solid #e2ebe0;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f7faf6,
+      #ffffff
+    );
+}
+
+.inmba-admin-edit-section
+  > header
+  > span {
+  width: 40px;
+  height: 40px;
+
+  flex:
+    0 0 40px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #328b38
+    );
+
+  font-size: 0.71rem;
+}
+
+.inmba-admin-edit-section
+  h3 {
+  margin:
+    0 0 2px;
+
+  color: #344f35;
+
+  font-size: 0.68rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-edit-section
+  header
+  p {
+  margin: 0;
+
+  color: #899589;
+
+  font-size: 0.5rem;
+}
+
+/* =========================================================
+   FIELDS
+========================================================= */
+
+.inmba-admin-edit-fields {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 14px;
+
+  padding: 17px;
+}
+
+.inmba-admin-edit-field-full,
+.inmba-admin-edit-inline-note {
+  grid-column:
+    1 / -1;
+}
+
+/* =========================================================
+   FIELD
+========================================================= */
+
+.inmba-admin-edit-field
+  label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #4a614b;
+
+  font-size: 0.55rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-edit-field
+  label
+  span {
+  margin-left: 3px;
+
+  color: #b63640;
+}
+
+.inmba-admin-edit-field
+  input,
+.inmba-admin-edit-field
+  select,
+.inmba-admin-edit-field
+  textarea {
+  width: 100%;
+
+  border:
+    1px solid #cedfcb;
+
+  border-radius: 10px;
+
+  color: #354d36;
+
+  background: #f9fbf8;
+
+  font-family: inherit;
+
+  font-size: 0.61rem;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.inmba-admin-edit-field
+  input,
+.inmba-admin-edit-field
+  select {
+  min-height: 43px;
+
+  padding:
+    9px 11px;
+}
+
+.inmba-admin-edit-field
+  textarea {
+  min-height: 100px;
+
+  padding:
+    10px 11px;
+
+  resize: vertical;
+}
+
+.inmba-admin-edit-field
+  input:focus,
+.inmba-admin-edit-field
+  select:focus,
+.inmba-admin-edit-field
+  textarea:focus {
+  border-color: #609b63;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(
+      15,
+      77,
+      15,
+      0.06
+    );
+}
+
+/* =========================================================
+   INLINE NOTE
+========================================================= */
+
+.inmba-admin-edit-inline-note {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 7px;
+
+  padding: 10px;
+
+  border:
+    1px solid #d7e4d5;
+
+  border-radius: 10px;
+
+  color: #6f806f;
+
+  background: #f7faf6;
+
+  font-size: 0.51rem;
+
+  line-height: 1.5;
+}
+
+.inmba-admin-edit-inline-note
+  i {
+  margin-top: 2px;
+
+  color: #34723a;
+}
+
+/* =========================================================
+   SAVE BAR
+========================================================= */
+
+.inmba-admin-edit-save-bar {
+  position: sticky;
+
+  z-index: 150;
+
+  bottom: 14px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 14px 16px;
+
+  border:
+    1px solid #c9ddc7;
+
+  border-radius: 15px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.96
+    );
+
+  backdrop-filter:
+    blur(15px);
+
+  box-shadow:
+    0 15px 40px
+    rgba(
+      24,
+      65,
+      24,
+      0.14
+    );
+}
+
+.inmba-admin-edit-save-bar
+  > div:first-child {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+}
+
+.inmba-admin-edit-save-bar
+  > div:first-child
+  small {
+  color: #859285;
+
+  font-size: 0.52rem;
+}
+
+.inmba-admin-edit-save-bar
+  > div:first-child
+  strong {
+  min-width: 27px;
+  height: 27px;
+
+  display: inline-grid;
+
+  place-items: center;
+
+  border-radius: 8px;
+
+  color: #ffffff;
+
+  background: #24722b;
+
+  font-size: 0.58rem;
+}
+
+.inmba-admin-edit-save-bar
+  > div:first-child
+  span {
+  color: #587059;
+
+  font-size: 0.52rem;
+
+  font-weight: 800;
+}
+
+.inmba-admin-edit-save-bar
+  > div:last-child {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+/* =========================================================
+   SAVE BUTTONS
+========================================================= */
+
+.inmba-admin-edit-reset,
+.inmba-admin-edit-cancel,
+.inmba-admin-edit-save {
+  min-height: 40px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding:
+    7px 13px;
+
+  border-radius: 9px;
+
+  font-size: 0.56rem;
+
+  font-weight: 900;
+
+  text-decoration: none;
+}
+
+.inmba-admin-edit-reset {
+  border:
+    1px solid #d0ded0;
+
+  color: #687968;
+
+  background: #f7faf6;
+}
+
+.inmba-admin-edit-cancel {
+  border:
+    1px solid #d8deda;
+
+  color: #687568;
+
+  background: #ffffff;
+}
+
+.inmba-admin-edit-save {
+  border: 0;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #318a38
+    );
+
+  box-shadow:
+    0 8px 18px
+    rgba(
+      15,
+      77,
+      15,
+      0.17
+    );
+}
+
+.inmba-admin-edit-reset:disabled,
+.inmba-admin-edit-save:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.45;
+
+  box-shadow: none;
+}
+
+/* =========================================================
+   LOADING / ERROR
+========================================================= */
+
+.inmba-admin-edit-state {
+  min-height: 470px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  padding: 30px;
+
+  text-align: center;
+}
+
+.inmba-admin-edit-spinner {
+  width: 42px;
+  height: 42px;
+
+  margin-bottom: 13px;
+
+  border:
+    4px solid #dbead8;
+
+  border-top-color: #176d22;
+
+  border-radius: 50%;
+
+  animation:
+    inmbaAdminEditSpin
+    0.8s linear infinite;
+}
+
+@keyframes inmbaAdminEditSpin {
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+.inmba-admin-edit-error-icon {
+  width: 57px;
+  height: 57px;
+
+  margin-bottom: 12px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 16px;
+
+  color: #aa3640;
+
+  background: #fff0f1;
+
+  font-size: 1.05rem;
+}
+
+.inmba-admin-edit-state
+  h2 {
+  margin:
+    0 0 6px;
+
+  color: #324e33;
+
+  font-size: 0.9rem;
+}
+
+.inmba-admin-edit-state
+  p {
+  max-width: 430px;
+
+  margin: 0;
+
+  color: #859185;
+
+  font-size: 0.61rem;
+
+  line-height: 1.5;
+}
+
+.inmba-admin-edit-state
+  > div {
+  display: flex;
+
+  gap: 8px;
+
+  margin-top: 14px;
+}
+
+.inmba-admin-edit-state
+  button,
+.inmba-admin-edit-state
+  a {
+  min-height: 38px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding:
+    7px 13px;
+
+  border-radius: 9px;
+
+  font-size: 0.56rem;
+
+  font-weight: 900;
+
+  text-decoration: none;
+}
+
+.inmba-admin-edit-state
+  button {
+  border: 0;
+
+  color: #ffffff;
+
+  background: #176d23;
+}
+
+.inmba-admin-edit-state
+  a {
+  border:
+    1px solid #cadcca;
+
+  color: #376e3b;
+
+  background: #ffffff;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (
+  max-width: 760px
+) {
+  .inmba-admin-edit-header {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+  .inmba-admin-edit-member-chip {
+    width: 100%;
+  }
+
+  .inmba-admin-edit-fields {
+    grid-template-columns:
+      1fr;
+  }
+
+  .inmba-admin-edit-field-full,
+  .inmba-admin-edit-inline-note {
+    grid-column: auto;
+  }
+}
+
+@media (
+  max-width: 560px
+) {
+  .inmba-admin-edit-header {
+    padding: 18px;
+  }
+
+  .inmba-admin-edit-fields {
+    padding: 14px;
+  }
+
+  .inmba-admin-edit-save-bar {
+    position: static;
+
+    align-items:
+      stretch;
+
+    flex-direction:
+      column;
+  }
+
+  .inmba-admin-edit-save-bar
+    > div:last-child {
+    display: grid;
+
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .inmba-admin-edit-save {
+    grid-column:
+      1 / -1;
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+    reduce
+) {
+  .inmba-admin-edit-spinner {
+    animation: none;
+  }
+}

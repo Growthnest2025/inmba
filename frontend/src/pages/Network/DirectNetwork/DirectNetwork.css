@@ -1,0 +1,1073 @@
+/* ========================================
+   DIRECT NETWORK PAGE
+======================================== */
+
+.inmba-network-page {
+  min-height: 100vh;
+  padding: 125px 22px 70px;
+  background:
+    radial-gradient(
+      circle at 8% 15%,
+      rgba(15, 77, 15, 0.1),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 92% 80%,
+      rgba(57, 145, 57, 0.08),
+      transparent 35%
+    ),
+    linear-gradient(
+      145deg,
+      #edf6ea 0%,
+      #f9fcf8 52%,
+      #eaf3e6 100%
+    );
+}
+
+.inmba-network-container {
+  width: min(100%, 1180px);
+  margin: 0 auto;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.inmba-network-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding: 28px 30px;
+  border-radius: 26px;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 88% 10%,
+      rgba(255, 255, 255, 0.15),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      #0b410b,
+      #126012 55%,
+      #278327
+    );
+  box-shadow:
+    0 22px 48px rgba(15, 77, 15, 0.21);
+}
+
+.inmba-network-header p {
+  margin: 0 0 5px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.73rem;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.inmba-network-header h1 {
+  margin: 0 0 6px;
+  font-size: clamp(1.7rem, 4vw, 2.45rem);
+  font-weight: 900;
+}
+
+.inmba-network-header > div:first-child > span {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.6;
+}
+
+.inmba-network-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inmba-network-header-actions button,
+.inmba-network-header-actions a {
+  min-height: 43px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.13);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.inmba-network-header-actions button:hover,
+.inmba-network-header-actions a:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.inmba-network-header-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+/* ========================================
+   MEMBER SUMMARY
+======================================== */
+
+.inmba-network-member-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 18px 21px;
+  border: 1px solid rgba(15, 77, 15, 0.12);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 12px 30px rgba(35, 70, 35, 0.08);
+}
+
+.inmba-network-member-avatar {
+  width: 57px;
+  height: 57px;
+  flex: 0 0 57px;
+  display: grid;
+  place-items: center;
+  border-radius: 17px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #288428
+    );
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.inmba-network-member-card > div:nth-child(2) {
+  flex: 1;
+}
+
+.inmba-network-member-card p {
+  margin: 0 0 2px;
+  color: #798779;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.inmba-network-member-card h2 {
+  margin: 0 0 3px;
+  color: #193819;
+  font-size: 1.08rem;
+  font-weight: 900;
+}
+
+.inmba-network-member-card div > span {
+  color: #6e7d6e;
+  font-size: 0.74rem;
+}
+
+/* ========================================
+   REFERRAL
+======================================== */
+
+.inmba-network-referral {
+  min-width: 275px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 3px 10px;
+  padding: 12px 14px;
+  border: 1px solid #cce0ca;
+  border-radius: 14px;
+  background: #f0f8ef;
+}
+
+.inmba-network-referral > span {
+  grid-column: 1 / -1;
+  color: #728272;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.inmba-network-referral strong {
+  color: #174d17;
+  font-size: 0.84rem;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  overflow-wrap: anywhere;
+}
+
+.inmba-network-referral button {
+  min-height: 31px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border: 0;
+  border-radius: 8px;
+  color: #ffffff;
+  background: #0f4d0f;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.inmba-network-referral button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ========================================
+   STATISTICS
+======================================== */
+
+.inmba-network-stat-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.inmba-network-stat-grid article {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 18px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 10px 27px rgba(35, 70, 35, 0.07);
+}
+
+.inmba-network-stat-grid article > span {
+  width: 49px;
+  height: 49px;
+  flex: 0 0 49px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2d872d
+    );
+}
+
+.inmba-network-stat-grid p {
+  margin: 0 0 3px;
+  color: #788678;
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.inmba-network-stat-grid h2 {
+  margin: 0 0 3px;
+  color: #1b3d1b;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.inmba-network-stat-grid small {
+  color: #839083;
+  font-size: 0.65rem;
+}
+
+.inmba-network-stat-grid
+  .inmba-network-stat-paid
+  > span {
+  background:
+    linear-gradient(
+      135deg,
+      #198754,
+      #35aa64
+    );
+}
+
+.inmba-network-stat-grid
+  .inmba-network-stat-unpaid
+  > span {
+  background:
+    linear-gradient(
+      135deg,
+      #bd7b0f,
+      #e2a532
+    );
+}
+
+.inmba-network-stat-grid
+  .inmba-network-stat-tns
+  > span {
+  background:
+    linear-gradient(
+      135deg,
+      #174c87,
+      #3477bc
+    );
+}
+
+/* ========================================
+   DISTRIBUTION
+======================================== */
+
+.inmba-network-distribution-card {
+  margin-bottom: 20px;
+  padding: 22px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow:
+    0 14px 34px rgba(34, 68, 34, 0.08);
+}
+
+.inmba-network-distribution-card > header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.inmba-network-distribution-card
+  > header
+  > span {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #288428
+    );
+}
+
+.inmba-network-distribution-card h2 {
+  margin: 0;
+  color: #1d3b1d;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.inmba-network-distribution-card header p {
+  margin: 3px 0 0;
+  color: #788678;
+  font-size: 0.7rem;
+}
+
+.inmba-network-distribution-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.inmba-network-distribution-grid article {
+  padding: 16px;
+  border: 1px solid #dbe8d9;
+  border-radius: 15px;
+  background: #f8fbf7;
+}
+
+.inmba-network-distribution-grid
+  article
+  > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.inmba-network-distribution-grid
+  article
+  > div:first-child
+  span {
+  color: #4c664c;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.inmba-network-distribution-grid
+  article
+  > div:first-child
+  strong {
+  color: #174d17;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.inmba-network-progress-track {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dfeade;
+}
+
+.inmba-network-progress-track > span {
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      90deg,
+      #0f4d0f,
+      #42a34b
+    );
+}
+
+.inmba-network-distribution-grid small {
+  display: block;
+  margin-top: 8px;
+  color: #7d8b7d;
+  font-size: 0.65rem;
+}
+
+/* ========================================
+   MEMBERS CARD
+======================================== */
+
+.inmba-network-members-card {
+  margin-bottom: 20px;
+  padding: 22px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 23px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow:
+    0 16px 38px rgba(34, 68, 34, 0.09);
+}
+
+.inmba-network-members-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.inmba-network-members-header > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.inmba-network-members-header
+  > div
+  > span {
+  width: 45px;
+  height: 45px;
+  flex: 0 0 45px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #298529
+    );
+}
+
+.inmba-network-members-header h2 {
+  margin: 0;
+  color: #193819;
+  font-size: 1.02rem;
+  font-weight: 900;
+}
+
+.inmba-network-members-header p {
+  margin: 3px 0 0;
+  color: #798779;
+  font-size: 0.7rem;
+}
+
+.inmba-network-members-header > strong {
+  padding: 7px 11px;
+  border-radius: 999px;
+  color: #176027;
+  background: #e4f3e4;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+/* ========================================
+   FILTERS
+======================================== */
+
+.inmba-network-filters {
+  display: grid;
+  grid-template-columns:
+    minmax(240px, 1.6fr)
+    repeat(3, minmax(150px, 1fr))
+    auto;
+  gap: 10px;
+  margin-bottom: 17px;
+}
+
+.inmba-network-search {
+  position: relative;
+}
+
+.inmba-network-search > i {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #698169;
+  font-size: 0.74rem;
+}
+
+.inmba-network-search input,
+.inmba-network-filters select {
+  width: 100%;
+  min-height: 43px;
+  padding: 8px 12px;
+  border: 1px solid #d4e2d2;
+  border-radius: 11px;
+  color: #294129;
+  background: #fbfdfb;
+  font-size: 0.74rem;
+  outline: none;
+}
+
+.inmba-network-search input {
+  padding-left: 38px;
+}
+
+.inmba-network-search input:focus,
+.inmba-network-filters select:focus {
+  border-color: #6ba76b;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(15, 77, 15, 0.08);
+}
+
+.inmba-network-filters > button {
+  min-height: 43px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid #e1c7ca;
+  border-radius: 11px;
+  color: #9a3440;
+  background: #fff4f5;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+/* ========================================
+   TABLE
+======================================== */
+
+.inmba-network-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #dde8db;
+  border-radius: 15px;
+}
+
+.inmba-network-table {
+  width: 100%;
+  min-width: 750px;
+  border-collapse: collapse;
+}
+
+.inmba-network-table th,
+.inmba-network-table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid #e4ece2;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.inmba-network-table th {
+  color: #527052;
+  background: #f2f7f1;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.inmba-network-table td {
+  color: #344b34;
+  background: #ffffff;
+  font-size: 0.72rem;
+}
+
+.inmba-network-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.inmba-network-table tbody tr:hover td {
+  background: #fafdfa;
+}
+
+.inmba-network-table-member {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inmba-network-table-member > span {
+  width: 39px;
+  height: 39px;
+  flex: 0 0 39px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #328d32
+    );
+  font-weight: 900;
+}
+
+.inmba-network-table-member strong,
+.inmba-network-table-member small {
+  display: block;
+}
+
+.inmba-network-table-member strong {
+  margin-bottom: 3px;
+  color: #284328;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.inmba-network-table-member small {
+  color: #849084;
+  font-size: 0.61rem;
+}
+
+.inmba-network-table code {
+  padding: 5px 8px;
+  border-radius: 7px;
+  color: #245424;
+  background: #edf6ec;
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.inmba-network-membership-badge,
+.inmba-network-payment-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  font-size: 0.63rem;
+  font-weight: 900;
+}
+
+.inmba-network-membership-badge {
+  color: #285c28;
+  background: #e6f2e5;
+}
+
+.inmba-network-payment-paid {
+  color: #176027;
+  background: #dcf1df;
+}
+
+.inmba-network-payment-unpaid {
+  color: #88620e;
+  background: #fff0c7;
+}
+
+.inmba-network-view-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1px solid #c9dfc7;
+  border-radius: 9px;
+  color: #176027;
+  background: #eef7ed;
+  font-size: 0.66rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.inmba-network-view-button:hover {
+  color: #ffffff;
+  background: #0f4d0f;
+}
+
+.inmba-network-no-profile {
+  color: #8a958a;
+  font-size: 0.64rem;
+}
+
+/* ========================================
+   EMPTY STATE
+======================================== */
+
+.inmba-network-empty-state {
+  min-height: 270px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  border: 1px dashed #b8ceb6;
+  border-radius: 16px;
+  background: #f8fbf7;
+  text-align: center;
+}
+
+.inmba-network-empty-state > span {
+  width: 65px;
+  height: 65px;
+  margin-bottom: 15px;
+  display: grid;
+  place-items: center;
+  border-radius: 19px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #318d31
+    );
+  font-size: 1.4rem;
+}
+
+.inmba-network-empty-state h3 {
+  margin: 0 0 7px;
+  color: #244224;
+  font-size: 0.98rem;
+  font-weight: 900;
+}
+
+.inmba-network-empty-state p {
+  max-width: 480px;
+  margin: 0;
+  color: #748374;
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+.inmba-network-empty-state button {
+  min-height: 38px;
+  margin-top: 14px;
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 10px;
+  color: #ffffff;
+  background: #0f4d0f;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+/* ========================================
+   INDIRECT PRIVACY
+======================================== */
+
+.inmba-network-indirect-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #c8dfc6;
+  border-radius: 18px;
+  background: #edf7eb;
+}
+
+.inmba-network-indirect-card > span {
+  width: 45px;
+  height: 45px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #1e6824;
+  background: #d6ecd4;
+}
+
+.inmba-network-indirect-card h3 {
+  margin: 0 0 4px;
+  color: #285328;
+  font-size: 0.83rem;
+  font-weight: 900;
+}
+
+.inmba-network-indirect-card p {
+  margin: 0;
+  color: #627562;
+  font-size: 0.69rem;
+  line-height: 1.55;
+}
+
+.inmba-network-indirect-card
+  > div:last-child {
+  display: flex;
+  gap: 9px;
+}
+
+.inmba-network-indirect-card article {
+  min-width: 80px;
+  padding: 9px 12px;
+  border-radius: 11px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.inmba-network-indirect-card article span,
+.inmba-network-indirect-card article strong {
+  display: block;
+}
+
+.inmba-network-indirect-card article span {
+  margin-bottom: 3px;
+  color: #718071;
+  font-size: 0.6rem;
+  font-weight: 800;
+}
+
+.inmba-network-indirect-card article strong {
+  color: #195b22;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+/* ========================================
+   COMMON BUTTONS
+======================================== */
+
+.inmba-network-primary-button,
+.inmba-network-secondary-button {
+  min-height: 43px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.inmba-network-primary-button {
+  border: 0;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #278327
+    );
+}
+
+.inmba-network-secondary-button {
+  border: 1px solid #cee1cb;
+  color: #0f4d0f;
+  background: #edf6ec;
+}
+
+/* ========================================
+   LOADING / ERROR
+======================================== */
+
+.inmba-network-state {
+  width: min(100%, 540px);
+  min-height: 350px;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 35px;
+  border: 1px solid rgba(15, 77, 15, 0.12);
+  border-radius: 25px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow:
+    0 20px 45px rgba(35, 68, 35, 0.1);
+}
+
+.inmba-network-state .spinner-border {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 19px;
+  color: #0f4d0f;
+}
+
+.inmba-network-state h1 {
+  margin: 0 0 8px;
+  color: #193719;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.inmba-network-state p {
+  max-width: 390px;
+  margin: 0 0 20px;
+  color: #718071;
+  line-height: 1.65;
+}
+
+.inmba-network-state-icon {
+  width: 67px;
+  height: 67px;
+  margin-bottom: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #a92d39;
+  background: #fde8ea;
+  font-size: 1.5rem;
+}
+
+.inmba-network-state-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1050px) {
+  .inmba-network-filters {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .inmba-network-search {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 900px) {
+  .inmba-network-stat-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .inmba-network-member-card {
+    flex-wrap: wrap;
+  }
+
+  .inmba-network-referral {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .inmba-network-page {
+    padding:
+      98px 14px 50px;
+  }
+
+  .inmba-network-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 23px;
+  }
+
+  .inmba-network-header-actions {
+    width: 100%;
+  }
+
+  .inmba-network-header-actions button,
+  .inmba-network-header-actions a {
+    flex: 1;
+  }
+
+  .inmba-network-distribution-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-network-indirect-card {
+    grid-template-columns:
+      auto 1fr;
+  }
+
+  .inmba-network-indirect-card
+    > div:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 575px) {
+  .inmba-network-page {
+    padding-right: 11px;
+    padding-left: 11px;
+  }
+
+  .inmba-network-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-network-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-network-search {
+    grid-column: auto;
+  }
+
+  .inmba-network-members-card {
+    padding: 17px;
+    border-radius: 20px;
+  }
+
+  .inmba-network-members-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .inmba-network-members-header > strong {
+    width: 100%;
+    text-align: center;
+  }
+
+  .inmba-network-indirect-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .inmba-network-indirect-card > span {
+    margin: 0 auto;
+  }
+
+  .inmba-network-indirect-card
+    > div:last-child {
+    grid-column: auto;
+    justify-content: center;
+  }
+
+  .inmba-network-state-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .inmba-network-primary-button,
+  .inmba-network-secondary-button {
+    width: 100%;
+  }
+}
