@@ -48,6 +48,79 @@ export default function LoginSelection() {
     },
   ];
 
+  // temporary code for frontend deployment
+  // Backend ready aana false-ah true nu maathunga
+  const loginAvailable = false;
+
+  if (!loginAvailable) {
+    return (
+      <div className="inmba-login-selection-page">
+        <div className="inmba-login-selection-background">
+          <div className="inmba-login-selection-glow glow-one" />
+          <div className="inmba-login-selection-glow glow-two" />
+          <div className="inmba-login-selection-pattern" />
+        </div>
+
+        <main className="inmba-login-selection-main">
+          <section className="inmba-login-selection-card">
+            <div className="inmba-login-selection-header">
+              <button
+                type="button"
+                className="inmba-login-selection-home"
+                onClick={() => navigate("/")}
+              >
+                <i className="fa-solid fa-arrow-left" />
+                Back to Home
+              </button>
+
+              <div className="inmba-login-selection-brand">
+                <div className="inmba-login-selection-logo">
+                  <img src={inmbaLogo} alt="INMBA Logo" />
+                </div>
+                <div>
+                  <span className="inmba-login-selection-brand-name">
+                    INMBA.org
+                  </span>
+                  <span className="inmba-login-selection-brand-subtitle">
+                    International Network Management and Business Association
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="inmba-login-maintenance">
+              <div className="inmba-login-maintenance-icon">
+                <i className="fa-solid fa-screwdriver-wrench" />
+              </div>
+
+              <span className="inmba-login-maintenance-label">
+                MEMBER ACCESS UPDATE
+              </span>
+
+              <h1>We’ll be back soon</h1>
+
+              <p>
+                Member login is temporarily unavailable while we set up
+                a better experience for you. Please check back later.
+              </p>
+
+              <button
+                type="button"
+                className="inmba-login-maintenance-button"
+                onClick={() => navigate("/")}
+              >
+                Go to Homepage
+                <i className="fa-solid fa-arrow-right" />
+              </button>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  //
+ 
   return (
     <div className="inmba-login-selection-page">
       {/* BACKGROUND */}

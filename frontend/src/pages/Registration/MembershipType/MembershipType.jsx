@@ -178,6 +178,48 @@ export default function MembershipType() {
         searchParams,
       ]
     );
+  const registrationAvailable = false;
+
+  if (!registrationAvailable) {
+    return (
+      <main className="inmba-membership-type-page">
+        <div className="inmba-membership-type-container">
+          <header className="inmba-membership-type-topbar">
+            <Link to="/" className="inmba-membership-type-brand">
+              <span>I</span>
+              <div>
+                <strong>INMBA</strong>
+                <small>Membership Registration</small>
+              </div>
+            </Link>
+          </header>
+
+          <section className="inmba-registration-unavailable">
+            <div className="inmba-registration-unavailable-icon">
+              <i className="fas fa-screwdriver-wrench" aria-hidden="true" />
+            </div>
+
+            <span className="inmba-registration-unavailable-label">
+              REGISTRATION UPDATE
+            </span>
+
+            <h1>Membership registration is temporarily unavailable</h1>
+
+            <p>
+              We’re setting up our membership registration service.
+              Please check back later.
+            </p>
+
+            <Link to="/" className="inmba-registration-unavailable-button">
+              Back to Homepage
+              <i className="fas fa-arrow-right" aria-hidden="true" />
+            </Link>
+          </section>
+        </div>
+      </main>
+    );
+  }
+
 
   return (
     <main className="inmba-membership-type-page">

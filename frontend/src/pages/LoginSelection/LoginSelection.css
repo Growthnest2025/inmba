@@ -937,3 +937,65 @@
   }
 }
 
+/* temporary code */
+.inmba-login-maintenance {
+  max-width: 620px;
+  margin: 40px auto;
+  padding: 48px 24px 56px;
+  text-align: center;
+}
+
+.inmba-login-maintenance-icon {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 24px;
+  border-radius: 20px;
+  background: #eef4ff;
+  color:#0f4d0f;
+  font-size: 30px;
+}
+
+.inmba-login-maintenance-label {
+  color:#0f4d0f;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.inmba-login-maintenance h1 {
+  margin: 14px 0;
+  font-size: clamp(30px, 5vw, 44px);
+  line-height: 1.2;
+}
+
+.inmba-login-maintenance p {
+  margin: 0 auto;
+  max-width: 470px;
+  color: #64748b;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.inmba-login-maintenance-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 32px;
+  padding: 14px 24px;
+  border: 0;
+  border-radius: 10px;
+  background: #0f4d0f;
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.inmba-login-maintenance-button:hover {
+  background: #0f4d0f;
+}
+.inmba-login-selection-logo{
+   background: #0f4d0f;
+}
