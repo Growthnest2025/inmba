@@ -1,0 +1,319 @@
+/* =========================
+   OUR BRANCHES PAGE
+========================= */
+
+.branches-page {
+  background: var(--background-color, #f8fbf8);
+  padding-top: var(--navbar-height, 76px);
+  overflow-x: hidden;
+}
+
+/* =====================
+   HERO
+===================== */
+
+.branches-hero {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  padding: 70px 0 60px;
+  text-align: center;
+  color: var(--white, #fff);
+}
+
+.branches-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-light, #f8e9a1);
+  margin-bottom: 12px;
+}
+
+.branches-title {
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  color: var(--white, #fff);
+  margin-bottom: 16px;
+}
+
+.branches-subtitle {
+  max-width: 640px;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+/* =====================
+   SECTION HEADING
+===================== */
+
+.section-heading {
+  text-align: center;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 700;
+  color: var(--heading-color, var(--primary-dark));
+  margin-bottom: 10px;
+}
+
+.list-hint {
+  text-align: center;
+  color: var(--text-light, #6b7280);
+  margin-bottom: 32px;
+  font-size: 0.95rem;
+}
+
+/* =====================
+   MARQUEE SECTION (edge-to-edge, no fade)
+===================== */
+
+.branches-marquee-section {
+  padding: 60px 0 70px;
+}
+
+.branches-marquee-section .section-heading {
+  margin-bottom: 36px;
+}
+
+.marquee-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.marquee-row {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  width: max-content;
+}
+
+.marquee-row-left .marquee-track {
+  animation: scroll-left 32s linear infinite;
+}
+
+.marquee-row-right .marquee-track {
+  animation: scroll-right 32s linear infinite;
+}
+
+.marquee-row:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-33.3333%);
+  }
+}
+
+@keyframes scroll-right {
+  from {
+    transform: translateX(-33.3333%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.marquee-card {
+  flex: 0 0 auto;
+  width: 220px;
+  height: 130px;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border-color, #d9e6d9);
+  border-radius: var(--radius-md, 14px);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  transition: var(--transition);
+}
+
+.marquee-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-light, #2f7a2f);
+}
+
+.marquee-card img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-row-left .marquee-track,
+  .marquee-row-right .marquee-track {
+    animation: none;
+  }
+}
+
+/* =====================
+   MEMBER LIST (each row is a Link to its detail page)
+===================== */
+
+.branches-list-section {
+  padding: 20px 0 80px;
+}
+
+.branches-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.branch-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 20px;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border-color, #d9e6d9);
+  border-radius: var(--radius-md, 14px);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.branch-row:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-light, #2f7a2f);
+}
+
+.branch-row-logo {
+  flex: 0 0 auto;
+  width: 74px;
+  height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm, 8px);
+  background: var(--green-soft, #eaf6ec);
+  overflow: hidden;
+}
+
+.branch-row-logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.branch-text-logo {
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-align: center;
+  color: var(--primary-dark);
+  line-height: 1.1;
+  padding: 4px;
+}
+
+.branch-row-info {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.branch-row-name {
+  font-weight: 700;
+  color: var(--heading-color, var(--primary-dark));
+  font-size: 1.05rem;
+}
+
+.branch-row-tagline {
+  color: var(--text-light, #6b7280);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.branch-row-arrow {
+  flex: 0 0 auto;
+  color: var(--primary);
+  font-size: 1rem;
+  transition: transform 0.25s ease;
+}
+
+.branch-row:hover .branch-row-arrow {
+  transform: translateX(5px);
+}
+
+/* =====================
+   CTA
+===================== */
+
+.branches-cta {
+  background: var(--primary-extra-light, #eaf7ea);
+  padding: 60px 0;
+  text-align: center;
+}
+
+.branches-cta h3 {
+  color: var(--heading-color, var(--primary-dark));
+  font-size: clamp(1.3rem, 2.4vw, 1.8rem);
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.btn-join-branches {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--primary);
+  color: var(--white, #fff);
+  padding: 14px 32px;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-join-branches:hover {
+  background: var(--primary-dark);
+  color: var(--white, #fff);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+/* =====================
+   RESPONSIVE
+===================== */
+
+@media (max-width: 576px) {
+  .marquee-card {
+    width: 160px;
+    height: 100px;
+    padding: 12px;
+  }
+
+  .branches-hero {
+    padding: 50px 0 40px;
+  }
+
+  .branch-row {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .branch-row-logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .branch-row-name {
+    font-size: 0.95rem;
+  }
+}

@@ -257,6 +257,20 @@ export default function Navbar() {
                 className={
                   getNavLinkClass
                 }
+                to="/our-branches"
+                onClick={
+                  closeMenu
+                }
+              >
+                Our Brands
+              </NavLink>
+            </li>
+
+            <li className="nav-item">
+              <NavLink
+                className={
+                  getNavLinkClass
+                }
                 to="/contact"
                 onClick={
                   closeMenu

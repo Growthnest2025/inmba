@@ -34,7 +34,8 @@ import Contact from "../pages/Contact/Contact";
 import Organization from "../pages/Organization/Organization";
 import Commercial from "../pages/Commercial/Commercial";
 import Foundation from "../pages/Foundation/Foundation";
-
+import OurBranches from "../pages/OurBranches/OurBranches";
+import BranchDetail from "../pages/BranchDetail/BranchDetail";
 /* =========================
    REGISTRATION PAGES
 ========================= */
@@ -288,6 +289,8 @@ import CommercialPublicProfile
 import CommercialQrPage
   from "../pages/CommercialRegistration/components/CommercialQrPage";
 
+
+
   
 /* =========================================================
    APPLICATION ROUTES
@@ -427,6 +430,20 @@ export default function AppRoutes() {
             <Foundation />
           }
         />
+
+        <Route
+          path="/our-branches"
+          element={
+            <OurBranches />
+          }
+        />
+
+        <Route
+  path="/our-branches/:slug"
+  element={
+    <BranchDetail />
+  }
+/>
 
         {/* ===============================================
             MEMBERSHIP TYPE
