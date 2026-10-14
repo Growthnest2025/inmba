@@ -24,8 +24,6 @@ import {
   getFieldErrors,
 } from "../../../utils/apiError";
 
-import inmbaLogo from "../../../assets/images/inmba_logo.jpg";
-
 import "./MembershipRegistration.css";
 
 /* ========================================
@@ -891,11 +889,9 @@ if (
             to="/"
             className="inmba-register-brand"
           >
-            <img
-              className="inmba-register-brand-logo"
-              src={inmbaLogo}
-              alt="INMBA logo"
-            />
+            <span>
+              I
+            </span>
 
             <div>
               <strong>

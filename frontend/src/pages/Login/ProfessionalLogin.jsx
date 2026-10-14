@@ -17,8 +17,6 @@ import {
   useAuth,
 } from "../../context/AuthContext";
 
-import inmbaLogo from "../../assets/images/inmba_logo.jpg";
-
 import "./ProfessionalLogin.css";
 
 /* =========================================================
@@ -555,7 +553,9 @@ sessionStorage.setItem(
               to="/"
               className="professional-login-logo"
             >
-              <img className="professional-login-brand-logo" src={inmbaLogo} alt="INMBA logo" />
+              <div className="professional-login-logo-icon">
+                <i className="fa-solid fa-shield-halved" />
+              </div>
 
               <div>
                 <strong>

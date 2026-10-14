@@ -15,8 +15,6 @@ import {
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-import inmbaLogo from "../../assets/images/inmba_logo.jpg";
-
 import "./CommercialBasicKyc.css";
 
 /* =========================================================
@@ -718,7 +716,9 @@ const handleContinueMembership = () => {
         {/* BRAND */}
 
         <div className="commercial-registration-brand">
-          <img className="commercial-registration-brand-logo" src={inmbaLogo} alt="INMBA logo" />
+          <div className="commercial-registration-brand-icon">
+            <i className="fas fa-store" />
+          </div>
 
           <div>
             <span>

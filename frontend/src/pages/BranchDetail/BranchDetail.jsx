@@ -37,7 +37,7 @@ export default function BranchDetail() {
         <div className="container">
           <Link to="/our-branches" className="branch-back-link" data-aos="fade-up">
             <i className="fas fa-arrow-left" aria-hidden="true"></i>
-            Back to Our Branches
+            Back to Our Brands
           </Link>
 
           <div className="branch-detail-header" data-aos="fade-up" data-aos-delay="80">

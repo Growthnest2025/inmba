@@ -15,8 +15,6 @@ import {
   useAuth,
 } from "../../context/AuthContext";
 
-import inmbaLogo from "../../assets/images/inmba_logo.jpg";
-
 import "./CommercialLogin.css";
 
 /* =========================================================
@@ -451,7 +449,9 @@ navigate(
               to="/"
               className="commercial-login-logo"
             >
-              <img className="commercial-login-brand-logo" src={inmbaLogo} alt="INMBA logo" />
+              <div className="commercial-login-logo-icon">
+                <i className="fa-solid fa-building" />
+              </div>
 
               <div>
                 <strong>

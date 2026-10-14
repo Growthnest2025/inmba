@@ -5358,3 +5358,25 @@
   .foundation-message-button:hover,
   .foundation-message-button:hover svg { transform: none !important; }
 }
+
+.foundation-hero-grid-single {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+.foundation-hero-grid-single .foundation-hero-content {
+  max-width: 820px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.foundation-hero-grid-single .foundation-hero-title,
+.foundation-hero-grid-single .foundation-hero-title-highlight,
+.foundation-hero-grid-single .foundation-hero-description {
+  margin-inline: auto;
+}
+
+.foundation-hero-grid-single .foundation-hero-highlights,
+.foundation-hero-grid-single .foundation-hero-actions {
+  justify-content: center;
+}

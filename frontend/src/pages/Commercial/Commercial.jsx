@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -19,7 +19,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Navbar from "../../components/Navbar/Navbar";
-
 
 import "./Commercial.css";
 
@@ -84,50 +83,6 @@ const innovationCards = [
 ];
 
 /* =========================================================
-   PROFESSIONAL STATISTICS DATA
-========================================================= */
-
-const professionalStats = [
-  {
-    id: 1,
-    value: 150,
-    suffix: "+",
-    label: "Industry Experts",
-  },
-  {
-    id: 2,
-    value: 97,
-    suffix: "%",
-    label: "Client Success",
-  },
-  {
-    id: 3,
-    value: 45,
-    suffix: "+",
-    label: "Global Alliances",
-  },
-  {
-    id: 4,
-    value: 12,
-    suffix: "+",
-    label: "Innovation Labs",
-  },
-];
-
-/* =========================================================
-   EXPERTISE TAGS DATA
-========================================================= */
-
-const expertiseTags = [
-  "Strategic Consulting",
-  "Digital Transformation",
-  "Leadership Development",
-  "Market Research",
-  "Venture Building",
-  "Professional Certification",
-];
-
-/* =========================================================
    SERVICES DATA
 ========================================================= */
 
@@ -161,101 +116,6 @@ const businessServices = [
     aosDelay: 300,
   },
 ];
-
-/* =========================================================
-   COUNTER COMPONENT
-========================================================= */
-
-function CommercialCounter({ value, suffix, label }) {
-  const counterRef = useRef(null);
-
-  const [count, setCount] = useState(0);
-  const [hasAnimated, setHasAnimated] = useState(false);
-
-  useEffect(() => {
-    const currentCounter = counterRef.current;
-
-    if (!currentCounter) {
-      return undefined;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const currentEntry = entries[0];
-
-        if (currentEntry.isIntersecting && !hasAnimated) {
-          setHasAnimated(true);
-        }
-      },
-      {
-        threshold: 0.35,
-      }
-    );
-
-    observer.observe(currentCounter);
-
-    return () => {
-      observer.unobserve(currentCounter);
-      observer.disconnect();
-    };
-  }, [hasAnimated]);
-
-  useEffect(() => {
-    if (!hasAnimated) {
-      return undefined;
-    }
-
-    const animationDuration = 1600;
-    const frameDuration = 20;
-    const totalFrames = Math.round(animationDuration / frameDuration);
-
-    let currentFrame = 0;
-
-    const timer = window.setInterval(() => {
-      currentFrame += 1;
-
-      const progress = currentFrame / totalFrames;
-
-      /*
-       * Ease-out calculation:
-       * Counter starts fast and ends smoothly.
-       */
-      const easeOutProgress = 1 - Math.pow(1 - progress, 3);
-
-      const nextValue = Math.min(
-        value,
-        Math.round(value * easeOutProgress)
-      );
-
-      setCount(nextValue);
-
-      if (currentFrame >= totalFrames) {
-        setCount(value);
-        window.clearInterval(timer);
-      }
-    }, frameDuration);
-
-    return () => {
-      window.clearInterval(timer);
-    };
-  }, [hasAnimated, value]);
-
-  return (
-    <article
-      ref={counterRef}
-      className="commercial-stat-item"
-      aria-label={`${value}${suffix} ${label}`}
-    >
-      <div className="commercial-stat-number">
-        <span>{count}</span>
-
-        <strong>{suffix}</strong>
-      </div>
-
-      <p className="commercial-stat-label">{label}</p>
-    </article>
-  );
-}
 
 /* =========================================================
    COMMERCIAL PAGE
@@ -335,8 +195,7 @@ export default function Commercial() {
                 INMBA{" "}
                 <span className="commercial-hero-highlight">
                   Commercial
-                </span>{" "}
-                Division
+                </span>
               </h1>
 
               <p>
@@ -500,59 +359,6 @@ export default function Commercial() {
                 </article>
               ))}
             </div>
-
-            {/* ===============================================
-                PROFESSIONAL EXCELLENCE STATISTICS
-            ================================================ */}
-
-            <section
-              className="commercial-professional-expertise"
-              data-aos="fade-up"
-              data-aos-delay="200"
-              aria-labelledby="commercial-statistics-title"
-            >
-              <header className="commercial-professional-header">
-                <span
-                  className="commercial-professional-symbol"
-                  aria-hidden="true"
-                >
-                  ⚡
-                </span>
-
-                <h3 id="commercial-statistics-title">
-                  Professional Excellence in Numbers
-                </h3>
-              </header>
-
-              <div className="commercial-professional-stats">
-                {professionalStats.map((stat) => (
-                  <CommercialCounter
-                    key={stat.id}
-                    value={stat.value}
-                    suffix={stat.suffix}
-                    label={stat.label}
-                  />
-                ))}
-              </div>
-
-              {/* =============================================
-                  EXPERTISE TAGS
-              ============================================== */}
-
-              <div
-                className="commercial-expertise-tags"
-                aria-label="Professional expertise areas"
-              >
-                {expertiseTags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="commercial-expertise-tag"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </section>
           </div>
         </section>
 
@@ -609,13 +415,6 @@ export default function Commercial() {
           </div>
         </section>
       </main>
-
-      {/* =====================================================
-          COMMON FOOTER
-      ====================================================== */}
-
-      
     </div>
   );
 }
-

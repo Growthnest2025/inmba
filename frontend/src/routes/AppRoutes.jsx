@@ -1,10 +1,6 @@
 import React from "react";
 
-import {
-  Navigate,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 /* =========================
    LAYOUTS
@@ -36,6 +32,13 @@ import Commercial from "../pages/Commercial/Commercial";
 import Foundation from "../pages/Foundation/Foundation";
 import OurBranches from "../pages/OurBranches/OurBranches";
 import BranchDetail from "../pages/BranchDetail/BranchDetail";
+
+/* NEW PAGES (Our Chamber / Our Professional / INMBA Shopping) */
+
+import Chamber from "../pages/Chamber/Chamber";
+import OurProfessional from "../pages/Inmba_Professional/Professional";
+import Shopping from "../pages/Shopping/Shopping";
+
 /* =========================
    REGISTRATION PAGES
 ========================= */
@@ -159,9 +162,9 @@ import ProfessionalKyc
 import ProfessionalMembership
   from "../pages/ProfessionalMembership/ProfessionalMembership";
 
-
 import ProfessionalRegistrationSuccess
   from "../pages/Registration/ProfessionalRegistration/ProfessionalRegistrationSuccess";
+
 import ProfessionalReview
   from "../pages/ProfessionalReview/ProfessionalReview";
 
@@ -241,15 +244,6 @@ import CommercialLogin
 
 /* =========================================================
    COMMERCIAL FLOW
-
-   IMPORTANT:
-
-   OLD:
-   CommercialBasicKyc only
-
-   NEW:
-   Everything after Basic KYC comes from
-   CommercialRegistration/components
 ========================================================= */
 
 /* OLD BASIC KYC */
@@ -289,9 +283,6 @@ import CommercialPublicProfile
 import CommercialQrPage
   from "../pages/CommercialRegistration/components/CommercialQrPage";
 
-
-
-  
 /* =========================================================
    APPLICATION ROUTES
 ========================================================= */
@@ -299,198 +290,109 @@ import CommercialQrPage
 export default function AppRoutes() {
   return (
     <Routes>
-
       {/* ===================================================
-          COMMERCIAL BASIC KYC
-          OLD FILE - KEEP
+          COMMERCIAL BASIC KYC (OLD FILE - KEEP)
       =================================================== */}
 
       <Route
         path="/commercial-basic-kyc"
-        element={
-          <CommercialBasicKyc />
-        }
+        element={<CommercialBasicKyc />}
       />
 
       {/* ===================================================
           PUBLIC MEMBER PROFILES - FULL SCREEN
-
-          These routes intentionally stay outside PublicLayout
-          so Navbar and Footer are not rendered.
+          (outside PublicLayout, no Navbar / Footer)
       =================================================== */}
 
       <Route
         path="/commercial/public-profile/:loginId"
-        element={
-          <CommercialPublicProfile />
-        }
+        element={<CommercialPublicProfile />}
       />
 
       <Route
         path="/public-profile/:loginId"
-        element={
-          <CivilianPublicProfile
-            publicViewOnly={true}
-          />
-        }
+        element={<CivilianPublicProfile publicViewOnly={true} />}
       />
 
       <Route
         path="/profile-view/:loginId"
-        element={
-          <CivilianPublicProfile
-            publicViewOnly={true}
-          />
-        }
+        element={<CivilianPublicProfile publicViewOnly={true} />}
       />
 
       <Route
         path="/user-profile/:loginId"
-        element={
-          <PremiumProfile />
-        }
+        element={<PremiumProfile />}
       />
 
       <Route
         path="/PremiumProfile/:loginId"
-        element={
-          <PublicProfileAliasRedirect />
-        }
+        element={<PublicProfileAliasRedirect />}
       />
 
       <Route
         path="/commercial/public-profile-edit"
-        element={
-          <CommercialPublicProfileEdit />
-        }
+        element={<CommercialPublicProfileEdit />}
       />
 
       {/* ===================================================
           PUBLIC WEBSITE
       =================================================== */}
 
-      <Route
-        element={
-          <PublicLayout />
-        }
-      >
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<Home />} />
 
-        <Route
-          path="/"
-          element={
-            <Home />
-          }
-        />
+        <Route path="/about" element={<About />} />
 
-        <Route
-          path="/about"
-          element={
-            <About />
-          }
-        />
+        <Route path="/programs" element={<Programs />} />
 
-        <Route
-          path="/programs"
-          element={
-            <Programs />
-          }
-        />
+        <Route path="/events" element={<Events />} />
 
-        <Route
-          path="/events"
-          element={
-            <Events />
-          }
-        />
+        <Route path="/contact" element={<Contact />} />
 
-        <Route
-          path="/contact"
-          element={
-            <Contact />
-          }
-        />
+        <Route path="/organization" element={<Organization />} />
 
-        <Route
-          path="/organization"
-          element={
-            <Organization />
-          }
-        />
+        <Route path="/commercial" element={<Commercial />} />
 
-        <Route
-          path="/commercial"
-          element={
-            <Commercial />
-          }
-        />
+        <Route path="/foundation" element={<Foundation />} />
 
-        <Route
-          path="/foundation"
-          element={
-            <Foundation />
-          }
-        />
+        <Route path="/our-branches" element={<OurBranches />} />
 
-        <Route
-          path="/our-branches"
-          element={
-            <OurBranches />
-          }
-        />
+        <Route path="/our-branches/:slug" element={<BranchDetail />} />
 
-        <Route
-  path="/our-branches/:slug"
-  element={
-    <BranchDetail />
-  }
-/>
+        {/* ===============================================
+            NEW PAGES: CHAMBER / PROFESSIONAL / SHOPPING
+        =============================================== */}
+
+        <Route path="/chamber" element={<Chamber />} />
+
+        <Route path="/our-professional" element={<OurProfessional />} />
+
+        <Route path="/shopping" element={<Shopping />} />
 
         {/* ===============================================
             MEMBERSHIP TYPE
         =============================================== */}
 
-        <Route
-          path="/membership-type"
-          element={
-            <MembershipType />
-          }
-        />
+        <Route path="/membership-type" element={<MembershipType />} />
 
-        <Route
-          path="/membership/type"
-          element={
-            <MembershipType />
-          }
-        />
+        <Route path="/membership/type" element={<MembershipType />} />
 
         {/* ===============================================
             CIVILIAN REGISTRATION
         =============================================== */}
 
-        <Route
-          path="/membership"
-          element={
-            <MembershipRegistration />
-          }
-        />
+        <Route path="/membership" element={<MembershipRegistration />} />
 
         <Route
           path="/membership/civilian"
-          element={
-            <MembershipRegistration />
-          }
+          element={<MembershipRegistration />}
         />
 
         {/* ===============================================
             STUDENT
         =============================================== */}
 
-        <Route
-          path="/student"
-          element={
-            <StudentRegistration />
-          }
-        />
+        <Route path="/student" element={<StudentRegistration />} />
 
         {/* ===============================================
             ORGANIZATION MEMBER
@@ -498,44 +400,35 @@ export default function AppRoutes() {
 
         <Route
           path="/organization_member"
-          element={
-            <OrganizationMemberRegistration />
-          }
+          element={<OrganizationMemberRegistration />}
         />
 
-        {/* =================================================
+        {/* ===============================================
             COMMERCIAL ENTRY
-        ================================================= */}
+        =============================================== */}
 
         <Route
-  path="/membership/commercial"
-  element={
-    <CommercialBasicKyc />
-  }
-/>
+          path="/membership/commercial"
+          element={<CommercialBasicKyc />}
+        />
 
-<Route
-  path="/commercial-registration"
-  element={
-    <CommercialBasicKyc />
-  }
-/>
+        <Route
+          path="/commercial-registration"
+          element={<CommercialBasicKyc />}
+        />
 
-<Route
-  path="/commercial-membership"
-  element={
-    <CommercialBasicKyc />
-  }
-/>
-        {/* =================================================
+        <Route
+          path="/commercial-membership"
+          element={<CommercialBasicKyc />}
+        />
+
+        {/* ===============================================
             NEW COMMERCIAL MEMBERSHIP PLAN
-        ================================================= */}
+        =============================================== */}
 
         <Route
           path="/commercial/membership-plan"
-          element={
-            <CommercialMembershipPlan />
-          }
+          element={<CommercialMembershipPlan />}
         />
 
         {/* OLD URL COMPATIBILITY */}
@@ -543,50 +436,33 @@ export default function AppRoutes() {
         <Route
           path="/commercial-membership-plan"
           element={
-            <Navigate
-              to="/commercial/membership-plan"
-              replace
-            />
+            <Navigate to="/commercial/membership-plan" replace />
           }
         />
 
-        {/* =================================================
-            COMMERCIAL ₹300 / FINAL PAYMENT
-
-            ₹300:
-            Plan -> Payment
-
-            ₹1500:
-            Full KYC -> Review -> Payment
-        ================================================= */}
+        {/* ===============================================
+            COMMERCIAL PAYMENT
+            300:  Plan -> Payment
+            1500: Full KYC -> Review -> Payment
+        =============================================== */}
 
         <Route
           path="/commercial/payment"
-          element={
-            <CommercialPayment />
-          }
+          element={<CommercialPayment />}
         />
 
-        {/* =================================================
-            ₹1500 FULL COMMERCIAL KYC
-        ================================================= */}
+        {/* 1500 FULL COMMERCIAL KYC */}
 
         <Route
           path="/commercial/profile-upgrade"
-          element={
-            <CommercialProfileUpgrade />
-          }
+          element={<CommercialProfileUpgrade />}
         />
 
-        {/* =================================================
-            ₹1500 FULL KYC REVIEW
-        ================================================= */}
+        {/* 1500 FULL KYC REVIEW */}
 
         <Route
           path="/commercial/profile-upgrade/review"
-          element={
-            <CommercialReview />
-          }
+          element={<CommercialReview />}
         />
 
         {/* REVIEW ALIAS */}
@@ -601,300 +477,164 @@ export default function AppRoutes() {
           }
         />
 
-        {/* =================================================
-            COMMERCIAL DASHBOARD
-        ================================================= */}
+        {/* COMMERCIAL DASHBOARD */}
 
         <Route
           path="/commercial/dashboard"
-          element={
-            <CommercialDashboard />
-          }
+          element={<CommercialDashboard />}
         />
 
-        {/* =================================================
-            COMMERCIAL FULL PROFILE
-        ================================================= */}
+        {/* COMMERCIAL FULL PROFILE */}
 
         <Route
           path="/commercial/full-profile"
-          element={
-            <CommercialFullProfile />
-          }
+          element={<CommercialFullProfile />}
         />
 
-        {/* =================================================
-            COMMERCIAL PROFILE EDIT
-        ================================================= */}
+        {/* COMMERCIAL PROFILE EDIT */}
 
         <Route
           path="/commercial/profile-edit"
-          element={
-            <CommercialProfileEdit />
-          }
+          element={<CommercialProfileEdit />}
         />
 
-        {/* =================================================
-            COMMERCIAL QR
-        ================================================= */}
+        {/* COMMERCIAL QR */}
 
         <Route
           path="/commercial/qr"
-          element={
-            <CommercialQrPage />
-          }
+          element={<CommercialQrPage />}
         />
 
-        {/* =================================================
-            OLD PAYMENT SUCCESS URL
-
-            New CommercialRegistration flow does not use
-            old CommercialPaymentSuccess component.
-
-            Keep URL compatibility by sending user to
-            Commercial Dashboard.
-        ================================================= */}
+        {/* OLD PAYMENT SUCCESS URL -> Commercial Dashboard */}
 
         <Route
           path="/commercial/payment-success"
-          element={
-            <Navigate
-              to="/commercial/dashboard"
-              replace
-            />
-          }
+          element={<Navigate to="/commercial/dashboard" replace />}
         />
 
         {/* ===============================================
             SUCCESS
         =============================================== */}
 
-        <Route
-          path="/success"
-          element={
-            <KycSubmitted />
-          }
-        />
+        <Route path="/success" element={<KycSubmitted />} />
 
         {/* ===============================================
             NETWORK / POLICY / CHATBOT
         =============================================== */}
 
-        <Route
-          path="/policy"
-          element={
-            <Policy />
-          }
-        />
+        <Route path="/policy" element={<Policy />} />
 
-        <Route
-          path="/network"
-          element={
-            <Network />
-          }
-        />
+        <Route path="/network" element={<Network />} />
 
-        <Route
-          path="/chatbot"
-          element={
-            <ChatBot />
-          }
-        />
+        <Route path="/chatbot" element={<ChatBot />} />
 
         {/* ===============================================
             PASSWORD ROUTES
         =============================================== */}
 
-        <Route
-          element={
-            <GuestRoute />
-          }
-        >
-
+        <Route element={<GuestRoute />}>
           <Route
             path="/forgot_password"
-            element={
-              <ForgotPassword />
-            }
+            element={<ForgotPassword />}
           />
 
           <Route
             path="/forgot-password"
-            element={
-              <Navigate
-                to="/forgot_password"
-                replace
-              />
-            }
+            element={<Navigate to="/forgot_password" replace />}
           />
 
-          <Route
-            path="/verify_otp"
-            element={
-              <VerifyOtp />
-            }
-          />
+          <Route path="/verify_otp" element={<VerifyOtp />} />
 
           <Route
             path="/verify-otp"
-            element={
-              <Navigate
-                to="/verify_otp"
-                replace
-              />
-            }
+            element={<Navigate to="/verify_otp" replace />}
           />
 
           <Route
             path="/reset_password"
-            element={
-              <ResetPassword />
-            }
+            element={<ResetPassword />}
           />
 
           <Route
             path="/reset-password"
-            element={
-              <Navigate
-                to="/reset_password"
-                replace
-              />
-            }
+            element={<Navigate to="/reset_password" replace />}
           />
-
         </Route>
 
         {/* ===============================================
             ADMIN LOGIN
         =============================================== */}
 
-        <Route
-          path="/admin_login"
-          element={
-            <AdminLogin />
-          }
-        />
+        <Route path="/admin_login" element={<AdminLogin />} />
 
         {/* ===============================================
             ADMIN PROTECTED
         =============================================== */}
 
-        <Route
-          element={
-            <AdminProtectedRoute />
-          }
-        >
-
-          <Route
-            element={
-              <AdminLayout />
-            }
-          >
-
-            <Route
-              path="/admin"
-              element={
-                <AdminDashboard />
-              }
-            />
+        <Route element={<AdminProtectedRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route path="/admin" element={<AdminDashboard />} />
 
             <Route
               path="/admin/member/:id"
-              element={
-                <AdminMemberDetails />
-              }
+              element={<AdminMemberDetails />}
             />
 
             <Route
               path="/admin/member/:id/edit"
-              element={
-                <AdminMemberEdit />
-              }
+              element={<AdminMemberEdit />}
             />
 
             <Route
               path="/deleted_users"
-              element={
-                <DeletedUsers />
-              }
+              element={<DeletedUsers />}
             />
 
             <Route
               path="/admin/events"
-              element={
-                <AdminEvents />
-              }
+              element={<AdminEvents />}
             />
 
             <Route
               path="/deleted_users_backup"
-              element={
-                <DeletedUsersBackup />
-              }
+              element={<DeletedUsersBackup />}
             />
 
             <Route
               path="/all_users_backup"
-              element={
-                <AllUsersBackup />
-              }
+              element={<AllUsersBackup />}
             />
-
           </Route>
-
         </Route>
-
       </Route>
 
       {/* ===================================================
           LOGIN SELECTION
       =================================================== */}
 
-      <Route
-        path="/login"
-        element={
-          <LoginSelection />
-        }
-      />
+      <Route path="/login" element={<LoginSelection />} />
 
-      {/* ===================================================
-          CIVILIAN LOGIN
-      =================================================== */}
+      {/* CIVILIAN LOGIN */}
 
-      <Route
-        path="/login/civilian"
-        element={
-          <Login />
-        }
-      />
+      <Route path="/login/civilian" element={<Login />} />
 
-      {/* ===================================================
-          PROFESSIONAL LOGIN
-      =================================================== */}
+      {/* PROFESSIONAL LOGIN */}
 
       <Route
         path="/login/professional"
-        element={
-          <ProfessionalLogin />
-        }
+        element={<ProfessionalLogin />}
       />
 
       <Route
         path="/professional-login"
-        element={
-          <ProfessionalLogin />
-        }
+        element={<ProfessionalLogin />}
       />
 
-      {/* ===================================================
-          COMMERCIAL LOGIN
-      =================================================== */}
+      {/* COMMERCIAL LOGIN */}
 
       <Route
         path="/login/commercial"
-        element={
-          <CommercialLogin />
-        }
+        element={<CommercialLogin />}
       />
 
       {/* ===================================================
@@ -903,340 +643,188 @@ export default function AppRoutes() {
 
       <Route
         path="/professional"
-        element={
-          <ProfessionalRegistration />
-        }
+        element={<ProfessionalRegistration />}
       />
 
       <Route
         path="/professional-registration-success"
-        element={
-          <ProfessionalRegistrationSuccess />
-        }
+        element={<ProfessionalRegistrationSuccess />}
       />
 
-      {/* ===================================================
-          PROFESSIONAL DASHBOARD
-      =================================================== */}
+      {/* PROFESSIONAL DASHBOARD */}
 
       <Route
         path="/professional-dashboard"
-        element={
-          <ProfessionalDashboard />
-        }
+        element={<ProfessionalDashboard />}
       />
 
-      {/* ===================================================
-          PROFESSIONAL PROFILE
-      =================================================== */}
+      {/* PROFESSIONAL PROFILE */}
 
       <Route
         path="/professional-profile"
-        element={
-          <ProfessionalProfile />
-        }
+        element={<ProfessionalProfile />}
       />
 
-      {/* ===================================================
-          PROFESSIONAL PUBLIC PROFILE OWNER
-      =================================================== */}
+      {/* PROFESSIONAL PUBLIC PROFILE OWNER */}
 
       <Route
         path="/professional-public-profile"
-        element={
-          <ProfessionalPublicProfileOwner />
-        }
+        element={<ProfessionalPublicProfileOwner />}
       />
 
       {/* ===================================================
           PROTECTED FULL SCREEN FLOW
       =================================================== */}
 
-      <Route
-        element={
-          <ProtectedRoute />
-        }
-      >
-
-        {/* ===============================================
-            PROFESSIONAL KYC
-            DO NOT CHANGE
-        =============================================== */}
+      <Route element={<ProtectedRoute />}>
+        {/* PROFESSIONAL KYC - DO NOT CHANGE */}
 
         <Route
           path="/professional-kyc"
-          element={
-            <ProfessionalKyc />
-          }
+          element={<ProfessionalKyc />}
         />
 
         <Route
           path="/professional-kyc/:token"
-          element={
-            <ProfessionalKyc />
-          }
+          element={<ProfessionalKyc />}
         />
 
-        {/* ===============================================
-            PROFESSIONAL REVIEW
-        =============================================== */}
+        {/* PROFESSIONAL REVIEW */}
 
         <Route
           path="/professional-review"
-          element={
-            <ProfessionalReview />
-          }
+          element={<ProfessionalReview />}
         />
 
-        {/* ===============================================
-            PROFESSIONAL MEMBERSHIP
-        =============================================== */}
+        {/* PROFESSIONAL MEMBERSHIP */}
 
         <Route
           path="/professional-membership"
-          element={
-            <ProfessionalMembership />
-          }
+          element={<ProfessionalMembership />}
         />
 
-        {/* ===============================================
-            ACKNOWLEDGEMENT
-        =============================================== */}
+        {/* ACKNOWLEDGEMENT */}
 
         <Route
           path="/acknowledgement/:token"
-          element={
-            <Acknowledgement />
-          }
+          element={<Acknowledgement />}
         />
 
-        {/* ===============================================
-            CIVILIAN MEMBERSHIP PLAN
-        =============================================== */}
+        {/* CIVILIAN MEMBERSHIP PLAN */}
 
         <Route
           path="/civilian-membership-plan"
-          element={
-            <CivilianMembershipPlan />
-          }
+          element={<CivilianMembershipPlan />}
         />
 
-        {/* ===============================================
-            CIVILIAN REVIEW
-        =============================================== */}
+        {/* CIVILIAN REVIEW */}
 
         <Route
           path="/civilian-review"
-          element={
-            <CivilianReview />
-          }
+          element={<CivilianReview />}
         />
 
-        {/* ===============================================
-            CIVILIAN FULL KYC
-        =============================================== */}
+        {/* CIVILIAN FULL KYC */}
 
-        <Route
-          path="/civilian-kyc"
-          element={
-            <CivilianKyc />
-          }
-        />
+        <Route path="/civilian-kyc" element={<CivilianKyc />} />
 
         <Route
           path="/civilian-kyc/:token"
-          element={
-            <CivilianKyc />
-          }
+          element={<CivilianKyc />}
         />
 
-        {/* ===============================================
-            CIVILIAN DASHBOARD
-        =============================================== */}
+        {/* CIVILIAN DASHBOARD */}
 
-        <Route
-          path="/dashboard"
-          element={
-            <Dashboard />
-          }
-        />
+        <Route path="/dashboard" element={<Dashboard />} />
 
-        {/* ===============================================
-            CIVILIAN PUBLIC PROFILE
-            OWNER VIEW
-        =============================================== */}
+        {/* CIVILIAN PUBLIC PROFILE - OWNER VIEW */}
 
         <Route
           path="/civilian-public-profile"
-          element={
-            <CivilianPublicProfileOwner />
-          }
+          element={<CivilianPublicProfileOwner />}
         />
-
       </Route>
 
       {/* ===================================================
           MEMBER PROTECTED ROUTES
       =================================================== */}
 
-      <Route
-        element={
-          <ProtectedRoute />
-        }
-      >
-
-        <Route
-          element={
-            <MemberLayout />
-          }
-        >
-
-          {/* =============================================
-              PROFESSIONAL PAYMENT
-          ============================================= */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<MemberLayout />}>
+          {/* PROFESSIONAL PAYMENT */}
 
           <Route
             path="/professional-payment"
-            element={
-              <ProfessionalPayment />
-            }
+            element={<ProfessionalPayment />}
           />
 
-          {/* =============================================
-              PROFILE
-          ============================================= */}
+          {/* PROFILE */}
 
-          <Route
-            path="/profile"
-            element={
-              <Profile />
-            }
-          />
+          <Route path="/profile" element={<Profile />} />
 
-          <Route
-            path="/profile/edit"
-            element={
-              <EditProfile />
-            }
-          />
+          <Route path="/profile/edit" element={<EditProfile />} />
 
-          {/* =============================================
-              QR CODE
-          ============================================= */}
+          {/* QR CODE */}
 
-          <Route
-            path="/qr-code"
-            element={
-              <QRCode />
-            }
-          />
+          <Route path="/qr-code" element={<QRCode />} />
 
-          {/* =============================================
-              BASIC PAYMENT
-          ============================================= */}
+          {/* BASIC PAYMENT */}
 
-          <Route
-            path="/payment"
-            element={
-              <Payment />
-            }
-          />
+          <Route path="/payment" element={<Payment />} />
 
-          {/* =============================================
-              NETWORK
-          ============================================= */}
+          {/* NETWORK */}
 
           <Route
             path="/direct_network"
-            element={
-              <DirectNetwork />
-            }
+            element={<DirectNetwork />}
           />
 
-          {/* =============================================
-              ROYALTY
-          ============================================= */}
+          {/* ROYALTY */}
 
           <Route
             path="/royalty-rewards"
-            element={
-              <RoyaltyRewards />
-            }
+            element={<RoyaltyRewards />}
           />
 
-          {/* =============================================
-              BANK
-          ============================================= */}
+          {/* BANK */}
 
           <Route
             path="/bank_form/:token"
-            element={
-              <BankDetails />
-            }
+            element={<BankDetails />}
           />
 
-          {/* =============================================
-              LEGAL ENTITY
-          ============================================= */}
+          {/* LEGAL ENTITY */}
 
           <Route
             path="/legal_entity/:token"
-            element={
-              <LegalEntity />
-            }
+            element={<LegalEntity />}
           />
 
-          {/* =============================================
-              PAN
-          ============================================= */}
+          {/* PAN */}
 
-          <Route
-            path="/pan/:token"
-            element={
-              <PanDetails />
-            }
-          />
+          <Route path="/pan/:token" element={<PanDetails />} />
 
-          {/* =============================================
-              PROFILE PICTURE
-          ============================================= */}
+          {/* PROFILE PICTURE */}
 
           <Route
             path="/profile_picture/:token"
-            element={
-              <ProfilePicture />
-            }
+            element={<ProfilePicture />}
           />
 
-          {/* =============================================
-              CIVILIAN ACKNOWLEDGEMENT
-          ============================================= */}
+          {/* CIVILIAN ACKNOWLEDGEMENT */}
 
           <Route
             path="/civilian-acknowledgement/:token"
-            element={
-              <CivilianAcknowledgement />
-            }
+            element={<CivilianAcknowledgement />}
           />
-
         </Route>
-
       </Route>
 
       {/* ===================================================
           UNKNOWN ROUTE
       =================================================== */}
 
-      <Route
-        path="*"
-        element={
-          <Navigate
-            to="/"
-            replace
-          />
-        }
-      />
-
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

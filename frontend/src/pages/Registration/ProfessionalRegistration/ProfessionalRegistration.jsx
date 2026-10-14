@@ -24,8 +24,6 @@ import {
 } from "../../../utils/apiError";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import inmbaLogo from "../../../assets/images/inmba_logo.jpg";
-
 import "./ProfessionalRegistration.css";
 
 /* =========================================================
@@ -1042,7 +1040,12 @@ export default function ProfessionalRegistration() {
         <div className="professional-registration-left-pattern" />
 
         <div className="professional-registration-brand">
-          <img className="professional-registration-brand-logo" src={inmbaLogo} alt="INMBA logo" />
+          <div className="professional-registration-brand-icon">
+            <i
+              className="fas fa-user-tie"
+              aria-hidden="true"
+            />
+          </div>
 
           <div>
             <span>

@@ -1229,12 +1229,17 @@ export default function CivilianKyc() {
             "Nationality is required.";
         }
 
-        const aadhaarNumber = String(values.aadhaar_number || "").replace(/\s/g, "");
-
-        if (!aadhaarNumber) {
-          errors.aadhaar_number = "Aadhaar Number is required.";
-        } else if (!/^\d{12}$/.test(aadhaarNumber)) {
-          errors.aadhaar_number = "Enter valid 12 digit Aadhaar Number.";
+        if (
+          values.aadhaar_number &&
+          !/^\d{12}$/.test(
+            values.aadhaar_number.replace(
+              /\s/g,
+              ""
+            )
+          )
+        ) {
+          errors.aadhaar_number =
+            "Enter valid 12 digit Aadhaar Number.";
         }
 
         if (
@@ -1755,7 +1760,6 @@ export default function CivilianKyc() {
                   updateValue
                 }
                 placeholder="12 digit Aadhaar"
-                required
                 error={
                   fieldErrors.aadhaar_number
                 }

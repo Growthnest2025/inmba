@@ -1620,14 +1620,17 @@ export default function CivilianKyc() {
             "Nationality is required.";
         }
 
-        const aadhaarNumber = String(
-          values.aadhaar_number || ""
-        ).replace(/\s/g, "");
-
-        if (selectedPlan === "300" && !aadhaarNumber) {
-          errors.aadhaar_number = "Aadhaar Number is required for the ₹300 plan.";
-        } else if (aadhaarNumber && !/^\d{12}$/.test(aadhaarNumber)) {
-          errors.aadhaar_number = "Enter valid 12 digit Aadhaar Number.";
+        if (
+          values.aadhaar_number &&
+          !/^\d{12}$/.test(
+            values.aadhaar_number.replace(
+              /\s/g,
+              ""
+            )
+          )
+        ) {
+          errors.aadhaar_number =
+            "Enter valid 12 digit Aadhaar Number.";
         }
 
         if (
@@ -2231,7 +2234,7 @@ export default function CivilianKyc() {
               <Field
                 label="Aadhaar Number"
                 name="aadhaar_number"
-                description={selectedPlan === "300" ? "Required for the ₹300 plan." : "Optional. If already provided in Basic KYC, it is shown as verified and cannot be re-entered."}
+                description="Optional. If already provided in Basic KYC, it is shown as verified and cannot be re-entered."
                 value={
                   values.aadhaar_number
                 }
@@ -2239,7 +2242,6 @@ export default function CivilianKyc() {
                   updateValue
                 }
                 placeholder="12 digit Aadhaar"
-                required={selectedPlan === "300"}
                 error={
                   fieldErrors.aadhaar_number
                 }

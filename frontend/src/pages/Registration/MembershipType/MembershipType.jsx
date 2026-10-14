@@ -7,7 +7,12 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./MembershipType.css";
+
+const ADMIN_PHONE = "+918940369361";
+const ADMIN_DISPLAY_PHONE = "+91 89403 69361";
+const ADMIN_WHATSAPP = "https://wa.me/918940369361";
 
 /* ========================================
    MEMBERSHIP TYPES
@@ -209,6 +214,43 @@ export default function MembershipType() {
               We’re setting up our membership registration service.
               Please check back later.
             </p>
+
+            {/* ADMIN SUPPORT WHEN REGISTRATION IS UNAVAILABLE */}
+            <div className="inmba-registration-admin-contact">
+              <div className="inmba-registration-admin-icon">
+                <i className="fas fa-headset" aria-hidden="true" />
+              </div>
+              <h2>Need Assistance?</h2>
+              <p>
+                For membership registration queries or assistance,
+                please contact our Admin.
+              </p>
+              <a
+                href={`tel:${ADMIN_PHONE}`}
+                className="inmba-registration-admin-number"
+              >
+                <i className="fas fa-phone" aria-hidden="true" />
+                {ADMIN_DISPLAY_PHONE}
+              </a>
+              <div className="inmba-registration-admin-actions">
+                <a
+                  href={`tel:${ADMIN_PHONE}`}
+                  className="inmba-registration-admin-call"
+                >
+                  <i className="fas fa-phone-volume" aria-hidden="true" />
+                  Call Admin
+                </a>
+                <a
+                  href={ADMIN_WHATSAPP}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inmba-registration-admin-whatsapp"
+                >
+                  <i className="fab fa-whatsapp" aria-hidden="true" />
+                  WhatsApp Admin
+                </a>
+              </div>
+            </div>
 
             <Link to="/" className="inmba-registration-unavailable-button">
               Back to Homepage

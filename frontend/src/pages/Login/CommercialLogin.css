@@ -939,15 +939,3 @@
     font-size: 25px;
   }
 }
-/* INMBA mark directly on the side panel without an icon container. */
-.commercial-login-brand-logo {
-  display: block;
-  width: 45px;
-  height: 45px;
-  flex: 0 0 45px;
-  object-fit: contain;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-}

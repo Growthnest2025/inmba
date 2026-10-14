@@ -1282,15 +1282,3 @@ a:hover {
     height: 46px;
   }
 }
-/* INMBA mark directly on the side panel without an icon container. */
-.professional-login-brand-logo {
-  display: block;
-  width: 46px;
-  height: 46px;
-  flex: 0 0 46px;
-  object-fit: contain;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-}

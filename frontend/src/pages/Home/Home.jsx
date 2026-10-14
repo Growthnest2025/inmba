@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AOS from "aos";
 
@@ -9,135 +9,184 @@ import foundationImage from "../../assets/images/foundation.png";
 import "./Home.css";
 
 const typingWords = [
-  "INMBA",
-  "Empowering Leaders",
-  "Building Entrepreneurs",
-  "Connecting Communities",
+  "INMBA Chamber",
+  "INMBA Commercial",
+  "INMBA Professionals",
+];
+
+/* =========================================================
+   MEMBERSHIP TYPES
+========================================================= */
+
+const membershipTypes = [
+  {
+    id: 1,
+    title: "Inmba Commercial",
+    icon: "bi bi-shop",
+  },
+  {
+    id: 2,
+    title: "Inmba Professional",
+    icon: "bi bi-briefcase-fill",
+  },
+  {
+    id: 3,
+    title: "Inmba Civilian",
+    icon: "bi bi-person-fill",
+  },
+  {
+    id: 4,
+    title: "Inmba Special",
+    icon: "bi bi-star-fill",
+  },
+  {
+    id: 5,
+    title: "Inmba Honor",
+    icon: "bi bi-award-fill",
+  },
+  {
+    id: 6,
+    title: "Inmba Student",
+    icon: "bi bi-mortarboard-fill",
+  },
 ];
 
 const joinBenefits = [
   {
-    icon: "bi bi-trophy-fill",
-    title: "Leadership",
+    icon: "bi bi-globe",
+    title: "Global Network Access",
     description:
-      "Develop leadership skills through practical programs and real projects.",
+      "Access to a global network of professionals, entrepreneurs, and business leaders.",
   },
   {
-    icon: "bi bi-people-fill",
-    title: "Networking",
+    icon: "bi bi-send-check-fill",
+    title: "Qualified Business Referrals",
     description:
-      "Connect with entrepreneurs, professionals, mentors, and industry leaders.",
+      "Qualified business referrals and new lead generation.",
   },
   {
-    icon: "bi bi-lightbulb-fill",
-    title: "Skills",
+    icon: "bi bi-geo-alt-fill",
+    title: "Cross-Industry Networking",
     description:
-      "Improve communication, business, technology, and management skills.",
-  },
-  {
-    icon: "bi bi-globe-central-south-asia",
-    title: "Community",
-    description:
-      "Collaborate on social initiatives and community development projects.",
+      "Cross-industry and cross-regional networking opportunities.",
   },
   {
     icon: "bi bi-person-check-fill",
-    title: "Mentorship",
+    title: "Mentorship from Leaders",
     description:
-      "Receive valuable guidance from experienced professionals and leaders.",
+      "Mentorship from experienced business leaders.",
   },
   {
-    icon: "bi bi-briefcase-fill",
-    title: "Entrepreneurship",
+    icon: "bi bi-people-fill",
+    title: "Peer-to-Peer Learning",
     description:
-      "Learn how to launch, manage, and grow sustainable business ventures.",
+      "Peer-to-peer learning and skill-sharing sessions.",
+  },
+  {
+    icon: "bi bi-trophy-fill",
+    title: "Leadership Development",
+    description:
+      "Leadership development programs.",
+  },
+  {
+    icon: "bi bi-cash-coin",
+    title: "Compensation & Royalty Plans",
+    description:
+      "Smart compensation and royalty income plans.",
+  },
+  {
+    icon: "bi bi-diagram-3-fill",
+    title: "Strategic Alliances",
+    description:
+      "Strategic business alliances and partnerships.",
+  },
+  {
+    icon: "bi bi-person-badge-fill",
+    title: "Access to Business Leaders",
+    description:
+      "Direct access to local and national business leaders.",
+  },
+  {
+    icon: "bi bi-building",
+    title: "Trading, Manufacturing & Services Support",
+    description:
+      "Support across Trading, Manufacturing, and Services sectors.",
+  },
+  {
+    icon: "bi bi-heart-pulse-fill",
+    title: "Healthcare & Wellness Support",
+    description:
+      "Healthcare guidance and wellness support.",
+  },
+  {
+    icon: "bi bi-mortarboard-fill",
+    title: "Education Assistance",
+    description:
+      "Education assistance for members and families.",
+  },
+  {
+    icon: "bi bi-piggy-bank-fill",
+    title: "Savings & Investment Planning",
+    description:
+      "Savings and investment planning support.",
+  },
+  {
+    icon: "bi bi-shield-check",
+    title: "Insurance & Financial Security",
+    description:
+      "Insurance and financial security guidance.",
+  },
+  {
+    icon: "bi bi-laptop-fill",
+    title: "Technology & Digital Upskilling",
+    description:
+      "Technology access and digital upskilling.",
   },
   {
     icon: "bi bi-heart-fill",
-    title: "Impact Projects",
+    title: "Donation & Charity Opportunities",
     description:
-      "Participate in initiatives that create meaningful and lasting social change.",
+      "Opportunities for donation, charity, and social service.",
+  },
+  {
+    icon: "bi bi-briefcase-fill",
+    title: "Employment & Career Access",
+    description:
+      "Employment and career opportunity access.",
+  },
+  {
+    icon: "bi bi-airplane-fill",
+    title: "Travel & Entertainment Perks",
+    description:
+      "Tourism, travel, and entertainment member perks.",
+  },
+  {
+    icon: "bi bi-file-earmark-text-fill",
+    title: "Taxation & Compliance Support",
+    description:
+      "Taxation and compliance awareness support.",
+  },
+  {
+    icon: "bi bi-bar-chart-steps",
+    title: "Structured Growth Path",
+    description:
+      "A structured growth path — from Level 1 Member to Level 16 Patron Senate.",
   },
 ];
 
-function Counter({ target }) {
-  const counterRef = useRef(null);
-  const [count, setCount] = useState(0);
-  const hasStartedRef = useRef(false);
-
-  useEffect(() => {
-    const counterElement = counterRef.current;
-
-    if (!counterElement) {
-      return undefined;
-    }
-
-    const startCounter = () => {
-      if (hasStartedRef.current) {
-        return;
-      }
-
-      hasStartedRef.current = true;
-
-      const duration = 1800;
-      const startTime = performance.now();
-
-      const updateCounter = (currentTime) => {
-        const progress = Math.min(
-          (currentTime - startTime) / duration,
-          1
-        );
-
-        const currentValue = Math.floor(progress * target);
-
-        setCount(currentValue);
-
-        if (progress < 1) {
-          requestAnimationFrame(updateCounter);
-        } else {
-          setCount(target);
-        }
-      };
-
-      requestAnimationFrame(updateCounter);
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            startCounter();
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold: 0.45,
-      }
-    );
-
-    observer.observe(counterElement);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [target]);
-
-  return (
-    <h2 ref={counterRef} className="counter">
-      {count}+
-    </h2>
-  );
-}
-
 export default function Home() {
   const [typingText, setTypingText] = useState("");
+  const [openBenefitIndex, setOpenBenefitIndex] = useState(null);
 
-  const sliderRef = useRef(null);
-  const isDraggingRef = useRef(false);
-  const startXRef = useRef(0);
-  const startScrollLeftRef = useRef(0);
-  const autoSlideRef = useRef(null);
+  const toggleBenefit = (index) => {
+    setOpenBenefitIndex((current) => (current === index ? null : index));
+  };
+
+  useEffect(() => {
+    // Opening/closing a row changes page height; refresh AOS so its
+    // scroll-trigger offsets for sections further down stay accurate.
+    AOS.refresh();
+  }, [openBenefitIndex]);
 
   useEffect(() => {
     AOS.init({
@@ -187,106 +236,6 @@ export default function Home() {
     };
   }, []);
 
-  const slideCards = (direction) => {
-    const slider = sliderRef.current;
-
-    if (!slider) {
-      return;
-    }
-
-    const cardWidth = 300;
-
-    slider.scrollBy({
-      left: direction * cardWidth,
-      behavior: "smooth",
-    });
-  };
-
-  const startAutoSlide = () => {
-    clearInterval(autoSlideRef.current);
-
-    autoSlideRef.current = setInterval(() => {
-      const slider = sliderRef.current;
-
-      if (!slider) {
-        return;
-      }
-
-      const maxScrollLeft =
-        slider.scrollWidth - slider.clientWidth;
-
-      if (slider.scrollLeft >= maxScrollLeft - 10) {
-        slider.scrollTo({
-          left: 0,
-          behavior: "smooth",
-        });
-      } else {
-        slider.scrollBy({
-          left: 300,
-          behavior: "smooth",
-        });
-      }
-    }, 3500);
-  };
-
-  const stopAutoSlide = () => {
-    clearInterval(autoSlideRef.current);
-  };
-
-  useEffect(() => {
-    startAutoSlide();
-
-    return () => {
-      clearInterval(autoSlideRef.current);
-    };
-  }, []);
-
-  const handleMouseDown = (event) => {
-    const slider = sliderRef.current;
-
-    if (!slider) {
-      return;
-    }
-
-    isDraggingRef.current = true;
-
-    slider.classList.add("active");
-
-    startXRef.current =
-      event.pageX - slider.offsetLeft;
-
-    startScrollLeftRef.current = slider.scrollLeft;
-  };
-
-  const handleMouseMove = (event) => {
-    const slider = sliderRef.current;
-
-    if (!slider || !isDraggingRef.current) {
-      return;
-    }
-
-    event.preventDefault();
-
-    const currentX =
-      event.pageX - slider.offsetLeft;
-
-    const walk =
-      (currentX - startXRef.current) * 1.1;
-
-    slider.scrollLeft =
-      startScrollLeftRef.current - walk;
-  };
-
-  const stopDragging = () => {
-    const slider = sliderRef.current;
-
-    isDraggingRef.current = false;
-
-    if (slider) {
-      slider.classList.remove("active");
-    }
-  };
-
   return (
     <main className="home-page">
       {/* Hero section */}
@@ -330,7 +279,7 @@ export default function Home() {
               <div className="hero-badge">
                 <i className="fas fa-globe"></i>
 
-                International Business &amp; Leadership Network
+                International Network Management and Business Association Connects
               </div>
 
               <h1 className="typing-text">
@@ -338,27 +287,18 @@ export default function Home() {
               </h1>
 
               <p className="hero-subtitle">
-                International Network Management and Business Association
-                connects entrepreneurs, professionals, leaders, and communities
-                through collaboration, learning, opportunity, and meaningful
-                social impact.
+                INMBA Chamber, INMBA Commercial, and INMBA Professionals come
+                together to connect entrepreneurs, professionals, leaders, and
+                communities through collaboration, learning, opportunity, and
+                meaningful social impact.
               </p>
 
               <div className="hero-actions">
                 <Link
-                  to="/membership-type"
-                  className="btn-light-premium"
-                >
-                  Join INMBA
-
-                  <i className="fas fa-arrow-right"></i>
-                </Link>
-
-                <Link
                   to="/about"
                   className="btn-outline-premium"
                 >
-                  Discover Our Mission
+                  About INMBA
 
                   <i className="fas fa-compass"></i>
                 </Link>
@@ -366,7 +306,7 @@ export default function Home() {
 
               <div className="hero-mini-stats">
                 <div className="hero-mini-stat">
-                  <strong>Leadership</strong>
+                  <strong>INMBA Chamber</strong>
 
                   <span>
                     Develop real-world capability
@@ -374,7 +314,7 @@ export default function Home() {
                 </div>
 
                 <div className="hero-mini-stat">
-                  <strong>Networking</strong>
+                  <strong>INMBA Commercial</strong>
 
                   <span>
                     Build trusted connections
@@ -382,7 +322,7 @@ export default function Home() {
                 </div>
 
                 <div className="hero-mini-stat">
-                  <strong>Community</strong>
+                  <strong>INMBA Foundation</strong>
 
                   <span>
                     Create meaningful impact
@@ -392,28 +332,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-
-        {/* <div className="carousel-controls-custom">
-          <button
-            className="carousel-control-btn"
-            type="button"
-            data-bs-target="#heroCarousel"
-            data-bs-slide="prev"
-            aria-label="Previous slide"
-          >
-            <i className="fas fa-arrow-left"></i>
-          </button>
-
-          <button
-            className="carousel-control-btn"
-            type="button"
-            data-bs-target="#heroCarousel"
-            data-bs-slide="next"
-            aria-label="Next slide"
-          >
-            <i className="fas fa-arrow-right"></i>
-          </button>
-        </div> */}
 
         <div className="scroll-indicator">
           Scroll
@@ -453,11 +371,11 @@ export default function Home() {
                 <div className="division-icon">
                   <img
                     src={commerciImage}
-                    alt="INMBA Organization"
+                    alt="INMBA Chamber"
                   />
                 </div>
 
-                <h4>INMBA Organization</h4>
+                <h4>INMBA Chamber</h4>
 
                 <p>
                   Leadership programs, professional development, and structured
@@ -465,7 +383,7 @@ export default function Home() {
                 </p>
 
                 <Link to="/organization">
-                  Explore Organization
+                  Explore Chamber
 
                   <i className="fas fa-arrow-right"></i>
                 </Link>
@@ -531,7 +449,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Statistics section */}
+      {/* Membership section (replaces the old "Our Growth" section) */}
       <section className="stats-section section-space">
         <div className="container">
           <div
@@ -539,75 +457,38 @@ export default function Home() {
             data-aos="fade-up"
           >
             <span className="section-label">
-              Our Growth
+              Membership
             </span>
 
             <h2 className="section-title">
-              Building a Stronger Network
+              Our Membership Types
             </h2>
 
             <p className="section-description">
-              A growing professional community focused on collaboration,
-              leadership, entrepreneurship, and social impact.
+              Six membership types designed for businesses, professionals,
+              citizens, students, and honored contributors.
             </p>
           </div>
 
-          <div className="stats-grid">
-            <div
-              className="stat-box"
-              data-aos="fade-up"
-              data-aos-delay="100"
-            >
-              <div className="stat-icon">
-                <i className="bi bi-calendar-event"></i>
+          <div className="stats-grid membership-grid">
+            {membershipTypes.map((type, index) => (
+              <div
+                className="stat-box"
+                key={type.id}
+                data-aos="fade-up"
+                data-aos-delay={100 + index * 80}
+              >
+                <div className="stat-icon">
+                  <i className={type.icon}></i>
+                </div>
+
+                <h2 className="membership-title">
+                  {type.title}
+                </h2>
+
+                <p>Membership</p>
               </div>
-
-              <Counter target={2024} />
-
-              <p>Year of Establishment</p>
-            </div>
-
-            <div
-              className="stat-box"
-              data-aos="fade-up"
-              data-aos-delay="180"
-            >
-              <div className="stat-icon">
-                <i className="bi bi-people-fill"></i>
-              </div>
-
-              <Counter target={1000} />
-
-              <p>Active Members</p>
-            </div>
-
-            <div
-              className="stat-box"
-              data-aos="fade-up"
-              data-aos-delay="260"
-            >
-              <div className="stat-icon">
-                <i className="bi bi-award"></i>
-              </div>
-
-              <Counter target={50} />
-
-              <p>Programs Conducted</p>
-            </div>
-
-            <div
-              className="stat-box"
-              data-aos="fade-up"
-              data-aos-delay="340"
-            >
-              <div className="stat-icon">
-                <i className="bi bi-globe"></i>
-              </div>
-
-              <h2>India</h2>
-
-              <p>Presence</p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -633,52 +514,49 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="slider-wrapper">
-            <button
-              className="slide-arrow left"
-              type="button"
-              aria-label="Previous benefit"
-              onClick={() => slideCards(-1)}
-            >
-              <i className="fas fa-chevron-left"></i>
-            </button>
+          <div className="benefits-list">
+            {joinBenefits.map((benefit, index) => {
+              const isOpen = openBenefitIndex === index;
 
-            <div
-              ref={sliderRef}
-              className="join-slider"
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={stopDragging}
-              onMouseLeave={() => {
-                stopDragging();
-                startAutoSlide();
-              }}
-              onMouseEnter={stopAutoSlide}
-            >
-              {joinBenefits.map((benefit) => (
+              return (
                 <div
-                  className="join-card"
+                  className={`benefit-row ${isOpen ? "is-open" : ""}`}
                   key={benefit.title}
                 >
-                  <div className="icon">
-                    <i className={benefit.icon}></i>
-                  </div>
+                  <button
+                    type="button"
+                    className="benefit-row-header"
+                    onClick={() => toggleBenefit(index)}
+                    aria-expanded={isOpen}
+                  >
+                    <span className="benefit-row-icon">
+                      <i className={benefit.icon}></i>
+                    </span>
 
-                  <h5>{benefit.title}</h5>
+                    <span className="benefit-row-title">
+                      {benefit.title}
+                    </span>
 
-                  <p>{benefit.description}</p>
+                    <span
+                      className={`benefit-row-chevron ${
+                        isOpen ? "rotated" : ""
+                      }`}
+                      aria-hidden="true"
+                    >
+                      <i className="fas fa-chevron-down"></i>
+                    </span>
+                  </button>
+
+                  {isOpen && (
+                    <div className="benefit-row-panel">
+                      <p className="benefit-row-description">
+                        {benefit.description}
+                      </p>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
-
-            <button
-              className="slide-arrow right"
-              type="button"
-              aria-label="Next benefit"
-              onClick={() => slideCards(1)}
-            >
-              <i className="fas fa-chevron-right"></i>
-            </button>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -693,10 +571,6 @@ export default function Home() {
                   className="cta-content cta-text"
                   data-aos="fade-right"
                 >
-                  <span className="section-label cta-label">
-                    Start Your Journey
-                  </span>
-
                   <h2>
                     Be the Change You Want to See
                   </h2>

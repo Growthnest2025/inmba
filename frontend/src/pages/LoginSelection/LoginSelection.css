@@ -937,11 +937,142 @@
   }
 }
 
-/* temporary code */
+/* ===================================
+   INMBA ADMIN CONTACT SECTION
+=================================== */
+
+.inmba-admin-contact {
+  width: 100%;
+  max-width: 440px;
+  margin: 28px auto;
+  padding: 28px 24px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.inmba-admin-contact-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 25px;
+}
+
+.inmba-admin-contact h3 {
+  margin: 0 0 10px;
+  font-size: 21px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.inmba-admin-contact p {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.7;
+}
+
+.inmba-admin-phone-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-size: 19px;
+  font-weight: 700;
+  color: #0f766e;
+  text-decoration: none;
+  margin-bottom: 20px;
+}
+
+.inmba-admin-phone-number:hover {
+  color: #115e59;
+}
+
+/* CALL AND WHATSAPP BUTTONS */
+
+.inmba-admin-contact-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.inmba-admin-call-button,
+.inmba-admin-whatsapp-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 13px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.25s ease,
+              background-color 0.25s ease;
+}
+
+.inmba-admin-call-button {
+  background: #0f766e;
+  color: #ffffff;
+}
+
+.inmba-admin-call-button:hover {
+  background: #115e59;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.inmba-admin-whatsapp-button {
+  background: #25d366;
+  color: #ffffff;
+}
+
+.inmba-admin-whatsapp-button:hover {
+  background: #128c7e;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* RESPONSIVE DESIGN */
+
+@media (max-width: 480px) {
+  .inmba-admin-contact {
+    padding: 24px 16px;
+    margin: 24px auto;
+  }
+
+  .inmba-admin-contact h3 {
+    font-size: 19px;
+  }
+
+  .inmba-admin-phone-number {
+    font-size: 17px;
+  }
+
+  .inmba-admin-contact-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .inmba-admin-call-button,
+  .inmba-admin-whatsapp-button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+/* LOGIN MAINTENANCE */
 .inmba-login-maintenance {
-  max-width: 620px;
-  margin: 40px auto;
-  padding: 48px 24px 56px;
+  padding: 40px 0 10px;
   text-align: center;
 }
 
@@ -950,52 +1081,72 @@
   place-items: center;
   width: 76px;
   height: 76px;
-  margin: 0 auto 24px;
-  border-radius: 20px;
-  background: #eef4ff;
-  color:#0f4d0f;
+  margin: 0 auto 20px;
+  border-radius: 22px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f4d0f, #2b892b);
   font-size: 30px;
 }
 
 .inmba-login-maintenance-label {
-  color:#0f4d0f;
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: #176027;
+  background: #e4f7eb;
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 }
 
-.inmba-login-maintenance h1 {
-  margin: 14px 0;
-  font-size: clamp(30px, 5vw, 44px);
+.inmba-login-maintenance > h1 {
+  margin: 0 0 14px;
+  color: #173c17;
+  font-size: clamp(28px, 5vw, 40px);
   line-height: 1.2;
 }
 
-.inmba-login-maintenance p {
+.inmba-login-maintenance > p {
+  max-width: 500px;
   margin: 0 auto;
-  max-width: 470px;
   color: #64748b;
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: 15px;
+  line-height: 1.8;
 }
 
 .inmba-login-maintenance-button {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 32px;
-  padding: 14px 24px;
-  border: 0;
-  border-radius: 10px;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 20px;
+  border: none;
+  border-radius: 12px;
+  color: #ffffff;
   background: #0f4d0f;
-  color: white;
-  font: inherit;
-  font-weight: 600;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .inmba-login-maintenance-button:hover {
-  background: #0f4d0f;
+  background: #278327;
 }
-.inmba-login-selection-logo{
-   background: #0f4d0f;
+
+.inmba-login-maintenance-button:focus-visible {
+  outline: 3px solid #86c98b;
+  outline-offset: 4px;
+}
+
+@media (max-width: 480px) {
+  .inmba-login-maintenance {
+    padding-top: 28px;
+  }
+
+  .inmba-login-maintenance-button {
+    width: 100%;
+  }
 }

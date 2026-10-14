@@ -444,8 +444,8 @@ export default function Contact() {
               </span>
 
               <h1>
-                Let&apos;s Build Meaningful
-                <span> Connections Together</span>
+                Let&apos;s Build Meaningful Social
+                <span> Network Connections Together</span>
               </h1>
 
               <p>

@@ -626,18 +626,6 @@
   transition: var(--transition);
 }
 
-.division-card::before {
-  content: "";
-  position: absolute;
-  top: -80px;
-  right: -80px;
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  background: rgba(31, 122, 53, 0.08);
-  transition: var(--transition);
-}
-
 .division-card::after {
   content: "";
   position: absolute;
@@ -659,11 +647,6 @@
   box-shadow: var(--shadow-md);
 }
 
-.division-card:hover::before {
-  transform: scale(1.2);
-  background: rgba(31, 122, 53, 0.12);
-}
-
 .division-card:hover::after {
   width: 100%;
 }
@@ -672,8 +655,8 @@
   position: relative;
   z-index: 2;
 
-  width: 108px;
-  height: 108px;
+  width: 120px;
+  height: 120px;
 
   display: flex;
   align-items: center;
@@ -681,9 +664,7 @@
 
   margin-bottom: 26px;
 
-  padding: 6px;
-
-  overflow: hidden;
+  padding: 14px;
 
   background: var(--green-soft);
 
@@ -697,7 +678,7 @@
 .division-card:hover .division-icon {
   background: var(--white);
 
-  transform: rotate(-3deg) scale(1.04);
+  transform: scale(1.04);
 
   box-shadow: 0 14px 32px rgba(15, 77, 15, 0.16);
 }
@@ -708,13 +689,11 @@
 
   object-fit: contain;
 
-  transform: scale(1.22);
-
   transition: transform 0.3s ease;
 }
 
 .division-card:hover .division-icon img {
-  transform: scale(1.28);
+  transform: scale(1.05);
 }
 
 .division-card h4 {
@@ -763,159 +742,7 @@
 }
 
 /* =========================================================
-   STATISTICS SECTION
-========================================================= */
-
-.stats-section {
-  position: relative;
-  overflow: hidden;
-  color: var(--white);
-  background:
-    linear-gradient(
-      135deg,
-      rgba(8, 47, 11, 0.98),
-      rgba(15, 77, 15, 0.96)
-    );
-}
-
-.stats-section::before {
-  content: "";
-  position: absolute;
-  top: -140px;
-  left: -120px;
-  width: 360px;
-  height: 360px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.stats-section::after {
-  content: "";
-  position: absolute;
-  right: -140px;
-  bottom: -180px;
-  width: 420px;
-  height: 420px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.stats-section .container {
-  position: relative;
-  z-index: 2;
-}
-
-.stats-section .section-label {
-  color: #e5ffeb;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-}
-
-.stats-section .section-label::before {
-  background: #c8ffd4;
-}
-
-.stats-section .section-title {
-  color: var(--white);
-}
-
-.stats-section .section-description {
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px;
-}
-
-.stat-box {
-  position: relative;
-  min-height: 235px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 30px 22px;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: var(--radius-md);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: var(--transition);
-}
-
-.stat-box::before {
-  content: "";
-  position: absolute;
-  top: -55px;
-  right: -55px;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-  transition: var(--transition);
-}
-
-.stat-box:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.28);
-  transform: translateY(-8px);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18);
-}
-
-.stat-box:hover::before {
-  transform: scale(1.35);
-}
-
-.stat-icon {
-  position: relative;
-  z-index: 2;
-  width: 62px;
-  height: 62px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-  color: var(--primary-dark);
-  background: var(--white);
-  border-radius: 18px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
-}
-
-.stat-icon i {
-  font-size: 1.45rem;
-}
-
-.stat-box h2 {
-  position: relative;
-  z-index: 2;
-  margin-bottom: 7px;
-  color: var(--white);
-  font-size: clamp(2.1rem, 4vw, 3.1rem);
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.04em;
-}
-
-.stat-box .counter {
-  font-variant-numeric: tabular-nums;
-}
-
-.stat-box p {
-  position: relative;
-  z-index: 2;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.88rem;
-  font-weight: 500;
-  line-height: 1.6;
-}
-
-/* =========================================================
-   DIVISIONS AND STATS RESPONSIVE
+   DIVISIONS RESPONSIVE
 ========================================================= */
 
 @media (max-width: 1199px) {
@@ -923,29 +750,11 @@
     min-height: 375px;
     padding: 34px 28px 31px;
   }
-
-  .stats-grid {
-    gap: 17px;
-  }
-
-  .stat-box {
-    min-height: 220px;
-    padding-right: 18px;
-    padding-left: 18px;
-  }
 }
 
 @media (max-width: 991px) {
   .division-card {
     min-height: 360px;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .stat-box {
-    min-height: 215px;
   }
 }
 
@@ -956,15 +765,15 @@
   }
 
   .division-icon {
-  width: 96px;
-  height: 96px;
+    width: 104px;
+    height: 104px;
 
-  margin-bottom: 22px;
+    margin-bottom: 22px;
 
-  padding: 6px;
+    padding: 12px;
 
-  border-radius: 23px;
-}
+    border-radius: 23px;
+  }
 
   .division-card h4 {
     font-size: 1.22rem;
@@ -972,26 +781,6 @@
 
   .division-card p {
     font-size: 0.9rem;
-  }
-
-  .stats-grid {
-    gap: 15px;
-  }
-
-  .stat-box {
-    min-height: 200px;
-    padding: 26px 18px;
-  }
-
-  .stat-icon {
-    width: 56px;
-    height: 56px;
-    margin-bottom: 17px;
-    border-radius: 16px;
-  }
-
-  .stat-icon i {
-    font-size: 1.3rem;
   }
 }
 
@@ -1003,19 +792,6 @@
   .division-card {
     border-radius: 19px;
   }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .stat-box {
-    min-height: 190px;
-    border-radius: 19px;
-  }
-
-  .stat-box h2 {
-    font-size: 2.5rem;
-  }
 }
 
 @media (max-width: 400px) {
@@ -1024,21 +800,12 @@
   }
 
   .division-icon {
-  width: 88px;
-  height: 88px;
+    width: 94px;
+    height: 94px;
 
-  padding: 6px;
-}
-
-  .stat-box {
-    padding: 24px 16px;
-  }
-
-  .stat-box h2 {
-    font-size: 2.25rem;
+    padding: 10px;
   }
 }
-
 
 
 /* =========================================================
@@ -1074,175 +841,109 @@
   z-index: 2;
 }
 
-.slider-wrapper {
-  position: relative;
-  width: 100%;
-  padding: 0 58px;
-}
-
-.join-slider {
-  display: flex;
-  gap: 22px;
-  overflow-x: auto;
-  padding: 10px 4px 24px;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
-  cursor: grab;
-  user-select: none;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.join-slider::-webkit-scrollbar {
-  display: none;
-}
-
-.join-slider.active {
-  cursor: grabbing;
-  scroll-behavior: auto;
-}
-
-.join-card {
-  position: relative;
-  flex: 0 0 285px;
-  min-height: 305px;
+.benefits-list {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  overflow: hidden;
-  padding: 31px 27px;
+  gap: 14px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.benefit-row {
   background: var(--white);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
-  scroll-snap-align: start;
+  overflow: hidden;
   transition: var(--transition);
 }
 
-.join-card::before {
-  content: "";
-  position: absolute;
-  top: -55px;
-  right: -55px;
-  width: 125px;
-  height: 125px;
-  border-radius: 50%;
-  background: rgba(31, 122, 53, 0.07);
-  transition: var(--transition);
-}
-
-.join-card::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 0;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    rgba(31, 122, 53, 0.04)
-  );
-  transition: height 0.35s ease;
-}
-
-.join-card:hover {
+.benefit-row.is-open {
   border-color: rgba(31, 122, 53, 0.35);
-  transform: translateY(-9px);
   box-shadow: var(--shadow-md);
 }
 
-.join-card:hover::before {
-  transform: scale(1.25);
-  background: rgba(31, 122, 53, 0.12);
+.benefit-row-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 22px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
 }
 
-.join-card:hover::after {
-  height: 100%;
-}
-
-.join-card .icon {
-  position: relative;
-  z-index: 2;
-  width: 64px;
-  height: 64px;
+.benefit-row-icon {
+  flex: 0 0 auto;
+  width: 54px;
+  height: 54px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 23px;
   color: var(--white);
   background: linear-gradient(
     135deg,
     var(--primary),
     var(--primary-light)
   );
-  border-radius: 19px;
-  box-shadow: 0 14px 28px rgba(15, 77, 15, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 10px 22px rgba(15, 77, 15, 0.18);
   transition: var(--transition);
 }
 
-.join-card:hover .icon {
-  transform: rotate(-5deg) scale(1.06);
+.benefit-row-icon i {
+  font-size: 1.25rem;
 }
 
-.join-card .icon i {
-  font-size: 1.45rem;
+.benefit-row.is-open .benefit-row-icon {
+  transform: rotate(-5deg) scale(1.05);
 }
 
-.join-card h5 {
-  position: relative;
-  z-index: 2;
-  margin-bottom: 13px;
+.benefit-row-title {
+  flex: 1 1 auto;
   color: var(--primary-dark);
-  font-size: 1.18rem;
-  font-weight: 800;
-  line-height: 1.35;
+  font-size: 1.05rem;
+  font-weight: 700;
 }
 
-.join-card p {
-  position: relative;
-  z-index: 2;
+.benefit-row-chevron {
+  flex: 0 0 auto;
+  color: var(--primary);
+  font-size: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.benefit-row-chevron.rotated {
+  transform: rotate(180deg);
+}
+
+/* Panel is only mounted in React when open, so no height tricks needed */
+.benefit-row-panel {
+  padding: 16px 22px 22px 94px;
+  border-top: 1px solid var(--border);
+  animation: benefitPanelFade 0.25s ease both;
+}
+
+@keyframes benefitPanelFade {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.benefit-row-description {
   margin: 0;
   color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.8;
-}
-
-.slide-arrow {
-  position: absolute;
-  top: 50%;
-  z-index: 5;
-  width: 46px;
-  height: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--primary-dark);
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  box-shadow: 0 12px 30px rgba(8, 47, 11, 0.14);
-  transform: translateY(-50%);
-  transition: var(--transition);
-}
-
-.slide-arrow.left {
-  left: 0;
-}
-
-.slide-arrow.right {
-  right: 0;
-}
-
-.slide-arrow:hover {
-  color: var(--white);
-  background: var(--primary);
-  border-color: var(--primary);
-  transform: translateY(-50%) scale(1.08);
-}
-
-.slide-arrow i {
-  font-size: 0.85rem;
+  font-size: 0.94rem;
+  line-height: 1.75;
 }
 
 /* =========================================================
@@ -1387,15 +1088,6 @@
 ========================================================= */
 
 @media (max-width: 1199px) {
-  .slider-wrapper {
-    padding-right: 52px;
-    padding-left: 52px;
-  }
-
-  .join-card {
-    flex-basis: 275px;
-  }
-
   .cta-section {
     padding: 60px 52px;
   }
@@ -1407,16 +1099,6 @@
 }
 
 @media (max-width: 991px) {
-  .slider-wrapper {
-    padding-right: 48px;
-    padding-left: 48px;
-  }
-
-  .join-card {
-    flex-basis: 270px;
-    min-height: 295px;
-  }
-
   .cta-wrap {
     padding-bottom: 80px;
   }
@@ -1437,39 +1119,27 @@
 }
 
 @media (max-width: 767px) {
-  .slider-wrapper {
-    padding-right: 43px;
-    padding-left: 43px;
+  .benefit-row-header {
+    padding: 15px 16px;
+    gap: 14px;
   }
 
-  .join-slider {
-    gap: 17px;
+  .benefit-row-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
   }
 
-  .join-card {
-    flex-basis: 255px;
-    min-height: 285px;
-    padding: 27px 23px;
+  .benefit-row-icon i {
+    font-size: 1.1rem;
   }
 
-  .join-card .icon {
-    width: 58px;
-    height: 58px;
-    margin-bottom: 20px;
-    border-radius: 17px;
+  .benefit-row-title {
+    font-size: 0.98rem;
   }
 
-  .join-card .icon i {
-    font-size: 1.3rem;
-  }
-
-  .join-card h5 {
-    font-size: 1.08rem;
-  }
-
-  .slide-arrow {
-    width: 40px;
-    height: 40px;
+  .benefit-row-panel {
+    padding-left: 16px;
   }
 
   .cta-wrap {
@@ -1499,25 +1169,6 @@
 @media (max-width: 575px) {
   .why-join-section::before,
   .cta-wrap::before {
-    display: none;
-  }
-
-  .slider-wrapper {
-    padding: 0;
-  }
-
-  .join-slider {
-    padding-right: 2px;
-    padding-left: 2px;
-  }
-
-  .join-card {
-    flex-basis: calc(100vw - 56px);
-    min-height: 275px;
-    border-radius: 20px;
-  }
-
-  .slide-arrow {
     display: none;
   }
 
@@ -1553,11 +1204,6 @@
 }
 
 @media (max-width: 400px) {
-  .join-card {
-    flex-basis: calc(100vw - 44px);
-    padding: 25px 21px;
-  }
-
   .cta-wrap {
     padding-right: 8px;
     padding-left: 8px;
@@ -1589,14 +1235,12 @@
   }
 
   .division-card,
-  .join-card,
-  .stat-box,
-  .slide-arrow,
+  .benefit-row,
   .cta-img img {
     transition: none;
   }
 
-  .join-slider {
-    scroll-behavior: auto;
+  .benefit-row-panel {
+    animation: none;
   }
 }

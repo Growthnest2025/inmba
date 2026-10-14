@@ -1707,16 +1707,3 @@
       0 14px 35px rgba(23, 72, 29, 0.07);
   }
 }
-
-/* Display the white INMBA artwork directly on the green Civilian panel. */
-.inmba-register-page--civilian .inmba-register-brand-logo {
-  display: block;
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
-  object-fit: contain;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-}

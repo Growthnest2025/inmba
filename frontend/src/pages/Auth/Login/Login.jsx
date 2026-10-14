@@ -11,7 +11,6 @@ import {
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import api from "../../../api/api";
-import inmbaLogo from "../../../assets/images/inmba_logo.jpg";
 
 import "./Login.css";
 
@@ -462,15 +461,7 @@ export default function Login() {
               className="inmba-member-login-logo"
             >
               <div className="inmba-member-login-logo-icon">
-                <img
-                  src={inmbaLogo}
-                  alt="INMBA logo"
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    objectFit: "contain",
-                  }}
-                />
+                <i className="fas fa-leaf" />
               </div>
 
               <div>

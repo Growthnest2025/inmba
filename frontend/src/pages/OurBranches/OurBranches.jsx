@@ -28,7 +28,7 @@ export default function OurBranches() {
           </p>
 
           <h1 className="branches-title" data-aos="fade-up">
-            Our Branches
+            Our Brands
           </h1>
 
           <p className="branches-subtitle" data-aos="fade-up" data-aos-delay="100">
@@ -44,7 +44,7 @@ export default function OurBranches() {
       <section className="branches-marquee-section">
         <div className="container">
           <h2 className="section-heading" data-aos="fade-up">
-            Authorised Commercial Members
+            INMBA Authorized Commercial Brands
           </h2>
         </div>
 
@@ -77,7 +77,7 @@ export default function OurBranches() {
       <section className="branches-list-section">
         <div className="container">
           <h2 className="section-heading" data-aos="fade-up">
-            Explore Our Members
+            Explore Our Brands
           </h2>
 
           <p className="list-hint" data-aos="fade-up">

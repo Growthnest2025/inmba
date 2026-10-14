@@ -13,32 +13,19 @@ import {
   faGraduationCap,
   faHandHoldingHeart,
   faHandsHelping,
-  faHeartPulse,
   faHouse,
   faLeaf,
-  faLightbulb,
   faPeopleGroup,
   faPiggyBank,
   faScaleBalanced,
   faShieldHeart,
-  faSackDollar,
   faSeedling,
   faSuitcaseMedical,
   faLaptopCode,
-  // faCar,
   faGlobe,
-  // faCoins,
-  // faFileInvoiceDollar,
-  // faUserGraduate,
-  // faPersonChalkboard,
-  faBullhorn,
-  faHandshake,
-  faClipboardCheck,
-  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 
 import Navbar from "../../components/Navbar/Navbar";
-// import Footer from "../../components/Footer/Footer";
 
 import "./Foundation.css";
 
@@ -54,22 +41,10 @@ const foundationActivities = [
       "Ensuring access to essential resources for every individual.",
     icon: faHouse,
     items: [
-      {
-        id: 1,
-        text: "Food & Nutrition",
-      },
-      {
-        id: 2,
-        text: "Shelter & Housing",
-      },
-      {
-        id: 3,
-        text: "Healthcare Services",
-      },
-      {
-        id: 4,
-        text: "Education Access",
-      },
+      { id: 1, text: "Food & Nutrition" },
+      { id: 2, text: "Shelter & Housing" },
+      { id: 3, text: "Healthcare Services" },
+      { id: 4, text: "Education Access" },
     ],
   },
   {
@@ -79,22 +54,10 @@ const foundationActivities = [
       "Helping individuals build a stable and secure financial future.",
     icon: faPiggyBank,
     items: [
-      {
-        id: 1,
-        text: "Savings Awareness",
-      },
-      {
-        id: 2,
-        text: "Investment Guidance",
-      },
-      {
-        id: 3,
-        text: "Insurance Planning",
-      },
-      {
-        id: 4,
-        text: "Financial Literacy",
-      },
+      { id: 1, text: "Savings Awareness" },
+      { id: 2, text: "Investment Guidance" },
+      { id: 3, text: "Insurance Planning" },
+      { id: 4, text: "Financial Literacy" },
     ],
   },
   {
@@ -104,72 +67,34 @@ const foundationActivities = [
       "Promoting access to modern infrastructure and digital growth.",
     icon: faLaptopCode,
     items: [
-      {
-        id: 1,
-        text: "Technology Adoption",
-      },
-      {
-        id: 2,
-        text: "Transportation Access",
-      },
-      {
-        id: 3,
-        text: "Tourism & Exposure",
-      },
-      {
-        id: 4,
-        text: "Smart Living Awareness",
-      },
+      { id: 1, text: "Technology Adoption" },
+      { id: 2, text: "Transportation Access" },
+      { id: 3, text: "Tourism & Exposure" },
+      { id: 4, text: "Smart Living Awareness" },
     ],
   },
   {
     id: 4,
     title: "Social Values",
-    description:
-      "Encouraging ethical and community-driven living.",
+    description: "Encouraging ethical and community-driven living.",
     icon: faHandHoldingHeart,
     items: [
-      {
-        id: 1,
-        text: "Charity & Donation",
-      },
-      {
-        id: 2,
-        text: "Volunteer Programs",
-      },
-      {
-        id: 3,
-        text: "Spiritual Growth",
-      },
-      {
-        id: 4,
-        text: "Community Support",
-      },
+      { id: 1, text: "Charity & Donation" },
+      { id: 2, text: "Volunteer Programs" },
+      { id: 3, text: "Spiritual Growth" },
+      { id: 4, text: "Community Support" },
     ],
   },
   {
     id: 5,
     title: "Economic Development",
-    description:
-      "Supporting economic activities for national growth.",
+    description: "Supporting economic activities for national growth.",
     icon: faChartLine,
     items: [
-      {
-        id: 1,
-        text: "Tax Awareness",
-      },
-      {
-        id: 2,
-        text: "Consumption Balance",
-      },
-      {
-        id: 3,
-        text: "Entrepreneur Support",
-      },
-      {
-        id: 4,
-        text: "Business Growth",
-      },
+      { id: 1, text: "Tax Awareness" },
+      { id: 2, text: "Consumption Balance" },
+      { id: 3, text: "Entrepreneur Support" },
+      { id: 4, text: "Business Growth" },
     ],
   },
   {
@@ -179,22 +104,10 @@ const foundationActivities = [
       "Creating opportunities and enhancing workforce skills.",
     icon: faBriefcase,
     items: [
-      {
-        id: 1,
-        text: "Job Creation",
-      },
-      {
-        id: 2,
-        text: "Skill Development",
-      },
-      {
-        id: 3,
-        text: "Career Guidance",
-      },
-      {
-        id: 4,
-        text: "Youth Empowerment",
-      },
+      { id: 1, text: "Job Creation" },
+      { id: 2, text: "Skill Development" },
+      { id: 3, text: "Career Guidance" },
+      { id: 4, text: "Youth Empowerment" },
     ],
   },
 ];
@@ -249,41 +162,6 @@ const impactAreas = [
 ];
 
 /* =========================================================
-   STRATEGIC APPROACH DATA
-========================================================= */
-
-const strategicApproaches = [
-  {
-    id: 1,
-    title: "Community Partnerships",
-    description:
-      "Partnerships with NGOs and local governments for deeper reach.",
-    icon: faHandshake,
-  },
-  {
-    id: 2,
-    title: "Impact Monitoring",
-    description:
-      "Monitoring and evaluation frameworks to measure impact.",
-    icon: faClipboardCheck,
-  },
-  {
-    id: 3,
-    title: "Employee Volunteering",
-    description:
-      "Employee volunteering programs to build internal culture of giving.",
-    icon: faUsers,
-  },
-  {
-    id: 4,
-    title: "Cause Marketing",
-    description:
-      "Cause marketing campaigns to raise awareness and funds.",
-    icon: faBullhorn,
-  },
-];
-
-/* =========================================================
    FOUNDATION HIGHLIGHTS DATA
 ========================================================= */
 
@@ -310,9 +188,7 @@ const foundationHighlights = [
 ========================================================= */
 
 export default function Foundation() {
-  /* =======================================================
-     AOS INITIALIZATION
-  ======================================================= */
+  /* AOS INITIALIZATION */
 
   useEffect(() => {
     AOS.init({
@@ -325,9 +201,7 @@ export default function Foundation() {
     AOS.refresh();
   }, []);
 
-  /* =======================================================
-     SMOOTH SCROLL FUNCTION
-  ======================================================= */
+  /* SMOOTH SCROLL FUNCTION */
 
   const scrollToImpactSection = () => {
     const impactSection = document.getElementById(
@@ -342,16 +216,8 @@ export default function Foundation() {
     }
   };
 
-  /* =======================================================
-     PAGE JSX
-  ======================================================= */
-
   return (
     <div className="foundation-page">
-      {/* ===================================================
-          NAVBAR
-      =================================================== */}
-
       <Navbar />
 
       <main className="foundation-main">
@@ -370,7 +236,7 @@ export default function Foundation() {
           </div>
 
           <div className="container foundation-hero-container">
-            <div className="foundation-hero-grid">
+            <div className="foundation-hero-grid foundation-hero-grid-single">
               {/* HERO LEFT CONTENT */}
 
               <div
@@ -426,62 +292,9 @@ export default function Foundation() {
                   </button>
                 </div>
               </div>
-
-              {/* HERO RIGHT IMAGE */}
-
-              <div
-                className="foundation-hero-visual"
-                data-aos="fade-left"
-              >
-                <div className="foundation-hero-image-wrapper">
-                  <div className="foundation-hero-image-glow" />
-
-                  <img
-                    src="/images/inmba_found.jpg"
-                    alt="INMBA Foundation community development initiative"
-                    className="foundation-hero-image"
-                  />
-
-                  <div className="foundation-hero-floating-card foundation-hero-floating-card-top">
-                    <span className="foundation-floating-icon">
-                      <FontAwesomeIcon icon={faHeartPulse} />
-                    </span>
-
-                    <div>
-                      <strong>Community Care</strong>
-                      <span>Creating meaningful impact</span>
-                    </div>
-                  </div>
-
-                  <div className="foundation-hero-floating-card foundation-hero-floating-card-bottom">
-                    <span className="foundation-floating-icon">
-                      <FontAwesomeIcon icon={faLightbulb} />
-                    </span>
-
-                    <div>
-                      <strong>Innovation</strong>
-                      <span>Building sustainable futures</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
-          <button
-            type="button"
-            className="foundation-scroll-indicator"
-            onClick={scrollToImpactSection}
-            aria-label="Scroll to foundation impact areas"
-          >
-            <span className="foundation-scroll-text">
-              Discover our impact
-            </span>
-
-            <span className="foundation-scroll-mouse">
-              <span className="foundation-scroll-wheel" />
-            </span>
-          </button>
         </section>
 
         {/* =================================================
@@ -609,10 +422,6 @@ export default function Foundation() {
                   data-aos="fade-up"
                   data-aos-delay={(index % 3) * 100}
                 >
-                  <span className="foundation-impact-card-number">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-
                   <div className="foundation-impact-icon-wrapper">
                     <span className="foundation-impact-icon-ring" />
 
@@ -631,140 +440,7 @@ export default function Foundation() {
             </div>
           </div>
         </section>
-
-        {/* =================================================
-            STRATEGIC APPROACH SECTION
-        ================================================= */}
-
-        <section
-          className="foundation-strategy-section"
-          aria-labelledby="foundation-strategy-title"
-        >
-          <div className="foundation-strategy-background">
-            <span className="foundation-strategy-shape foundation-strategy-shape-one" />
-            <span className="foundation-strategy-shape foundation-strategy-shape-two" />
-          </div>
-
-          <div className="container">
-            <div
-              className="foundation-strategy-wrapper"
-              data-aos="fade-up"
-            >
-              <div className="foundation-strategy-intro">
-                <span className="foundation-section-badge foundation-strategy-badge">
-                  <FontAwesomeIcon icon={faLightbulb} />
-
-                  <span>Our Working Model</span>
-                </span>
-
-                <h2 id="foundation-strategy-title">
-                  Strategic
-                  <span className="foundation-heading-highlight">
-                    Approach
-                  </span>
-                </h2>
-
-                <p>
-                  We combine partnerships, measurable frameworks,
-                  volunteering, and public awareness initiatives to
-                  create long-term and meaningful community impact.
-                </p>
-
-                <div className="foundation-strategy-summary">
-                  <div className="foundation-strategy-summary-icon">
-                    <FontAwesomeIcon icon={faSackDollar} />
-                  </div>
-
-                  <div>
-                    <strong>Sustainable Social Investment</strong>
-
-                    <span>
-                      Creating measurable value for people and
-                      communities.
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="foundation-strategy-list">
-                {strategicApproaches.map((strategy, index) => (
-                  <article
-                    className="foundation-strategy-card"
-                    key={strategy.id}
-                    data-aos="fade-left"
-                    data-aos-delay={index * 100}
-                  >
-                    <div className="foundation-strategy-card-icon">
-                      <FontAwesomeIcon icon={strategy.icon} />
-                    </div>
-
-                    <div className="foundation-strategy-card-content">
-                      <span className="foundation-strategy-card-number">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-
-                      <h3>{strategy.title}</h3>
-
-                      <p>{strategy.description}</p>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* =================================================
-            FINAL FOUNDATION MESSAGE SECTION
-        ================================================= */}
-
-        <section
-          className="foundation-message-section"
-          aria-label="Foundation commitment"
-        >
-          <div className="container">
-            <div
-              className="foundation-message-card"
-              data-aos="zoom-in"
-            >
-              <div className="foundation-message-icon">
-                <FontAwesomeIcon icon={faHandHoldingHeart} />
-              </div>
-
-              <div className="foundation-message-content">
-                <span>Our Commitment</span>
-
-                <h2>
-                  Empowering people today for a stronger and more
-                  sustainable tomorrow.
-                </h2>
-
-                <p>
-                  INMBA Foundation continues to support social
-                  progress through care, education, opportunity,
-                  innovation, and responsible community development.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                className="foundation-message-button"
-                onClick={scrollToImpactSection}
-              >
-                <span>View Impact Areas</span>
-
-                <FontAwesomeIcon icon={faArrowDown} />
-              </button>
-            </div>
-          </div>
-        </section>
       </main>
-
-      {/* ===================================================
-          FOOTER
-      =================================================== */}
-
-      
     </div>
   );
 }
