@@ -937,3 +937,79 @@
   }
 }
 
+
+
+/* ===== COMING SOON / ADMIN SUPPORT - OLD UI REFINEMENT ===== */
+.inmba-login-selection-page { display:flex; align-items:center; }
+.inmba-login-selection-card { max-width:1000px; margin:auto; }
+.inmba-login-maintenance {
+  max-width:770px; margin:42px auto 14px; padding:30px 18px 18px;
+  text-align:center; animation:inmbaNoticeAppear .65s ease both;
+}
+.inmba-login-maintenance-icon {
+  width:82px; height:82px; margin:0 auto 18px; display:grid; place-items:center;
+  font-size:32px; color:#15803d; border:1px solid #bfe7cb;
+  border-radius:24px; background:linear-gradient(135deg,#e2f9e9,#f5fff8);
+  box-shadow:0 12px 25px rgba(16,95,42,.11); animation:inmbaNoticeFloat 5s ease-in-out infinite;
+}
+.inmba-login-maintenance-label {
+  display:inline-flex; align-items:center; padding:9px 18px;
+  border:1px solid #c5e8d0; border-radius:99px; color:#16763a;
+  background:#edfbf1; font-size:12px; font-weight:800; letter-spacing:1.4px;
+}
+.inmba-login-maintenance h1 {
+  margin:16px 0 13px; color:#12371f; font-size:clamp(36px,5.5vw,60px);
+  letter-spacing:-.05em; line-height:1.12; font-weight:800;
+}
+.inmba-login-maintenance > p {
+  max-width:620px; margin:0 auto 30px; color:#607265;
+  font-size:clamp(14px,1.8vw,16px); line-height:1.85;
+}
+.inmba-admin-contact {
+  position:relative; max-width:680px; margin:0 auto 26px;
+  padding:28px 30px; border:1px solid #d4eadb; border-radius:24px;
+  background:linear-gradient(135deg,#f7fdf9 0%,#edf9f0 100%);
+  box-shadow:0 16px 38px rgba(16,79,34,.08);
+  transition:transform .3s ease,box-shadow .3s ease;
+}
+.inmba-admin-contact:hover { transform:translateY(-4px); box-shadow:0 22px 45px rgba(16,79,34,.13); }
+.inmba-admin-contact-icon {
+  width:54px;height:54px;display:grid;place-items:center;margin:0 auto 12px;
+  border-radius:16px;color:#fff;background:linear-gradient(135deg,#105e2d,#26a058);
+  font-size:22px;box-shadow:0 9px 22px rgba(19,107,54,.22);
+}
+.inmba-admin-contact h3 { margin:8px 0 10px; font-size:clamp(21px,3vw,27px);color:#143c23;font-weight:800; }
+.inmba-admin-contact p { max-width:480px;margin:0 auto 17px;color:#647668;font-size:14px;line-height:1.7; }
+.inmba-admin-phone-number {
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  font-size:clamp(17px,2.5vw,21px);font-weight:800;color:#17683a;text-decoration:none;
+}
+.inmba-admin-contact-actions {display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin-top:22px;}
+.inmba-admin-call-button,.inmba-admin-whatsapp-button {
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  min-height:48px;padding:12px 22px;border-radius:13px;font-size:14px;
+  font-weight:700;text-decoration:none;transition:transform .25s ease,box-shadow .25s ease,background .25s ease;
+}
+.inmba-admin-call-button {color:#fff;background:linear-gradient(135deg,#14572e,#247e44);box-shadow:0 9px 23px rgba(13,85,39,.18);}
+.inmba-admin-whatsapp-button {color:#087d41;background:#fff;border:1px solid #a9dbc0;box-shadow:0 7px 17px rgba(13,85,39,.07);}
+.inmba-admin-call-button:hover,.inmba-admin-whatsapp-button:hover {transform:translateY(-3px);box-shadow:0 13px 27px rgba(13,85,39,.18);}
+.inmba-login-maintenance-button {
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:12px 22px;min-height:46px;border-radius:12px;cursor:pointer;
+  font-size:14px;font-weight:700;color:#17653a;background:#fff;border:1px solid #cfe6d6;
+  transition:transform .25s ease,background .25s ease;
+}
+.inmba-login-maintenance-button:hover {background:#ebf8ef;transform:translateY(-2px);}
+@keyframes inmbaNoticeAppear {from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes inmbaNoticeFloat {0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@media(max-width:600px) {
+ .inmba-login-maintenance {margin:22px auto 8px;padding:18px 0 8px;}
+ .inmba-login-maintenance-icon {width:68px;height:68px;font-size:27px;}
+ .inmba-admin-contact {padding:23px 15px;border-radius:18px;}
+ .inmba-admin-contact-actions {flex-direction:column;}
+ .inmba-admin-call-button,.inmba-admin-whatsapp-button {width:100%;}
+}
+@media(prefers-reduced-motion:reduce) {
+ .inmba-login-maintenance,.inmba-login-maintenance-icon {animation:none;}
+ .inmba-admin-contact:hover,.inmba-admin-call-button:hover,.inmba-admin-whatsapp-button:hover {transform:none;}
+}

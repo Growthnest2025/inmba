@@ -1043,3 +1043,86 @@
   .inmba-membership-type-card-number {
   color: rgba(80, 90, 100, 0.07);
 }
+
+
+/* ===== MEMBERSHIP COMING SOON / ADMIN SUPPORT - OLD UI REFINEMENT ===== */
+.inmba-membership-type-page { min-height:100vh; }
+.inmba-registration-unavailable {
+  max-width:880px;margin:48px auto 30px;padding:45px 44px 38px;
+  text-align:center;border:1px solid rgba(24,120,54,.14);
+  border-radius:30px;background:rgba(255,255,255,.97);
+  box-shadow:0 24px 65px rgba(17,74,32,.12);
+  animation:inmbaRegistrationAppear .7s ease both;
+}
+.inmba-registration-unavailable-icon {
+  display:grid;place-items:center;width:83px;height:83px;margin:0 auto 20px;
+  font-size:31px;color:#157a3c;border-radius:24px;border:1px solid #c8e9d0;
+  background:linear-gradient(135deg,#def5e5,#f3fff7);
+  box-shadow:0 12px 26px rgba(24,112,55,.11);
+  animation:inmbaRegistrationFloat 5s ease-in-out infinite;
+}
+.inmba-registration-unavailable-label {
+  display:inline-flex;justify-content:center;padding:9px 19px;border-radius:99px;
+  border:1px solid #bde5c8;color:#147b3b;background:#ebfaef;
+  font-weight:800;font-size:12px;letter-spacing:1.3px;
+}
+.inmba-registration-unavailable h1 {
+  margin:16px 0 14px;font-size:clamp(38px,6vw,62px);line-height:1.09;
+  letter-spacing:-.045em;font-weight:800;color:#133920;
+}
+.inmba-registration-unavailable > p {
+  max-width:625px;margin:0 auto 30px;color:#607665;
+  font-size:clamp(14px,1.7vw,16px);line-height:1.85;
+}
+.inmba-registration-admin-contact {
+  max-width:680px;margin:0 auto 27px;padding:30px;
+  text-align:center;border:1px solid #d3ebd9;border-radius:24px;
+  background:linear-gradient(135deg,#f8fef9,#edf9f0);
+  box-shadow:0 12px 35px rgba(14,83,34,.08);
+  transition:transform .3s ease,box-shadow .3s ease;
+}
+.inmba-registration-admin-contact:hover {transform:translateY(-4px);box-shadow:0 20px 45px rgba(14,83,34,.14);}
+.inmba-registration-admin-icon {
+  width:56px;height:56px;margin:0 auto 14px;display:grid;place-items:center;
+  border-radius:17px;color:#fff;font-size:22px;
+  background:linear-gradient(135deg,#11582e,#2da55b);
+  box-shadow:0 10px 22px rgba(16,100,45,.2);
+}
+.inmba-registration-admin-contact h2 {margin:0 0 10px;font-size:clamp(23px,3vw,29px);color:#153d25;font-weight:800;}
+.inmba-registration-admin-contact p {margin:0 auto 16px;max-width:500px;line-height:1.7;font-size:14px;color:#64786a;}
+.inmba-registration-admin-number {
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  color:#176e3c;font-size:clamp(17px,2.6vw,21px);
+  font-weight:800;text-decoration:none;
+}
+.inmba-registration-admin-actions {display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:20px;}
+.inmba-registration-admin-call,.inmba-registration-admin-whatsapp {
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:12px 22px;min-height:48px;border-radius:13px;
+  text-decoration:none;font-weight:750;font-size:14px;
+  transition:transform .25s ease,box-shadow .25s ease;
+}
+.inmba-registration-admin-call {color:white;background:linear-gradient(135deg,#135a30,#248447);box-shadow:0 9px 20px rgba(13,90,41,.18);}
+.inmba-registration-admin-whatsapp {color:#087942;border:1px solid #a8ddbd;background:#fff;}
+.inmba-registration-admin-call:hover,.inmba-registration-admin-whatsapp:hover {transform:translateY(-3px);box-shadow:0 12px 26px rgba(17,95,45,.17);}
+.inmba-registration-unavailable-button {
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  min-height:47px;padding:12px 23px;border:1px solid #c8e4d2;
+  border-radius:13px;color:#17633b;background:#fff;
+  text-decoration:none;font-size:14px;font-weight:750;
+  transition:background .25s ease,transform .25s ease;
+}
+.inmba-registration-unavailable-button:hover {background:#e9f8ed;transform:translateY(-2px);}
+@keyframes inmbaRegistrationAppear {from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes inmbaRegistrationFloat {0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@media(max-width:650px) {
+ .inmba-membership-type-page {padding:20px 14px 45px;}
+ .inmba-registration-unavailable {margin:20px auto;padding:30px 18px 28px;border-radius:22px;}
+ .inmba-registration-admin-contact {padding:23px 16px;border-radius:18px;}
+ .inmba-registration-admin-actions {flex-direction:column;}
+ .inmba-registration-admin-call,.inmba-registration-admin-whatsapp {width:100%;}
+}
+@media(prefers-reduced-motion:reduce){
+ .inmba-registration-unavailable,.inmba-registration-unavailable-icon{animation:none;}
+ .inmba-registration-admin-contact:hover,.inmba-registration-admin-call:hover,.inmba-registration-admin-whatsapp:hover{transform:none;}
+}

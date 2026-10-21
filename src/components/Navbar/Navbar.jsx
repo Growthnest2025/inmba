@@ -119,7 +119,9 @@ export default function Navbar() {
         ===================== */}
 
         <Link className="navbar-brand" to="/" onClick={closeMenu}>
-          <img src={inmbaLogo} alt="INMBA Logo" />
+          <span className="inmba-navbar-logo-wrapper">
+            <img src={inmbaLogo} alt="INMBA Logo" />
+          </span>
 
           <span className="brand-name">INMBA.org</span>
         </Link>
