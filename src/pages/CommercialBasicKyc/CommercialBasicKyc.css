@@ -1,0 +1,1609 @@
+/* =========================================================
+   COMMERCIAL BASIC KYC
+   ZOMATO RED THEME
+========================================================= */
+
+:root {
+  --commercial-red: #e23744;
+  --commercial-red-dark: #b82431;
+  --commercial-red-deep: #8f1823;
+  --commercial-red-soft: #fff1f2;
+  --commercial-red-soft-2: #fff7f8;
+
+  --commercial-text: #1f1f1f;
+  --commercial-muted: #777777;
+
+  --commercial-border: #ead8da;
+  --commercial-white: #ffffff;
+
+  --commercial-success: #159447;
+  --commercial-success-soft: #eaf8ef;
+
+  --commercial-danger: #c62835;
+  --commercial-danger-soft: #fff0f1;
+
+  --commercial-shadow:
+    0 20px 50px rgba(162, 24, 39, 0.13);
+}
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.commercial-registration-page {
+  width: 100%;
+  min-height: 100vh;
+
+  display: grid;
+  grid-template-columns:
+    minmax(340px, 42%)
+    minmax(0, 58%);
+
+  background: #ffffff;
+
+  font-family:
+    Inter,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+
+/* =========================================================
+   LEFT SECTION
+========================================================= */
+
+.commercial-registration-left {
+  position: relative;
+
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 42px 45px;
+
+  overflow: hidden;
+
+  color: #ffffff;
+
+  background:
+    radial-gradient(
+      circle at 15% 12%,
+      rgba(255, 255, 255, 0.16),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(255, 255, 255, 0.10),
+      transparent 32%
+    ),
+    linear-gradient(
+      145deg,
+      var(--commercial-red-deep) 0%,
+      var(--commercial-red-dark) 42%,
+      var(--commercial-red) 100%
+    );
+}
+
+.commercial-registration-left-pattern {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0.12;
+
+  background-image:
+    linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.6) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.6) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    42px 42px;
+}
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.commercial-registration-brand {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.commercial-registration-brand-icon {
+  width: 52px;
+  height: 52px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+
+  color: var(--commercial-red);
+
+  background: #ffffff;
+
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.12);
+
+  font-size: 1.25rem;
+}
+
+.commercial-registration-brand span,
+.commercial-registration-brand strong {
+  display: block;
+}
+
+.commercial-registration-brand span {
+  margin-bottom: 2px;
+
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+
+  opacity: 0.82;
+}
+
+.commercial-registration-brand strong {
+  font-size: 1.12rem;
+  font-weight: 900;
+}
+
+/* =========================================================
+   LEFT CONTENT
+========================================================= */
+
+.commercial-registration-left-content {
+  position: relative;
+  z-index: 2;
+
+  width: min(100%, 560px);
+
+  margin: auto 0;
+  padding: 60px 0;
+}
+
+.commercial-registration-eyebrow {
+  display: inline-block;
+
+  margin-bottom: 15px;
+  padding: 8px 13px;
+
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+
+  color: rgba(255, 255, 255, 0.92);
+
+  background: rgba(255, 255, 255, 0.10);
+
+  font-size: 0.67rem;
+  font-weight: 900;
+  letter-spacing: 1.6px;
+}
+
+.commercial-registration-left-content h1 {
+  max-width: 500px;
+
+  margin:
+    0
+    0
+    14px;
+
+  font-size: clamp(
+    2.25rem,
+    4vw,
+    4.1rem
+  );
+
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+.commercial-registration-left-content > p {
+  max-width: 500px;
+
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.78);
+
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+/* =========================================================
+   BENEFITS
+========================================================= */
+
+.commercial-registration-benefits {
+  display: grid;
+  gap: 16px;
+
+  margin-top: 42px;
+}
+
+.commercial-registration-benefits > div {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  padding: 14px 15px;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  backdrop-filter:
+    blur(8px);
+}
+
+.commercial-registration-benefits > div > span {
+  width: 42px;
+  height: 42px;
+
+  flex: 0 0 42px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 13px;
+
+  color: var(--commercial-red-dark);
+
+  background: #ffffff;
+}
+
+.commercial-registration-benefits strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.commercial-registration-benefits p {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.72);
+
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   RIGHT SECTION
+========================================================= */
+
+.commercial-registration-right {
+  min-width: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding: 45px 40px 70px;
+
+  overflow-y: auto;
+
+  background:
+    radial-gradient(
+      circle at 95% 8%,
+      rgba(226, 55, 68, 0.08),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      #fffafb,
+      #ffffff
+    );
+}
+
+.commercial-registration-form-wrapper {
+  width: min(100%, 850px);
+}
+
+/* =========================================================
+   FORM HEADING
+========================================================= */
+
+.commercial-registration-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  margin-bottom: 24px;
+}
+
+.commercial-registration-heading-icon {
+  width: 54px;
+  height: 54px;
+
+  flex: 0 0 54px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 17px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--commercial-red-dark),
+      var(--commercial-red)
+    );
+
+  box-shadow:
+    0 12px 25px rgba(226, 55, 68, 0.25);
+
+  font-size: 1.2rem;
+}
+
+.commercial-registration-heading h2 {
+  margin:
+    0
+    0
+    4px;
+
+  color: #2a2021;
+
+  font-size: 1.45rem;
+  font-weight: 900;
+}
+
+.commercial-registration-heading p {
+  margin: 0;
+
+  color: var(--commercial-muted);
+
+  font-size: 0.77rem;
+}
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.commercial-registration-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  margin-bottom: 18px;
+  padding: 13px 15px;
+
+  border: 1px solid #efc3c7;
+  border-radius: 13px;
+
+  color: var(--commercial-danger);
+
+  background: var(--commercial-danger-soft);
+
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.commercial-registration-form {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px;
+
+  padding: 28px;
+
+  border: 1px solid rgba(226, 55, 68, 0.12);
+  border-radius: 24px;
+
+  background: rgba(255, 255, 255, 0.98);
+
+  box-shadow:
+    var(--commercial-shadow);
+}
+
+/* =========================================================
+   FIELD
+========================================================= */
+
+.commercial-registration-field {
+  min-width: 0;
+}
+
+.commercial-registration-field.full-width,
+.commercial-registration-security-note.full-width,
+.commercial-registration-submit {
+  grid-column:
+    1 /
+    -1;
+}
+
+.commercial-registration-field label,
+.commercial-registration-label-row label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #493336;
+
+  font-size: 0.74rem;
+  font-weight: 900;
+}
+
+.commercial-registration-field label em {
+  color: var(--commercial-red);
+
+  font-style: normal;
+}
+
+.commercial-registration-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.commercial-registration-label-row span {
+  margin-bottom: 8px;
+
+  color: #a18f91;
+
+  font-size: 0.64rem;
+  font-weight: 700;
+}
+
+/* =========================================================
+   INPUT SHELL
+========================================================= */
+
+.commercial-registration-input,
+.commercial-registration-textarea-wrap {
+  position: relative;
+}
+
+.commercial-registration-input > i,
+.commercial-registration-textarea-wrap > i {
+  position: absolute;
+
+  left: 14px;
+
+  color: #a76c72;
+
+  z-index: 2;
+}
+
+.commercial-registration-input > i {
+  top: 50%;
+
+  transform:
+    translateY(-50%);
+}
+
+.commercial-registration-textarea-wrap > i {
+  top: 16px;
+}
+
+.commercial-registration-input input,
+.commercial-registration-input select,
+.commercial-registration-textarea-wrap textarea {
+  width: 100%;
+
+  border: 1px solid var(--commercial-border);
+  border-radius: 12px;
+
+  color: var(--commercial-text);
+
+  background: #fffafa;
+
+  font-family: inherit;
+  font-size: 0.79rem;
+
+  outline: none;
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.commercial-registration-input input,
+.commercial-registration-input select {
+  min-height: 50px;
+
+  padding:
+    11px
+    13px
+    11px
+    41px;
+}
+
+.commercial-registration-textarea-wrap textarea {
+  min-height: 105px;
+
+  resize: vertical;
+
+  padding:
+    14px
+    13px
+    14px
+    41px;
+
+  line-height: 1.55;
+}
+
+.commercial-registration-input input::placeholder,
+.commercial-registration-textarea-wrap textarea::placeholder {
+  color: #b5a3a5;
+}
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+.commercial-registration-input input:focus,
+.commercial-registration-input select:focus,
+.commercial-registration-textarea-wrap textarea:focus {
+  border-color: var(--commercial-red);
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 4px rgba(226, 55, 68, 0.08);
+}
+
+.commercial-registration-input:focus-within > i,
+.commercial-registration-textarea-wrap:focus-within > i {
+  color: var(--commercial-red);
+}
+
+/* =========================================================
+   DISABLED
+========================================================= */
+
+.commercial-registration-input input:disabled,
+.commercial-registration-input select:disabled,
+.commercial-registration-textarea-wrap textarea:disabled {
+  cursor: not-allowed;
+
+  color: #8f8586;
+
+  background: #f4eeee;
+}
+
+/* =========================================================
+   SELECT
+========================================================= */
+
+.commercial-registration-select-wrap select {
+  cursor: pointer;
+
+  appearance: auto;
+}
+
+/* =========================================================
+   OTP INLINE BUTTON
+========================================================= */
+
+.commercial-registration-otp-inline-button {
+  position: absolute;
+
+  top: 50%;
+  right: 7px;
+
+  transform:
+    translateY(-50%);
+
+  min-width: 88px;
+  min-height: 36px;
+
+  padding:
+    7px
+    10px;
+
+  border: 0;
+  border-radius: 9px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--commercial-red-dark),
+      var(--commercial-red)
+    );
+
+  font-size: 0.66rem;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.16s ease,
+    opacity 0.16s ease;
+}
+
+.commercial-registration-otp-inline-button:hover:not(:disabled) {
+  transform:
+    translateY(-50%)
+    scale(1.02);
+}
+
+.commercial-registration-otp-inline-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.62;
+}
+
+/* =========================================================
+   OTP / FIELD MESSAGES
+========================================================= */
+
+.commercial-registration-field-error {
+  display: block;
+
+  margin-top: 6px;
+
+  color: var(--commercial-danger);
+
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
+.commercial-registration-otp-success {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  margin-top: 7px;
+
+  color: var(--commercial-success);
+
+  font-size: 0.67rem;
+  font-weight: 800;
+}
+
+.commercial-registration-dev-otp {
+  display: block;
+
+  margin-top: 7px;
+
+  color: var(--commercial-red-dark);
+
+  font-size: 0.67rem;
+}
+
+.commercial-registration-dev-otp strong {
+  letter-spacing: 1px;
+}
+
+.commercial-registration-otp-message {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #736164;
+
+  font-size: 0.66rem;
+}
+
+/* =========================================================
+   VERIFY OTP BUTTON
+========================================================= */
+
+.commercial-registration-verify-button {
+  margin-top: 12px;
+
+  min-height: 44px;
+}
+
+/* =========================================================
+   PASSWORD TOGGLE
+========================================================= */
+
+.commercial-registration-password-toggle {
+  position: absolute;
+
+  top: 50%;
+  right: 10px;
+
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  transform:
+    translateY(-50%);
+
+  border: 0;
+
+  color: #8f686c;
+
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.commercial-registration-password-toggle:hover:not(:disabled) {
+  color: var(--commercial-red);
+}
+
+.commercial-registration-password-toggle:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.55;
+}
+
+/* =========================================================
+   SECURITY NOTE
+========================================================= */
+
+.commercial-registration-security-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+
+  padding: 13px 14px;
+
+  border: 1px solid #f0c8cc;
+  border-radius: 12px;
+
+  color: #84474e;
+
+  background: var(--commercial-red-soft);
+
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+.commercial-registration-security-note i {
+  margin-top: 2px;
+
+  color: var(--commercial-red);
+}
+
+/* =========================================================
+   MAIN SUBMIT BUTTON
+========================================================= */
+
+.commercial-registration-submit {
+  width: 100%;
+
+  min-height: 52px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  padding:
+    10px
+    18px;
+
+  border: 0;
+  border-radius: 13px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--commercial-red-dark),
+      var(--commercial-red)
+    );
+
+  box-shadow:
+    0 13px 25px rgba(226, 55, 68, 0.24);
+
+  font-size: 0.77rem;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    opacity 0.16s ease;
+}
+
+.commercial-registration-submit:hover:not(:disabled) {
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 16px 30px rgba(226, 55, 68, 0.3);
+}
+
+.commercial-registration-submit:active:not(:disabled) {
+  transform:
+    translateY(0);
+}
+
+.commercial-registration-submit:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.55;
+
+  box-shadow: none;
+}
+
+/* =========================================================
+   LOGIN AREA
+========================================================= */
+
+.commercial-registration-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  margin-top: 20px;
+
+  color: #776668;
+
+  font-size: 0.72rem;
+}
+
+.commercial-registration-login button {
+  border: 0;
+
+  color: var(--commercial-red);
+
+  background: transparent;
+
+  font-size: 0.73rem;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.commercial-registration-login button:hover:not(:disabled) {
+  color: var(--commercial-red-dark);
+}
+
+.commercial-registration-login button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.55;
+}
+
+/* =========================================================
+   BACK HOME
+========================================================= */
+
+.commercial-registration-home {
+  margin-top: 16px;
+
+  text-align: center;
+}
+
+.commercial-registration-home a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  color: #806d70;
+
+  font-size: 0.69rem;
+  font-weight: 800;
+
+  text-decoration: none;
+}
+
+.commercial-registration-home a:hover {
+  color: var(--commercial-red);
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.commercial-registration-right::-webkit-scrollbar {
+  width: 8px;
+}
+
+.commercial-registration-right::-webkit-scrollbar-track {
+  background: #fff5f6;
+}
+
+.commercial-registration-right::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+
+  background: #e8b7bc;
+}
+
+.commercial-registration-right::-webkit-scrollbar-thumb:hover {
+  background: #df8e96;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (
+  max-width: 1050px
+) {
+  .commercial-registration-page {
+    grid-template-columns:
+      minmax(300px, 38%)
+      minmax(0, 62%);
+  }
+
+  .commercial-registration-left {
+    padding:
+      35px
+      30px;
+  }
+
+  .commercial-registration-right {
+    padding:
+      35px
+      28px
+      60px;
+  }
+
+  .commercial-registration-form {
+    padding: 24px;
+  }
+}
+
+/* =========================================================
+   MOBILE / SMALL TABLET
+========================================================= */
+
+@media (
+  max-width: 850px
+) {
+  .commercial-registration-page {
+    display: block;
+
+    min-height: 100vh;
+  }
+
+  .commercial-registration-left {
+    min-height: auto;
+
+    padding:
+      30px
+      24px
+      34px;
+  }
+
+  .commercial-registration-left-content {
+    width: 100%;
+
+    margin: 0;
+
+    padding:
+      45px
+      0
+      0;
+  }
+
+  .commercial-registration-left-content h1 {
+    max-width: 650px;
+
+    font-size: 2.35rem;
+  }
+
+  .commercial-registration-left-content > p {
+    max-width: 650px;
+  }
+
+  .commercial-registration-benefits {
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(0, 1fr)
+      );
+
+    gap: 10px;
+
+    margin-top: 30px;
+  }
+
+  .commercial-registration-benefits > div {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .commercial-registration-right {
+    min-height: auto;
+
+    padding:
+      35px
+      22px
+      55px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (
+  max-width: 650px
+) {
+  .commercial-registration-left {
+    padding:
+      24px
+      17px
+      30px;
+  }
+
+  .commercial-registration-brand-icon {
+    width: 46px;
+    height: 46px;
+
+    border-radius: 14px;
+  }
+
+  .commercial-registration-left-content {
+    padding-top: 36px;
+  }
+
+  .commercial-registration-left-content h1 {
+    font-size: 2rem;
+  }
+
+  .commercial-registration-left-content > p {
+    font-size: 0.8rem;
+  }
+
+  .commercial-registration-benefits {
+    grid-template-columns: 1fr;
+  }
+
+  .commercial-registration-benefits > div {
+    flex-direction: row;
+  }
+
+  .commercial-registration-right {
+    padding:
+      28px
+      13px
+      45px;
+  }
+
+  .commercial-registration-heading {
+    align-items: flex-start;
+  }
+
+  .commercial-registration-heading-icon {
+    width: 48px;
+    height: 48px;
+
+    flex-basis: 48px;
+
+    border-radius: 15px;
+  }
+
+  .commercial-registration-heading h2 {
+    font-size: 1.2rem;
+  }
+
+  .commercial-registration-form {
+    grid-template-columns: 1fr;
+
+    gap: 16px;
+
+    padding: 18px;
+
+    border-radius: 18px;
+  }
+
+  .commercial-registration-field.full-width,
+  .commercial-registration-security-note.full-width,
+  .commercial-registration-submit {
+    grid-column: auto;
+  }
+
+  .commercial-registration-login {
+    flex-wrap: wrap;
+  }
+}
+
+/* =========================================================
+   EXTRA SMALL
+========================================================= */
+
+@media (
+  max-width: 400px
+) {
+  .commercial-registration-left-content h1 {
+    font-size: 1.75rem;
+  }
+
+  .commercial-registration-heading {
+    gap: 10px;
+  }
+
+  .commercial-registration-form {
+    padding:
+      16px
+      13px;
+  }
+
+  .commercial-registration-input input,
+  .commercial-registration-input select {
+    font-size: 0.75rem;
+  }
+
+  .commercial-registration-otp-inline-button {
+    min-width: 78px;
+
+    padding:
+      7px
+      8px;
+
+    font-size: 0.6rem;
+  }
+}
+
+/* =========================================================
+   COMMERCIAL REGISTRATION SUCCESS
+   ZOMATO RED THEME
+========================================================= */
+
+.commercial-success-page {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 35px 20px;
+
+  background:
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(226, 55, 68, 0.13),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 90%,
+      rgba(184, 36, 49, 0.09),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      #fff4f5,
+      #ffffff
+    );
+
+  font-family:
+    Inter,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+
+/* =========================================================
+   SUCCESS CARD
+========================================================= */
+
+.commercial-success-card {
+  width: min(100%, 620px);
+
+  padding: 42px;
+
+  border:
+    1px solid
+    rgba(226, 55, 68, 0.14);
+
+  border-radius: 28px;
+
+  background:
+    rgba(255, 255, 255, 0.98);
+
+  box-shadow:
+    0 28px 70px
+    rgba(160, 30, 44, 0.15);
+
+  text-align: center;
+}
+
+/* =========================================================
+   SUCCESS ICON
+========================================================= */
+
+.commercial-success-icon {
+  width: 86px;
+  height: 86px;
+
+  display: grid;
+  place-items: center;
+
+  margin:
+    0 auto
+    20px;
+
+  border-radius: 50%;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #b82431,
+      #e23744
+    );
+
+  box-shadow:
+    0 17px 35px
+    rgba(226, 55, 68, 0.3);
+
+  font-size: 2rem;
+}
+
+/* =========================================================
+   BADGE
+========================================================= */
+
+.commercial-success-badge {
+  display: inline-flex;
+
+  padding:
+    7px
+    13px;
+
+  margin-bottom: 13px;
+
+  border:
+    1px solid
+    #f0c4c8;
+
+  border-radius: 999px;
+
+  color: #c42d3a;
+
+  background: #fff1f2;
+
+  font-size: 0.66rem;
+  font-weight: 900;
+
+  letter-spacing: 1.3px;
+}
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.commercial-success-card h1 {
+  margin:
+    0
+    0
+    10px;
+
+  color: #2e2022;
+
+  font-size:
+    clamp(
+      1.8rem,
+      4vw,
+      2.5rem
+    );
+
+  font-weight: 900;
+}
+
+.commercial-success-description {
+  max-width: 470px;
+
+  margin:
+    0 auto
+    27px;
+
+  color: #806c6f;
+
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   LOGIN ID
+========================================================= */
+
+.commercial-success-login-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  padding: 20px;
+
+  margin-bottom: 18px;
+
+  border:
+    1px solid
+    #f0c8cc;
+
+  border-radius: 17px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff5f6,
+      #fffafb
+    );
+
+  text-align: left;
+}
+
+.commercial-success-login-icon {
+  width: 52px;
+  height: 52px;
+
+  flex:
+    0 0
+    52px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 14px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #b82431,
+      #e23744
+    );
+
+  font-size: 1.1rem;
+}
+
+.commercial-success-login-content {
+  min-width: 0;
+}
+
+.commercial-success-login-content span,
+.commercial-success-login-content strong,
+.commercial-success-login-content small {
+  display: block;
+}
+
+.commercial-success-login-content span {
+  margin-bottom: 5px;
+
+  color: #906e72;
+
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+
+.commercial-success-login-content strong {
+  margin-bottom: 5px;
+
+  color: #c22533;
+
+  font-size: 1.25rem;
+  font-weight: 900;
+
+  letter-spacing: 1.2px;
+
+  word-break: break-word;
+}
+
+.commercial-success-login-content small {
+  color: #8a7679;
+
+  font-size: 0.64rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   INFO BOX
+========================================================= */
+
+.commercial-success-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+
+  padding: 14px;
+
+  margin-bottom: 24px;
+
+  border:
+    1px solid
+    #f1d1d4;
+
+  border-radius: 13px;
+
+  color: #814e54;
+
+  background: #fff7f8;
+
+  text-align: left;
+}
+
+.commercial-success-info i {
+  margin-top: 3px;
+
+  color: #e23744;
+}
+
+.commercial-success-info p {
+  margin: 0;
+
+  font-size: 0.69rem;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.commercial-success-actions {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 12px;
+}
+
+.commercial-success-actions button {
+  min-height: 50px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding:
+    10px
+    16px;
+
+  border-radius: 13px;
+
+  font-family: inherit;
+  font-size: 0.73rem;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    transform
+    0.16s ease,
+    box-shadow
+    0.16s ease;
+}
+
+/* DASHBOARD */
+
+.commercial-success-dashboard-button {
+  border:
+    1px solid
+    #edc4c8;
+
+  color: #c02b38;
+
+  background: #fff4f5;
+}
+
+.commercial-success-dashboard-button:hover {
+  transform:
+    translateY(-1px);
+
+  background: #ffebed;
+}
+
+/* LOGIN */
+
+.commercial-success-login-button {
+  border: 0;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #b82431,
+      #e23744
+    );
+
+  box-shadow:
+    0 13px 25px
+    rgba(226, 55, 68, 0.25);
+}
+
+.commercial-success-login-button:hover {
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 16px 30px
+    rgba(226, 55, 68, 0.32);
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.commercial-success-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  margin-top: 22px;
+
+  color: #a08b8e;
+
+  font-size: 0.62rem;
+}
+
+.commercial-success-footer i {
+  color: #e23744;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (
+  max-width: 600px
+) {
+  .commercial-success-page {
+    padding:
+      20px
+      12px;
+  }
+
+  .commercial-success-card {
+    padding:
+      30px
+      18px;
+
+    border-radius: 21px;
+  }
+
+  .commercial-success-icon {
+    width: 72px;
+    height: 72px;
+
+    font-size: 1.65rem;
+  }
+
+  .commercial-success-login-card {
+    align-items: flex-start;
+  }
+
+  .commercial-success-actions {
+    grid-template-columns:
+      1fr;
+  }
+
+  .commercial-success-actions button {
+    width: 100%;
+  }
+}

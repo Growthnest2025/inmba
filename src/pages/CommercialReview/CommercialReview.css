@@ -1,0 +1,975 @@
+/* =========================================================
+   COMMERCIAL REVIEW - PREMIUM RED THEME
+========================================================= */
+
+:root {
+  --cr-red: #e23744;
+  --cr-red-dark: #c91f2e;
+  --cr-red-deep: #9f1827;
+  --cr-red-soft: #fff1f3;
+
+  --cr-bg: #f8fafc;
+  --cr-card: #ffffff;
+
+  --cr-text: #1f2937;
+  --cr-muted: #6b7280;
+
+  --cr-border: #e5e7eb;
+}
+
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+.commercial-review-page,
+.commercial-review-page *,
+.commercial-review-page *::before,
+.commercial-review-page *::after {
+  box-sizing: border-box;
+}
+
+
+.commercial-review-page {
+  min-height: 100vh;
+
+  padding:
+    30px
+    18px
+    60px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fff7f8 0%,
+      #f8fafc 32%,
+      #f8fafc 100%
+    );
+
+  color:
+    var(--cr-text);
+
+  font-family:
+    "Poppins",
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+
+
+/* =========================================================
+   SHELL
+========================================================= */
+
+.commercial-review-shell {
+  width:
+    min(
+      1180px,
+      100%
+    );
+
+  margin:
+    0 auto;
+}
+
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.commercial-review-topbar {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 18px;
+
+  margin-bottom: 24px;
+}
+
+
+.commercial-review-brand {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+
+.commercial-review-brand-icon {
+  width: 46px;
+
+  height: 46px;
+
+  display: grid;
+
+  place-items: center;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--cr-red-dark),
+      var(--cr-red)
+    );
+
+  border-radius: 13px;
+
+  box-shadow:
+    0 10px 24px
+    rgba(
+      226,
+      55,
+      68,
+      0.22
+    );
+
+  font-weight: 900;
+}
+
+
+.commercial-review-brand strong {
+  display: block;
+
+  font-size: 15px;
+
+  font-weight: 800;
+}
+
+
+.commercial-review-brand span {
+  display: block;
+
+  margin-top: 2px;
+
+  color:
+    var(--cr-muted);
+
+  font-size: 10px;
+}
+
+
+.commercial-review-back {
+  padding:
+    10px
+    15px;
+
+  color:
+    var(--cr-text);
+
+  background: #ffffff;
+
+  border:
+    1px solid
+    var(--cr-border);
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  transition:
+    all 0.2s ease;
+}
+
+
+.commercial-review-back:hover {
+  color:
+    var(--cr-red);
+
+  border-color:
+    var(--cr-red);
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.commercial-review-hero {
+  position: relative;
+
+  overflow: hidden;
+
+  margin-bottom: 22px;
+
+  padding:
+    30px
+    32px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #a71929 0%,
+      #d02939 52%,
+      #e23744 100%
+    );
+
+  border-radius: 22px;
+
+  box-shadow:
+    0 18px 42px
+    rgba(
+      179,
+      30,
+      46,
+      0.2
+    );
+}
+
+
+.commercial-review-hero::after {
+  content: "";
+
+  position: absolute;
+
+  width: 260px;
+  height: 260px;
+
+  top: -120px;
+  right: -80px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+}
+
+
+.commercial-review-eyebrow {
+  display: inline-block;
+
+  margin-bottom: 8px;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.12em;
+
+  opacity: 0.9;
+}
+
+
+.commercial-review-hero h1 {
+  position: relative;
+
+  z-index: 1;
+
+  margin:
+    0
+    0
+    8px;
+
+  font-size:
+    clamp(
+      26px,
+      4vw,
+      38px
+    );
+
+  font-weight: 850;
+
+  letter-spacing:
+    -0.04em;
+}
+
+
+.commercial-review-hero p {
+  position: relative;
+
+  z-index: 1;
+
+  max-width: 680px;
+
+  margin: 0;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.84
+    );
+
+  font-size: 13px;
+
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   LOGIN ID
+========================================================= */
+
+.commercial-review-login-id {
+  position: relative;
+
+  z-index: 2;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 18px;
+
+  padding:
+    9px
+    13px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.13
+    );
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.16
+    );
+
+  border-radius: 10px;
+}
+
+
+.commercial-review-login-id span {
+  font-size: 10px;
+
+  opacity: 0.8;
+}
+
+
+.commercial-review-login-id strong {
+  font-size: 12px;
+
+  letter-spacing:
+    0.04em;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.commercial-review-card {
+  margin-bottom: 18px;
+
+  padding: 24px;
+
+  background:
+    var(--cr-card);
+
+  border:
+    1px solid
+    var(--cr-border);
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 28px
+    rgba(
+      15,
+      23,
+      42,
+      0.05
+    );
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.commercial-review-card-header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  margin-bottom: 20px;
+
+  padding-bottom: 16px;
+
+  border-bottom:
+    1px solid
+    #f0f0f0;
+}
+
+
+.commercial-review-section-number {
+  width: 36px;
+
+  height: 36px;
+
+  display: grid;
+
+  place-items: center;
+
+  flex-shrink: 0;
+
+  color:
+    var(--cr-red);
+
+  background:
+    var(--cr-red-soft);
+
+  border:
+    1px solid
+    #ffd5da;
+
+  border-radius: 10px;
+
+  font-size: 10px;
+
+  font-weight: 900;
+}
+
+
+.commercial-review-card-header strong {
+  display: block;
+
+  font-size: 14px;
+
+  font-weight: 800;
+}
+
+
+.commercial-review-card-header small {
+  display: block;
+
+  margin-top: 2px;
+
+  color:
+    var(--cr-muted);
+
+  font-size: 10px;
+}
+
+
+.commercial-review-private {
+  margin-left: auto;
+
+  padding:
+    5px
+    9px;
+
+  color:
+    #991b1b;
+
+  background:
+    #fff1f2;
+
+  border-radius:
+    999px;
+
+  font-size: 9px;
+
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.commercial-review-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap:
+    15px
+    20px;
+}
+
+
+/* =========================================================
+   ITEM
+========================================================= */
+
+.commercial-review-item {
+  min-width: 0;
+
+  padding:
+    13px
+    14px;
+
+  background:
+    #fafafa;
+
+  border:
+    1px solid
+    #eeeeee;
+
+  border-radius: 11px;
+}
+
+
+.commercial-review-item span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color:
+    var(--cr-muted);
+
+  font-size: 9px;
+
+  font-weight: 600;
+
+  text-transform: uppercase;
+
+  letter-spacing:
+    0.035em;
+}
+
+
+.commercial-review-item strong {
+  display: block;
+
+  overflow-wrap: anywhere;
+
+  color:
+    var(--cr-text);
+
+  font-size: 12px;
+
+  line-height: 1.55;
+
+  font-weight: 700;
+}
+
+
+.commercial-review-item-full {
+  grid-column:
+    1 / -1;
+}
+
+
+/* =========================================================
+   CONFIRM
+========================================================= */
+
+.commercial-review-confirm {
+  margin-top: 24px;
+
+  padding: 24px;
+
+  background: #ffffff;
+
+  border:
+    1px solid
+    #f0d1d5;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 10px 30px
+    rgba(
+      15,
+      23,
+      42,
+      0.05
+    );
+}
+
+
+.commercial-review-confirm > div:first-child {
+  display: flex;
+
+  align-items:
+    flex-start;
+
+  gap: 12px;
+}
+
+
+.commercial-review-confirm-icon {
+  width: 38px;
+
+  height: 38px;
+
+  display: grid;
+
+  place-items: center;
+
+  flex-shrink: 0;
+
+  color: #ffffff;
+
+  background:
+    var(--cr-red);
+
+  border-radius: 50%;
+
+  font-size: 14px;
+
+  font-weight: 900;
+}
+
+
+.commercial-review-confirm strong {
+  display: block;
+
+  margin-top: 2px;
+
+  font-size: 13px;
+
+  font-weight: 800;
+}
+
+
+.commercial-review-confirm p {
+  margin:
+    4px
+    0
+    0;
+
+  color:
+    var(--cr-muted);
+
+  font-size: 11px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.commercial-review-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  margin-top: 22px;
+
+  padding-top: 20px;
+
+  border-top:
+    1px solid
+    var(--cr-border);
+}
+
+
+.commercial-review-btn {
+  min-height: 46px;
+
+  padding:
+    0
+    21px;
+
+  border-radius: 11px;
+
+  cursor: pointer;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  transition:
+    all 0.22s ease;
+}
+
+
+.commercial-review-btn-secondary {
+  color:
+    var(--cr-text);
+
+  background: #ffffff;
+
+  border:
+    1px solid
+    var(--cr-border);
+}
+
+
+.commercial-review-btn-secondary:hover {
+  color:
+    var(--cr-red);
+
+  border-color:
+    var(--cr-red);
+}
+
+
+.commercial-review-btn-primary {
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--cr-red-dark),
+      var(--cr-red)
+    );
+
+  border: 0;
+
+  box-shadow:
+    0 9px 20px
+    rgba(
+      226,
+      55,
+      68,
+      0.22
+    );
+}
+
+
+.commercial-review-btn-primary:hover {
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 13px 25px
+    rgba(
+      226,
+      55,
+      68,
+      0.3
+    );
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.commercial-review-empty {
+  width:
+    min(
+      520px,
+      100%
+    );
+
+  margin:
+    100px
+    auto;
+
+  padding:
+    35px
+    26px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border:
+    1px solid
+    var(--cr-border);
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 15px 40px
+    rgba(
+      15,
+      23,
+      42,
+      0.07
+    );
+}
+
+
+.commercial-review-empty-icon {
+  width: 50px;
+
+  height: 50px;
+
+  display: grid;
+
+  place-items: center;
+
+  margin:
+    0
+    auto
+    15px;
+
+  color: #ffffff;
+
+  background:
+    var(--cr-red);
+
+  border-radius: 50%;
+
+  font-size: 20px;
+
+  font-weight: 900;
+}
+
+
+.commercial-review-empty h2 {
+  margin:
+    0
+    0
+    8px;
+
+  font-size: 21px;
+}
+
+
+.commercial-review-empty p {
+  margin:
+    0
+    0
+    20px;
+
+  color:
+    var(--cr-muted);
+
+  font-size: 12px;
+
+  line-height: 1.7;
+}
+
+
+.commercial-review-empty button {
+  min-height: 45px;
+
+  padding:
+    0
+    20px;
+
+  color: #ffffff;
+
+  background:
+    var(--cr-red);
+
+  border: 0;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (
+  max-width: 850px
+) {
+
+  .commercial-review-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+
+  .commercial-review-item-full {
+    grid-column: auto;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (
+  max-width: 600px
+) {
+
+  .commercial-review-page {
+    padding:
+      18px
+      11px
+      40px;
+  }
+
+
+  .commercial-review-topbar {
+    align-items:
+      flex-start;
+  }
+
+
+  .commercial-review-hero {
+    padding:
+      23px
+      18px;
+
+    border-radius:
+      17px;
+  }
+
+
+  .commercial-review-card {
+    padding:
+      18px
+      15px;
+
+    border-radius:
+      15px;
+  }
+
+
+  .commercial-review-card-header {
+    align-items:
+      flex-start;
+  }
+
+
+  .commercial-review-private {
+    font-size: 8px;
+  }
+
+
+  .commercial-review-confirm {
+    padding:
+      18px
+      15px;
+  }
+
+
+  .commercial-review-actions {
+    flex-direction:
+      column-reverse;
+  }
+
+
+  .commercial-review-btn {
+    width: 100%;
+  }
+
+}

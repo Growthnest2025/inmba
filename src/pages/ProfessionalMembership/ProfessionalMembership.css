@@ -1,0 +1,914 @@
+/* =========================================================
+   PROFESSIONAL MEMBERSHIP SELECTION
+   VIDEO REFERENCE DESIGN
+   NAVY BLUE VERSION
+========================================================= */
+
+.pro-membership-page,
+.pro-membership-page *,
+.pro-membership-page *::before,
+.pro-membership-page *::after {
+  box-sizing: border-box;
+}
+
+.pro-membership-page {
+  min-height: 100vh;
+
+  margin: 0;
+
+  padding:
+    28px
+    clamp(
+      20px,
+      5vw,
+      72px
+    )
+    42px;
+
+  color: #172033;
+
+  background:
+    #f5f7fb;
+
+  font-family:
+    Inter,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.pro-membership-header {
+  width: 100%;
+  max-width: 1160px;
+
+  margin:
+    0
+    auto;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.pro-membership-logo {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+}
+
+.pro-membership-logo > span {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #082c68,
+      #1759be
+    );
+
+  box-shadow:
+    0
+    8px
+    18px
+    rgba(
+      10,
+      54,
+      125,
+      0.2
+    );
+
+  font-size: 1.1rem;
+
+  font-weight: 900;
+}
+
+.pro-membership-logo div {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.pro-membership-logo strong {
+  color: #102343;
+
+  font-size: 1.1rem;
+
+  letter-spacing: 0.08em;
+}
+
+.pro-membership-logo small {
+  margin-top: 2px;
+
+  color: #8a94a3;
+
+  font-size: 0.61rem;
+}
+
+.pro-membership-member-id {
+  padding:
+    8px
+    14px;
+
+  border:
+    1px solid
+    #dce4ef;
+
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  text-align: right;
+}
+
+.pro-membership-member-id small {
+  display: block;
+
+  color: #9aa3af;
+
+  font-size: 0.52rem;
+}
+
+.pro-membership-member-id strong {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #174a91;
+
+  font-size: 0.71rem;
+
+  letter-spacing: 0.07em;
+}
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.pro-membership-progress {
+  width: 100%;
+  max-width: 680px;
+
+  margin:
+    34px
+    auto
+    0;
+
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.pro-membership-step {
+  min-width: 68px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 7px;
+
+  color: #a1a9b5;
+}
+
+.pro-membership-step > span {
+  width: 31px;
+  height: 31px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border:
+    2px solid
+    #dce2eb;
+
+  border-radius: 50%;
+
+  color: #939dab;
+
+  background: #ffffff;
+
+  font-size: 0.64rem;
+
+  font-weight: 800;
+}
+
+.pro-membership-step small {
+  font-size: 0.58rem;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.pro-membership-step.completed > span {
+  border-color: #174f9f;
+
+  color: #ffffff;
+
+  background: #174f9f;
+}
+
+.pro-membership-step.completed {
+  color: #174f9f;
+}
+
+.pro-membership-step.active > span {
+  border-color: #123e80;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #082e6b,
+      #185ac0
+    );
+
+  box-shadow:
+    0
+    6px
+    15px
+    rgba(
+      20,
+      73,
+      160,
+      0.22
+    );
+}
+
+.pro-membership-step.active {
+  color: #123f82;
+}
+
+.pro-membership-line {
+  width:
+    clamp(
+      34px,
+      7vw,
+      90px
+    );
+
+  height: 2px;
+
+  margin:
+    15px
+    5px
+    0;
+
+  background: #dfe4eb;
+}
+
+.pro-membership-line.completed,
+.pro-membership-line.active {
+  background: #174f9f;
+}
+
+/* =========================================================
+   HEADING
+========================================================= */
+
+.pro-membership-heading {
+  max-width: 620px;
+
+  margin:
+    37px
+    auto
+    0;
+
+  text-align: center;
+}
+
+.pro-membership-heading-label {
+  display: inline-block;
+
+  margin-bottom: 8px;
+
+  color: #225aab;
+
+  font-size: 0.61rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.11em;
+}
+
+.pro-membership-heading h1 {
+  margin: 0;
+
+  color: #172033;
+
+  font-size:
+    clamp(
+      1.6rem,
+      3.5vw,
+      2.15rem
+    );
+
+  font-weight: 800;
+
+  line-height: 1.2;
+
+  letter-spacing: -0.025em;
+}
+
+.pro-membership-heading p {
+  max-width: 470px;
+
+  margin:
+    10px
+    auto
+    0;
+
+  color: #818b9a;
+
+  font-size: 0.72rem;
+
+  line-height: 1.65;
+}
+
+/* =========================================================
+   PLANS
+========================================================= */
+
+.pro-membership-plans {
+  width: 100%;
+  max-width: 880px;
+
+  margin:
+    34px
+    auto
+    0;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap: 22px;
+
+  align-items: stretch;
+}
+
+/* =========================================================
+   PLAN CARD
+========================================================= */
+
+.pro-membership-card {
+  position: relative;
+
+  display: flex;
+
+  flex-direction: column;
+
+  min-width: 0;
+
+  padding:
+    29px
+    27px
+    26px;
+
+  border:
+    1px solid
+    #dde3ec;
+
+  border-radius: 15px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0
+    13px
+    38px
+    rgba(
+      23,
+      35,
+      57,
+      0.06
+    );
+
+  transition:
+    transform
+      0.2s ease,
+    box-shadow
+      0.2s ease,
+    border-color
+      0.2s ease;
+}
+
+.pro-membership-card:hover {
+  transform:
+    translateY(
+      -3px
+    );
+
+  border-color:
+    #b8cce8;
+
+  box-shadow:
+    0
+    18px
+    45px
+    rgba(
+      23,
+      60,
+      113,
+      0.1
+    );
+}
+
+.pro-membership-card.recommended {
+  border:
+    2px solid
+    #174f9f;
+
+  box-shadow:
+    0
+    17px
+    45px
+    rgba(
+      18,
+      73,
+      154,
+      0.13
+    );
+}
+
+.pro-membership-card.selected {
+  border-color:
+    #0d3978;
+
+  box-shadow:
+    0
+    19px
+    50px
+    rgba(
+      14,
+      60,
+      128,
+      0.17
+    );
+}
+
+/* =========================================================
+   RECOMMENDED BADGE
+========================================================= */
+
+.pro-membership-recommended-badge {
+  position: absolute;
+
+  top: -13px;
+  left: 50%;
+
+  transform:
+    translateX(
+      -50%
+    );
+
+  padding:
+    6px
+    14px;
+
+  border-radius: 999px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      90deg,
+      #082e6b,
+      #175abd
+    );
+
+  box-shadow:
+    0
+    6px
+    15px
+    rgba(
+      16,
+      69,
+      149,
+      0.23
+    );
+
+  font-size: 0.55rem;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+
+  letter-spacing: 0.06em;
+
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   CARD TOP
+========================================================= */
+
+.pro-membership-card-top {
+  text-align: center;
+}
+
+.pro-membership-plan-badge {
+  display: inline-block;
+
+  margin-bottom: 15px;
+
+  padding:
+    5px
+    9px;
+
+  border-radius: 5px;
+
+  color: #315c96;
+
+  background: #edf4ff;
+
+  font-size: 0.5rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+}
+
+.pro-membership-plan-icon {
+  width: 52px;
+  height: 52px;
+
+  margin:
+    0
+    auto
+    15px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 13px;
+
+  color: #1753a8;
+
+  background: #eaf2fd;
+
+  font-size: 1.05rem;
+}
+
+.pro-membership-card.recommended
+.pro-membership-plan-icon {
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #082e6b,
+      #175abd
+    );
+
+  box-shadow:
+    0
+    8px
+    19px
+    rgba(
+      17,
+      69,
+      151,
+      0.2
+    );
+}
+
+.pro-membership-card-top h2 {
+  margin: 0;
+
+  color: #222c3e;
+
+  font-size: 1.16rem;
+
+  font-weight: 800;
+}
+
+.pro-membership-card-top p {
+  min-height: 40px;
+
+  margin:
+    8px
+    0
+    0;
+
+  color: #8b95a3;
+
+  font-size: 0.64rem;
+
+  line-height: 1.55;
+}
+
+/* =========================================================
+   PRICE
+========================================================= */
+
+.pro-membership-price {
+  display: flex;
+
+  align-items: baseline;
+  justify-content: center;
+
+  margin-top: 19px;
+
+  color: #153e7e;
+}
+
+.pro-membership-price > span {
+  margin-right: 2px;
+
+  font-size: 1rem;
+
+  font-weight: 700;
+}
+
+.pro-membership-price strong {
+  font-size: 2rem;
+
+  line-height: 1;
+
+  font-weight: 850;
+}
+
+.pro-membership-price small {
+  margin-left: 7px;
+
+  color: #939ca9;
+
+  font-size: 0.54rem;
+}
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.pro-membership-divider {
+  width: 100%;
+  height: 1px;
+
+  margin:
+    22px
+    0;
+
+  background: #edf0f4;
+}
+
+/* =========================================================
+   FEATURES
+========================================================= */
+
+.pro-membership-features {
+  display: grid;
+
+  gap: 12px;
+
+  flex: 1;
+}
+
+.pro-membership-features > div {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+}
+
+.pro-membership-features span {
+  width: 20px;
+  height: 20px;
+
+  flex: 0 0 20px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: #15509f;
+
+  background: #edf4fe;
+
+  font-size: 0.45rem;
+}
+
+.pro-membership-features p {
+  margin: 0;
+
+  color: #5f6b7d;
+
+  font-size: 0.64rem;
+
+  line-height: 1.4;
+}
+
+/* =========================================================
+   SELECT BUTTON
+========================================================= */
+
+.pro-membership-select-button {
+  width: 100%;
+
+  min-height: 45px;
+
+  margin-top: 25px;
+
+  padding:
+    10px
+    16px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border:
+    1px solid
+    #b9cbe3;
+
+  border-radius: 9px;
+
+  color: #174f9f;
+
+  background: #f7faff;
+
+  font-family: inherit;
+
+  font-size: 0.66rem;
+
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    background
+      0.2s ease,
+    color
+      0.2s ease,
+    transform
+      0.2s ease;
+}
+
+.pro-membership-card.recommended
+.pro-membership-select-button {
+  border: none;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      90deg,
+      #082e6b,
+      #175abd
+    );
+
+  box-shadow:
+    0
+    9px
+    20px
+    rgba(
+      18,
+      70,
+      153,
+      0.2
+    );
+}
+
+.pro-membership-select-button:hover {
+  transform:
+    translateY(
+      -1px
+    );
+}
+
+/* =========================================================
+   BOTTOM INFO
+========================================================= */
+
+.pro-membership-info {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  margin-top: 24px;
+
+  color: #969fab;
+
+  font-size: 0.57rem;
+}
+
+.pro-membership-info i {
+  color: #6f8fb9;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (
+  max-width: 760px
+) {
+  .pro-membership-page {
+    padding:
+      22px
+      16px
+      35px;
+  }
+
+  .pro-membership-plans {
+    max-width: 520px;
+
+    grid-template-columns:
+      1fr;
+
+    gap: 26px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (
+  max-width: 480px
+) {
+  .pro-membership-header {
+    align-items:
+      flex-start;
+  }
+
+  .pro-membership-member-id {
+    padding:
+      7px
+      9px;
+  }
+
+  .pro-membership-progress {
+    margin-top: 28px;
+  }
+
+  .pro-membership-step {
+    min-width: 53px;
+  }
+
+  .pro-membership-line {
+    width: 22px;
+
+    margin-left: 2px;
+    margin-right: 2px;
+  }
+
+  .pro-membership-step small {
+    font-size: 0.5rem;
+  }
+
+  .pro-membership-heading {
+    margin-top: 30px;
+  }
+
+  .pro-membership-card {
+    padding:
+      27px
+      20px
+      23px;
+  }
+}

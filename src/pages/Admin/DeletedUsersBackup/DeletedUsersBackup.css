@@ -1,0 +1,1159 @@
+/* =========================================================
+   DELETED USERS BACKUP PAGE
+========================================================= */
+
+.inmba-deleted-backup-page {
+  width: 100%;
+
+  display: grid;
+
+  gap: 18px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.inmba-deleted-backup-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 22px;
+
+  border:
+    1px solid #ead5d6;
+
+  border-radius: 19px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #fff9f9
+    );
+
+  box-shadow:
+    0 9px 28px
+    rgba(
+      91,
+      32,
+      38,
+      0.06
+    );
+}
+
+.inmba-deleted-backup-header p {
+  margin:
+    0 0 4px;
+
+  color: #9b5a60;
+
+  font-size: 0.52rem;
+
+  font-weight: 900;
+
+  letter-spacing: 0.8px;
+
+  text-transform: uppercase;
+}
+
+.inmba-deleted-backup-header h2 {
+  margin:
+    0 0 5px;
+
+  color: #69383d;
+
+  font-size: 1.3rem;
+
+  font-weight: 900;
+}
+
+.inmba-deleted-backup-header
+  > div:first-child
+  > span {
+  color: #8d7c7e;
+
+  font-size: 0.58rem;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   HEADER ACTIONS
+========================================================= */
+
+.inmba-deleted-backup-header-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+.inmba-deleted-backup-header-actions
+  a,
+.inmba-deleted-backup-header-actions
+  button {
+  min-height: 40px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding:
+    8px 12px;
+
+  border-radius: 10px;
+
+  font-size: 0.54rem;
+
+  font-weight: 900;
+
+  text-decoration: none;
+}
+
+.inmba-deleted-backup-header-actions
+  a {
+  border:
+    1px solid #e3b9bd;
+
+  color: #a13c44;
+
+  background: #fff2f3;
+}
+
+.inmba-deleted-backup-header-actions
+  button {
+  border:
+    1px solid #d1ded0;
+
+  color: #39703e;
+
+  background: #ffffff;
+}
+
+/* =========================================================
+   WARNING
+========================================================= */
+
+.inmba-deleted-backup-warning {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 10px;
+
+  padding: 14px;
+
+  border:
+    1px solid #edcf98;
+
+  border-radius: 13px;
+
+  color: #7c5e18;
+
+  background: #fff9e8;
+}
+
+.inmba-deleted-backup-warning
+  > span {
+  width: 37px;
+  height: 37px;
+
+  flex:
+    0 0 37px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 10px;
+
+  color: #ffffff;
+
+  background: #b78220;
+}
+
+.inmba-deleted-backup-warning
+  strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 0.59rem;
+}
+
+.inmba-deleted-backup-warning
+  p {
+  margin: 0;
+
+  font-size: 0.51rem;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   PANEL
+========================================================= */
+
+.inmba-deleted-backup-panel {
+  overflow: hidden;
+
+  border:
+    1px solid #e7dada;
+
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 8px 27px
+    rgba(
+      74,
+      32,
+      35,
+      0.05
+    );
+}
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.inmba-deleted-backup-toolbar {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding:
+    16px 18px;
+
+  border-bottom:
+    1px solid #eee0e1;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff8f8,
+      #ffffff
+    );
+}
+
+.inmba-deleted-backup-toolbar
+  small {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #9a7b7e;
+
+  font-size: 0.48rem;
+
+  font-weight: 900;
+
+  text-transform: uppercase;
+}
+
+.inmba-deleted-backup-toolbar
+  h3 {
+  margin: 0;
+
+  color: #664447;
+
+  font-size: 0.7rem;
+
+  font-weight: 900;
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.inmba-deleted-backup-search {
+  position: relative;
+
+  width:
+    min(
+      100%,
+      360px
+    );
+
+  display: flex;
+
+  align-items: center;
+}
+
+.inmba-deleted-backup-search
+  > i {
+  position: absolute;
+
+  left: 13px;
+
+  color: #a18d8f;
+
+  font-size: 0.58rem;
+}
+
+.inmba-deleted-backup-search
+  input {
+  width: 100%;
+
+  min-height: 40px;
+
+  padding:
+    8px 38px
+    8px 37px;
+
+  border:
+    1px solid #e2cfd1;
+
+  border-radius: 10px;
+
+  color: #65494c;
+
+  background: #ffffff;
+
+  font-size: 0.56rem;
+
+  outline: none;
+}
+
+.inmba-deleted-backup-search
+  input:focus {
+  border-color: #cc777e;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(
+      171,
+      59,
+      67,
+      0.06
+    );
+}
+
+.inmba-deleted-backup-search
+  button {
+  position: absolute;
+
+  right: 6px;
+
+  width: 28px;
+  height: 28px;
+
+  display: grid;
+
+  place-items: center;
+
+  border: 0;
+
+  border-radius: 8px;
+
+  color: #8a6e71;
+
+  background: #f8eeee;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.inmba-deleted-backup-table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.inmba-deleted-backup-table {
+  width: 100%;
+
+  min-width: 1280px;
+
+  border-collapse: collapse;
+}
+
+.inmba-deleted-backup-table
+  th {
+  padding:
+    12px 14px;
+
+  border-bottom:
+    1px solid #ead8da;
+
+  color: #916b6e;
+
+  background: #fff7f7;
+
+  font-size: 0.49rem;
+
+  font-weight: 900;
+
+  letter-spacing: 0.3px;
+
+  text-align: left;
+
+  text-transform: uppercase;
+}
+
+.inmba-deleted-backup-table
+  td {
+  padding: 14px;
+
+  border-bottom:
+    1px solid #f2e8e9;
+
+  color: #625456;
+
+  font-size: 0.56rem;
+
+  vertical-align: top;
+}
+
+.inmba-deleted-backup-table
+  tbody
+  tr:hover {
+  background: #fffafa;
+}
+
+/* =========================================================
+   IDS
+========================================================= */
+
+.inmba-deleted-backup-id,
+.inmba-deleted-original-id {
+  display: inline-flex;
+
+  padding:
+    5px 8px;
+
+  border-radius: 7px;
+
+  font-family: monospace;
+
+  font-size: 0.51rem;
+
+  font-weight: 900;
+}
+
+.inmba-deleted-backup-id {
+  border:
+    1px solid #e6b9bd;
+
+  color: #ab3c45;
+
+  background: #fff0f1;
+}
+
+.inmba-deleted-original-id {
+  border:
+    1px solid #e4cdcf;
+
+  color: #8f5d61;
+
+  background: #faf3f3;
+}
+
+/* =========================================================
+   USER
+========================================================= */
+
+.inmba-deleted-backup-user {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+}
+
+.inmba-deleted-backup-user
+  > span {
+  width: 38px;
+  height: 38px;
+
+  flex:
+    0 0 38px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 10px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #8c4147,
+      #bd5d65
+    );
+
+  font-size: 0.57rem;
+
+  font-weight: 900;
+}
+
+.inmba-deleted-backup-user
+  strong,
+.inmba-deleted-backup-user
+  small {
+  display: block;
+}
+
+.inmba-deleted-backup-user
+  strong {
+  margin-bottom: 2px;
+
+  color: #604346;
+
+  font-size: 0.59rem;
+}
+
+.inmba-deleted-backup-user
+  small {
+  color: #9a8587;
+
+  font-size: 0.47rem;
+}
+
+/* =========================================================
+   CONTACT
+========================================================= */
+
+.inmba-deleted-backup-email {
+  max-width: 190px;
+
+  display: inline-block;
+
+  word-break: break-all;
+
+  color: #5f675f;
+}
+
+.inmba-deleted-backup-phone {
+  font-family: monospace;
+
+  font-size: 0.54rem;
+}
+
+/* =========================================================
+   DATE
+========================================================= */
+
+.inmba-deleted-backup-date {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  padding:
+    5px 8px;
+
+  border-radius: 8px;
+
+  color: #946b32;
+
+  background: #fff6e9;
+
+  font-family: monospace;
+
+  font-size: 0.49rem;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   JSON
+========================================================= */
+
+.inmba-deleted-backup-json-cell {
+  width: 430px;
+}
+
+.inmba-deleted-backup-json-cell
+  pre {
+  max-height: 180px;
+
+  margin: 0;
+
+  overflow: auto;
+
+  padding: 11px;
+
+  border:
+    1px solid #ecd7ac;
+
+  border-left:
+    3px solid #c69231;
+
+  border-radius: 10px;
+
+  color: #674c25;
+
+  background: #fffbf2;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  font-size: 0.48rem;
+
+  line-height: 1.5;
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+}
+
+.inmba-deleted-backup-json-cell
+  > div {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  margin-top: 7px;
+}
+
+.inmba-deleted-backup-json-cell
+  button {
+  min-height: 29px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  padding:
+    5px 8px;
+
+  border:
+    1px solid #e1c6c8;
+
+  border-radius: 7px;
+
+  color: #a14850;
+
+  background: #fff5f5;
+
+  font-size: 0.47rem;
+
+  font-weight: 900;
+}
+
+/* =========================================================
+   STATE
+========================================================= */
+
+.inmba-deleted-backup-state,
+.inmba-deleted-backup-empty {
+  min-height: 340px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  padding: 35px;
+
+  text-align: center;
+}
+
+.inmba-deleted-backup-spinner {
+  width: 42px;
+  height: 42px;
+
+  margin-bottom: 12px;
+
+  border:
+    4px solid #eadbdc;
+
+  border-top-color: #a63b44;
+
+  border-radius: 50%;
+
+  animation:
+    inmbaDeletedBackupSpin
+    0.8s linear infinite;
+}
+
+@keyframes inmbaDeletedBackupSpin {
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+.inmba-deleted-backup-error-icon,
+.inmba-deleted-backup-empty
+  > span {
+  width: 58px;
+  height: 58px;
+
+  margin-bottom: 12px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 17px;
+
+  font-size: 1.03rem;
+}
+
+.inmba-deleted-backup-error-icon {
+  color: #a63c45;
+
+  background: #fff0f1;
+}
+
+.inmba-deleted-backup-empty
+  > span {
+  color: #a66c30;
+
+  background: #fff6e8;
+}
+
+.inmba-deleted-backup-state
+  h3,
+.inmba-deleted-backup-empty
+  h3 {
+  margin:
+    0 0 5px;
+
+  color: #60484a;
+
+  font-size: 0.74rem;
+}
+
+.inmba-deleted-backup-state
+  p,
+.inmba-deleted-backup-empty
+  p {
+  max-width: 430px;
+
+  margin: 0;
+
+  color: #928486;
+
+  font-size: 0.54rem;
+
+  line-height: 1.5;
+}
+
+.inmba-deleted-backup-state
+  button,
+.inmba-deleted-backup-empty
+  button {
+  min-height: 37px;
+
+  margin-top: 12px;
+
+  padding:
+    7px 12px;
+
+  border: 0;
+
+  border-radius: 9px;
+
+  color: #ffffff;
+
+  background: #9e3740;
+
+  font-size: 0.52rem;
+
+  font-weight: 900;
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.inmba-deleted-backup-modal-overlay {
+  position: fixed;
+
+  z-index: 6000;
+
+  inset: 0;
+
+  display: grid;
+
+  place-items: center;
+
+  padding: 20px;
+
+  background:
+    rgba(
+      26,
+      10,
+      12,
+      0.72
+    );
+
+  backdrop-filter:
+    blur(6px);
+}
+
+.inmba-deleted-backup-modal {
+  width:
+    min(
+      100%,
+      900px
+    );
+
+  max-height:
+    calc(
+      100vh - 40px
+    );
+
+  overflow-y: auto;
+
+  border:
+    1px solid #e3cfd1;
+
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 30px 80px
+    rgba(
+      0,
+      0,
+      0,
+      0.3
+    );
+}
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.inmba-deleted-backup-modal
+  > header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 17px;
+
+  border-bottom:
+    1px solid #eadcdd;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff7f7,
+      #ffffff
+    );
+}
+
+.inmba-deleted-backup-modal
+  > header
+  > div {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.inmba-deleted-backup-modal
+  > header
+  > div
+  > span {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #90363e,
+      #c1525b
+    );
+}
+
+.inmba-deleted-backup-modal
+  > header p {
+  margin:
+    0 0 2px;
+
+  color: #9d7175;
+
+  font-size: 0.47rem;
+
+  font-weight: 900;
+
+  text-transform: uppercase;
+}
+
+.inmba-deleted-backup-modal
+  > header h2 {
+  margin: 0;
+
+  color: #604346;
+
+  font-size: 0.75rem;
+}
+
+.inmba-deleted-backup-modal
+  > header
+  > button {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+
+  place-items: center;
+
+  border: 0;
+
+  border-radius: 9px;
+
+  color: #826b6d;
+
+  background: #f8eded;
+}
+
+/* =========================================================
+   MODAL META
+========================================================= */
+
+.inmba-deleted-backup-modal-meta {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap: 9px;
+
+  padding:
+    16px 17px 0;
+}
+
+.inmba-deleted-backup-modal-meta
+  > div {
+  padding: 11px;
+
+  border:
+    1px solid #eadbdb;
+
+  border-radius: 10px;
+
+  background: #fffafa;
+}
+
+.inmba-deleted-backup-modal-meta
+  small,
+.inmba-deleted-backup-modal-meta
+  strong {
+  display: block;
+}
+
+.inmba-deleted-backup-modal-meta
+  small {
+  margin-bottom: 3px;
+
+  color: #9c8587;
+
+  font-size: 0.46rem;
+
+  text-transform: uppercase;
+}
+
+.inmba-deleted-backup-modal-meta
+  strong {
+  color: #67494c;
+
+  font-size: 0.54rem;
+}
+
+/* =========================================================
+   MODAL JSON
+========================================================= */
+
+.inmba-deleted-backup-modal-json {
+  padding: 17px;
+}
+
+.inmba-deleted-backup-modal-json
+  > div {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 7px;
+}
+
+.inmba-deleted-backup-modal-json
+  > div
+  > span {
+  color: #67484b;
+
+  font-size: 0.56rem;
+
+  font-weight: 900;
+}
+
+.inmba-deleted-backup-modal-json
+  > div
+  > small {
+  color: #a18b8d;
+
+  font-size: 0.47rem;
+}
+
+.inmba-deleted-backup-modal-json
+  pre {
+  max-height: 480px;
+
+  margin: 0;
+
+  overflow: auto;
+
+  padding: 15px;
+
+  border:
+    1px solid #e6d1a6;
+
+  border-radius: 12px;
+
+  color: #5d482b;
+
+  background: #fffbf3;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  font-size: 0.51rem;
+
+  line-height: 1.55;
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+}
+
+/* =========================================================
+   MODAL FOOTER
+========================================================= */
+
+.inmba-deleted-backup-modal
+  > footer {
+  display: flex;
+
+  justify-content: flex-end;
+
+  padding:
+    0 17px 17px;
+}
+
+.inmba-deleted-backup-modal
+  > footer
+  button {
+  min-height: 39px;
+
+  padding:
+    7px 14px;
+
+  border: 0;
+
+  border-radius: 9px;
+
+  color: #ffffff;
+
+  background: #8f3940;
+
+  font-size: 0.53rem;
+
+  font-weight: 900;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (
+  max-width: 760px
+) {
+  .inmba-deleted-backup-header,
+  .inmba-deleted-backup-toolbar {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .inmba-deleted-backup-search {
+    width: 100%;
+  }
+
+  .inmba-deleted-backup-modal-meta {
+    grid-template-columns:
+      1fr;
+  }
+}
+
+@media (
+  max-width: 520px
+) {
+  .inmba-deleted-backup-header {
+    padding: 17px;
+  }
+
+  .inmba-deleted-backup-header-actions {
+    display: grid;
+
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .inmba-deleted-backup-modal-overlay {
+    padding: 10px;
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+    reduce
+) {
+  .inmba-deleted-backup-spinner {
+    animation: none;
+  }
+}

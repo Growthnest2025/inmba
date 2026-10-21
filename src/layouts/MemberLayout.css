@@ -1,0 +1,81 @@
+/* ========================================
+   MEMBER LAYOUT
+======================================== */
+
+.member-layout {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: #1f351f;
+  background:
+    linear-gradient(
+      145deg,
+      #eef5e9 0%,
+      #f8fbf6 50%,
+      #edf4e9 100%
+    );
+}
+
+/* ========================================
+   MEMBER CONTENT
+======================================== */
+
+.member-layout-content {
+  position: relative;
+  min-height: 100vh;
+}
+
+/*
+  Individual member pages already contain
+  their own fixed-navbar top spacing.
+
+  Example:
+  Dashboard.css:
+  padding-top: 130px;
+
+  அதனால் layout-level padding add
+  செய்யப்படவில்லை.
+*/
+
+/* ========================================
+   GLOBAL MEMBER PAGE BEHAVIOUR
+======================================== */
+
+.member-layout-content img {
+  max-width: 100%;
+}
+
+.member-layout-content button,
+.member-layout-content a,
+.member-layout-content input,
+.member-layout-content select,
+.member-layout-content textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ========================================
+   ACCESSIBILITY
+======================================== */
+
+.member-layout-content button:focus-visible,
+.member-layout-content a:focus-visible,
+.member-layout-content input:focus-visible,
+.member-layout-content select:focus-visible,
+.member-layout-content textarea:focus-visible {
+  outline: 3px solid rgba(15, 77, 15, 0.24);
+  outline-offset: 3px;
+}
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 767px) {
+  .member-layout {
+    min-height: 100dvh;
+  }
+
+  .member-layout-content {
+    min-height: 100dvh;
+  }
+}

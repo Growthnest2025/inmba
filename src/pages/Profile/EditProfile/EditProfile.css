@@ -1,0 +1,570 @@
+/* ========================================
+   EDIT PROFILE PAGE
+======================================== */
+
+.inmba-edit-profile-page {
+  min-height: 100vh;
+  padding: 125px 22px 70px;
+  background:
+    radial-gradient(
+      circle at 8% 15%,
+      rgba(15, 77, 15, 0.1),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 92% 82%,
+      rgba(55, 145, 55, 0.08),
+      transparent 34%
+    ),
+    linear-gradient(
+      145deg,
+      #eef6eb 0%,
+      #f9fcf8 52%,
+      #edf4e9 100%
+    );
+}
+
+.inmba-edit-profile-container {
+  width: min(100%, 1120px);
+  margin: 0 auto;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.inmba-edit-profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 22px;
+  padding: 28px 30px;
+  border-radius: 25px;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 88% 10%,
+      rgba(255, 255, 255, 0.15),
+      transparent 27%
+    ),
+    linear-gradient(
+      135deg,
+      #0d460d,
+      #146014 55%,
+      #268326
+    );
+  box-shadow:
+    0 20px 44px rgba(15, 77, 15, 0.2);
+}
+
+.inmba-edit-profile-header p {
+  margin: 0 0 5px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.inmba-edit-profile-header h1 {
+  margin: 0 0 7px;
+  font-size: clamp(1.7rem, 4vw, 2.45rem);
+  font-weight: 800;
+}
+
+.inmba-edit-profile-header > div > span {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.6;
+}
+
+.inmba-edit-profile-header-actions {
+  flex: 0 0 auto;
+}
+
+/* ========================================
+   MEMBER SUMMARY
+======================================== */
+
+.inmba-edit-member-summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+  padding: 18px 22px;
+  border: 1px solid rgba(15, 77, 15, 0.12);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 12px 30px rgba(38, 71, 38, 0.08);
+}
+
+.inmba-edit-member-avatar {
+  width: 55px;
+  height: 55px;
+  flex: 0 0 55px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #288428
+    );
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.inmba-edit-member-summary > div:nth-child(2) {
+  flex: 1;
+}
+
+.inmba-edit-member-summary h2 {
+  margin: 0 0 4px;
+  color: #193819;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.inmba-edit-member-summary p {
+  margin: 0;
+  color: #718071;
+  font-size: 0.8rem;
+}
+
+.inmba-edit-member-summary > span {
+  padding: 7px 12px;
+  border-radius: 999px;
+  color: #176027;
+  background: #e5f5e7;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+/* ========================================
+   ALERT
+======================================== */
+
+.inmba-edit-alert {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 20px;
+  padding: 14px 17px;
+  border: 1px solid #f0b1b7;
+  border-radius: 14px;
+  color: #9d2531;
+  background: #fff0f1;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+/* ========================================
+   FORM SECTION
+======================================== */
+
+.inmba-edit-section {
+  margin-bottom: 22px;
+  padding: 24px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 23px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 15px 36px rgba(35, 70, 35, 0.08);
+}
+
+.inmba-edit-section-header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e6eee4;
+}
+
+.inmba-edit-section-icon {
+  width: 47px;
+  height: 47px;
+  flex: 0 0 47px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #278227
+    );
+  box-shadow:
+    0 9px 20px rgba(15, 77, 15, 0.18);
+}
+
+.inmba-edit-section-header h2 {
+  margin: 0;
+  color: #183718;
+  font-size: 1.16rem;
+  font-weight: 800;
+}
+
+.inmba-edit-section-header p {
+  margin: 4px 0 0;
+  color: #788778;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+/* ========================================
+   FORM GRID
+======================================== */
+
+.inmba-edit-form-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 19px;
+}
+
+.inmba-edit-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.inmba-edit-field-full {
+  grid-column: 1 / -1;
+}
+
+.inmba-edit-field label {
+  margin-bottom: 8px;
+  color: #304530;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.inmba-edit-field label span {
+  margin-left: 3px;
+  color: #d43645;
+}
+
+.inmba-edit-field input,
+.inmba-edit-field select,
+.inmba-edit-field textarea {
+  width: 100%;
+  border: 1px solid #d5e3d3;
+  border-radius: 12px;
+  color: #213721;
+  background: #fbfdfb;
+  font-size: 0.89rem;
+  outline: none;
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease;
+}
+
+.inmba-edit-field input,
+.inmba-edit-field select {
+  min-height: 48px;
+  padding: 10px 13px;
+}
+
+.inmba-edit-field textarea {
+  min-height: 100px;
+  padding: 12px 13px;
+  line-height: 1.65;
+  resize: vertical;
+}
+
+.inmba-edit-field input::placeholder,
+.inmba-edit-field textarea::placeholder {
+  color: #9aa79a;
+}
+
+.inmba-edit-field input:focus,
+.inmba-edit-field select:focus,
+.inmba-edit-field textarea:focus {
+  border-color: #6baa6b;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(15, 77, 15, 0.09);
+}
+
+.inmba-edit-field input:disabled,
+.inmba-edit-field select:disabled,
+.inmba-edit-field textarea:disabled {
+  cursor: not-allowed;
+  color: #788278;
+  background: #f0f3f0;
+}
+
+/* ========================================
+   FIELD ERRORS
+======================================== */
+
+.inmba-edit-field .inmba-edit-input-error {
+  border-color: #dc4553;
+  background: #fffafa;
+  box-shadow:
+    0 0 0 3px rgba(220, 69, 83, 0.07);
+}
+
+.inmba-edit-field-error {
+  margin-top: 6px;
+  color: #c52e3c;
+  font-size: 0.73rem;
+  font-weight: 600;
+}
+
+.inmba-edit-textarea-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.inmba-edit-textarea-footer > small:last-child {
+  margin-top: 6px;
+  color: #8a968a;
+  font-size: 0.69rem;
+}
+
+/* ========================================
+   BUTTONS
+======================================== */
+
+.inmba-edit-primary-button,
+.inmba-edit-secondary-button,
+.inmba-edit-cancel-button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 17px;
+  border: 0;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition:
+    transform 0.24s ease,
+    box-shadow 0.24s ease,
+    background 0.24s ease;
+}
+
+.inmba-edit-primary-button {
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #268326
+    );
+  box-shadow:
+    0 10px 22px rgba(15, 77, 15, 0.2);
+}
+
+.inmba-edit-primary-button:hover {
+  transform: translateY(-2px);
+  color: #ffffff;
+  box-shadow:
+    0 14px 28px rgba(15, 77, 15, 0.27);
+}
+
+.inmba-edit-secondary-button {
+  border: 1px solid #cde0ca;
+  color: #0f4d0f;
+  background: #edf6ec;
+}
+
+.inmba-edit-profile-header .inmba-edit-secondary-button {
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.inmba-edit-secondary-button:hover {
+  transform: translateY(-2px);
+  color: #0f4d0f;
+  background: #e2f0e0;
+}
+
+.inmba-edit-profile-header .inmba-edit-secondary-button:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.inmba-edit-cancel-button {
+  color: #5f6d5f;
+  background: #eef1ee;
+}
+
+.inmba-edit-cancel-button:hover {
+  color: #394939;
+  background: #e4e8e4;
+}
+
+.inmba-edit-primary-button:disabled,
+.inmba-edit-secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ========================================
+   FORM ACTIONS
+======================================== */
+
+.inmba-edit-form-actions {
+  position: sticky;
+  bottom: 15px;
+  z-index: 10;
+  display: flex;
+  justify-content: flex-end;
+  gap: 11px;
+  padding: 16px;
+  border: 1px solid rgba(15, 77, 15, 0.13);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow:
+    0 15px 35px rgba(35, 70, 35, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ========================================
+   LOADING / ERROR STATE
+======================================== */
+
+.inmba-edit-profile-state {
+  width: min(100%, 540px);
+  min-height: 350px;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 35px;
+  border: 1px solid rgba(15, 77, 15, 0.12);
+  border-radius: 25px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow:
+    0 20px 45px rgba(35, 68, 35, 0.1);
+}
+
+.inmba-edit-profile-state .spinner-border {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 19px;
+  color: #0f4d0f;
+}
+
+.inmba-edit-profile-state h1 {
+  margin: 0 0 8px;
+  color: #193719;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.inmba-edit-profile-state p {
+  max-width: 390px;
+  margin: 0 0 20px;
+  color: #718071;
+  line-height: 1.65;
+}
+
+.inmba-edit-profile-state-icon {
+  width: 65px;
+  height: 65px;
+  margin-bottom: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #b3313e;
+  background: #fdebec;
+  font-size: 1.5rem;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 991px) {
+  .inmba-edit-profile-page {
+    padding-top: 110px;
+  }
+}
+
+@media (max-width: 767px) {
+  .inmba-edit-profile-page {
+    padding:
+      98px 14px 50px;
+  }
+
+  .inmba-edit-profile-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 23px;
+  }
+
+  .inmba-edit-profile-header-actions {
+    width: 100%;
+  }
+
+  .inmba-edit-profile-header-actions
+    .inmba-edit-secondary-button {
+    width: 100%;
+  }
+
+  .inmba-edit-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-edit-field-full {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 575px) {
+  .inmba-edit-profile-page {
+    padding-right: 11px;
+    padding-left: 11px;
+  }
+
+  .inmba-edit-member-summary {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .inmba-edit-member-summary > span {
+    width: 100%;
+    text-align: center;
+  }
+
+  .inmba-edit-section {
+    padding: 18px;
+    border-radius: 19px;
+  }
+
+  .inmba-edit-section-header {
+    align-items: flex-start;
+  }
+
+  .inmba-edit-form-actions {
+    position: static;
+    flex-direction: column;
+  }
+
+  .inmba-edit-form-actions
+    .inmba-edit-primary-button,
+  .inmba-edit-form-actions
+    .inmba-edit-secondary-button,
+  .inmba-edit-form-actions
+    .inmba-edit-cancel-button {
+    width: 100%;
+  }
+}

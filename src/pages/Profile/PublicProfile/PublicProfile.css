@@ -1,0 +1,974 @@
+/* ========================================
+   PUBLIC PROFILE PAGE
+======================================== */
+
+.inmba-public-profile-page {
+  min-height: 100vh;
+  padding: 125px 22px 60px;
+  background:
+    radial-gradient(
+      circle at 8% 15%,
+      rgba(15, 77, 15, 0.1),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 92% 78%,
+      rgba(51, 136, 51, 0.08),
+      transparent 34%
+    ),
+    linear-gradient(
+      145deg,
+      #edf6ea 0%,
+      #f9fcf8 52%,
+      #eaf3e6 100%
+    );
+}
+
+.inmba-public-profile-container {
+  width: min(100%, 1180px);
+  margin: 0 auto;
+}
+
+/* ========================================
+   PROFILE HERO
+======================================== */
+
+.inmba-public-profile-hero {
+  margin-bottom: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(15, 77, 15, 0.13);
+  border-radius: 30px;
+  background: #ffffff;
+  box-shadow:
+    0 24px 55px rgba(28, 67, 28, 0.13);
+}
+
+.inmba-public-profile-cover {
+  min-height: 150px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px 30px;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 88% 12%,
+      rgba(255, 255, 255, 0.15),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 15% 130%,
+      rgba(134, 239, 134, 0.2),
+      transparent 38%
+    ),
+    linear-gradient(
+      135deg,
+      #0b400b,
+      #126012 52%,
+      #278327
+    );
+}
+
+.inmba-public-profile-brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.inmba-public-profile-brand-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 1.2rem;
+}
+
+.inmba-public-profile-brand p {
+  margin: 0 0 2px;
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.inmba-public-profile-brand div > span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.inmba-public-profile-share-button {
+  min-height: 43px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.13);
+  font-size: 0.8rem;
+  font-weight: 800;
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease;
+}
+
+.inmba-public-profile-share-button:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ========================================
+   HERO BODY
+======================================== */
+
+.inmba-public-profile-hero-body {
+  display: grid;
+  grid-template-columns: 190px 1fr 250px;
+  align-items: center;
+  gap: 28px;
+  padding: 0 30px 32px;
+}
+
+.inmba-public-profile-avatar-wrapper {
+  margin-top: -67px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inmba-public-profile-avatar {
+  width: 148px;
+  height: 148px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border: 6px solid #ffffff;
+  border-radius: 50%;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2c8c2c
+    );
+  font-size: 2.7rem;
+  font-weight: 900;
+  box-shadow:
+    0 17px 36px rgba(15, 77, 15, 0.26);
+}
+
+.inmba-public-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.inmba-public-profile-verification {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.inmba-public-profile-verification-verified {
+  color: #176027;
+  background: #e4f5e7;
+}
+
+.inmba-public-profile-verification-pending,
+.inmba-public-profile-verification-submitted {
+  color: #825e00;
+  background: #fff0bf;
+}
+
+.inmba-public-profile-verification-rejected {
+  color: #9f2934;
+  background: #fde7e9;
+}
+
+.inmba-public-profile-main-details {
+  padding-top: 24px;
+}
+
+.inmba-public-profile-membership {
+  margin: 0 0 5px;
+  color: #277127;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.inmba-public-profile-main-details h1 {
+  margin: 0;
+  color: #173517;
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  font-weight: 900;
+  letter-spacing: -0.7px;
+}
+
+.inmba-public-profile-role {
+  margin: 8px 0 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #477147;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.inmba-public-profile-bio {
+  max-width: 650px;
+  margin: 0 0 14px;
+  color: #687868;
+  line-height: 1.72;
+}
+
+.inmba-public-profile-quick-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 19px;
+  margin-bottom: 17px;
+}
+
+.inmba-public-profile-quick-details span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #6f7f6f;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.inmba-public-profile-quick-details i {
+  color: #3c7b3c;
+}
+
+.inmba-public-profile-id-card {
+  padding: 20px;
+  border: 1px solid #d4e5d1;
+  border-radius: 20px;
+  background:
+    linear-gradient(
+      145deg,
+      #f4faf2,
+      #e8f4e6
+    );
+  text-align: center;
+}
+
+.inmba-public-profile-id-card > span {
+  display: block;
+  margin-bottom: 8px;
+  color: #708070;
+  font-size: 0.67rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.inmba-public-profile-id-card > strong {
+  display: block;
+  margin-bottom: 13px;
+  color: #0f4d0f;
+  font-size: 1.3rem;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.inmba-public-profile-id-card > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding-top: 12px;
+  border-top: 1px solid #d5e4d3;
+  color: #617361;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* ========================================
+   BUTTONS
+======================================== */
+
+.inmba-public-profile-actions,
+.inmba-public-profile-state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.inmba-public-profile-primary-button,
+.inmba-public-profile-secondary-button {
+  min-height: 43px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition:
+    transform 0.24s ease,
+    box-shadow 0.24s ease,
+    background 0.24s ease;
+}
+
+.inmba-public-profile-primary-button {
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #268326
+    );
+  box-shadow:
+    0 10px 22px rgba(15, 77, 15, 0.2);
+}
+
+.inmba-public-profile-primary-button:hover {
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+
+.inmba-public-profile-secondary-button {
+  border: 1px solid #cfe2cc;
+  color: #0f4d0f;
+  background: #edf6ec;
+}
+
+.inmba-public-profile-secondary-button:hover {
+  transform: translateY(-2px);
+  color: #0f4d0f;
+  background: #e2f0e0;
+}
+
+/* ========================================
+   SUMMARY GRID
+======================================== */
+
+.inmba-public-profile-summary-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.inmba-public-profile-summary-grid article {
+  min-height: 135px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 12px 30px rgba(35, 70, 35, 0.08);
+}
+
+.inmba-public-profile-summary-grid article > div {
+  width: 43px;
+  height: 43px;
+  margin-bottom: 12px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  color: #0f4d0f;
+  background: #e8f4e7;
+}
+
+.inmba-public-profile-summary-grid article > span {
+  margin-bottom: 5px;
+  color: #718071;
+  font-size: 0.73rem;
+  font-weight: 700;
+}
+
+.inmba-public-profile-summary-grid article > strong {
+  color: #173717;
+  font-size: 1.65rem;
+  font-weight: 900;
+}
+
+.inmba-public-profile-summary-text {
+  font-size: 0.88rem !important;
+  line-height: 1.45;
+}
+
+/* ========================================
+   PROFILE GRID
+======================================== */
+
+.inmba-public-profile-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.inmba-public-profile-card {
+  margin-bottom: 22px;
+  padding: 23px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 23px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 15px 36px rgba(35, 70, 35, 0.08);
+}
+
+.inmba-public-profile-grid
+  .inmba-public-profile-card {
+  margin-bottom: 0;
+}
+
+.inmba-public-profile-card-header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 20px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #e5ede3;
+}
+
+.inmba-public-profile-card-icon {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #278327
+    );
+  box-shadow:
+    0 9px 20px rgba(15, 77, 15, 0.18);
+}
+
+.inmba-public-profile-card-header h2 {
+  margin: 0;
+  color: #193819;
+  font-size: 1.13rem;
+  font-weight: 900;
+}
+
+.inmba-public-profile-card-header p {
+  margin: 3px 0 0;
+  color: #788778;
+  font-size: 0.75rem;
+}
+
+/* ========================================
+   INFORMATION GRID
+======================================== */
+
+.inmba-public-profile-info-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.inmba-public-profile-info {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 13px;
+  border: 1px solid #e1ebe0;
+  border-radius: 14px;
+  background: #f9fcf8;
+}
+
+.inmba-public-profile-info-full {
+  grid-column: 1 / -1;
+}
+
+.inmba-public-profile-info-icon {
+  width: 35px;
+  height: 35px;
+  flex: 0 0 35px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: #327332;
+  background: #e7f3e5;
+  font-size: 0.82rem;
+}
+
+.inmba-public-profile-info > div:last-child {
+  min-width: 0;
+}
+
+.inmba-public-profile-info span {
+  display: block;
+  margin-bottom: 4px;
+  color: #7a877a;
+  font-size: 0.67rem;
+  font-weight: 800;
+}
+
+.inmba-public-profile-info strong {
+  display: block;
+  color: #263d26;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+/* ========================================
+   SKILLS
+======================================== */
+
+.inmba-public-profile-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.inmba-public-profile-skills span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border: 1px solid #cee3cb;
+  border-radius: 999px;
+  color: #205e20;
+  background: #edf7eb;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.inmba-public-profile-skills i {
+  font-size: 0.65rem;
+}
+
+/* ========================================
+   SOCIAL LINKS
+======================================== */
+
+.inmba-public-profile-social-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.inmba-public-profile-social-grid a {
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 13px;
+  border: 1px solid #d4e4d2;
+  border-radius: 14px;
+  color: #245724;
+  background: #f5faf4;
+  text-decoration: none;
+  transition:
+    transform 0.24s ease,
+    background 0.24s ease;
+}
+
+.inmba-public-profile-social-grid a:hover {
+  transform: translateY(-2px);
+  color: #0f4d0f;
+  background: #eaf5e8;
+}
+
+.inmba-public-profile-social-grid a > span {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: #ffffff;
+  background: #0f4d0f;
+}
+
+.inmba-public-profile-social-grid a > strong {
+  flex: 1;
+  font-size: 0.78rem;
+}
+
+.inmba-public-profile-social-grid a > i {
+  color: #698069;
+  font-size: 0.68rem;
+}
+
+/* ========================================
+   REFERRAL SECTION
+======================================== */
+
+.inmba-public-profile-referral {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 22px;
+  padding: 25px;
+  overflow: hidden;
+  border: 1px solid rgba(15, 77, 15, 0.15);
+  border-radius: 23px;
+  background:
+    radial-gradient(
+      circle at 95% 10%,
+      rgba(80, 180, 80, 0.12),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #ecf7ea
+    );
+  box-shadow:
+    0 15px 36px rgba(35, 70, 35, 0.08);
+}
+
+.inmba-public-profile-referral-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.inmba-public-profile-referral-icon {
+  width: 54px;
+  height: 54px;
+  flex: 0 0 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2a8a2a
+    );
+  font-size: 1.2rem;
+}
+
+.inmba-public-profile-referral-content p {
+  margin: 0 0 3px;
+  color: #3e793e;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.inmba-public-profile-referral-content h2 {
+  margin: 0 0 5px;
+  color: #193919;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.inmba-public-profile-referral-content div > span {
+  color: #718071;
+  font-size: 0.78rem;
+}
+
+.inmba-public-profile-referral-details {
+  min-width: 240px;
+  padding: 16px;
+  border: 1px solid #cee1cb;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.inmba-public-profile-referral-details > div {
+  margin-bottom: 11px;
+}
+
+.inmba-public-profile-referral-details span {
+  display: block;
+  margin-bottom: 4px;
+  color: #758475;
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+
+.inmba-public-profile-referral-details strong {
+  color: #0f4d0f;
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.inmba-public-profile-referral-details button {
+  width: 100%;
+  min-height: 39px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 0;
+  border-radius: 10px;
+  color: #ffffff;
+  background: #0f4d0f;
+  font-size: 0.73rem;
+  font-weight: 800;
+}
+
+/* ========================================
+   EMPTY / FOOTER
+======================================== */
+
+.inmba-public-profile-empty {
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #748274;
+}
+
+.inmba-public-profile-empty p {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.inmba-public-profile-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 4px 5px;
+  color: #728172;
+  font-size: 0.75rem;
+}
+
+.inmba-public-profile-footer > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inmba-public-profile-footer i {
+  color: #347334;
+}
+
+.inmba-public-profile-footer a {
+  color: #0f4d0f;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+/* ========================================
+   LOADING / ERROR
+======================================== */
+
+.inmba-public-profile-state {
+  width: min(100%, 550px);
+  min-height: 360px;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px;
+  border: 1px solid rgba(15, 77, 15, 0.12);
+  border-radius: 25px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow:
+    0 20px 45px rgba(35, 68, 35, 0.1);
+}
+
+.inmba-public-profile-state .spinner-border {
+  width: 45px;
+  height: 45px;
+  margin-bottom: 20px;
+  color: #0f4d0f;
+}
+
+.inmba-public-profile-state h1 {
+  margin: 0 0 8px;
+  color: #183718;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.inmba-public-profile-state p {
+  max-width: 400px;
+  margin: 0 0 20px;
+  color: #718071;
+  line-height: 1.65;
+}
+
+.inmba-public-profile-state-icon {
+  width: 68px;
+  height: 68px;
+  margin-bottom: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #af2936;
+  background: #fde8ea;
+  font-size: 1.55rem;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1050px) {
+  .inmba-public-profile-hero-body {
+    grid-template-columns: 170px 1fr;
+  }
+
+  .inmba-public-profile-id-card {
+    grid-column: 1 / -1;
+    margin-left: 170px;
+  }
+}
+
+@media (max-width: 991px) {
+  .inmba-public-profile-page {
+    padding-top: 110px;
+  }
+
+  .inmba-public-profile-summary-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .inmba-public-profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-public-profile-social-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .inmba-public-profile-page {
+    padding:
+      98px 14px 45px;
+  }
+
+  .inmba-public-profile-cover {
+    min-height: 135px;
+    padding: 22px;
+  }
+
+  .inmba-public-profile-share-button {
+    width: 43px;
+    min-width: 43px;
+    padding: 0;
+    font-size: 0;
+  }
+
+  .inmba-public-profile-share-button i {
+    font-size: 0.9rem;
+  }
+
+  .inmba-public-profile-hero-body {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding:
+      0 21px 25px;
+  }
+
+  .inmba-public-profile-avatar-wrapper {
+    width: max-content;
+    margin-top: -55px;
+  }
+
+  .inmba-public-profile-avatar {
+    width: 122px;
+    height: 122px;
+    font-size: 2.3rem;
+  }
+
+  .inmba-public-profile-main-details {
+    padding-top: 8px;
+  }
+
+  .inmba-public-profile-id-card {
+    grid-column: auto;
+    margin-left: 0;
+  }
+
+  .inmba-public-profile-referral {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .inmba-public-profile-referral-details {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 575px) {
+  .inmba-public-profile-page {
+    padding-right: 11px;
+    padding-left: 11px;
+  }
+
+  .inmba-public-profile-brand-icon {
+    display: none;
+  }
+
+  .inmba-public-profile-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-public-profile-card {
+    padding: 18px;
+    border-radius: 19px;
+  }
+
+  .inmba-public-profile-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-public-profile-info-full {
+    grid-column: auto;
+  }
+
+  .inmba-public-profile-actions,
+  .inmba-public-profile-state-actions {
+    flex-direction: column;
+  }
+
+  .inmba-public-profile-primary-button,
+  .inmba-public-profile-secondary-button {
+    width: 100%;
+  }
+
+  .inmba-public-profile-social-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-public-profile-referral-content {
+    align-items: flex-start;
+  }
+
+  .inmba-public-profile-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

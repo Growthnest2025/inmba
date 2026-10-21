@@ -1,0 +1,795 @@
+/* =========================================================
+   COMMERCIAL FULL PROFILE
+========================================================= */
+
+.cfp-page {
+  --cfp-red: #e23744;
+  --cfp-red-dark: #b51e2b;
+  --cfp-red-deep: #941523;
+  --cfp-soft: #fff3f4;
+  --cfp-border: #f2d6d9;
+  --cfp-text: #201a1b;
+  --cfp-muted: #71666a;
+
+  min-height: 100vh;
+
+  padding:
+    55px
+    20px
+    80px;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(226, 55, 68, 0.13),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #fffafa,
+      #fff1f3
+    );
+
+  color:
+    var(--cfp-text);
+}
+
+.cfp-shell {
+  width:
+    min(
+      1120px,
+      100%
+    );
+
+  margin:
+    0 auto;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.cfp-hero {
+  overflow: hidden;
+
+  margin-bottom: 24px;
+
+  border:
+    1px solid
+    var(--cfp-border);
+
+  border-radius: 26px;
+
+  background: white;
+
+  box-shadow:
+    0 20px 60px
+    rgba(
+      134,
+      31,
+      42,
+      0.12
+    );
+}
+
+.cfp-hero-banner {
+  min-height: 165px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding:
+    30px
+    34px;
+
+  background:
+    linear-gradient(
+      120deg,
+      #ad1727,
+      #e23744,
+      #ef4a58
+    );
+
+  color: white;
+}
+
+.cfp-eyebrow {
+  display: block;
+
+  margin-bottom: 10px;
+
+  font-size: 0.7rem;
+  font-weight: 900;
+
+  letter-spacing: 1.4px;
+}
+
+.cfp-hero-banner h1 {
+  margin: 0;
+
+  font-size:
+    clamp(
+      2rem,
+      5vw,
+      3rem
+    );
+
+  font-weight: 900;
+}
+
+.cfp-status {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding:
+    9px
+    14px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.35
+    );
+
+  border-radius: 999px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.13
+    );
+
+  color: white;
+
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.cfp-status.approved {
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.2
+    );
+}
+
+/* =========================================================
+   HERO BODY
+========================================================= */
+
+.cfp-hero-body {
+  display: grid;
+
+  grid-template-columns:
+    180px
+    minmax(
+      0,
+      1fr
+    );
+
+  gap: 25px;
+
+  padding:
+    0
+    35px
+    30px;
+}
+
+.cfp-avatar-area {
+  position: relative;
+}
+
+.cfp-avatar {
+  position: relative;
+
+  width: 135px;
+  height: 135px;
+
+  display: grid;
+  place-items: center;
+
+  margin-top: -62px;
+
+  border:
+    6px solid
+    white;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--cfp-red-dark),
+      var(--cfp-red)
+    );
+
+  color: white;
+
+  font-size: 2.3rem;
+  font-weight: 900;
+
+  box-shadow:
+    0 15px 35px
+    rgba(
+      124,
+      33,
+      42,
+      0.2
+    );
+}
+
+.cfp-avatar > span {
+  position: absolute;
+
+  right: 2px;
+  bottom: 8px;
+
+  width: 35px;
+  height: 35px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    4px solid
+    white;
+
+  border-radius: 50%;
+
+  background:
+    var(--cfp-red);
+
+  font-size: 0.75rem;
+}
+
+.cfp-profile-info {
+  padding-top: 25px;
+}
+
+.cfp-profile-name {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+}
+
+.cfp-profile-name h2 {
+  margin: 0;
+
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.cfp-profile-name i {
+  color:
+    var(--cfp-red);
+
+  font-size: 1.1rem;
+}
+
+.cfp-member-type {
+  display: block;
+
+  margin-top: 4px;
+
+  color:
+    var(--cfp-red);
+
+  font-size: 0.92rem;
+}
+
+.cfp-meta {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap:
+    10px
+    22px;
+
+  margin-top: 14px;
+
+  color:
+    var(--cfp-muted);
+
+  font-size: 0.78rem;
+}
+
+.cfp-meta span {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+}
+
+.cfp-meta i {
+  color:
+    var(--cfp-red);
+}
+
+.cfp-bio {
+  max-width: 760px;
+
+  margin:
+    18px
+    0
+    0;
+
+  color:
+    #65575b;
+
+  line-height: 1.7;
+}
+
+.cfp-actions {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 9px;
+
+  margin-top: 20px;
+}
+
+.cfp-actions button {
+  min-height: 41px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding:
+    10px
+    15px;
+
+  border:
+    1px solid
+    var(--cfp-border);
+
+  border-radius: 10px;
+
+  background:
+    var(--cfp-soft);
+
+  color:
+    var(--cfp-red-dark);
+
+  font-size: 0.72rem;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.cfp-actions button.primary {
+  border-color:
+    var(--cfp-red);
+
+  background:
+    var(--cfp-red);
+
+  color: white;
+}
+
+/* =========================================================
+   SECTION CARDS
+========================================================= */
+
+.cfp-section-card {
+  margin-bottom: 18px;
+
+  padding:
+    22px;
+
+  border:
+    1px solid
+    var(--cfp-border);
+
+  border-radius: 20px;
+
+  background: white;
+
+  box-shadow:
+    0 12px 35px
+    rgba(
+      123,
+      41,
+      50,
+      0.06
+    );
+}
+
+.cfp-section-heading {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  padding-bottom: 17px;
+
+  border-bottom:
+    1px solid
+    #f2e3e5;
+}
+
+.cfp-section-icon {
+  width: 44px;
+  height: 44px;
+
+  flex:
+    0
+    0
+    44px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--cfp-red-dark),
+      var(--cfp-red)
+    );
+
+  color: white;
+
+  box-shadow:
+    0 8px 18px
+    rgba(
+      226,
+      55,
+      68,
+      0.2
+    );
+}
+
+.cfp-section-heading h2 {
+  margin:
+    0
+    0
+    3px;
+
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.cfp-section-heading p {
+  margin: 0;
+
+  color:
+    var(--cfp-muted);
+
+  font-size: 0.7rem;
+}
+
+/* =========================================================
+   FIELD GRID
+========================================================= */
+
+.cfp-section-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  column-gap: 35px;
+}
+
+.cfp-field {
+  min-height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  border-bottom:
+    1px solid
+    #f3e7e9;
+}
+
+.cfp-field-full {
+  grid-column:
+    1 / -1;
+}
+
+.cfp-field-label {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  color:
+    #6d6064;
+
+  font-size: 0.72rem;
+}
+
+.cfp-field-label i {
+  width: 17px;
+
+  color:
+    var(--cfp-red);
+
+  text-align: center;
+}
+
+.cfp-field strong {
+  max-width: 55%;
+
+  color:
+    #2d2023;
+
+  font-size: 0.73rem;
+
+  text-align: right;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   PRIVACY
+========================================================= */
+
+.cfp-private-note {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 13px;
+
+  padding:
+    18px;
+
+  border:
+    1px solid
+    #efc5ca;
+
+  border-radius: 16px;
+
+  background:
+    #fff1f3;
+}
+
+.cfp-private-note > i {
+  width: 38px;
+  height: 38px;
+
+  flex:
+    0
+    0
+    38px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 10px;
+
+  background:
+    #ffdce0;
+
+  color:
+    var(--cfp-red);
+}
+
+.cfp-private-note strong {
+  display: block;
+
+  color:
+    var(--cfp-red-dark);
+}
+
+.cfp-private-note p {
+  margin:
+    4px
+    0
+    0;
+
+  color:
+    var(--cfp-muted);
+
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   STATES
+========================================================= */
+
+.cfp-loading,
+.cfp-error {
+  width:
+    min(
+      500px,
+      100%
+    );
+
+  min-height: 300px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 14px;
+
+  margin:
+    100px
+    auto;
+
+  padding: 30px;
+
+  border:
+    1px solid
+    var(--cfp-border);
+
+  border-radius: 20px;
+
+  background: white;
+
+  text-align: center;
+}
+
+.cfp-loading > span {
+  width: 40px;
+  height: 40px;
+
+  border:
+    4px solid
+    #f5d5d9;
+
+  border-top-color:
+    var(--cfp-red);
+
+  border-radius: 50%;
+
+  animation:
+    cfp-spin
+    0.8s
+    linear
+    infinite;
+}
+
+@keyframes cfp-spin {
+  to {
+    transform:
+      rotate(
+        360deg
+      );
+  }
+}
+
+.cfp-error > i {
+  color:
+    var(--cfp-red);
+
+  font-size: 2rem;
+}
+
+.cfp-error button {
+  padding:
+    10px
+    16px;
+
+  border: 0;
+  border-radius: 9px;
+
+  background:
+    var(--cfp-red);
+
+  color: white;
+
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (
+  max-width: 760px
+) {
+  .cfp-page {
+    padding:
+      30px
+      12px
+      50px;
+  }
+
+  .cfp-hero-banner {
+    flex-direction: column;
+
+    padding:
+      25px
+      20px;
+  }
+
+  .cfp-hero-body {
+    grid-template-columns:
+      1fr;
+
+    padding:
+      0
+      20px
+      25px;
+  }
+
+  .cfp-avatar {
+    width: 110px;
+    height: 110px;
+
+    margin-top: -50px;
+
+    font-size: 1.8rem;
+  }
+
+  .cfp-profile-info {
+    padding-top: 0;
+  }
+
+  .cfp-section-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .cfp-field-full {
+    grid-column:
+      1;
+  }
+}
+
+@media (
+  max-width: 480px
+) {
+  .cfp-section-card {
+    padding:
+      18px
+      14px;
+  }
+
+  .cfp-field {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 5px;
+
+    padding:
+      12px
+      0;
+  }
+
+  .cfp-field strong {
+    max-width: 100%;
+
+    text-align: left;
+  }
+
+  .cfp-actions {
+    display: grid;
+  }
+
+  .cfp-actions button {
+    width: 100%;
+  }
+}

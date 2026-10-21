@@ -1,0 +1,1359 @@
+/* ========================================
+   ADMIN ROOT
+======================================== */
+
+.inmba-admin-layout {
+  --admin-sidebar-width:
+    280px;
+
+  min-height: 100vh;
+
+  display: flex;
+
+  color: #203620;
+
+  background:
+    #f3f7f1;
+}
+
+/* ========================================
+   SIDEBAR
+======================================== */
+
+.inmba-admin-sidebar {
+  position: fixed;
+
+  z-index: 1200;
+
+  top: 0;
+  bottom: 0;
+  left: 0;
+
+  width:
+    var(
+      --admin-sidebar-width
+    );
+
+  display: flex;
+
+  flex-direction: column;
+
+  overflow-y: auto;
+
+  color: #ffffff;
+
+  background:
+    radial-gradient(
+      circle at 15% 10%,
+      rgba(
+        255,
+        255,
+        255,
+        0.12
+      ),
+      transparent 27%
+    ),
+    linear-gradient(
+      180deg,
+      #082f0b 0%,
+      #0f4d0f 48%,
+      #123a16 100%
+    );
+
+  box-shadow:
+    10px 0 35px
+    rgba(
+      15,
+      77,
+      15,
+      0.13
+    );
+}
+
+/* ========================================
+   SIDEBAR HEADER
+======================================== */
+
+.inmba-admin-sidebar-header {
+  min-height: 82px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content:
+    space-between;
+
+  gap: 10px;
+
+  padding:
+    15px 18px;
+
+  border-bottom:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.12
+    );
+}
+
+.inmba-admin-sidebar-brand {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  color: #ffffff;
+
+  text-decoration: none;
+}
+
+.inmba-admin-sidebar-brand
+  > span {
+  width: 44px;
+  height: 44px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 13px;
+
+  color: #0f4d0f;
+
+  background: #ffffff;
+
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.inmba-admin-sidebar-brand
+  strong,
+.inmba-admin-sidebar-brand
+  small {
+  display: block;
+}
+
+.inmba-admin-sidebar-brand
+  strong {
+  font-size: 0.95rem;
+
+  font-weight: 900;
+
+  letter-spacing: 1.5px;
+}
+
+.inmba-admin-sidebar-brand
+  small {
+  margin-top: 2px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.62
+    );
+
+  font-size: 0.58rem;
+}
+
+.inmba-admin-sidebar-close {
+  display: none;
+
+  width: 35px;
+  height: 35px;
+
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.18
+    );
+
+  border-radius: 10px;
+
+  color: #ffffff;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+}
+
+/* ========================================
+   ADMIN PROFILE
+======================================== */
+
+.inmba-admin-sidebar-profile {
+  display: grid;
+
+  grid-template-columns:
+    auto 1fr auto;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin:
+    18px 15px 11px;
+
+  padding: 13px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.13
+    );
+
+  border-radius: 15px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+}
+
+.inmba-admin-sidebar-profile
+  > span {
+  width: 41px;
+  height: 41px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 12px;
+
+  color: #0f4d0f;
+
+  background: #ffffff;
+
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.inmba-admin-sidebar-profile
+  strong,
+.inmba-admin-sidebar-profile
+  small {
+  display: block;
+}
+
+.inmba-admin-sidebar-profile
+  strong {
+  margin-bottom: 2px;
+
+  font-size: 0.7rem;
+
+  font-weight: 900;
+
+  overflow-wrap: anywhere;
+}
+
+.inmba-admin-sidebar-profile
+  small {
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.6
+    );
+
+  font-size: 0.57rem;
+}
+
+.inmba-admin-sidebar-profile
+  > i {
+  color: #83e28c;
+
+  font-size: 0.7rem;
+}
+
+/* ========================================
+   NAVIGATION
+======================================== */
+
+.inmba-admin-sidebar-nav {
+  flex: 1;
+
+  padding:
+    5px 14px 20px;
+}
+
+.inmba-admin-nav-group {
+  margin-top: 17px;
+}
+
+.inmba-admin-nav-group
+  > p {
+  margin:
+    0 0 8px 10px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.46
+    );
+
+  font-size: 0.54rem;
+  font-weight: 900;
+
+  letter-spacing: 1px;
+
+  text-transform: uppercase;
+}
+
+.inmba-admin-nav-group
+  > div {
+  display: grid;
+
+  gap: 5px;
+}
+
+.inmba-admin-nav-link {
+  min-height: 45px;
+
+  display: grid;
+
+  grid-template-columns:
+    34px 1fr auto;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding:
+    6px 10px;
+
+  border:
+    1px solid transparent;
+
+  border-radius: 11px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.73
+    );
+
+  text-decoration: none;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.inmba-admin-nav-link:hover {
+  transform:
+    translateX(3px);
+
+  color: #ffffff;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+}
+
+.inmba-admin-nav-link
+  > span {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 9px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+
+  font-size: 0.67rem;
+}
+
+.inmba-admin-nav-link
+  strong {
+  font-size: 0.66rem;
+
+  font-weight: 800;
+}
+
+.inmba-admin-nav-link
+  > i {
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.4
+    );
+
+  font-size: 0.5rem;
+}
+
+.inmba-admin-nav-link-active {
+  color: #0f4d0f;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 9px 22px
+    rgba(
+      0,
+      0,
+      0,
+      0.12
+    );
+}
+
+.inmba-admin-nav-link-active
+  > span {
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2c892c
+    );
+}
+
+.inmba-admin-nav-link-active
+  > i {
+  color: #548054;
+}
+
+/* ========================================
+   SIDEBAR FOOTER
+======================================== */
+
+.inmba-admin-sidebar-footer {
+  padding:
+    17px 16px;
+
+  border-top:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.1
+    );
+}
+
+.inmba-admin-sidebar-footer
+  a {
+  min-height: 41px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding:
+    8px 10px;
+
+  border-radius: 10px;
+
+  color: #ffffff;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+
+  font-size: 0.65rem;
+  font-weight: 800;
+
+  text-decoration: none;
+}
+
+.inmba-admin-sidebar-footer
+  p {
+  margin:
+    12px 0 0;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.45
+    );
+
+  font-size: 0.54rem;
+
+  text-align: center;
+}
+
+.inmba-admin-sidebar-footer
+  p
+  i {
+  margin-right: 4px;
+}
+
+/* ========================================
+   MAIN
+======================================== */
+
+.inmba-admin-main {
+  width:
+    calc(
+      100% -
+        var(
+          --admin-sidebar-width
+        )
+    );
+
+  min-height: 100vh;
+
+  margin-left:
+    var(
+      --admin-sidebar-width
+    );
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.inmba-admin-header {
+  position: sticky;
+
+  z-index: 500;
+
+  top: 0;
+
+  min-height: 78px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content:
+    space-between;
+
+  gap: 20px;
+
+  padding:
+    13px 28px;
+
+  border-bottom:
+    1px solid #dce7da;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.94
+    );
+
+  backdrop-filter:
+    blur(16px);
+}
+
+.inmba-admin-header-left {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.inmba-admin-header-left
+  p {
+  margin: 0 0 2px;
+
+  color: #648064;
+
+  font-size: 0.57rem;
+  font-weight: 900;
+
+  letter-spacing: 0.8px;
+
+  text-transform: uppercase;
+}
+
+.inmba-admin-header-left
+  h1 {
+  margin: 0;
+
+  color: #1d3b1d;
+
+  font-size: 1.08rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-menu-button {
+  display: none;
+
+  width: 41px;
+  height: 41px;
+
+  place-items: center;
+
+  border:
+    1px solid #d2e1d0;
+
+  border-radius: 11px;
+
+  color: #176027;
+
+  background: #f5f9f4;
+}
+
+.inmba-admin-header-right {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+}
+
+.inmba-admin-header-website {
+  min-height: 39px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding:
+    7px 11px;
+
+  border:
+    1px solid #cbdcca;
+
+  border-radius: 10px;
+
+  color: #24652a;
+
+  background: #f6faf5;
+
+  font-size: 0.63rem;
+  font-weight: 900;
+
+  text-decoration: none;
+}
+
+.inmba-admin-header-profile {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding-left: 11px;
+
+  border-left:
+    1px solid #dbe6d9;
+}
+
+.inmba-admin-header-profile
+  > span {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 12px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2d8a2d
+    );
+
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.inmba-admin-header-profile
+  strong,
+.inmba-admin-header-profile
+  small {
+  display: block;
+}
+
+.inmba-admin-header-profile
+  strong {
+  margin-bottom: 2px;
+
+  color: #2c452c;
+
+  font-size: 0.65rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-header-profile
+  small {
+  color: #849184;
+
+  font-size: 0.55rem;
+}
+
+/* ========================================
+   CONTENT
+======================================== */
+
+.inmba-admin-content {
+  flex: 1;
+
+  width: 100%;
+
+  padding:
+    25px 28px 38px;
+}
+
+/* ========================================
+   FOOTER
+======================================== */
+
+.inmba-admin-footer {
+  display: flex;
+
+  align-items: center;
+  justify-content:
+    space-between;
+
+  gap: 15px;
+
+  padding:
+    15px 28px;
+
+  border-top:
+    1px solid #dce7da;
+
+  color: #879487;
+
+  background: #ffffff;
+
+  font-size: 0.56rem;
+}
+
+/* ========================================
+   PROTECTED ROUTE LOADER
+======================================== */
+
+.inmba-admin-route-loading {
+  min-height: 100vh;
+
+  display: grid;
+
+  place-items: center;
+
+  padding: 20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #eef6eb,
+      #ffffff
+    );
+}
+
+.inmba-admin-route-loading
+  > div {
+  min-width: 260px;
+
+  padding: 28px;
+
+  border:
+    1px solid #d4e4d2;
+
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  text-align: center;
+
+  box-shadow:
+    0 18px 45px
+    rgba(
+      15,
+      77,
+      15,
+      0.1
+    );
+}
+
+.inmba-admin-route-spinner {
+  width: 38px;
+  height: 38px;
+
+  display: block;
+
+  margin:
+    0 auto 13px;
+
+  border:
+    4px solid #dcebd9;
+
+  border-top-color:
+    #0f4d0f;
+
+  border-radius: 50%;
+
+  animation:
+    inmbaAdminSpin
+    0.75s linear infinite;
+}
+
+.inmba-admin-route-loading
+  strong,
+.inmba-admin-route-loading
+  small {
+  display: block;
+}
+
+.inmba-admin-route-loading
+  strong {
+  color: #294829;
+
+  font-size: 0.75rem;
+}
+
+.inmba-admin-route-loading
+  small {
+  margin-top: 4px;
+
+  color: #879487;
+
+  font-size: 0.6rem;
+}
+
+@keyframes inmbaAdminSpin {
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+/* ========================================
+   MOBILE OVERLAY
+======================================== */
+
+.inmba-admin-sidebar-overlay {
+  display: none;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (
+  max-width: 950px
+) {
+  .inmba-admin-sidebar {
+    transform:
+      translateX(-105%);
+
+    transition:
+      transform 0.25s ease;
+  }
+
+  .inmba-admin-sidebar-open {
+    transform:
+      translateX(0);
+  }
+
+  .inmba-admin-sidebar-close {
+    display: grid;
+  }
+
+  .inmba-admin-main {
+    width: 100%;
+
+    margin-left: 0;
+  }
+
+  .inmba-admin-menu-button {
+    display: grid;
+  }
+
+  .inmba-admin-sidebar-overlay {
+    position: fixed;
+
+    z-index: 1100;
+
+    inset: 0;
+
+    display: block;
+
+    visibility: hidden;
+
+    border: 0;
+
+    background:
+      rgba(
+        8,
+        28,
+        10,
+        0.48
+      );
+
+    opacity: 0;
+
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s ease;
+  }
+
+  .inmba-admin-sidebar-overlay-open {
+    visibility: visible;
+
+    opacity: 1;
+  }
+}
+
+@media (
+  max-width: 600px
+) {
+  .inmba-admin-sidebar {
+    width:
+      min(
+        84vw,
+        290px
+      );
+  }
+
+  .inmba-admin-header {
+    min-height: 70px;
+
+    padding:
+      11px 14px;
+  }
+
+  .inmba-admin-content {
+    padding:
+      18px 13px 30px;
+  }
+
+  .inmba-admin-header-website
+    span {
+    display: none;
+  }
+
+  .inmba-admin-header-profile
+    > div {
+    display: none;
+  }
+
+  .inmba-admin-footer {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+
+    padding:
+      14px;
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+    reduce
+) {
+  .inmba-admin-sidebar,
+  .inmba-admin-sidebar-overlay,
+  .inmba-admin-nav-link {
+    transition: none;
+  }
+
+  .inmba-admin-route-spinner {
+    animation: none;
+  }
+}
+
+/* ========================================
+   ADMIN HEADER LOGOUT
+======================================== */
+
+.inmba-admin-header-logout {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+
+  place-items: center;
+
+  border:
+    1px solid #ecc9cd;
+
+  border-radius: 11px;
+
+  color: #ad303b;
+
+  background: #fff3f4;
+
+  font-size: 0.68rem;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.inmba-admin-header-logout:hover:not(:disabled) {
+  color: #ffffff;
+
+  background: #b93642;
+}
+
+.inmba-admin-header-logout:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.5;
+}
+
+/* ========================================
+   ADMIN HEADER LOGOUT
+======================================== */
+
+.inmba-admin-header-logout {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+
+  place-items: center;
+
+  border:
+    1px solid #ecc9cd;
+
+  border-radius: 11px;
+
+  color: #ad303b;
+
+  background: #fff3f4;
+
+  font-size: 0.68rem;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.inmba-admin-header-logout:hover:not(:disabled) {
+  color: #ffffff;
+
+  background: #b93642;
+}
+
+.inmba-admin-header-logout:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.5;
+}
+
+/* =========================================================
+   STEP 48.8
+   ADMIN SIDEBAR SECTIONS
+========================================================= */
+
+.inmba-admin-sidebar-section {
+  display: grid;
+
+  gap: 5px;
+
+  margin-bottom: 18px;
+}
+
+.inmba-admin-sidebar-section > p {
+  margin:
+    0 0 5px;
+
+  padding:
+    0 10px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.44
+    );
+
+  font-size: 0.48rem;
+
+  font-weight: 900;
+
+  letter-spacing: 0.8px;
+
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   SIDEBAR LINK
+========================================================= */
+
+.inmba-admin-sidebar-link {
+  min-height: 42px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding:
+    7px 10px;
+
+  border:
+    1px solid
+    transparent;
+
+  border-radius: 10px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.72
+    );
+
+  background:
+    transparent;
+
+  text-decoration: none;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.inmba-admin-sidebar-link
+  > span {
+  width: 31px;
+  height: 31px;
+
+  flex:
+    0 0 31px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 8px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.68
+    );
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.07
+    );
+
+  font-size: 0.58rem;
+}
+
+.inmba-admin-sidebar-link
+  > strong {
+  font-size: 0.56rem;
+
+  font-weight: 800;
+}
+
+.inmba-admin-sidebar-link:hover {
+  color: #ffffff;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+
+  transform:
+    translateX(2px);
+}
+
+/* =========================================================
+   EXACT ACTIVE LINK
+
+   /admin
+   /admin?status=approved
+   /admin?status=pending
+   /admin?status=rejected
+   /admin?status=unpaid
+
+   ஒரே link மட்டும் active ஆகும்.
+========================================================= */
+
+.inmba-admin-sidebar-link-active {
+  border-color:
+    rgba(
+      255,
+      255,
+      255,
+      0.14
+    );
+
+  color: #ffffff;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.13
+    );
+
+  box-shadow:
+    inset 3px 0 0
+    #ffffff;
+}
+
+.inmba-admin-sidebar-link-active
+  > span {
+  color: #12551a;
+
+  background: #ffffff;
+}
+
+/* =========================================================
+   SIDEBAR PROFILE
+========================================================= */
+
+.inmba-admin-sidebar-profile {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  margin:
+    0 10px 19px;
+
+  padding: 11px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.1
+    );
+
+  border-radius: 12px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.06
+    );
+}
+
+.inmba-admin-sidebar-profile
+  > span {
+  width: 37px;
+  height: 37px;
+
+  flex:
+    0 0 37px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 10px;
+
+  color: #0f4d0f;
+
+  background: #ffffff;
+
+  font-size: 0.67rem;
+
+  font-weight: 900;
+}
+
+.inmba-admin-sidebar-profile
+  strong,
+.inmba-admin-sidebar-profile
+  small {
+  display: block;
+}
+
+.inmba-admin-sidebar-profile
+  strong {
+  margin-bottom: 2px;
+
+  color: #ffffff;
+
+  font-size: 0.56rem;
+}
+
+.inmba-admin-sidebar-profile
+  small {
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.55
+    );
+
+  font-size: 0.47rem;
+}

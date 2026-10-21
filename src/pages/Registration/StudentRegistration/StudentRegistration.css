@@ -1,0 +1,917 @@
+/* ========================================
+   STUDENT REGISTRATION PAGE
+======================================== */
+
+.inmba-student-page {
+  min-height: 100vh;
+  padding: 34px 22px 70px;
+  background:
+    radial-gradient(
+      circle at 8% 12%,
+      rgba(15, 77, 15, 0.11),
+      transparent 31%
+    ),
+    radial-gradient(
+      circle at 92% 88%,
+      rgba(34, 112, 166, 0.08),
+      transparent 32%
+    ),
+    linear-gradient(
+      145deg,
+      #edf6ea,
+      #f9fcf8 55%,
+      #edf4f7
+    );
+}
+
+.inmba-student-container {
+  width: min(100%, 1120px);
+  margin: 0 auto;
+}
+
+/* ========================================
+   TOP BAR
+======================================== */
+
+.inmba-student-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.inmba-student-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: #173c17;
+  text-decoration: none;
+}
+
+.inmba-student-brand > span {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2b892b
+    );
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.inmba-student-brand strong,
+.inmba-student-brand small {
+  display: block;
+}
+
+.inmba-student-brand strong {
+  font-size: 1.03rem;
+  letter-spacing: 1.5px;
+}
+
+.inmba-student-brand small {
+  margin-top: 2px;
+  color: #758375;
+  font-size: 0.64rem;
+}
+
+.inmba-student-topbar > div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.inmba-student-topbar > div > span {
+  color: #758375;
+  font-size: 0.69rem;
+}
+
+.inmba-student-topbar > div > a {
+  padding: 9px 14px;
+  border: 1px solid #bfd7bd;
+  border-radius: 10px;
+  color: #176027;
+  background: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+/* ========================================
+   HERO
+======================================== */
+
+.inmba-student-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 20px;
+  padding: 30px;
+  overflow: hidden;
+  border-radius: 27px;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 88% 15%,
+      rgba(255, 255, 255, 0.16),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      #093709,
+      #0f4d0f 55%,
+      #267d39
+    );
+  box-shadow:
+    0 22px 50px rgba(15, 77, 15, 0.2);
+}
+
+.inmba-student-hero p {
+  margin: 0 0 6px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.69rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.inmba-student-hero h1 {
+  margin: 0 0 8px;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 900;
+}
+
+.inmba-student-hero > div:first-child > span {
+  max-width: 720px;
+  display: block;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.77rem;
+  line-height: 1.65;
+}
+
+.inmba-student-hero-card {
+  min-width: 220px;
+  padding: 19px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  text-align: center;
+}
+
+.inmba-student-hero-card i {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.inmba-student-hero-card strong,
+.inmba-student-hero-card span {
+  display: block;
+}
+
+.inmba-student-hero-card strong {
+  margin-bottom: 4px;
+  font-size: 0.83rem;
+  font-weight: 900;
+}
+
+.inmba-student-hero-card span {
+  color: rgba(255, 255, 255, 0.67);
+  font-size: 0.63rem;
+}
+
+/* ========================================
+   ALERTS
+======================================== */
+
+.inmba-student-referral,
+.inmba-student-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+}
+
+.inmba-student-referral {
+  border: 1px solid #b9d9b7;
+  color: #285628;
+  background: #eaf6e8;
+}
+
+.inmba-student-referral strong,
+.inmba-student-referral span {
+  display: block;
+}
+
+.inmba-student-referral strong {
+  margin-bottom: 3px;
+  font-size: 0.75rem;
+}
+
+.inmba-student-referral span {
+  font-size: 0.69rem;
+}
+
+.inmba-student-alert {
+  border: 1px solid #edb4ba;
+  color: #9d303b;
+  background: #fff1f2;
+  font-size: 0.72rem;
+}
+
+/* ========================================
+   FORM
+======================================== */
+
+.inmba-student-form {
+  display: grid;
+  gap: 20px;
+}
+
+.inmba-student-section {
+  padding: 25px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 23px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow:
+    0 15px 38px rgba(34, 68, 34, 0.08);
+}
+
+.inmba-student-section > header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 21px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #e3ece1;
+}
+
+.inmba-student-section > header > span {
+  width: 47px;
+  height: 47px;
+  flex: 0 0 47px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2b892b
+    );
+}
+
+.inmba-student-section h2 {
+  margin: 0;
+  color: #193919;
+  font-size: 1.04rem;
+  font-weight: 900;
+}
+
+.inmba-student-section header p {
+  margin: 4px 0 0;
+  color: #788678;
+  font-size: 0.71rem;
+}
+
+/* ========================================
+   GRID & FIELDS
+======================================== */
+
+.inmba-student-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 17px;
+}
+
+.inmba-student-field {
+  min-width: 0;
+}
+
+.inmba-student-field label,
+.inmba-student-skills label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  color: #304730;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.inmba-student-field label > span {
+  color: #d13543;
+}
+
+.inmba-student-field label > small,
+.inmba-student-skills label > small {
+  margin-left: auto;
+  color: #879487;
+  font-size: 0.63rem;
+  font-weight: 600;
+}
+
+.inmba-student-field input,
+.inmba-student-field select,
+.inmba-student-skills textarea {
+  width: 100%;
+  min-height: 49px;
+  padding: 10px 13px;
+  border: 1px solid #d2e1d0;
+  border-radius: 12px;
+  color: #263e26;
+  background: #fbfdfb;
+  font-size: 0.82rem;
+  outline: none;
+}
+
+.inmba-student-skills textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.inmba-student-field input:focus,
+.inmba-student-field select:focus,
+.inmba-student-skills textarea:focus {
+  border-color: #62a062;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(15, 77, 15, 0.08);
+}
+
+.inmba-student-field input:disabled,
+.inmba-student-field select:disabled,
+.inmba-student-skills textarea:disabled {
+  cursor: not-allowed;
+  color: #7c887c;
+  background: #eff3ee;
+}
+
+.inmba-student-input-error {
+  border-color: #d84a57 !important;
+  background: #fffafa !important;
+}
+
+.inmba-student-field-error {
+  display: block;
+  margin-top: 6px;
+  color: #c02e3b;
+  font-size: 0.67rem;
+  font-weight: 700;
+}
+
+/* ========================================
+   EDUCATION LEVEL
+======================================== */
+
+.inmba-student-levels {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.inmba-student-levels label {
+  min-height: 115px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 17px;
+  border: 1px solid #d4e3d2;
+  border-radius: 16px;
+  color: #4c654c;
+  background: #f8fbf7;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.inmba-student-levels label:hover {
+  transform: translateY(-2px);
+  border-color: #74aa74;
+}
+
+.inmba-student-levels input {
+  position: absolute;
+  opacity: 0;
+}
+
+.inmba-student-levels i {
+  color: #377337;
+  font-size: 1.35rem;
+}
+
+.inmba-student-levels span {
+  font-size: 0.73rem;
+  font-weight: 900;
+}
+
+.inmba-student-levels
+  .inmba-student-level-active {
+  border-color: #0f4d0f;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2c872c
+    );
+  box-shadow:
+    0 10px 22px rgba(15, 77, 15, 0.18);
+}
+
+.inmba-student-level-active i {
+  color: #ffffff;
+}
+
+.inmba-student-conditional {
+  margin-top: 20px;
+  padding: 19px;
+  border: 1px solid #d9e8d7;
+  border-radius: 16px;
+  background: #f7fbf6;
+}
+
+.inmba-student-skills {
+  margin-top: 18px;
+}
+
+/* ========================================
+   DOCUMENT UPLOAD
+======================================== */
+
+.inmba-student-upload-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.inmba-student-upload {
+  position: relative;
+  min-width: 0;
+}
+
+.inmba-student-upload > input {
+  display: none;
+}
+
+.inmba-student-upload > button:first-of-type {
+  width: 100%;
+  min-height: 185px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 18px;
+  border: 1px dashed #a8c8a6;
+  border-radius: 17px;
+  color: #3b593b;
+  background: #f6faf5;
+  text-align: center;
+}
+
+.inmba-student-upload
+  > button:first-of-type:hover {
+  border-color: #559455;
+  background: #eef7ed;
+}
+
+.inmba-student-upload
+  > button:first-of-type:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.inmba-student-upload button > span {
+  width: 57px;
+  height: 57px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 5px;
+  border-radius: 17px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2c892c
+    );
+  font-size: 1.25rem;
+}
+
+.inmba-student-upload strong {
+  color: #294629;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.inmba-student-upload button small {
+  max-width: 100%;
+  color: #7a887a;
+  font-size: 0.65rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.inmba-student-remove-file {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  color: #ffffff;
+  background: #c93342;
+  font-size: 0.66rem;
+}
+
+.inmba-student-upload-error
+  > button:first-of-type {
+  border-color: #d64a57;
+  background: #fff7f8;
+}
+
+.inmba-student-upload-note {
+  margin: 14px 0 0;
+  color: #7a887a;
+  font-size: 0.67rem;
+  text-align: center;
+}
+
+/* ========================================
+   DECLARATION
+======================================== */
+
+.inmba-student-declaration {
+  padding: 18px;
+  border: 1px solid #bdd8ba;
+  border-radius: 16px;
+  background: #edf7eb;
+}
+
+.inmba-student-declaration label {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  cursor: pointer;
+}
+
+.inmba-student-declaration input {
+  position: absolute;
+  opacity: 0;
+}
+
+.inmba-student-declaration label > span {
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #7eaa7e;
+  border-radius: 7px;
+  color: transparent;
+  background: #ffffff;
+  font-size: 0.63rem;
+}
+
+.inmba-student-declaration
+  input:checked
+  + span {
+  border-color: #0f4d0f;
+  color: #ffffff;
+  background: #0f4d0f;
+}
+
+.inmba-student-declaration p {
+  margin: 3px 0 0;
+  color: #536b53;
+  font-size: 0.71rem;
+  line-height: 1.55;
+}
+
+.inmba-student-declaration > small {
+  display: block;
+  margin: 7px 0 0 38px;
+  color: #bd2d39;
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
+.inmba-student-declaration-error {
+  border-color: #de7e87;
+  background: #fff4f5;
+}
+
+/* ========================================
+   ACTIONS
+======================================== */
+
+.inmba-student-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 11px;
+  padding: 20px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 19px;
+  background: #ffffff;
+}
+
+.inmba-student-actions a,
+.inmba-student-actions button {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.inmba-student-actions a {
+  border: 1px solid #cee0cc;
+  color: #176027;
+  background: #eef7ed;
+}
+
+.inmba-student-actions button {
+  border: 0;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2a892a
+    );
+  box-shadow:
+    0 11px 23px rgba(15, 77, 15, 0.2);
+}
+
+.inmba-student-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+/* ========================================
+   SUCCESS PAGE
+======================================== */
+
+.inmba-student-success {
+  width: min(100%, 650px);
+  margin: 40px auto;
+  padding: 42px;
+  border: 1px solid rgba(15, 77, 15, 0.12);
+  border-radius: 28px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow:
+    0 28px 70px rgba(25, 68, 25, 0.15);
+}
+
+.inmba-student-success-brand {
+  display: inline-block;
+  margin-bottom: 24px;
+  color: #0f4d0f;
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-decoration: none;
+}
+
+.inmba-student-success-icon {
+  width: 82px;
+  height: 82px;
+  margin: 0 auto 17px;
+  display: grid;
+  place-items: center;
+  border-radius: 25px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #198754,
+      #35aa64
+    );
+  font-size: 1.9rem;
+}
+
+.inmba-student-success > p {
+  margin: 0 0 5px;
+  color: #4f7d4f;
+  font-size: 0.67rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.inmba-student-success h1 {
+  margin: 0 0 9px;
+  color: #193719;
+  font-size: 1.7rem;
+  font-weight: 900;
+}
+
+.inmba-student-success-message {
+  display: block;
+  margin-bottom: 21px;
+  color: #718071;
+  font-size: 0.75rem;
+  line-height: 1.65;
+}
+
+.inmba-student-success-details {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 17px;
+}
+
+.inmba-student-success-details article {
+  padding: 13px;
+  border: 1px solid #dce8da;
+  border-radius: 13px;
+  background: #f7faf6;
+}
+
+.inmba-student-success-details span,
+.inmba-student-success-details strong {
+  display: block;
+}
+
+.inmba-student-success-details span {
+  margin-bottom: 5px;
+  color: #7d8a7d;
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+.inmba-student-success-details strong {
+  color: #294629;
+  font-size: 0.77rem;
+  font-weight: 900;
+  text-transform: capitalize;
+}
+
+.inmba-student-success-login {
+  grid-column: 1 / -1;
+  border-color: #b8d7b5 !important;
+  background: #eaf6e8 !important;
+}
+
+.inmba-student-success-login strong {
+  color: #0f4d0f;
+  font-size: 1.25rem;
+  letter-spacing: 2px;
+}
+
+.inmba-student-success-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 14px;
+  border: 1px solid #d7dfad;
+  border-radius: 13px;
+  color: #6c651f;
+  background: #fffbe5;
+  text-align: left;
+}
+
+.inmba-student-success-note p {
+  margin: 0;
+  font-size: 0.69rem;
+  line-height: 1.55;
+}
+
+.inmba-student-success-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.inmba-student-success-actions a {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.inmba-student-success-actions a:first-child {
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2a892a
+    );
+}
+
+.inmba-student-success-actions a:last-child {
+  border: 1px solid #cee0cc;
+  color: #176027;
+  background: #eef7ed;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 800px) {
+  .inmba-student-hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .inmba-student-hero-card {
+    width: 100%;
+  }
+
+  .inmba-student-upload-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .inmba-student-page {
+    padding: 22px 12px 50px;
+  }
+
+  .inmba-student-topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .inmba-student-topbar > div {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .inmba-student-hero {
+    padding: 23px;
+  }
+
+  .inmba-student-grid,
+  .inmba-student-levels {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-student-section {
+    padding: 19px;
+    border-radius: 19px;
+  }
+
+  .inmba-student-section > header {
+    align-items: flex-start;
+  }
+
+  .inmba-student-actions {
+    flex-direction: column;
+  }
+
+  .inmba-student-actions a,
+  .inmba-student-actions button {
+    width: 100%;
+  }
+
+  .inmba-student-success {
+    padding: 32px 19px;
+    border-radius: 21px;
+  }
+
+  .inmba-student-success-details {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-student-success-login {
+    grid-column: auto;
+  }
+}

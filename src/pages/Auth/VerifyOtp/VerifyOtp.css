@@ -1,0 +1,288 @@
+/* ========================================
+   VERIFY OTP PAGE
+======================================== */
+
+.inmba-otp-page {
+  min-height: 100vh;
+  padding: 25px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(
+      circle at 12% 12%,
+      rgba(15, 77, 15, 0.14),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 88% 88%,
+      rgba(70, 155, 70, 0.09),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      #edf6ea,
+      #f9fcf8
+    );
+}
+
+.inmba-otp-card {
+  width: min(100%, 520px);
+  padding: 42px;
+  border: 1px solid rgba(15, 77, 15, 0.12);
+  border-radius: 27px;
+  background: rgba(255, 255, 255, 0.98);
+  text-align: center;
+  box-shadow:
+    0 28px 70px rgba(24, 68, 24, 0.15);
+}
+
+.inmba-otp-brand {
+  display: inline-block;
+  margin-bottom: 28px;
+  color: #0f4d0f;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-decoration: none;
+}
+
+.inmba-otp-main-icon {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 17px;
+  display: grid;
+  place-items: center;
+  border-radius: 23px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2a8b2a
+    );
+  font-size: 1.65rem;
+  box-shadow:
+    0 14px 30px rgba(15, 77, 15, 0.22);
+}
+
+.inmba-otp-eyebrow {
+  margin: 0 0 5px;
+  color: #4f7d4f;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+}
+
+.inmba-otp-card h1 {
+  margin: 0 0 9px;
+  color: #193719;
+  font-size: 1.55rem;
+  font-weight: 900;
+}
+
+.inmba-otp-description {
+  margin: 0 0 5px;
+  color: #778677;
+  font-size: 0.75rem;
+}
+
+.inmba-otp-email {
+  display: block;
+  margin-bottom: 17px;
+  color: #245124;
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+.inmba-otp-timer {
+  margin-bottom: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border: 1px solid #cce0ca;
+  border-radius: 999px;
+  color: #376437;
+  background: #edf7eb;
+  font-size: 0.68rem;
+}
+
+.inmba-otp-timer-warning {
+  border-color: #ecd28a;
+  color: #876411;
+  background: #fff6da;
+}
+
+.inmba-otp-alert {
+  margin-bottom: 17px;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 12px 13px;
+  border: 1px solid #edb7bc;
+  border-radius: 12px;
+  color: #9f303b;
+  background: #fff2f3;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.inmba-otp-form-group {
+  margin-bottom: 17px;
+  text-align: left;
+}
+
+.inmba-otp-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #304730;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.inmba-otp-form-group input {
+  width: 100%;
+  min-height: 62px;
+  padding: 10px 16px;
+  border: 1px solid #d2e1d0;
+  border-radius: 15px;
+  color: #173817;
+  background: #fbfdfb;
+  font-size: 1.55rem;
+  font-weight: 900;
+  letter-spacing: 12px;
+  text-align: center;
+  outline: none;
+}
+
+.inmba-otp-form-group input:focus {
+  border-color: #61a061;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(15, 77, 15, 0.09);
+}
+
+.inmba-otp-form-group
+  .inmba-otp-input-error {
+  border-color: #d94855;
+  background: #fffafa;
+}
+
+.inmba-otp-form-group small {
+  display: block;
+  margin-top: 6px;
+  color: #bf2d3a;
+  font-size: 0.67rem;
+  font-weight: 700;
+}
+
+.inmba-otp-submit {
+  width: 100%;
+  min-height: 49px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 0;
+  border-radius: 13px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #288628
+    );
+  font-size: 0.78rem;
+  font-weight: 900;
+  box-shadow:
+    0 12px 25px rgba(15, 77, 15, 0.2);
+}
+
+.inmba-otp-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+  box-shadow: none;
+}
+
+.inmba-otp-resend {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #7b897b;
+  font-size: 0.69rem;
+}
+
+.inmba-otp-resend button {
+  padding: 0;
+  border: 0;
+  color: #176027;
+  background: transparent;
+  font-size: 0.69rem;
+  font-weight: 900;
+}
+
+.inmba-otp-resend button:disabled {
+  cursor: not-allowed;
+  color: #919d91;
+}
+
+.inmba-otp-actions {
+  margin-top: 22px;
+  padding-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #e2ebe0;
+}
+
+.inmba-otp-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #476747;
+  font-size: 0.67rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.inmba-otp-security {
+  margin-top: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: #8a968a;
+  font-size: 0.63rem;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 575px) {
+  .inmba-otp-page {
+    padding: 10px;
+  }
+
+  .inmba-otp-card {
+    padding: 32px 20px;
+    border-radius: 21px;
+  }
+
+  .inmba-otp-form-group input {
+    padding-right: 8px;
+    padding-left: 16px;
+    font-size: 1.3rem;
+    letter-spacing: 9px;
+  }
+
+  .inmba-otp-actions {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+}

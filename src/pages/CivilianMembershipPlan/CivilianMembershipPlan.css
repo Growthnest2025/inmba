@@ -1,0 +1,941 @@
+/* =========================================================
+   INMBA CIVILIAN MEMBERSHIP PLAN
+   PREMIUM REFINED UI
+   Theme: #0f4d0f / #196719
+========================================================= */
+
+:root {
+  --cmp-green-dark: #0f4d0f;
+  --cmp-green: #196719;
+  --cmp-green-hover: #145b14;
+  --cmp-green-soft: #edf7ed;
+  --cmp-green-soft-2: #f7fbf7;
+  --cmp-white: #ffffff;
+  --cmp-text: #142314;
+  --cmp-body: #536353;
+  --cmp-muted: #7b897b;
+  --cmp-border: #dce9dc;
+  --cmp-border-strong: #bcd4bc;
+  --cmp-danger: #9b2f2f;
+  --cmp-danger-bg: #fff5f5;
+  --cmp-shadow: 0 18px 55px rgba(15, 77, 15, 0.08);
+  --cmp-shadow-hover: 0 26px 70px rgba(15, 77, 15, 0.14);
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+
+.civilian-membership-page,
+.civilian-membership-page * {
+  box-sizing: border-box;
+}
+
+.civilian-membership-page button,
+.civilian-membership-page input,
+.civilian-membership-page select {
+  font: inherit;
+}
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.civilian-membership-page {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--cmp-text);
+  font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(25, 103, 25, 0.08), transparent 28%),
+    radial-gradient(circle at 100% 100%, rgba(15, 77, 15, 0.06), transparent 32%),
+    linear-gradient(180deg, #fbfdfb 0%, #f5faf5 52%, #ffffff 100%);
+}
+
+.civilian-membership-container {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 54px 0 70px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.civilian-membership-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 28px;
+}
+
+.civilian-membership-header-copy {
+  max-width: 760px;
+}
+
+.civilian-membership-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 12px;
+  color: var(--cmp-green);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 1.55px;
+  text-transform: uppercase;
+}
+
+.civilian-membership-title {
+  margin: 0;
+  max-width: 760px;
+  color: var(--cmp-green-dark);
+  font-size: clamp(38px, 4.1vw, 56px);
+  line-height: 1.05;
+  font-weight: 780;
+  letter-spacing: -1.7px;
+}
+
+.civilian-membership-description {
+  max-width: 720px;
+  margin: 18px 0 0;
+  color: var(--cmp-body);
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+.civilian-selected-plan-badge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 17px;
+  border: 1px solid #c7dec7;
+  border-radius: 999px;
+  background: rgba(238, 248, 238, 0.92);
+  color: var(--cmp-green-dark);
+  box-shadow: 0 8px 22px rgba(15, 77, 15, 0.06);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.civilian-selected-plan-badge i {
+  color: var(--cmp-green);
+}
+
+/* =========================================================
+   FLOW
+========================================================= */
+
+.civilian-plan-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 30px;
+  padding: 14px 22px;
+  border: 1px solid var(--cmp-border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 28px rgba(15, 77, 15, 0.045);
+}
+
+.civilian-plan-flow-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.civilian-plan-flow-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 29px;
+  height: 29px;
+  flex: 0 0 29px;
+  border: 1px solid #cbdccb;
+  border-radius: 50%;
+  background: #f7fbf7;
+  color: var(--cmp-green-dark);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.civilian-plan-flow-item.active .civilian-plan-flow-number {
+  border-color: var(--cmp-green-dark);
+  background: var(--cmp-green-dark);
+  color: #ffffff;
+  box-shadow: 0 7px 18px rgba(15, 77, 15, 0.18);
+}
+
+.civilian-plan-flow-label {
+  color: #244124;
+  font-size: 14px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.civilian-plan-flow-arrow {
+  color: #90ad90;
+  font-size: 12px;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.civilian-plan-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 22px;
+  padding: 14px 16px;
+  border: 1px solid #efcece;
+  border-radius: 14px;
+  background: var(--cmp-danger-bg);
+  color: var(--cmp-danger);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+/* =========================================================
+   PLAN GRID
+========================================================= */
+
+.civilian-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 24px;
+}
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.civilian-plan-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 590px;
+  padding: 32px;
+  border: 1px solid var(--cmp-border);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.99) 0%, rgba(252,254,252,.97) 100%);
+  box-shadow: var(--cmp-shadow);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.civilian-plan-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--cmp-border-strong);
+  box-shadow: var(--cmp-shadow-hover);
+}
+
+.civilian-plan-card.selected {
+  border: 2px solid var(--cmp-green);
+  box-shadow:
+    0 0 0 4px rgba(25, 103, 25, 0.05),
+    0 26px 65px rgba(15, 77, 15, 0.13);
+}
+
+.civilian-plan-card.royalty {
+  background:
+    linear-gradient(180deg, #ffffff 0%, #fbfefb 100%);
+}
+
+/* =========================================================
+   ROYALTY BADGE
+========================================================= */
+
+.civilian-royalty-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0f4d0f 0%, #196719 100%);
+  color: #ffffff;
+  box-shadow: 0 9px 22px rgba(15, 77, 15, 0.18);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+/* =========================================================
+   CARD TOP
+========================================================= */
+
+.civilian-plan-card-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 18px;
+}
+
+.civilian-plan-card.royalty .civilian-plan-card-top {
+  padding-top: 46px;
+}
+
+.civilian-plan-card-heading {
+  min-width: 0;
+}
+
+.civilian-plan-card-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--cmp-muted);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.25px;
+}
+
+.civilian-plan-card h2 {
+  margin: 0;
+  max-width: 360px;
+  color: #132b13;
+  font-size: clamp(24px, 2vw, 29px);
+  line-height: 1.18;
+  font-weight: 740;
+  letter-spacing: -0.55px;
+}
+
+/* =========================================================
+   PRICE
+========================================================= */
+
+.civilian-plan-price {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  color: var(--cmp-green);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.civilian-plan-price-symbol {
+  margin-top: 4px;
+  margin-right: 2px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.civilian-plan-price strong {
+  font-size: clamp(36px, 3vw, 44px);
+  line-height: 0.95;
+  font-weight: 820;
+  letter-spacing: -1.25px;
+}
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.civilian-plan-card-description {
+  min-height: 76px;
+  margin: 18px 0 0;
+  color: var(--cmp-body);
+  font-size: 14px;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+.civilian-plan-divider {
+  width: 100%;
+  height: 1px;
+  margin: 22px 0;
+  background: #e9f0e9;
+}
+
+/* =========================================================
+   FEATURES
+========================================================= */
+
+.civilian-plan-features-wrap {
+  flex: 1;
+}
+
+.civilian-plan-features-title {
+  display: block;
+  margin-bottom: 15px;
+  color: var(--cmp-green-dark);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.civilian-plan-features {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.civilian-plan-features li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  color: #385038;
+  font-size: 13.5px;
+  line-height: 1.52;
+  font-weight: 500;
+}
+
+.civilian-plan-feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 21px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: #edf7ed;
+  color: var(--cmp-green);
+  font-size: 9px;
+  border: 1px solid #d1e4d1;
+}
+
+/* =========================================================
+   CARD BOTTOM
+========================================================= */
+
+.civilian-plan-card-bottom {
+  margin-top: 26px;
+}
+
+.civilian-plan-selected-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+  margin-bottom: 10px;
+  color: var(--cmp-green-dark);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.civilian-plan-selected-note i {
+  color: var(--cmp-green);
+}
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.civilian-plan-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 14px;
+  outline: none;
+  background: linear-gradient(135deg, #0f4d0f 0%, #196719 100%);
+  color: #ffffff;
+  box-shadow: 0 12px 26px rgba(15, 77, 15, 0.18);
+  font-size: 14px;
+  font-weight: 760;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.civilian-plan-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.03);
+  box-shadow: 0 16px 32px rgba(15, 77, 15, 0.24);
+}
+
+.civilian-plan-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.civilian-plan-button:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   IMPORTANT NOTE
+========================================================= */
+
+.civilian-membership-note {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: start;
+  gap: 14px;
+  margin-top: 26px;
+  padding: 18px 20px;
+  border: 1px solid var(--cmp-border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.civilian-membership-note-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #d7e7d7;
+  border-radius: 12px;
+  background: var(--cmp-green-soft);
+  color: var(--cmp-green-dark);
+  font-size: 16px;
+}
+
+.civilian-membership-note strong {
+  display: block;
+  margin: 1px 0 5px;
+  color: var(--cmp-green-dark);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.civilian-membership-note p {
+  margin: 0;
+  color: var(--cmp-body);
+  font-size: 12.5px;
+  line-height: 1.65;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 980px) {
+  .civilian-membership-container {
+    width: min(100% - 32px, 1180px);
+    padding-top: 38px;
+  }
+
+  .civilian-membership-header {
+    align-items: flex-start;
+  }
+
+  .civilian-plan-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .civilian-plan-card {
+    min-height: auto;
+  }
+
+  .civilian-plan-card-description {
+    min-height: auto;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 720px) {
+  .civilian-membership-container {
+    width: calc(100% - 24px);
+    padding: 28px 0 42px;
+  }
+
+  .civilian-membership-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+
+  .civilian-membership-title {
+    font-size: 34px;
+    letter-spacing: -1px;
+  }
+
+  .civilian-membership-description {
+    margin-top: 13px;
+    font-size: 14.5px;
+    line-height: 1.62;
+  }
+
+  .civilian-selected-plan-badge {
+    align-self: flex-start;
+  }
+
+  .civilian-plan-flow {
+    justify-content: flex-start;
+    gap: 11px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .civilian-plan-flow::-webkit-scrollbar {
+    display: none;
+  }
+
+  .civilian-plan-flow-number {
+    display: none;
+  }
+
+  .civilian-plan-flow-label {
+    font-size: 12.5px;
+  }
+
+  .civilian-plan-flow-arrow {
+    font-size: 10px;
+  }
+
+  .civilian-plan-grid {
+    gap: 20px;
+  }
+
+  .civilian-plan-card {
+    min-height: auto;
+    padding: 24px 20px;
+    border-radius: 20px;
+  }
+
+  .civilian-plan-card-top {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .civilian-plan-card.royalty .civilian-plan-card-top {
+    padding-top: 42px;
+  }
+
+  .civilian-plan-price {
+    justify-content: flex-start;
+  }
+
+  .civilian-plan-card h2 {
+    font-size: 25px;
+  }
+
+  .civilian-plan-price strong {
+    font-size: 40px;
+  }
+
+  .civilian-royalty-badge {
+    top: 16px;
+    right: 16px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+  .civilian-membership-title {
+    font-size: 30px;
+  }
+
+  .civilian-membership-eyebrow {
+    font-size: 10.5px;
+    letter-spacing: 1.15px;
+  }
+
+  .civilian-plan-card {
+    padding: 22px 17px;
+  }
+
+  .civilian-plan-card h2 {
+    font-size: 22px;
+  }
+
+  .civilian-plan-card-description,
+  .civilian-plan-features li {
+    font-size: 13px;
+  }
+
+  .civilian-membership-note {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   PREMIUM UI POLISH
+   Keeps the existing markup and behavior intact.
+========================================================= */
+
+:root {
+  --cmp-ink: #0f4d0f;
+  --cmp-emerald: #196719;
+  --cmp-emerald-deep: #0f4d0f;
+  --cmp-mint: #e7f7ee;
+  --cmp-gold: #c8953e;
+  --cmp-gold-soft: #fff8e8;
+}
+
+.civilian-membership-page {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 9% 3%, rgba(25, 103, 25, 0.14), transparent 24%),
+    radial-gradient(circle at 96% 10%, rgba(200, 149, 62, 0.12), transparent 18%),
+    linear-gradient(180deg, #f6fbf8 0%, #eef7f1 48%, #fbfdfb 100%);
+}
+
+.civilian-membership-page::before,
+.civilian-membership-page::after {
+  position: absolute;
+  z-index: -1;
+  display: block;
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.civilian-membership-page::before {
+  top: -170px;
+  right: -120px;
+  width: 450px;
+  height: 450px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(15, 77, 15, 0.1);
+  box-shadow: inset 0 0 90px rgba(255, 255, 255, 0.35);
+}
+
+.civilian-membership-page::after {
+  bottom: -180px;
+  left: -170px;
+  width: 390px;
+  height: 390px;
+  background: rgba(200, 149, 62, 0.06);
+}
+
+.civilian-membership-container {
+  width: min(1240px, calc(100% - 56px));
+  padding: 70px 0 82px;
+}
+
+.civilian-membership-header {
+  position: relative;
+  align-items: center;
+  margin-bottom: 34px;
+  padding: 42px 46px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 30px;
+  background:
+    linear-gradient(125deg, #0f4d0f, #196719),
+    radial-gradient(circle at 90% 0%, rgba(255, 255, 255, 0.18), transparent 30%);
+  box-shadow: 0 28px 70px rgba(15, 77, 15, 0.2);
+  overflow: hidden;
+}
+
+.civilian-membership-header::after {
+  position: absolute;
+  right: 38px;
+  bottom: -105px;
+  width: 250px;
+  height: 250px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  box-shadow: 0 0 0 24px rgba(255, 255, 255, 0.035), 0 0 0 48px rgba(255, 255, 255, 0.025);
+  content: "";
+}
+
+.civilian-membership-header-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.civilian-membership-eyebrow {
+  margin-bottom: 16px;
+  color: #a7e7c1;
+  letter-spacing: 1.8px;
+}
+
+.civilian-membership-title {
+  max-width: 720px;
+  color: #ffffff;
+  font-size: clamp(38px, 4.4vw, 62px);
+  letter-spacing: -2.3px;
+}
+
+.civilian-membership-description {
+  max-width: 650px;
+  margin-top: 20px;
+  color: rgba(239, 255, 246, 0.78);
+}
+
+.civilian-selected-plan-badge {
+  position: relative;
+  z-index: 1;
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+.civilian-selected-plan-badge i {
+  color: #a7e7c1;
+}
+
+.civilian-plan-flow {
+  margin-bottom: 34px;
+  padding: 16px 24px;
+  border-color: rgba(25, 103, 25, 0.12);
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 14px 36px rgba(15, 77, 15, 0.07);
+  backdrop-filter: blur(12px);
+}
+
+.civilian-plan-flow-item.active .civilian-plan-flow-number {
+  border-color: var(--cmp-emerald);
+  background: var(--cmp-emerald);
+  box-shadow: 0 8px 20px rgba(25, 103, 25, 0.25);
+}
+
+.civilian-plan-grid {
+  gap: 20px;
+}
+
+.civilian-plan-card {
+  min-height: 500px;
+  padding: 26px;
+  border-color: rgba(25, 103, 25, 0.14);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 20px 55px rgba(15, 77, 15, 0.09);
+  backdrop-filter: blur(14px);
+}
+
+.civilian-plan-card::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 5px;
+  border-radius: 28px 28px 0 0;
+  background: linear-gradient(90deg, #0f4d0f, #196719);
+  content: "";
+}
+
+.civilian-plan-card:hover {
+  transform: translateY(-7px);
+  border-color: rgba(25, 103, 25, 0.35);
+  box-shadow: 0 30px 75px rgba(15, 77, 15, 0.15);
+}
+
+.civilian-plan-card.selected {
+  border-color: var(--cmp-emerald);
+  box-shadow: 0 0 0 5px rgba(25, 103, 25, 0.07), 0 30px 75px rgba(15, 77, 15, 0.17);
+}
+
+.civilian-plan-card.royalty {
+  border-color: rgba(200, 149, 62, 0.34);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(255, 251, 239, 0.9));
+}
+
+.civilian-plan-card.royalty::before {
+  background: linear-gradient(90deg, #b77e2c, #f0c66a, #b77e2c);
+}
+
+.civilian-royalty-badge {
+  top: 22px;
+  right: 24px;
+  background: linear-gradient(135deg, #9a671d, #d5a84c);
+  box-shadow: 0 10px 24px rgba(154, 103, 29, 0.24);
+}
+
+.civilian-plan-card-label,
+.civilian-plan-features-title {
+  color: var(--cmp-emerald);
+}
+
+.civilian-plan-card h2 {
+  color: var(--cmp-ink);
+}
+
+.civilian-plan-price {
+  color: var(--cmp-emerald);
+}
+
+.civilian-plan-card.royalty .civilian-plan-price {
+  color: #a56f20;
+}
+
+.civilian-plan-feature-icon {
+  border-color: #bfe5cd;
+  background: var(--cmp-mint);
+  color: var(--cmp-emerald);
+}
+
+.civilian-plan-button {
+  min-height: 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0f4d0f, #196719);
+  box-shadow: 0 14px 28px rgba(15, 77, 15, 0.2);
+}
+
+.civilian-plan-card.royalty .civilian-plan-button {
+  background: linear-gradient(135deg, #9a671d, #d5a84c);
+  box-shadow: 0 14px 28px rgba(154, 103, 29, 0.2);
+}
+
+.civilian-membership-note {
+  margin-top: 30px;
+  border-color: rgba(25, 103, 25, 0.14);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 14px 32px rgba(15, 77, 15, 0.06);
+  backdrop-filter: blur(12px);
+}
+
+.civilian-membership-note-icon {
+  border-color: #c2e5cf;
+  background: var(--cmp-mint);
+  color: var(--cmp-emerald);
+}
+
+@media (max-width: 720px) {
+  .civilian-membership-container {
+    width: calc(100% - 24px);
+    padding-top: 28px;
+  }
+
+  .civilian-membership-header {
+    padding: 30px 22px;
+    border-radius: 24px;
+  }
+
+  .civilian-membership-title {
+    font-size: 35px;
+    letter-spacing: -1.35px;
+  }
+
+  .civilian-plan-card {
+    min-height: 0;
+    padding: 24px 19px 20px;
+    border-radius: 23px;
+  }
+
+  .civilian-plan-card::before {
+    border-radius: 23px 23px 0 0;
+  }
+}

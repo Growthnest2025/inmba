@@ -1,0 +1,3271 @@
+/* =========================================================
+   INMBA PROFESSIONAL MEMBERSHIP KYC
+
+   VIDEO INSPIRED FULL BLUE THEME
+
+   STRUCTURE:
+   ---------------------------------------------------------
+   1. Header
+   2. Main Process Stepper
+   3. Member Summary
+   4. KYC Progress
+   5. Horizontal A - J Tabs
+   6. White Form Card
+   7. Upload Areas
+   8. Bottom Action Buttons
+   9. Loading / Error
+   10. Responsive
+========================================================= */
+
+
+/* =========================================================
+   PAGE VARIABLES
+========================================================= */
+
+.professional-kyc-page {
+  --professional-navy:
+    #102a56;
+
+  --professional-deep:
+    #163a73;
+
+  --professional-primary:
+    #2563eb;
+
+  --professional-primary-hover:
+    #1d4ed8;
+
+  --professional-blue:
+    #3b82f6;
+
+  --professional-light-blue:
+    #dbeafe;
+
+  --professional-soft-blue:
+    #eff6ff;
+
+  --professional-page-blue:
+    #f4f8ff;
+
+  --professional-white:
+    #ffffff;
+
+  --professional-heading:
+    #172033;
+
+  --professional-text:
+    #374151;
+
+  --professional-muted:
+    #7b8496;
+
+  --professional-border:
+    #e2e8f0;
+
+  --professional-blue-border:
+    #c7d8f5;
+
+  --professional-success:
+    #16a34a;
+
+  --professional-success-bg:
+    #f0fdf4;
+
+  --professional-danger:
+    #dc2626;
+
+  --professional-danger-bg:
+    #fff5f5;
+
+  min-height: 100vh;
+
+  margin: 0;
+
+  padding: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      #f7faff 0%,
+      #f1f6ff 50%,
+      #f7faff 100%
+    );
+
+  color:
+    var(--professional-text);
+
+  font-family:
+    "Inter",
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  overflow-x: hidden;
+}
+
+
+/* =========================================================
+   GLOBAL ELEMENT SAFETY
+========================================================= */
+
+.professional-kyc-page *,
+.professional-kyc-page *::before,
+.professional-kyc-page *::after {
+  box-sizing: border-box;
+}
+
+.professional-kyc-page button,
+.professional-kyc-page input,
+.professional-kyc-page select,
+.professional-kyc-page textarea {
+  font-family: inherit;
+}
+
+.professional-kyc-page button {
+  -webkit-tap-highlight-color:
+    transparent;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.professional-kyc-header {
+  position: relative;
+
+  z-index: 50;
+
+  width: 100%;
+
+  background:
+    linear-gradient(
+      100deg,
+      #102a56 0%,
+      #173c78 52%,
+      #2256ad 100%
+    );
+
+  box-shadow:
+    0 8px 28px
+    rgba(
+      21,
+      58,
+      112,
+      0.16
+    );
+}
+
+.professional-kyc-header::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 80% -70%,
+      rgba(
+        255,
+        255,
+        255,
+        0.18
+      ),
+      transparent 45%
+    );
+}
+
+.professional-kyc-header-inner {
+  position: relative;
+
+  z-index: 2;
+
+  width:
+    min(
+      1240px,
+      calc(100% - 40px)
+    );
+
+  min-height: 72px;
+
+  margin: 0 auto;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content:
+    space-between;
+
+  gap: 20px;
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.professional-kyc-brand {
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+}
+
+.professional-kyc-brand-icon {
+  width: 42px;
+
+  height: 42px;
+
+  flex: 0 0 42px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 12px;
+
+  color: #ffffff;
+
+  font-size: 1rem;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.13
+    );
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.2
+    );
+
+  box-shadow:
+    inset 0 1px 0
+    rgba(
+      255,
+      255,
+      255,
+      0.12
+    );
+}
+
+.professional-kyc-brand h1 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: 1rem;
+
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  letter-spacing: 0.1px;
+}
+
+.professional-kyc-brand p {
+  margin: 4px 0 0;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.66
+    );
+
+  font-size: 0.69rem;
+
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   DASHBOARD BUTTON
+========================================================= */
+
+.professional-kyc-dashboard-button {
+  min-height: 38px;
+
+  padding:
+    0 16px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.25
+    );
+
+  border-radius: 8px;
+
+  outline: none;
+
+  color: #ffffff;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+
+  font-size: 0.74rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.professional-kyc-dashboard-button:hover {
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.16
+    );
+
+  border-color:
+    rgba(
+      255,
+      255,
+      255,
+      0.35
+    );
+
+  transform:
+    translateY(-1px);
+}
+
+
+/* =========================================================
+   MAIN PROCESS STEPPER WRAPPER
+========================================================= */
+
+.professional-kyc-flow-wrapper {
+  width: 100%;
+
+  background: #ffffff;
+
+  border-bottom:
+    1px solid
+    #e5ebf4;
+}
+
+.professional-kyc-flow {
+  width:
+    min(
+      1080px,
+      calc(100% - 40px)
+    );
+
+  min-height: 92px;
+
+  margin: 0 auto;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+/* =========================================================
+   PROCESS STEP ITEM
+========================================================= */
+
+.professional-kyc-flow-item {
+  position: relative;
+
+  flex: 0 0 auto;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+
+  color: #a4adbc;
+}
+
+.professional-kyc-flow-icon {
+  width: 34px;
+
+  height: 34px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #f4f6f9;
+
+  border:
+    2px solid
+    #dde3ea;
+
+  color: #9aa4b2;
+
+  font-size: 0.71rem;
+
+  transition:
+    all 0.2s ease;
+}
+
+.professional-kyc-flow-item > span {
+  color: inherit;
+
+  font-size: 0.62rem;
+
+  line-height: 1.2;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   COMPLETED PROCESS STEP
+========================================================= */
+
+.professional-kyc-flow-item.completed {
+  color:
+    var(--professional-primary);
+}
+
+.professional-kyc-flow-item.completed
+.professional-kyc-flow-icon {
+  color: #ffffff;
+
+  background:
+    var(--professional-primary);
+
+  border-color:
+    var(--professional-primary);
+
+  box-shadow:
+    0 3px 10px
+    rgba(
+      37,
+      99,
+      235,
+      0.2
+    );
+}
+
+
+/* =========================================================
+   ACTIVE PROCESS STEP
+========================================================= */
+
+.professional-kyc-flow-item.active {
+  color:
+    var(--professional-primary);
+}
+
+.professional-kyc-flow-item.active
+.professional-kyc-flow-icon {
+  color:
+    var(--professional-primary);
+
+  background: #ffffff;
+
+  border-color:
+    var(--professional-primary);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(
+      37,
+      99,
+      235,
+      0.1
+    );
+}
+
+
+/* =========================================================
+   PROCESS CONNECTING LINE
+========================================================= */
+
+.professional-kyc-flow-line {
+  width:
+    clamp(
+      28px,
+      5vw,
+      72px
+    );
+
+  height: 2px;
+
+  margin:
+    0 6px 18px;
+
+  background: #e3e8ef;
+}
+
+.professional-kyc-flow-line.completed {
+  background:
+    var(--professional-primary);
+}
+
+
+/* =========================================================
+   MAIN CONTENT CONTAINER
+========================================================= */
+
+.professional-kyc-container {
+  width:
+    min(
+      1180px,
+      calc(100% - 40px)
+    );
+
+  margin: 0 auto;
+
+  padding:
+    26px 0 60px;
+}
+
+
+/* =========================================================
+   MEMBER SUMMARY CARD
+========================================================= */
+
+.professional-kyc-member-card {
+  width: 100%;
+
+  min-height: 104px;
+
+  padding:
+    18px 22px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content:
+    space-between;
+
+  gap: 20px;
+
+  background: #ffffff;
+
+  border:
+    1px solid
+    var(--professional-border);
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 3px 14px
+    rgba(
+      31,
+      56,
+      92,
+      0.045
+    );
+}
+
+.professional-kyc-member-left {
+  min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+}
+
+.professional-kyc-member-avatar {
+  width: 58px;
+
+  height: 58px;
+
+  flex: 0 0 58px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  overflow: hidden;
+
+  border-radius: 50%;
+
+  color:
+    var(--professional-primary);
+
+  background:
+    var(--professional-light-blue);
+
+  border:
+    3px solid
+    #ffffff;
+
+  outline:
+    1px solid
+    #bfd3f8;
+
+  font-size: 1.35rem;
+}
+
+.professional-kyc-member-avatar img {
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.professional-kyc-member-label {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color:
+    var(--professional-primary);
+
+  font-size: 0.6rem;
+
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  letter-spacing: 0.7px;
+
+  text-transform: uppercase;
+}
+
+.professional-kyc-member-left h2 {
+  margin: 0;
+
+  color:
+    var(--professional-heading);
+
+  font-size: 1.12rem;
+
+  line-height: 1.35;
+
+  font-weight: 700;
+}
+
+.professional-kyc-member-meta {
+  margin-top: 6px;
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  gap:
+    7px 16px;
+}
+
+.professional-kyc-member-meta span {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  color:
+    var(--professional-muted);
+
+  font-size: 0.67rem;
+
+  line-height: 1.4;
+}
+
+.professional-kyc-member-meta i {
+  color:
+    var(--professional-primary);
+
+  font-size: 0.63rem;
+}
+
+
+/* =========================================================
+   KYC STATUS
+========================================================= */
+
+.professional-kyc-member-status {
+  min-width: 122px;
+
+  padding:
+    10px 13px;
+
+  flex-shrink: 0;
+
+  border:
+    1px solid
+    var(--professional-blue-border);
+
+  border-radius: 9px;
+
+  background:
+    var(--professional-soft-blue);
+
+  text-align: center;
+}
+
+.professional-kyc-member-status span {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color:
+    var(--professional-muted);
+
+  font-size: 0.55rem;
+
+  line-height: 1.2;
+
+  font-weight: 600;
+
+  letter-spacing: 0.6px;
+
+  text-transform: uppercase;
+}
+
+.professional-kyc-member-status strong {
+  color:
+    var(--professional-primary-hover);
+
+  font-size: 0.69rem;
+
+  line-height: 1.2;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   PROGRESS CARD
+========================================================= */
+
+.professional-kyc-progress-card {
+  margin-top: 14px;
+
+  padding:
+    14px 18px;
+
+  background: #ffffff;
+
+  border:
+    1px solid
+    var(--professional-border);
+
+  border-radius: 10px;
+
+  box-shadow:
+    0 2px 10px
+    rgba(
+      30,
+      64,
+      175,
+      0.03
+    );
+}
+
+.professional-kyc-progress-heading {
+  margin-bottom: 10px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content:
+    space-between;
+
+  gap: 15px;
+}
+
+.professional-kyc-progress-heading span {
+  display: block;
+
+  color:
+    var(--professional-muted);
+
+  font-size: 0.58rem;
+
+  line-height: 1.2;
+
+  font-weight: 600;
+
+  letter-spacing: 0.5px;
+
+  text-transform: uppercase;
+}
+
+.professional-kyc-progress-heading h3 {
+  margin: 3px 0 0;
+
+  color:
+    var(--professional-heading);
+
+  font-size: 0.78rem;
+
+  line-height: 1.3;
+
+  font-weight: 600;
+}
+
+.professional-kyc-progress-heading strong {
+  color:
+    var(--professional-primary);
+
+  font-size: 0.88rem;
+
+  font-weight: 700;
+}
+
+.professional-kyc-progress-track {
+  width: 100%;
+
+  height: 6px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #eaf0f8;
+}
+
+.professional-kyc-progress-bar {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #2563eb,
+      #4585ef
+    );
+
+  transition:
+    width 0.35s ease;
+}
+
+
+/* =========================================================
+   WORKSPACE
+
+   IMPORTANT:
+   Existing JSX sidebar is converted into VIDEO-LIKE
+   horizontal KYC section navigation.
+========================================================= */
+
+.professional-kyc-workspace {
+  margin-top: 16px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0;
+}
+
+
+/* =========================================================
+   A - J SECTION NAVIGATION
+========================================================= */
+
+.professional-kyc-sidebar {
+  position: relative;
+
+  top: auto;
+
+  width: 100%;
+
+  margin: 0;
+
+  overflow: visible;
+
+  border:
+    1px solid
+    var(--professional-border);
+
+  border-bottom: 0;
+
+  border-radius:
+    12px 12px 0 0;
+
+  background: #ffffff;
+
+  box-shadow: none;
+}
+
+
+/* =========================================================
+   SMALL SECTION HEADER
+========================================================= */
+
+.professional-kyc-sidebar-title {
+  padding:
+    13px 17px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #102a56,
+      #174485
+    );
+
+  border-radius:
+    11px 11px 0 0;
+}
+
+.professional-kyc-sidebar-title span {
+  margin: 0;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.65
+    );
+
+  font-size: 0.59rem;
+
+  line-height: 1;
+
+  font-weight: 500;
+
+  letter-spacing: 0.7px;
+
+  text-transform: uppercase;
+}
+
+.professional-kyc-sidebar-title span::after {
+  content: "•";
+
+  margin-left: 7px;
+}
+
+.professional-kyc-sidebar-title strong {
+  color: #ffffff;
+
+  font-size: 0.7rem;
+
+  line-height: 1;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   HORIZONTAL SECTION LIST
+========================================================= */
+
+.professional-kyc-section-list {
+  width: 100%;
+
+  padding: 0;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      10,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  background:
+    #ffffff;
+
+  border-top:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.06
+    );
+}
+
+
+/* =========================================================
+   HORIZONTAL TAB
+========================================================= */
+
+.professional-kyc-section-button {
+  position: relative;
+
+  width: 100%;
+
+  min-width: 0;
+
+  min-height: 68px;
+
+  padding:
+    9px 5px 8px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 4px;
+
+  border: 0;
+
+  border-right:
+    1px solid
+    #edf1f6;
+
+  border-radius: 0;
+
+  outline: none;
+
+  color:
+    #697386;
+
+  background: #ffffff;
+
+  text-align: center;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.professional-kyc-section-button:last-child {
+  border-right: 0;
+}
+
+.professional-kyc-section-button::after {
+  content: "";
+
+  position: absolute;
+
+  left: 18%;
+
+  right: 18%;
+
+  bottom: 0;
+
+  height: 3px;
+
+  border-radius:
+    3px 3px 0 0;
+
+  background:
+    var(--professional-primary);
+
+  transform:
+    scaleX(0);
+
+  transform-origin: center;
+
+  transition:
+    transform 0.2s ease;
+}
+
+.professional-kyc-section-button:hover {
+  color:
+    var(--professional-primary);
+
+  background:
+    #f8fbff;
+}
+
+.professional-kyc-section-button.active {
+  color:
+    var(--professional-primary-hover);
+
+  background:
+    var(--professional-soft-blue);
+
+  box-shadow: none;
+}
+
+.professional-kyc-section-button.active::after {
+  transform:
+    scaleX(1);
+}
+
+
+/* =========================================================
+   SECTION LETTER
+========================================================= */
+
+.professional-kyc-section-letter {
+  width: 25px;
+
+  height: 25px;
+
+  flex: 0 0 25px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border:
+    1px solid
+    #dbe3ed;
+
+  border-radius: 50%;
+
+  color:
+    #7d8797;
+
+  background: #f5f7fa;
+
+  font-size: 0.61rem;
+
+  line-height: 1;
+
+  font-weight: 700;
+
+  transition:
+    all 0.2s ease;
+}
+
+.professional-kyc-section-button:hover
+.professional-kyc-section-letter {
+  border-color:
+    #a9c6f8;
+
+  color:
+    var(--professional-primary);
+
+  background:
+    var(--professional-soft-blue);
+}
+
+.professional-kyc-section-button.active
+.professional-kyc-section-letter {
+  border-color:
+    var(--professional-primary);
+
+  color: #ffffff;
+
+  background:
+    var(--professional-primary);
+}
+
+.professional-kyc-section-button.completed
+.professional-kyc-section-letter {
+  border-color:
+    var(--professional-primary);
+
+  color: #ffffff;
+
+  background:
+    var(--professional-primary);
+}
+
+
+/* =========================================================
+   SECTION TAB TEXT
+========================================================= */
+
+.professional-kyc-section-button-text {
+  width: 100%;
+
+  min-width: 0;
+
+  flex: initial;
+}
+
+.professional-kyc-section-button-text span {
+  display: none;
+}
+
+.professional-kyc-section-button-text strong {
+  display: block;
+
+  width: 100%;
+
+  overflow: hidden;
+
+  color: inherit;
+
+  font-size: 0.57rem;
+
+  line-height: 1.2;
+
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* Hide right side sidebar icons for video tab appearance */
+
+.professional-kyc-section-button > i {
+  display: none;
+}
+
+
+/* =========================================================
+   MAIN WHITE FORM CARD
+========================================================= */
+
+.professional-kyc-content-card {
+  width: 100%;
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border:
+    1px solid
+    var(--professional-border);
+
+  border-radius:
+    0 0 12px 12px;
+
+  box-shadow:
+    0 8px 26px
+    rgba(
+      32,
+      57,
+      94,
+      0.06
+    );
+}
+
+
+/* =========================================================
+   FORM CARD HEADING
+========================================================= */
+
+.professional-kyc-content-heading {
+  position: relative;
+
+  min-height: 74px;
+
+  padding:
+    15px 20px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  background: #ffffff;
+
+  border-bottom:
+    1px solid
+    #edf1f5;
+}
+
+.professional-kyc-content-heading::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+
+  top: 15px;
+
+  bottom: 15px;
+
+  width: 3px;
+
+  border-radius:
+    0 3px 3px 0;
+
+  background:
+    var(--professional-primary);
+}
+
+.professional-kyc-content-icon {
+  width: 38px;
+
+  height: 38px;
+
+  flex: 0 0 38px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 9px;
+
+  color:
+    var(--professional-primary);
+
+  background:
+    var(--professional-light-blue);
+
+  font-size: 0.88rem;
+}
+
+.professional-kyc-content-heading
+> div:nth-child(2) {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.professional-kyc-content-heading
+> div:nth-child(2)
+> span {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color:
+    var(--professional-primary);
+
+  font-size: 0.55rem;
+
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  letter-spacing: 0.8px;
+
+  text-transform: uppercase;
+}
+
+.professional-kyc-content-heading h2 {
+  margin: 0;
+
+  color:
+    var(--professional-heading);
+
+  font-size: 1.02rem;
+
+  line-height: 1.3;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   SECURE KYC BADGE
+========================================================= */
+
+.professional-kyc-private-badge {
+  padding:
+    6px 9px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  border:
+    1px solid
+    #bed3f7;
+
+  border-radius: 999px;
+
+  color:
+    var(--professional-primary-hover);
+
+  background:
+    var(--professional-soft-blue);
+
+  font-size: 0.58rem;
+
+  line-height: 1;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   READ ONLY
+========================================================= */
+
+.professional-kyc-readonly-alert {
+  margin:
+    15px 20px 0;
+
+  padding:
+    10px 12px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  border:
+    1px solid
+    #bfd5fa;
+
+  border-radius: 7px;
+
+  color:
+    #2455a5;
+
+  background:
+    #f3f7ff;
+
+  font-size: 0.68rem;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   FORM BODY
+========================================================= */
+
+.professional-kyc-form-section {
+  padding:
+    20px 20px 22px;
+}
+
+
+/* =========================================================
+   INFORMATION NOTE
+========================================================= */
+
+.professional-kyc-section-note {
+  margin-bottom: 20px;
+
+  padding:
+    11px 13px;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 9px;
+
+  border:
+    1px solid
+    #c9daf6;
+
+  border-radius: 8px;
+
+  background:
+    #f5f8ff;
+}
+
+.professional-kyc-section-note > i {
+  margin-top: 2px;
+
+  flex-shrink: 0;
+
+  color:
+    var(--professional-primary);
+
+  font-size: 0.82rem;
+}
+
+.professional-kyc-section-note strong {
+  display: block;
+
+  color:
+    #234574;
+
+  font-size: 0.7rem;
+
+  line-height: 1.35;
+
+  font-weight: 600;
+}
+
+.professional-kyc-section-note p {
+  margin:
+    3px 0 0;
+
+  color:
+    #748095;
+
+  font-size: 0.64rem;
+
+  line-height: 1.55;
+
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   FORM GRID
+
+   VIDEO STYLE:
+   clean compact 2 column form.
+========================================================= */
+
+.professional-kyc-form-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  column-gap: 18px;
+
+  row-gap: 15px;
+}
+
+.professional-kyc-field {
+  min-width: 0;
+}
+
+.professional-kyc-field.full {
+  grid-column:
+    1 / -1;
+}
+
+
+/* =========================================================
+   LABELS
+========================================================= */
+
+.professional-kyc-field label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #485265;
+
+  font-size: 0.67rem;
+
+  line-height: 1.3;
+
+  font-weight: 600;
+}
+
+.professional-kyc-required {
+  margin-left: 2px;
+
+  color:
+    var(--professional-danger);
+}
+
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.professional-kyc-field input,
+.professional-kyc-field select,
+.professional-kyc-field textarea {
+  width: 100%;
+
+  min-height: 42px;
+
+  margin: 0;
+
+  padding:
+    9px 11px;
+
+  border:
+    1px solid
+    #d9e1ec;
+
+  border-radius: 7px;
+
+  outline: 0;
+
+  color:
+    #293244;
+
+  background: #ffffff;
+
+  font-size: 0.72rem;
+
+  line-height: 1.4;
+
+  font-weight: 400;
+
+  box-shadow:
+    inset 0 1px 2px
+    rgba(
+      15,
+      23,
+      42,
+      0.015
+    );
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.professional-kyc-field input::placeholder,
+.professional-kyc-field textarea::placeholder {
+  color: #b1bac7;
+}
+
+.professional-kyc-field textarea {
+  min-height: 92px;
+
+  resize: vertical;
+}
+
+.professional-kyc-field input:hover,
+.professional-kyc-field select:hover,
+.professional-kyc-field textarea:hover {
+  border-color:
+    #b8c8dd;
+}
+
+.professional-kyc-field input:focus,
+.professional-kyc-field select:focus,
+.professional-kyc-field textarea:focus {
+  border-color:
+    var(--professional-primary);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      37,
+      99,
+      235,
+      0.08
+    );
+}
+
+
+/* =========================================================
+   DISABLED INPUT
+========================================================= */
+
+.professional-kyc-field input:disabled,
+.professional-kyc-field select:disabled,
+.professional-kyc-field textarea:disabled {
+  color: #7f8998;
+
+  background: #f5f7fa;
+
+  border-color:
+    #e3e7ed;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   FIELD ERROR
+========================================================= */
+
+.professional-kyc-field.has-error input,
+.professional-kyc-field.has-error select,
+.professional-kyc-field.has-error textarea {
+  border-color:
+    #ef9a9a;
+}
+
+.professional-kyc-field-error {
+  margin-top: 5px;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 4px;
+
+  color:
+    var(--professional-danger);
+
+  font-size: 0.6rem;
+
+  line-height: 1.35;
+}
+
+
+/* =========================================================
+   SECTION C SUB CARDS
+========================================================= */
+
+.professional-kyc-subsection {
+  margin-top: 16px;
+
+  padding: 16px;
+
+  border:
+    1px solid
+    #e1e8f1;
+
+  border-radius: 9px;
+
+  background:
+    #fbfcfe;
+}
+
+.professional-kyc-subsection:first-of-type {
+  margin-top: 0;
+}
+
+.professional-kyc-subsection-heading {
+  margin-bottom: 15px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.professional-kyc-subsection-icon {
+  width: 34px;
+
+  height: 34px;
+
+  flex: 0 0 34px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 8px;
+
+  color:
+    var(--professional-primary);
+
+  background:
+    var(--professional-light-blue);
+
+  font-size: 0.76rem;
+}
+
+.professional-kyc-subsection-heading
+> div:nth-child(2) {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.professional-kyc-subsection-heading h3 {
+  margin: 0;
+
+  color:
+    #26344a;
+
+  font-size: 0.76rem;
+
+  line-height: 1.3;
+
+  font-weight: 650;
+}
+
+.professional-kyc-subsection-heading p {
+  margin:
+    3px 0 0;
+
+  color:
+    var(--professional-muted);
+
+  font-size: 0.61rem;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   OPTIONAL / APPLICABLE BADGES
+========================================================= */
+
+.professional-kyc-applicable-badge,
+.professional-kyc-optional-badge {
+  flex-shrink: 0;
+
+  padding:
+    5px 8px;
+
+  border-radius: 999px;
+
+  font-size: 0.52rem;
+
+  line-height: 1;
+
+  font-weight: 650;
+
+  letter-spacing: 0.3px;
+
+  text-transform: uppercase;
+}
+
+.professional-kyc-applicable-badge {
+  color:
+    #245bc0;
+
+  background:
+    #eef5ff;
+
+  border:
+    1px solid
+    #c6dafb;
+}
+
+.professional-kyc-optional-badge {
+  color: #737d8b;
+
+  background: #f5f6f8;
+
+  border:
+    1px solid
+    #e0e4e9;
+}
+
+
+/* =========================================================
+   UPLOAD GRID
+========================================================= */
+
+.professional-kyc-upload-grid {
+  margin-top: 18px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap: 12px;
+}
+
+.professional-kyc-upload-grid.single {
+  grid-template-columns: 1fr;
+}
+
+.professional-kyc-subsection
+.professional-kyc-upload-grid {
+  margin-top: 13px;
+}
+
+
+/* =========================================================
+   UPLOAD CARD
+========================================================= */
+
+.professional-kyc-upload-card {
+  min-width: 0;
+
+  padding: 12px;
+
+  border:
+    1px solid
+    #dce5f0;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+}
+
+.professional-kyc-upload-card.has-error {
+  border-color:
+    #f1a2a2;
+
+  background:
+    #fffafa;
+}
+
+.professional-kyc-upload-card-heading {
+  min-height: 32px;
+
+  margin-bottom: 9px;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content:
+    space-between;
+
+  gap: 7px;
+}
+
+.professional-kyc-upload-card-heading
+span {
+  display: block;
+
+  color: #3a4557;
+
+  font-size: 0.63rem;
+
+  line-height: 1.35;
+
+  font-weight: 600;
+}
+
+.professional-kyc-upload-card-heading b {
+  color:
+    var(--professional-danger);
+}
+
+.professional-kyc-upload-card-heading
+small {
+  display: block;
+
+  margin-top: 2px;
+
+  color:
+    #a0a9b6;
+
+  font-size: 0.52rem;
+
+  line-height: 1.3;
+}
+
+
+/* =========================================================
+   PRIVATE BADGE
+========================================================= */
+
+.professional-kyc-private-mini-badge {
+  padding:
+    4px 6px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 3px;
+
+  border-radius: 999px;
+
+  color:
+    #3468c4;
+
+  background:
+    #eef5ff;
+
+  font-size: 0.5rem;
+
+  line-height: 1;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   UPLOAD BOX
+========================================================= */
+
+.professional-kyc-upload-box {
+  width: 100%;
+
+  min-height: 112px;
+
+  padding:
+    13px 10px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 4px;
+
+  border:
+    1px dashed
+    #9ebae7;
+
+  border-radius: 7px;
+
+  color:
+    var(--professional-primary);
+
+  background:
+    #f8faff;
+
+  cursor: pointer;
+
+  text-align: center;
+
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.professional-kyc-upload-box:hover {
+  border-color:
+    var(--professional-primary);
+
+  background:
+    var(--professional-soft-blue);
+}
+
+.professional-kyc-upload-box input {
+  display: none;
+}
+
+.professional-kyc-upload-box > i {
+  margin-bottom: 3px;
+
+  color:
+    var(--professional-primary);
+
+  font-size: 1.15rem;
+}
+
+.professional-kyc-upload-box strong {
+  color:
+    #315c9c;
+
+  font-size: 0.63rem;
+
+  line-height: 1.3;
+
+  font-weight: 600;
+}
+
+.professional-kyc-upload-box span {
+  color:
+    #8a95a5;
+
+  font-size: 0.55rem;
+
+  line-height: 1.3;
+}
+
+
+/* =========================================================
+   SELECTED FILE
+========================================================= */
+
+.professional-kyc-selected-file {
+  width: 100%;
+
+  min-height: 67px;
+
+  padding: 9px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  border:
+    1px solid
+    #c8daf7;
+
+  border-radius: 7px;
+
+  background:
+    #f5f9ff;
+}
+
+.professional-kyc-selected-file-icon {
+  width: 34px;
+
+  height: 34px;
+
+  flex: 0 0 34px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 7px;
+
+  color: #ffffff;
+
+  background:
+    var(--professional-primary);
+
+  font-size: 0.74rem;
+}
+
+.professional-kyc-selected-file-info {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.professional-kyc-selected-file-info
+strong {
+  display: block;
+
+  overflow: hidden;
+
+  color:
+    #304467;
+
+  font-size: 0.59rem;
+
+  line-height: 1.35;
+
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.professional-kyc-selected-file-info
+span {
+  display: block;
+
+  margin-top: 2px;
+
+  color:
+    #8793a5;
+
+  font-size: 0.52rem;
+}
+
+.professional-kyc-selected-file button {
+  width: 25px;
+
+  height: 25px;
+
+  flex: 0 0 25px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: 0;
+
+  border-radius: 6px;
+
+  color:
+    var(--professional-danger);
+
+  background:
+    #fff0f0;
+
+  cursor: pointer;
+
+  font-size: 0.65rem;
+}
+
+
+/* =========================================================
+   SECURITY NOTE
+========================================================= */
+
+.professional-kyc-security-note {
+  margin-top: 18px;
+
+  padding:
+    11px 13px;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 9px;
+
+  border:
+    1px solid
+    #c9daf7;
+
+  border-radius: 8px;
+
+  background:
+    #f6f9ff;
+}
+
+.professional-kyc-security-note > i {
+  margin-top: 2px;
+
+  color:
+    var(--professional-primary);
+
+  font-size: 0.78rem;
+}
+
+.professional-kyc-security-note strong {
+  display: block;
+
+  color:
+    #2e4c78;
+
+  font-size: 0.66rem;
+
+  font-weight: 600;
+}
+
+.professional-kyc-security-note p {
+  margin:
+    3px 0 0;
+
+  color:
+    #78859a;
+
+  font-size: 0.6rem;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   ERROR MESSAGE BOX
+========================================================= */
+
+.professional-kyc-form-error-box {
+  margin-bottom: 15px;
+
+  padding:
+    9px 11px;
+
+  border:
+    1px solid
+    #fecaca;
+
+  border-radius: 7px;
+
+  color:
+    #b91c1c;
+
+  background:
+    var(--professional-danger-bg);
+
+  font-size: 0.64rem;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   SUCCESS MESSAGE BOX
+========================================================= */
+
+.professional-kyc-form-success-box {
+  margin-bottom: 15px;
+
+  padding:
+    9px 11px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  border:
+    1px solid
+    #bbf7d0;
+
+  border-radius: 7px;
+
+  color:
+    #15803d;
+
+  background:
+    var(--professional-success-bg);
+
+  font-size: 0.64rem;
+
+  line-height: 1.5;
+
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   D - J PLACEHOLDER
+========================================================= */
+
+.professional-kyc-coming-section {
+  min-height: 340px;
+
+  padding:
+    45px 20px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+}
+
+.professional-kyc-coming-icon {
+  width: 58px;
+
+  height: 58px;
+
+  margin-bottom: 12px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color:
+    var(--professional-primary);
+
+  background:
+    var(--professional-light-blue);
+
+  font-size: 1.15rem;
+}
+
+.professional-kyc-coming-section
+> span {
+  color:
+    var(--professional-primary);
+
+  font-size: 0.58rem;
+
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  letter-spacing: 0.8px;
+
+  text-transform: uppercase;
+}
+
+.professional-kyc-coming-section h3 {
+  margin:
+    6px 0 5px;
+
+  color:
+    var(--professional-heading);
+
+  font-size: 1rem;
+
+  line-height: 1.35;
+
+  font-weight: 650;
+}
+
+.professional-kyc-coming-section p {
+  max-width: 420px;
+
+  margin: 0;
+
+  color:
+    var(--professional-muted);
+
+  font-size: 0.67rem;
+
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   ACTION BAR
+
+   VIDEO STYLE:
+   Previous on left
+   Draft + Next on right.
+========================================================= */
+
+.professional-kyc-action-bar {
+  min-height: 70px;
+
+  padding:
+    13px 20px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content:
+    space-between;
+
+  gap: 12px;
+
+  border-top:
+    1px solid
+    #edf1f5;
+
+  background:
+    #fbfcfe;
+}
+
+.professional-kyc-action-right {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  gap: 8px;
+}
+
+
+/* =========================================================
+   COMMON ACTION BUTTON
+========================================================= */
+
+.professional-kyc-action-bar button {
+  min-height: 39px;
+
+  padding:
+    0 15px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  border-radius: 7px;
+
+  outline: none;
+
+  font-size: 0.67rem;
+
+  line-height: 1;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.professional-kyc-action-bar
+button:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+
+  transform: none;
+
+  box-shadow: none;
+}
+
+
+/* =========================================================
+   PREVIOUS
+========================================================= */
+
+.professional-kyc-previous-button {
+  border:
+    1px solid
+    #d6deea;
+
+  color:
+    #5e697a;
+
+  background: #ffffff;
+}
+
+.professional-kyc-previous-button:hover:not(:disabled) {
+  color:
+    var(--professional-primary);
+
+  border-color:
+    #adc7f2;
+
+  background:
+    #f7faff;
+}
+
+
+/* =========================================================
+   SAVE DRAFT
+========================================================= */
+
+.professional-kyc-draft-button {
+  border:
+    1px solid
+    #aac5f1;
+
+  color:
+    var(--professional-primary-hover);
+
+  background: #ffffff;
+}
+
+.professional-kyc-draft-button:hover:not(:disabled) {
+  background:
+    var(--professional-soft-blue);
+
+  border-color:
+    var(--professional-primary);
+}
+
+
+/* =========================================================
+   SAVE & NEXT
+========================================================= */
+
+.professional-kyc-next-button {
+  border:
+    1px solid
+    var(--professional-primary);
+
+  color: #ffffff;
+
+  background:
+    var(--professional-primary);
+
+  box-shadow:
+    0 4px 12px
+    rgba(
+      37,
+      99,
+      235,
+      0.2
+    );
+}
+
+.professional-kyc-next-button:hover:not(:disabled) {
+  background:
+    var(--professional-primary-hover);
+
+  border-color:
+    var(--professional-primary-hover);
+
+  box-shadow:
+    0 6px 15px
+    rgba(
+      37,
+      99,
+      235,
+      0.24
+    );
+
+  transform:
+    translateY(-1px);
+}
+
+
+/* =========================================================
+   LOADING PAGE
+========================================================= */
+
+.professional-kyc-loading-page {
+  min-height: 100vh;
+
+  padding: 22px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      145deg,
+      #edf4ff,
+      #f8fbff
+    );
+}
+
+.professional-kyc-loading-card,
+.professional-kyc-error-card {
+  width:
+    min(
+      400px,
+      100%
+    );
+
+  padding:
+    32px 28px;
+
+  border:
+    1px solid
+    #d8e3f4;
+
+  border-radius: 13px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 15px 40px
+    rgba(
+      30,
+      64,
+      175,
+      0.1
+    );
+
+  text-align: center;
+}
+
+.professional-kyc-loading-card h2,
+.professional-kyc-error-card h2 {
+  margin:
+    15px 0 6px;
+
+  color:
+    var(--professional-heading);
+
+  font-size: 1.05rem;
+
+  line-height: 1.35;
+
+  font-weight: 650;
+}
+
+.professional-kyc-loading-card p,
+.professional-kyc-error-card p {
+  margin: 0;
+
+  color:
+    var(--professional-muted);
+
+  font-size: 0.68rem;
+
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   LOADER
+========================================================= */
+
+.professional-kyc-spinner {
+  width: 39px;
+
+  height: 39px;
+
+  margin: 0 auto;
+
+  border:
+    3px solid
+    #dce9fb;
+
+  border-top-color:
+    var(--professional-primary);
+
+  border-radius: 50%;
+
+  animation:
+    professionalKycSpin
+    0.75s linear infinite;
+}
+
+@keyframes professionalKycSpin {
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   ERROR ICON
+========================================================= */
+
+.professional-kyc-error-icon {
+  width: 52px;
+
+  height: 52px;
+
+  margin: 0 auto;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color:
+    var(--professional-danger);
+
+  background:
+    #fff0f0;
+
+  font-size: 1.15rem;
+}
+
+
+/* =========================================================
+   ERROR ACTIONS
+========================================================= */
+
+.professional-kyc-error-actions {
+  margin-top: 18px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+}
+
+.professional-kyc-error-actions button {
+  min-height: 38px;
+
+  padding:
+    0 14px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+
+  border:
+    1px solid
+    var(--professional-primary);
+
+  border-radius: 7px;
+
+  color: #ffffff;
+
+  background:
+    var(--professional-primary);
+
+  font-size: 0.65rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.professional-kyc-error-actions
+button.secondary {
+  color:
+    var(--professional-primary);
+
+  background: #ffffff;
+}
+
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+.professional-kyc-page
+button:focus-visible,
+.professional-kyc-page
+input:focus-visible,
+.professional-kyc-page
+select:focus-visible,
+.professional-kyc-page
+textarea:focus-visible {
+  outline:
+    2px solid
+    rgba(
+      37,
+      99,
+      235,
+      0.25
+    );
+
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (
+  max-width: 1050px
+) {
+  .professional-kyc-container {
+    width:
+      calc(100% - 30px);
+  }
+
+  .professional-kyc-header-inner {
+    width:
+      calc(100% - 30px);
+  }
+
+  .professional-kyc-section-list {
+    grid-template-columns:
+      repeat(
+        5,
+        minmax(
+          0,
+          1fr
+        )
+      );
+  }
+
+  .professional-kyc-section-button:nth-child(5) {
+    border-right: 0;
+  }
+
+  .professional-kyc-section-button:nth-child(n + 6) {
+    border-top:
+      1px solid
+      #edf1f6;
+  }
+
+  .professional-kyc-upload-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      );
+  }
+}
+
+
+/* =========================================================
+   SMALL TABLET
+========================================================= */
+
+@media (
+  max-width: 820px
+) {
+  .professional-kyc-flow-wrapper {
+    overflow-x: auto;
+
+    scrollbar-width: thin;
+  }
+
+  .professional-kyc-flow {
+    width: 760px;
+
+    min-width: 760px;
+
+    padding:
+      0 20px;
+  }
+
+  .professional-kyc-member-card {
+    align-items:
+      flex-start;
+  }
+
+  .professional-kyc-member-meta {
+    gap:
+      6px 10px;
+  }
+
+  .professional-kyc-form-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .professional-kyc-field.full {
+    grid-column: auto;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (
+  max-width: 650px
+) {
+  .professional-kyc-header-inner {
+    width:
+      calc(100% - 20px);
+
+    min-height: 64px;
+  }
+
+  .professional-kyc-brand {
+    gap: 9px;
+  }
+
+  .professional-kyc-brand-icon {
+    width: 36px;
+
+    height: 36px;
+
+    flex-basis: 36px;
+
+    border-radius: 9px;
+
+    font-size: 0.82rem;
+  }
+
+  .professional-kyc-brand h1 {
+    font-size: 0.8rem;
+  }
+
+  .professional-kyc-brand p {
+    font-size: 0.57rem;
+  }
+
+  .professional-kyc-dashboard-button {
+    width: 36px;
+
+    height: 36px;
+
+    min-height: 36px;
+
+    padding: 0;
+
+    font-size: 0;
+  }
+
+  .professional-kyc-dashboard-button i {
+    font-size: 0.76rem;
+  }
+
+  .professional-kyc-container {
+    width:
+      calc(100% - 18px);
+
+    padding:
+      16px 0 35px;
+  }
+
+  .professional-kyc-member-card {
+    padding: 14px;
+
+    flex-direction: column;
+  }
+
+  .professional-kyc-member-left {
+    width: 100%;
+
+    align-items: flex-start;
+  }
+
+  .professional-kyc-member-avatar {
+    width: 48px;
+
+    height: 48px;
+
+    flex-basis: 48px;
+
+    font-size: 1.05rem;
+  }
+
+  .professional-kyc-member-left h2 {
+    font-size: 0.94rem;
+  }
+
+  .professional-kyc-member-meta {
+    margin-top: 5px;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 3px;
+  }
+
+  .professional-kyc-member-status {
+    width: 100%;
+
+    text-align: left;
+  }
+
+  .professional-kyc-progress-card {
+    padding: 12px;
+  }
+
+  .professional-kyc-sidebar-title {
+    padding:
+      11px 12px;
+  }
+
+  .professional-kyc-section-list {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      );
+  }
+
+  .professional-kyc-section-button {
+    min-height: 55px;
+
+    flex-direction: row;
+
+    justify-content: flex-start;
+
+    padding:
+      7px 10px;
+
+    gap: 7px;
+
+    text-align: left;
+
+    border-top:
+      1px solid
+      #edf1f6;
+  }
+
+  .professional-kyc-section-button:nth-child(odd) {
+    border-right:
+      1px solid
+      #edf1f6;
+  }
+
+  .professional-kyc-section-button:nth-child(even) {
+    border-right: 0;
+  }
+
+  .professional-kyc-section-button-text strong {
+    font-size: 0.59rem;
+  }
+
+  .professional-kyc-section-button::after {
+    left: 0;
+
+    right: auto;
+
+    top: 18%;
+
+    bottom: 18%;
+
+    width: 3px;
+
+    height: auto;
+
+    border-radius:
+      0 3px 3px 0;
+
+    transform:
+      scaleY(0);
+  }
+
+  .professional-kyc-section-button.active::after {
+    transform:
+      scaleY(1);
+  }
+
+  .professional-kyc-content-heading {
+    min-height: 67px;
+
+    padding:
+      13px 14px;
+  }
+
+  .professional-kyc-content-heading::before {
+    top: 13px;
+
+    bottom: 13px;
+  }
+
+  .professional-kyc-content-icon {
+    width: 34px;
+
+    height: 34px;
+
+    flex-basis: 34px;
+
+    font-size: 0.75rem;
+  }
+
+  .professional-kyc-content-heading h2 {
+    font-size: 0.88rem;
+  }
+
+  .professional-kyc-private-badge {
+    display: none;
+  }
+
+  .professional-kyc-readonly-alert {
+    margin:
+      12px 14px 0;
+  }
+
+  .professional-kyc-form-section {
+    padding: 14px;
+  }
+
+  .professional-kyc-section-note {
+    padding: 10px;
+  }
+
+  .professional-kyc-subsection {
+    padding: 13px;
+  }
+
+  .professional-kyc-subsection-heading {
+    flex-wrap: wrap;
+  }
+
+  .professional-kyc-applicable-badge,
+  .professional-kyc-optional-badge {
+    margin-left: 44px;
+  }
+
+  .professional-kyc-upload-grid {
+    grid-template-columns:
+      1fr;
+
+    gap: 10px;
+  }
+
+  .professional-kyc-action-bar {
+    padding: 11px 13px;
+
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .professional-kyc-action-right {
+    width: 100%;
+  }
+
+  .professional-kyc-action-bar button {
+    flex: 1;
+  }
+
+  .professional-kyc-previous-button {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (
+  max-width: 420px
+) {
+  .professional-kyc-brand p {
+    display: none;
+  }
+
+  .professional-kyc-flow {
+    width: 720px;
+
+    min-width: 720px;
+  }
+
+  .professional-kyc-section-list {
+    grid-template-columns:
+      1fr;
+  }
+
+  .professional-kyc-section-button {
+    border-right: 0 !important;
+  }
+
+  .professional-kyc-action-right {
+    flex-direction: column;
+  }
+
+  .professional-kyc-action-right button {
+    width: 100%;
+  }
+
+  .professional-kyc-applicable-badge,
+  .professional-kyc-optional-badge {
+    margin-left: 0;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (
+  prefers-reduced-motion: reduce
+) {
+  .professional-kyc-page *,
+  .professional-kyc-page *::before,
+  .professional-kyc-page *::after {
+    scroll-behavior: auto !important;
+
+    animation-duration:
+      0.01ms !important;
+
+    animation-iteration-count:
+      1 !important;
+
+    transition-duration:
+      0.01ms !important;
+  }
+}

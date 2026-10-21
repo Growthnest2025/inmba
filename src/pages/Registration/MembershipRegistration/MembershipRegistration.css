@@ -1,0 +1,1709 @@
+/* ========================================
+   MEMBERSHIP REGISTRATION
+======================================== */
+
+.inmba-register-page {
+  min-height: 100vh;
+  padding: 35px 22px 70px;
+  background:
+    radial-gradient(
+      circle at 8% 12%,
+      rgba(15, 77, 15, 0.11),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 92% 88%,
+      rgba(54, 143, 54, 0.08),
+      transparent 32%
+    ),
+    linear-gradient(
+      145deg,
+      #edf6ea,
+      #f9fcf8
+    );
+}
+
+.inmba-register-container {
+  width: min(100%, 1100px);
+  margin: 0 auto;
+}
+
+/* ========================================
+   TOP HEADER
+======================================== */
+
+.inmba-register-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.inmba-register-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: #173c17;
+  text-decoration: none;
+}
+
+.inmba-register-brand > span {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2c8a2c
+    );
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+
+.inmba-register-brand strong,
+.inmba-register-brand small {
+  display: block;
+}
+
+.inmba-register-brand strong {
+  font-size: 1.05rem;
+  letter-spacing: 1.5px;
+}
+
+.inmba-register-brand small {
+  max-width: 300px;
+  margin-top: 2px;
+  color: #748374;
+  font-size: 0.61rem;
+}
+
+.inmba-register-header > div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.inmba-register-header > div > span {
+  color: #748374;
+  font-size: 0.7rem;
+}
+
+.inmba-register-header > div > a {
+  padding: 9px 14px;
+  border: 1px solid #bdd6ba;
+  border-radius: 10px;
+  color: #176027;
+  background: #ffffff;
+  font-size: 0.71rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+/* ========================================
+   HERO
+======================================== */
+
+.inmba-register-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 20px;
+  padding: 30px;
+  overflow: hidden;
+  border-radius: 27px;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 88% 15%,
+      rgba(255, 255, 255, 0.16),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      #093709,
+      #0f4d0f 55%,
+      #278327
+    );
+  box-shadow:
+    0 22px 50px rgba(15, 77, 15, 0.2);
+}
+
+.inmba-register-hero p {
+  margin: 0 0 6px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.inmba-register-hero h1 {
+  margin: 0 0 8px;
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  font-weight: 900;
+}
+
+.inmba-register-hero > div:first-child > span {
+  max-width: 700px;
+  display: block;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.77rem;
+  line-height: 1.65;
+}
+
+.inmba-register-type-card {
+  min-width: 220px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  text-align: center;
+}
+
+.inmba-register-type-card i {
+  margin-bottom: 8px;
+  font-size: 1.35rem;
+}
+
+.inmba-register-type-card span,
+.inmba-register-type-card strong {
+  display: block;
+}
+
+.inmba-register-type-card span {
+  margin-bottom: 4px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.63rem;
+}
+
+.inmba-register-type-card strong {
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.inmba-register-type-card b {
+  width: fit-content;
+  display: inline-flex;
+  margin: 10px auto 0;
+  padding: 5px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.inmba-register-benefits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.inmba-register-benefits span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.67rem;
+  font-weight: 800;
+}
+
+/* ========================================
+   CIVILIAN LANGUAGE SELECTOR
+======================================== */
+
+.inmba-register-language {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border: 1px solid #c9dfc6;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 10px 25px rgba(34, 68, 34, 0.06);
+}
+
+.inmba-register-language > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #294929;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.inmba-register-language > div:first-child i {
+  color: #217221;
+  font-size: 1rem;
+}
+
+.inmba-register-language-options {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 11px;
+  background: #edf5eb;
+}
+
+.inmba-register-language-options button {
+  min-width: 86px;
+  min-height: 36px;
+  padding: 7px 13px;
+  border: 0;
+  border-radius: 8px;
+  color: #5b705b;
+  background: transparent;
+  font-size: 0.72rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.inmba-register-language-options button.active {
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f4d0f, #2a892a);
+  box-shadow: 0 6px 13px rgba(15, 77, 15, 0.19);
+}
+
+/* ========================================
+   NOTICES
+======================================== */
+
+.inmba-register-referral-notice,
+.inmba-register-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+}
+
+.inmba-register-referral-notice {
+  border: 1px solid #b9d9b7;
+  color: #285628;
+  background: #eaf6e8;
+}
+
+.inmba-register-referral-notice strong,
+.inmba-register-referral-notice span {
+  display: block;
+}
+
+.inmba-register-referral-notice strong {
+  margin-bottom: 3px;
+  font-size: 0.75rem;
+}
+
+.inmba-register-referral-notice span {
+  font-size: 0.69rem;
+}
+
+.inmba-register-alert {
+  border: 1px solid #edb4ba;
+  color: #9d303b;
+  background: #fff1f2;
+  font-size: 0.72rem;
+}
+
+/* ========================================
+   FORM
+======================================== */
+
+.inmba-register-form {
+  display: grid;
+  gap: 20px;
+}
+
+.inmba-register-section {
+  padding: 25px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 23px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow:
+    0 15px 38px rgba(34, 68, 34, 0.08);
+}
+
+.inmba-register-section > header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 21px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #e3ece1;
+}
+
+.inmba-register-section > header > span {
+  width: 47px;
+  height: 47px;
+  flex: 0 0 47px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2b892b
+    );
+}
+
+.inmba-register-section h2 {
+  margin: 0;
+  color: #193919;
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.inmba-register-section header p {
+  margin: 4px 0 0;
+  color: #788678;
+  font-size: 0.71rem;
+}
+
+/* ========================================
+   FIELDS
+======================================== */
+
+.inmba-register-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 17px;
+}
+
+.inmba-register-field {
+  min-width: 0;
+}
+
+.inmba-register-field label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  color: #304730;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.inmba-register-field label > span {
+  color: #d13543;
+}
+
+.inmba-register-field label > small {
+  margin-left: auto;
+  color: #879487;
+  font-size: 0.63rem;
+  font-weight: 600;
+}
+
+.inmba-register-field input,
+.inmba-register-field select {
+  width: 100%;
+  min-height: 49px;
+  padding: 10px 13px;
+  border: 1px solid #d2e1d0;
+  border-radius: 12px;
+  color: #263e26;
+  background: #fbfdfb;
+  font-size: 0.82rem;
+  outline: none;
+}
+
+.inmba-register-field input:focus,
+.inmba-register-field select:focus {
+  border-color: #62a062;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(15, 77, 15, 0.08);
+}
+
+.inmba-register-field input:disabled,
+.inmba-register-field select:disabled {
+  cursor: not-allowed;
+  color: #7b877b;
+  background: #eff3ee;
+}
+
+.inmba-register-field
+  .inmba-register-input-error {
+  border-color: #d84a57;
+  background: #fffafa;
+}
+
+.inmba-register-field-error {
+  display: block;
+  margin-top: 6px;
+  color: #c02e3b;
+  font-size: 0.67rem;
+  font-weight: 700;
+}
+
+.inmba-register-field-help {
+  display: block;
+  margin-top: 7px;
+  color: #607560;
+  font-size: 0.65rem;
+  line-height: 1.5;
+}
+
+/* ========================================
+   PASSWORD
+======================================== */
+
+.inmba-register-password-shell {
+  position: relative;
+}
+
+.inmba-register-password-shell input {
+  padding-right: 45px;
+}
+
+.inmba-register-password-shell button {
+  position: absolute;
+  top: 50%;
+  right: 11px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  color: #5f785f;
+  background: transparent;
+}
+
+.inmba-register-password-shell button:disabled {
+  cursor: not-allowed;
+}
+
+/* ========================================
+   DECLARATION
+======================================== */
+
+.inmba-register-declaration {
+  margin-top: 20px;
+  padding: 17px;
+  border: 1px solid #bdd8ba;
+  border-radius: 15px;
+  background: #edf7eb;
+}
+
+.inmba-register-declaration label {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  cursor: pointer;
+}
+
+.inmba-register-declaration input {
+  position: absolute;
+  opacity: 0;
+}
+
+.inmba-register-declaration label > span {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #7eaa7e;
+  border-radius: 7px;
+  color: transparent;
+  background: #ffffff;
+  font-size: 0.63rem;
+}
+
+.inmba-register-declaration
+  input:checked
+  + span {
+  border-color: #0f4d0f;
+  color: #ffffff;
+  background: #0f4d0f;
+}
+
+.inmba-register-declaration p {
+  margin: 2px 0 0;
+  color: #536b53;
+  font-size: 0.71rem;
+  line-height: 1.55;
+}
+
+.inmba-register-declaration > small {
+  display: block;
+  margin: 7px 0 0 37px;
+  color: #bd2d39;
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
+.inmba-register-declaration-error {
+  border-color: #de7e87;
+  background: #fff4f5;
+}
+
+/* ========================================
+   CIVILIAN UPGRADE NOTE
+======================================== */
+
+.inmba-register-upgrade-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 18px 20px;
+  border: 1px solid #bcd9b8;
+  border-radius: 18px;
+  color: #365636;
+  background: linear-gradient(135deg, #edf7eb, #f8fcf7);
+}
+
+.inmba-register-upgrade-note > span {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f4d0f, #2a892a);
+}
+
+.inmba-register-upgrade-note strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #1c4d1c;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.inmba-register-upgrade-note p {
+  margin: 0;
+  font-size: 0.7rem;
+  line-height: 1.65;
+}
+
+/* ========================================
+   ACTIONS
+======================================== */
+
+.inmba-register-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 11px;
+  padding: 20px;
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 19px;
+  background: #ffffff;
+}
+
+.inmba-register-actions a,
+.inmba-register-actions button {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 12px;
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.inmba-register-actions a {
+  border: 1px solid #cee0cc;
+  color: #176027;
+  background: #eef7ed;
+}
+
+.inmba-register-actions button {
+  border: 0;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #2a892a
+    );
+  box-shadow:
+    0 11px 23px rgba(15, 77, 15, 0.2);
+}
+
+.inmba-register-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+/* ========================================
+   SPLIT REGISTRATION LAYOUT
+
+   Default display: contents keeps the existing Commercial
+   registration structure unchanged. The split layout below
+   is enabled only for Civilian registration.
+======================================== */
+
+.inmba-register-split-layout,
+.inmba-register-side-panel,
+.inmba-register-content-panel {
+  display: contents;
+}
+
+.inmba-register-content-heading {
+  display: none;
+}
+
+.inmba-register-page--civilian {
+  padding: 0;
+  overflow-x: clip;
+  background: #f7fbf6;
+}
+
+.inmba-register-page--civilian,
+.inmba-register-page--civilian * {
+  box-sizing: border-box;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-container {
+  width: 100%;
+  max-width: none;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-split-layout {
+  min-height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-template-columns:
+    clamp(380px, 42vw, 760px)
+    minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-side-panel {
+  position: relative;
+  min-width: 0;
+  width: 100%;
+  min-height: 100vh;
+  height: auto;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 50px 58px;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 12% 5%,
+      rgba(255, 255, 255, 0.17),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 88% 92%,
+      rgba(255, 255, 255, 0.1),
+      transparent 33%
+    ),
+    linear-gradient(
+      155deg,
+      #0f4d0f,
+      #1f711f 55%,
+      #2b892b
+    );
+}
+
+.inmba-register-page--civilian
+  .inmba-register-side-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  background-image:
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.55) 1px,
+      transparent 1px
+    );
+  background-size: 42px 42px;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-header,
+.inmba-register-page--civilian
+  .inmba-register-hero {
+  position: relative;
+  z-index: 1;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-header {
+  margin: 0;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-brand {
+  color: #ffffff;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-brand > span {
+  color: #17642a;
+  background: #ffffff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.13);
+}
+
+.inmba-register-page--civilian
+  .inmba-register-brand small,
+.inmba-register-page--civilian
+  .inmba-register-header > div > span {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.inmba-register-page--civilian
+  .inmba-register-header > div {
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-header > div > a {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.inmba-register-page--civilian
+  .inmba-register-hero {
+  flex: 1;
+  align-items: stretch;
+  justify-content: center;
+  flex-direction: column;
+  gap: 28px;
+  margin: 80px 0 0;
+  padding: 0;
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-hero h1 {
+  max-width: 650px;
+  margin-bottom: 18px;
+  font-size: clamp(2.7rem, 4.2vw, 4.8rem);
+  line-height: 1.05;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-hero > div:first-child > span {
+  max-width: 620px;
+  font-size: 0.88rem;
+  line-height: 1.8;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-type-card {
+  order: -1;
+  min-width: 0;
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  text-align: left;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-type-card i {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-type-card span {
+  display: none;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-type-card strong {
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-type-card b {
+  margin: 0;
+  padding: 3px 8px;
+  font-size: 0.58rem;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-benefits {
+  display: grid;
+  gap: 12px;
+  margin-top: 34px;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-benefits span {
+  width: 100%;
+  min-height: 70px;
+  justify-content: flex-start;
+  padding: 16px 18px;
+  border-radius: 17px;
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.inmba-register-page--civilian
+  .inmba-register-benefits i {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: #17642a;
+  background: #ffffff;
+  font-size: 0.9rem;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-content-panel {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  overflow: hidden;
+  padding: 38px 3.2vw 48px;
+  background:
+    radial-gradient(
+      circle at 92% 8%,
+      rgba(37, 134, 59, 0.08),
+      transparent 25%
+    ),
+    #f8fbf7;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-content-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-content-heading > span {
+  width: 54px;
+  height: 54px;
+  flex: 0 0 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f4d0f, #2b892b);
+  box-shadow: 0 12px 25px rgba(15, 77, 15, 0.2);
+  font-size: 1.15rem;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-content-heading h2 {
+  margin: 0 0 5px;
+  color: #18281b;
+  font-size: clamp(1.55rem, 2.3vw, 2.15rem);
+  font-weight: 900;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-content-heading p {
+  margin: 0;
+  color: #778078;
+  font-size: 0.78rem;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-language,
+.inmba-register-page--civilian
+  .inmba-register-referral-notice,
+.inmba-register-page--civilian
+  .inmba-register-alert {
+  max-width: 1040px;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-form {
+  max-width: 1040px;
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  gap: 0;
+  padding: 6px 28px 24px;
+  border: 1px solid #e1ebe0;
+  border-radius: 30px;
+  background: #ffffff;
+  box-shadow: 0 24px 55px rgba(36, 73, 42, 0.09);
+}
+
+.inmba-register-page--civilian
+  .inmba-register-section {
+  min-width: 0;
+  padding: 17px 0;
+  border: 0;
+  border-bottom: 1px solid #edf1ec;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-section > header {
+  margin-bottom: 13px;
+  padding-bottom: 9px;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-section > header > span {
+  width: 35px;
+  height: 35px;
+  flex-basis: 35px;
+  border-radius: 11px;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-grid {
+  min-width: 0;
+  gap: 14px 18px;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-field,
+.inmba-register-page--civilian
+  .inmba-register-password-shell {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-field input,
+.inmba-register-page--civilian
+  .inmba-register-field select {
+  max-width: 100%;
+  min-height: 52px;
+  padding: 10px 14px;
+  border-color: #d8e5d6;
+  border-radius: 15px;
+  background: #fbfdfb;
+  font-size: 0.83rem;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-upgrade-note {
+  margin: 17px 0 0;
+  padding: 14px 16px;
+}
+
+.inmba-register-page--civilian
+  .inmba-register-actions {
+  margin-top: 17px;
+  padding: 17px 0 0;
+  border: 0;
+  border-top: 1px solid #edf1ec;
+  border-radius: 0;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1100px) and (min-width: 701px) {
+  .inmba-register-page--civilian
+    .inmba-register-split-layout {
+    grid-template-columns:
+      clamp(280px, 34vw, 380px)
+      minmax(0, 1fr);
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-side-panel {
+    padding: 34px 28px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-header > div {
+    display: none;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-brand small {
+    display: none;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-hero {
+    margin-top: 46px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3rem);
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-benefits {
+    margin-top: 22px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-benefits span {
+    min-height: 58px;
+    padding: 11px 12px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-content-panel {
+    padding: 28px 20px 40px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-content-heading > span {
+    width: 48px;
+    height: 48px;
+    flex-basis: 48px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-language {
+    padding: 10px 12px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-form {
+    padding-right: 18px;
+    padding-left: 18px;
+    border-radius: 22px;
+  }
+}
+
+@media (max-width: 700px) {
+  .inmba-register-page--civilian
+    .inmba-register-split-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-side-panel {
+    position: relative;
+    height: auto;
+    min-height: 650px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-hero {
+    margin-top: 75px;
+  }
+}
+
+@media (max-width: 800px) {
+  .inmba-register-hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .inmba-register-type-card {
+    width: 100%;
+  }
+}
+
+@media (max-width: 650px) {
+  .inmba-register-page--civilian
+    .inmba-register-side-panel {
+    min-height: 560px;
+    padding: 30px 22px 42px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-header > div {
+    width: auto;
+    align-items: flex-start;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-hero {
+    margin-top: 55px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-hero h1 {
+    font-size: clamp(2.25rem, 12vw, 3.25rem);
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-content-panel {
+    padding: 34px 14px 50px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-content-heading {
+    align-items: flex-start;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-content-heading > span {
+    width: 52px;
+    height: 52px;
+    flex-basis: 52px;
+    border-radius: 15px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-form {
+    padding: 5px 18px 23px;
+    border-radius: 22px;
+  }
+
+  .inmba-register-page {
+    padding: 22px 12px 50px;
+  }
+
+  .inmba-register-page--civilian {
+    padding: 0;
+  }
+
+  .inmba-register-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .inmba-register-header > div {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .inmba-register-hero {
+    padding: 23px;
+  }
+
+  .inmba-register-language {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .inmba-register-language-options,
+  .inmba-register-language-options button {
+    width: 100%;
+  }
+
+  .inmba-register-benefits {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .inmba-register-benefits span {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .inmba-register-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inmba-register-section {
+    padding: 19px;
+    border-radius: 19px;
+  }
+
+  .inmba-register-section > header {
+    align-items: flex-start;
+  }
+
+  .inmba-register-actions {
+    flex-direction: column;
+  }
+
+  .inmba-register-actions a,
+  .inmba-register-actions button {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   CIVILIAN BASIC REGISTRATION
+   COMPACT PREMIUM OVERRIDES
+   ---------------------------------------------------------
+   Goal:
+   - Less vertical scrolling on desktop
+   - Cleaner 2-column form cards
+   - Premium INMBA green palette
+   - Commercial registration remains unchanged
+========================================================= */
+
+@media (min-width: 1101px) {
+  .inmba-register-page--civilian
+    .inmba-register-split-layout {
+    grid-template-columns:
+      minmax(315px, 30vw)
+      minmax(0, 1fr);
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-side-panel {
+    min-height: 100vh;
+    padding: 34px 36px;
+    background:
+      radial-gradient(
+        circle at 10% 8%,
+        rgba(255,255,255,0.16),
+        transparent 27%
+      ),
+      radial-gradient(
+        circle at 90% 86%,
+        rgba(255,255,255,0.08),
+        transparent 30%
+      ),
+      linear-gradient(
+        150deg,
+        #0f4d0f 0%,
+        #145a14 54%,
+        #196719 100%
+      );
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-hero {
+    justify-content: center;
+    gap: 18px;
+    margin: 38px 0 0;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-hero h1 {
+    max-width: 470px;
+    margin-bottom: 12px;
+    font-size: clamp(2.15rem, 3vw, 3.45rem);
+    line-height: 1.04;
+    letter-spacing: -1.4px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-hero > div:first-child > span {
+    max-width: 470px;
+    font-size: 0.79rem;
+    line-height: 1.68;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-benefits {
+    gap: 9px;
+    margin-top: 22px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-benefits span {
+    min-height: 54px;
+    padding: 11px 13px;
+    border-radius: 14px;
+    font-size: 0.68rem;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-benefits i {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    font-size: 0.78rem;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-content-panel {
+    padding: 26px clamp(22px, 2.4vw, 42px) 34px;
+    background:
+      radial-gradient(
+        circle at 92% 7%,
+        rgba(25, 103, 25, 0.065),
+        transparent 23%
+      ),
+      linear-gradient(
+        180deg,
+        #f9fcf8 0%,
+        #f4f8f3 100%
+      );
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-content-heading {
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-content-heading > span {
+    width: 45px;
+    height: 45px;
+    flex-basis: 45px;
+    border-radius: 14px;
+    background:
+      linear-gradient(
+        135deg,
+        #0f4d0f,
+        #196719
+      );
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-content-heading h2 {
+    margin-bottom: 3px;
+    font-size: clamp(1.35rem, 1.8vw, 1.8rem);
+    letter-spacing: -0.4px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-content-heading p {
+    font-size: 0.7rem;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-language {
+    margin-bottom: 11px;
+    padding: 9px 11px;
+    border-radius: 13px;
+    box-shadow: 0 7px 20px rgba(15, 77, 15, 0.045);
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-language-options button {
+    min-width: 74px;
+    min-height: 31px;
+    padding: 5px 10px;
+    font-size: 0.67rem;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-referral-notice,
+  .inmba-register-page--civilian
+    .inmba-register-alert {
+    margin-bottom: 11px;
+    padding: 10px 12px;
+    border-radius: 12px;
+  }
+
+  /*
+    Main compact form:
+    Personal + Contact on first row.
+    Profile Photo + Security on second row.
+    Upgrade note and actions use full width.
+  */
+  .inmba-register-page--civilian
+    .inmba-register-form {
+    display: grid;
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 13px;
+    max-width: none;
+    padding: 15px;
+    border: 1px solid #dfeadf;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.92);
+    box-shadow:
+      0 18px 48px rgba(23, 72, 29, 0.08);
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-form
+    > .inmba-register-section {
+    height: 100%;
+    padding: 16px;
+    border: 1px solid #e1ebe1;
+    border-radius: 18px;
+    background:
+      linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #fbfdfb 100%
+      );
+    box-shadow:
+      0 8px 22px rgba(15, 77, 15, 0.045);
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-section > header {
+    gap: 10px;
+    margin-bottom: 13px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #edf2ed;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-section > header > span {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+    border-radius: 10px;
+    background:
+      linear-gradient(
+        135deg,
+        #0f4d0f,
+        #196719
+      );
+    font-size: 0.78rem;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-section h2 {
+    font-size: 0.91rem;
+    letter-spacing: -0.1px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-section header p {
+    margin-top: 2px;
+    font-size: 0.63rem;
+    line-height: 1.45;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+    gap: 11px 12px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-field label {
+    margin-bottom: 6px;
+    font-size: 0.68rem;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-field label > small {
+    font-size: 0.58rem;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-field input,
+  .inmba-register-page--civilian
+    .inmba-register-field select {
+    min-height: 43px;
+    padding: 8px 11px;
+    border-radius: 11px;
+    border-color: #d9e6d8;
+    background: #fbfdfb;
+    font-size: 0.76rem;
+    transition:
+      border-color 0.18s ease,
+      box-shadow 0.18s ease,
+      background 0.18s ease;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-field input:focus,
+  .inmba-register-page--civilian
+    .inmba-register-field select:focus {
+    border-color: #6b9c6b;
+    background: #ffffff;
+    box-shadow:
+      0 0 0 3px rgba(25, 103, 25, 0.075);
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-field-help,
+  .inmba-register-page--civilian
+    .inmba-register-field-error {
+    margin-top: 5px;
+    font-size: 0.59rem;
+    line-height: 1.4;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-password-shell input {
+    padding-right: 40px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-password-shell button {
+    right: 7px;
+    width: 29px;
+    height: 29px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-declaration {
+    margin-top: 12px;
+    padding: 11px 12px;
+    border-radius: 12px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-declaration label {
+    gap: 9px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-declaration label > span {
+    width: 22px;
+    height: 22px;
+    flex-basis: 22px;
+    border-radius: 6px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-declaration p {
+    margin-top: 1px;
+    font-size: 0.62rem;
+    line-height: 1.45;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-upgrade-note {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 11px 13px;
+    border-radius: 14px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-upgrade-note > span {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+    border-radius: 9px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-upgrade-note strong {
+    margin-bottom: 2px;
+    font-size: 0.7rem;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-upgrade-note p {
+    font-size: 0.61rem;
+    line-height: 1.45;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-actions {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 3px 0 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-actions a,
+  .inmba-register-page--civilian
+    .inmba-register-actions button {
+    min-height: 42px;
+    padding: 8px 16px;
+    border-radius: 11px;
+    font-size: 0.7rem;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-actions button {
+    min-width: 185px;
+    background:
+      linear-gradient(
+        135deg,
+        #0f4d0f 0%,
+        #196719 100%
+      );
+    box-shadow:
+      0 10px 22px rgba(15, 77, 15, 0.18);
+  }
+}
+
+/* Medium desktop / tablet:
+   Keep the form readable and avoid cramping. */
+@media (max-width: 1100px) and (min-width: 701px) {
+  .inmba-register-page--civilian
+    .inmba-register-split-layout {
+    grid-template-columns:
+      minmax(260px, 31vw)
+      minmax(0, 1fr);
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-side-panel {
+    padding: 28px 24px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-hero {
+    margin-top: 34px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-content-panel {
+    padding: 24px 18px 34px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-form {
+    padding: 13px 16px 20px;
+  }
+}
+
+/* Mobile stays single-column and touch-friendly. */
+@media (max-width: 700px) {
+  .inmba-register-page--civilian
+    .inmba-register-side-panel {
+    min-height: auto;
+    padding: 24px 20px 30px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-hero {
+    margin-top: 36px;
+    gap: 18px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-hero h1 {
+    font-size: clamp(2rem, 10vw, 2.7rem);
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-benefits {
+    margin-top: 20px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-benefits span {
+    min-height: 52px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-content-panel {
+    padding-top: 26px;
+  }
+
+  .inmba-register-page--civilian
+    .inmba-register-form {
+    box-shadow:
+      0 14px 35px rgba(23, 72, 29, 0.07);
+  }
+}

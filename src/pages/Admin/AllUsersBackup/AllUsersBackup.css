@@ -1,0 +1,1842 @@
+/* =========================================================
+   ALL USERS BACKUP PAGE
+========================================================= */
+
+.inmba-all-backup-page {
+  width: 100%;
+
+  display: grid;
+
+  gap: 18px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.inmba-all-backup-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 22px;
+
+  border:
+    1px solid #d8e5d6;
+
+  border-radius: 19px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #f6faf5
+    );
+
+  box-shadow:
+    0 9px 28px
+    rgba(
+      30,
+      70,
+      30,
+      0.06
+    );
+}
+
+.inmba-all-backup-header p {
+  margin:
+    0 0 4px;
+
+  color: #548057;
+
+  font-size: 0.52rem;
+
+  font-weight: 900;
+
+  letter-spacing: 0.8px;
+
+  text-transform: uppercase;
+}
+
+.inmba-all-backup-header h2 {
+  margin:
+    0 0 5px;
+
+  color: #213f24;
+
+  font-size: 1.32rem;
+
+  font-weight: 900;
+}
+
+.inmba-all-backup-header
+  > div:first-child
+  > span {
+  color: #7e8d7e;
+
+  font-size: 0.58rem;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   HEADER ACTIONS
+========================================================= */
+
+.inmba-all-backup-header-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+.inmba-all-backup-header-actions
+  button {
+  min-height: 41px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding:
+    8px 13px;
+
+  border-radius: 10px;
+
+  font-size: 0.54rem;
+
+  font-weight: 900;
+}
+
+.inmba-all-backup-refresh {
+  border:
+    1px solid #cadcca;
+
+  color: #39703e;
+
+  background: #ffffff;
+}
+
+.inmba-all-backup-create {
+  border: 0;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f4d0f,
+      #318839
+    );
+
+  box-shadow:
+    0 8px 19px
+    rgba(
+      15,
+      77,
+      15,
+      0.18
+    );
+}
+
+/* =========================================================
+   BACKUP INFO
+========================================================= */
+
+.inmba-all-backup-info {
+  display: grid;
+
+  grid-template-columns:
+    auto 1fr auto;
+
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 14px;
+
+  border:
+    1px solid #c9dfc6;
+
+  border-radius: 13px;
+
+  color: #406c44;
+
+  background: #eff8ed;
+}
+
+.inmba-all-backup-info
+  > span {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: #ffffff;
+
+  background: #347c3a;
+}
+
+.inmba-all-backup-info
+  strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 0.58rem;
+}
+
+.inmba-all-backup-info p {
+  margin: 0;
+
+  font-size: 0.51rem;
+
+  line-height: 1.5;
+}
+
+.inmba-all-backup-last-time {
+  min-width: 175px;
+
+  padding: 8px 11px;
+
+  border:
+    1px solid #c8dec5;
+
+  border-radius: 9px;
+
+  background: #ffffff;
+}
+
+.inmba-all-backup-last-time
+  small,
+.inmba-all-backup-last-time
+  strong {
+  display: block;
+}
+
+.inmba-all-backup-last-time
+  small {
+  margin-bottom: 3px;
+
+  color: #7c927e;
+
+  font-size: 0.45rem;
+
+  font-weight: 900;
+
+  text-transform: uppercase;
+}
+
+.inmba-all-backup-last-time
+  strong {
+  margin: 0;
+
+  color: #37673b;
+
+  font-size: 0.51rem;
+}
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.inmba-all-backup-stats {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      5,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap: 9px;
+}
+
+.inmba-all-backup-stat {
+  min-height: 82px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 13px;
+
+  border:
+    1px solid #d8e5d6;
+
+  border-radius: 14px;
+
+  color: #516852;
+
+  background: #ffffff;
+
+  text-align: left;
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.inmba-all-backup-stat:hover {
+  transform:
+    translateY(-2px);
+}
+
+.inmba-all-backup-stat
+  > span {
+  width: 40px;
+  height: 40px;
+
+  flex:
+    0 0 40px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: #317438;
+
+  background: #edf7eb;
+}
+
+.inmba-all-backup-stat
+  strong,
+.inmba-all-backup-stat
+  small {
+  display: block;
+}
+
+.inmba-all-backup-stat
+  strong {
+  margin-bottom: 2px;
+
+  color: #344e35;
+
+  font-size: 0.81rem;
+}
+
+.inmba-all-backup-stat
+  small {
+  color: #839183;
+
+  font-size: 0.49rem;
+}
+
+.inmba-all-backup-stat-active {
+  border-color: #68a56d;
+
+  background: #f0f8ef;
+
+  box-shadow:
+    0 7px 18px
+    rgba(
+      15,
+      77,
+      15,
+      0.08
+    );
+}
+
+/* =========================================================
+   PANEL
+========================================================= */
+
+.inmba-all-backup-panel {
+  overflow: hidden;
+
+  border:
+    1px solid #dbe7d9;
+
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 8px 27px
+    rgba(
+      30,
+      65,
+      30,
+      0.05
+    );
+}
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.inmba-all-backup-toolbar {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding:
+    16px 18px;
+
+  border-bottom:
+    1px solid #e1ebe0;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f7fbf6,
+      #ffffff
+    );
+}
+
+.inmba-all-backup-toolbar
+  small {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #7a8b7b;
+
+  font-size: 0.47rem;
+
+  font-weight: 900;
+
+  text-transform: uppercase;
+}
+
+.inmba-all-backup-toolbar
+  h3 {
+  margin: 0;
+
+  color: #354e36;
+
+  font-size: 0.7rem;
+
+  font-weight: 900;
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.inmba-all-backup-search {
+  position: relative;
+
+  width:
+    min(
+      100%,
+      360px
+    );
+
+  display: flex;
+
+  align-items: center;
+}
+
+.inmba-all-backup-search
+  > i {
+  position: absolute;
+
+  left: 13px;
+
+  color: #819081;
+
+  font-size: 0.58rem;
+}
+
+.inmba-all-backup-search
+  input {
+  width: 100%;
+
+  min-height: 40px;
+
+  padding:
+    8px 38px
+    8px 37px;
+
+  border:
+    1px solid #cedfcb;
+
+  border-radius: 10px;
+
+  color: #405741;
+
+  background: #ffffff;
+
+  font-size: 0.56rem;
+
+  outline: none;
+}
+
+.inmba-all-backup-search
+  input:focus {
+  border-color: #619e66;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(
+      15,
+      77,
+      15,
+      0.06
+    );
+}
+
+.inmba-all-backup-search
+  button {
+  position: absolute;
+
+  right: 6px;
+
+  width: 28px;
+  height: 28px;
+
+  display: grid;
+
+  place-items: center;
+
+  border: 0;
+
+  border-radius: 8px;
+
+  color: #738273;
+
+  background: #eef4ed;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.inmba-all-backup-table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.inmba-all-backup-table {
+  width: 100%;
+
+  min-width: 1450px;
+
+  border-collapse: collapse;
+}
+
+.inmba-all-backup-table
+  th {
+  padding:
+    12px 14px;
+
+  border-bottom:
+    1px solid #dce7da;
+
+  color: #718271;
+
+  background: #f7faf6;
+
+  font-size: 0.48rem;
+
+  font-weight: 900;
+
+  letter-spacing: 0.3px;
+
+  text-align: left;
+
+  text-transform: uppercase;
+}
+
+.inmba-all-backup-table
+  td {
+  padding: 14px;
+
+  border-bottom:
+    1px solid #edf2ec;
+
+  color: #536653;
+
+  font-size: 0.55rem;
+
+  vertical-align: top;
+}
+
+.inmba-all-backup-table
+  tbody
+  tr:hover {
+  background: #fbfdfb;
+}
+
+/* =========================================================
+   BACKUP ID
+========================================================= */
+
+.inmba-all-backup-id-cell
+  strong,
+.inmba-all-backup-id-cell
+  small {
+  display: block;
+}
+
+.inmba-all-backup-id-cell
+  strong {
+  width: fit-content;
+
+  padding:
+    5px 8px;
+
+  border:
+    1px solid #c9dfc7;
+
+  border-radius: 7px;
+
+  color: #36723a;
+
+  background: #eef8ed;
+
+  font-family: monospace;
+
+  font-size: 0.51rem;
+}
+
+.inmba-all-backup-id-cell
+  small {
+  margin-top: 4px;
+
+  color: #859285;
+
+  font-family: monospace;
+
+  font-size: 0.46rem;
+}
+
+/* =========================================================
+   MEMBER
+========================================================= */
+
+.inmba-all-backup-member {
+  min-width: 200px;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 9px;
+}
+
+.inmba-all-backup-member
+  > span {
+  width: 39px;
+  height: 39px;
+
+  flex:
+    0 0 39px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #176321,
+      #438c48
+    );
+
+  font-size: 0.56rem;
+
+  font-weight: 900;
+}
+
+.inmba-all-backup-member
+  strong,
+.inmba-all-backup-member
+  small {
+  display: block;
+}
+
+.inmba-all-backup-member
+  strong {
+  margin-bottom: 3px;
+
+  color: #3b543c;
+
+  font-size: 0.58rem;
+}
+
+.inmba-all-backup-member
+  small {
+  margin-top: 2px;
+
+  color: #879487;
+
+  font-size: 0.46rem;
+
+  word-break: break-all;
+}
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+.inmba-all-backup-login-id {
+  display: inline-flex;
+
+  padding:
+    5px 8px;
+
+  border:
+    1px solid #d1dfcf;
+
+  border-radius: 7px;
+
+  color: #566f57;
+
+  background: #f7faf6;
+
+  font-family: monospace;
+
+  font-size: 0.51rem;
+
+  font-weight: 900;
+}
+
+/* =========================================================
+   MEMBERSHIP
+========================================================= */
+
+.inmba-all-backup-membership {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  padding:
+    5px 8px;
+
+  border-radius: 8px;
+
+  color: #4c704f;
+
+  background: #f0f7ef;
+
+  font-size: 0.49rem;
+
+  font-weight: 800;
+}
+
+/* =========================================================
+   PAYMENT STATUS
+========================================================= */
+
+.inmba-all-backup-payment-status,
+.inmba-all-backup-member-status {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  padding:
+    6px 8px;
+
+  border-radius: 999px;
+
+  font-size: 0.47rem;
+
+  font-weight: 900;
+}
+
+.inmba-all-backup-status-approved {
+  color: #267330;
+
+  background: #e8f7e9;
+}
+
+.inmba-all-backup-status-pending {
+  color: #8b6516;
+
+  background: #fff4da;
+}
+
+.inmba-all-backup-status-rejected {
+  color: #a73a43;
+
+  background: #fff0f1;
+}
+
+/* =========================================================
+   MEMBER STATUS
+========================================================= */
+
+.inmba-all-backup-member-active {
+  color: #277331;
+
+  background: #e9f7e9;
+}
+
+.inmba-all-backup-member-deleted {
+  color: #a63a43;
+
+  background: #fff0f1;
+}
+
+/* =========================================================
+   DATE
+========================================================= */
+
+.inmba-all-backup-date {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  padding:
+    5px 8px;
+
+  border-radius: 8px;
+
+  color: #557057;
+
+  background: #f3f7f2;
+
+  font-family: monospace;
+
+  font-size: 0.47rem;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   BACKUP JSON
+========================================================= */
+
+.inmba-all-backup-json {
+  width: 400px;
+}
+
+.inmba-all-backup-json
+  pre {
+  max-height: 175px;
+
+  margin: 0;
+
+  overflow: auto;
+
+  padding: 10px;
+
+  border:
+    1px solid #d8e6d5;
+
+  border-left:
+    3px solid #488d4d;
+
+  border-radius: 10px;
+
+  color: #425d44;
+
+  background: #f8fbf7;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  font-size: 0.47rem;
+
+  line-height: 1.5;
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+}
+
+.inmba-all-backup-json
+  > div {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  margin-top: 7px;
+}
+
+.inmba-all-backup-json
+  button {
+  min-height: 29px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  padding:
+    5px 8px;
+
+  border:
+    1px solid #cbdcca;
+
+  border-radius: 7px;
+
+  color: #337238;
+
+  background: #eff7ee;
+
+  font-size: 0.46rem;
+
+  font-weight: 900;
+}
+
+/* =========================================================
+   STATES
+========================================================= */
+
+.inmba-all-backup-state,
+.inmba-all-backup-empty {
+  min-height: 340px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  padding: 35px;
+
+  text-align: center;
+}
+
+.inmba-all-backup-spinner {
+  width: 42px;
+  height: 42px;
+
+  margin-bottom: 12px;
+
+  border:
+    4px solid #dce9da;
+
+  border-top-color: #1e7027;
+
+  border-radius: 50%;
+
+  animation:
+    inmbaAllBackupSpin
+    0.8s linear infinite;
+}
+
+@keyframes inmbaAllBackupSpin {
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+.inmba-all-backup-error-icon,
+.inmba-all-backup-empty
+  > span {
+  width: 58px;
+  height: 58px;
+
+  margin-bottom: 12px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 17px;
+
+  font-size: 1.03rem;
+}
+
+.inmba-all-backup-error-icon {
+  color: #a63b44;
+
+  background: #fff0f1;
+}
+
+.inmba-all-backup-empty
+  > span {
+  color: #34783a;
+
+  background: #eaf6e9;
+}
+
+.inmba-all-backup-state
+  h3,
+.inmba-all-backup-empty
+  h3 {
+  margin:
+    0 0 5px;
+
+  color: #3d553e;
+
+  font-size: 0.74rem;
+}
+
+.inmba-all-backup-state
+  p,
+.inmba-all-backup-empty
+  p {
+  max-width: 440px;
+
+  margin: 0;
+
+  color: #859285;
+
+  font-size: 0.54rem;
+
+  line-height: 1.5;
+}
+
+.inmba-all-backup-state
+  button,
+.inmba-all-backup-empty
+  button {
+  min-height: 37px;
+
+  margin-top: 12px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding:
+    7px 12px;
+
+  border: 0;
+
+  border-radius: 9px;
+
+  color: #ffffff;
+
+  background: #24742c;
+
+  font-size: 0.52rem;
+
+  font-weight: 900;
+}
+
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+
+.inmba-all-backup-modal-overlay {
+  position: fixed;
+
+  z-index: 6000;
+
+  inset: 0;
+
+  display: grid;
+
+  place-items: center;
+
+  padding: 20px;
+
+  background:
+    rgba(
+      7,
+      28,
+      10,
+      0.72
+    );
+
+  backdrop-filter:
+    blur(6px);
+}
+
+/* =========================================================
+   CREATE BACKUP MODAL
+========================================================= */
+
+.inmba-all-backup-confirm-modal {
+  width:
+    min(
+      100%,
+      470px
+    );
+
+  padding: 27px;
+
+  border:
+    1px solid #d3e2d1;
+
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  text-align: center;
+
+  box-shadow:
+    0 30px 80px
+    rgba(
+      0,
+      0,
+      0,
+      0.28
+    );
+}
+
+.inmba-all-backup-confirm-modal
+  > span {
+  width: 63px;
+  height: 63px;
+
+  margin:
+    0 auto 12px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 18px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #176322,
+      #438d49
+    );
+
+  font-size: 1.1rem;
+}
+
+.inmba-all-backup-confirm-modal
+  > p:first-of-type {
+  margin:
+    0 0 4px;
+
+  color: #6f876f;
+
+  font-size: 0.48rem;
+
+  font-weight: 900;
+
+  letter-spacing: 0.7px;
+
+  text-transform: uppercase;
+}
+
+.inmba-all-backup-confirm-modal
+  h2 {
+  margin:
+    0 0 6px;
+
+  color: #324f35;
+
+  font-size: 0.9rem;
+}
+
+.inmba-all-backup-confirm-description {
+  margin:
+    0 !important;
+
+  color: #829083;
+
+  font-size: 0.53rem;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   CONFIRM WARNING
+========================================================= */
+
+.inmba-all-backup-confirm-warning {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 8px;
+
+  margin-top: 14px;
+
+  padding: 11px;
+
+  border:
+    1px solid #ead19a;
+
+  border-radius: 10px;
+
+  color: #7e5f18;
+
+  background: #fff8e4;
+
+  text-align: left;
+}
+
+.inmba-all-backup-confirm-warning
+  > i {
+  margin-top: 2px;
+}
+
+.inmba-all-backup-confirm-warning
+  strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 0.53rem;
+}
+
+.inmba-all-backup-confirm-warning
+  p {
+  margin: 0;
+
+  font-size: 0.48rem;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   CURRENT BACKUP DATA
+========================================================= */
+
+.inmba-all-backup-confirm-current {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 8px;
+
+  margin-top: 12px;
+}
+
+.inmba-all-backup-confirm-current
+  > div {
+  padding: 10px;
+
+  border:
+    1px solid #dce8da;
+
+  border-radius: 10px;
+
+  background: #f8fbf7;
+}
+
+.inmba-all-backup-confirm-current
+  small,
+.inmba-all-backup-confirm-current
+  strong {
+  display: block;
+}
+
+.inmba-all-backup-confirm-current
+  small {
+  margin-bottom: 4px;
+
+  color: #809081;
+
+  font-size: 0.45rem;
+}
+
+.inmba-all-backup-confirm-current
+  strong {
+  color: #347039;
+
+  font-size: 0.72rem;
+}
+
+/* =========================================================
+   MODAL ERROR
+========================================================= */
+
+.inmba-all-backup-modal-error {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 7px;
+
+  margin-top: 11px;
+
+  padding: 10px;
+
+  border:
+    1px solid #e8b8bd;
+
+  border-radius: 10px;
+
+  color: #a3363f;
+
+  background: #fff0f1;
+
+  font-size: 0.5rem;
+
+  text-align: left;
+}
+
+/* =========================================================
+   CONFIRM FOOTER
+========================================================= */
+
+.inmba-all-backup-confirm-modal
+  > footer {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 8px;
+
+  margin-top: 17px;
+}
+
+.inmba-all-backup-confirm-modal
+  > footer
+  button {
+  min-height: 41px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  border-radius: 10px;
+
+  font-size: 0.53rem;
+
+  font-weight: 900;
+}
+
+.inmba-all-backup-confirm-modal
+  > footer
+  button:first-child {
+  border:
+    1px solid #d2dfd0;
+
+  color: #687768;
+
+  background: #f7faf6;
+}
+
+.inmba-all-backup-confirm-modal
+  > footer
+  button:last-child {
+  border: 0;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #176322,
+      #3e8945
+    );
+}
+
+/* =========================================================
+   SNAPSHOT MODAL
+========================================================= */
+
+.inmba-all-backup-snapshot-modal {
+  width:
+    min(
+      100%,
+      920px
+    );
+
+  max-height:
+    calc(
+      100vh - 40px
+    );
+
+  overflow-y: auto;
+
+  border:
+    1px solid #d7e4d5;
+
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 30px 80px
+    rgba(
+      0,
+      0,
+      0,
+      0.3
+    );
+}
+
+/* =========================================================
+   SNAPSHOT HEADER
+========================================================= */
+
+.inmba-all-backup-snapshot-modal
+  > header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 17px;
+
+  border-bottom:
+    1px solid #dfe9dd;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f5faf4,
+      #ffffff
+    );
+}
+
+.inmba-all-backup-snapshot-modal
+  > header
+  > div {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.inmba-all-backup-snapshot-modal
+  > header
+  > div
+  > span {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #176322,
+      #438d49
+    );
+}
+
+.inmba-all-backup-snapshot-modal
+  > header p {
+  margin:
+    0 0 2px;
+
+  color: #718873;
+
+  font-size: 0.47rem;
+
+  font-weight: 900;
+
+  text-transform: uppercase;
+}
+
+.inmba-all-backup-snapshot-modal
+  > header h2 {
+  margin: 0;
+
+  color: #344f36;
+
+  font-size: 0.75rem;
+}
+
+.inmba-all-backup-snapshot-modal
+  > header
+  > button {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+
+  place-items: center;
+
+  border: 0;
+
+  border-radius: 9px;
+
+  color: #657666;
+
+  background: #edf3ec;
+}
+
+/* =========================================================
+   SNAPSHOT META
+========================================================= */
+
+.inmba-all-backup-snapshot-meta {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap: 8px;
+
+  padding:
+    16px 17px 0;
+}
+
+.inmba-all-backup-snapshot-meta
+  > div {
+  padding: 10px;
+
+  border:
+    1px solid #dce7da;
+
+  border-radius: 10px;
+
+  background: #f8fbf7;
+}
+
+.inmba-all-backup-snapshot-meta
+  small,
+.inmba-all-backup-snapshot-meta
+  strong {
+  display: block;
+}
+
+.inmba-all-backup-snapshot-meta
+  small {
+  margin-bottom: 3px;
+
+  color: #829182;
+
+  font-size: 0.44rem;
+
+  text-transform: uppercase;
+}
+
+.inmba-all-backup-snapshot-meta
+  strong {
+  color: #3b583d;
+
+  font-size: 0.52rem;
+
+  word-break: break-word;
+}
+
+/* =========================================================
+   SNAPSHOT DETAILS
+========================================================= */
+
+.inmba-all-backup-snapshot-details {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap: 8px;
+
+  padding:
+    12px 17px 0;
+}
+
+.inmba-all-backup-snapshot-details
+  > div {
+  padding: 10px;
+
+  border:
+    1px solid #e0e9de;
+
+  border-radius: 10px;
+
+  background: #ffffff;
+}
+
+.inmba-all-backup-snapshot-details
+  small,
+.inmba-all-backup-snapshot-details
+  strong {
+  display: block;
+}
+
+.inmba-all-backup-snapshot-details
+  small {
+  margin-bottom: 3px;
+
+  color: #849184;
+
+  font-size: 0.44rem;
+}
+
+.inmba-all-backup-snapshot-details
+  strong {
+  color: #465c47;
+
+  font-size: 0.52rem;
+
+  word-break: break-word;
+}
+
+/* =========================================================
+   SNAPSHOT JSON
+========================================================= */
+
+.inmba-all-backup-snapshot-json {
+  padding: 17px;
+}
+
+.inmba-all-backup-snapshot-json
+  > div {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-bottom: 7px;
+}
+
+.inmba-all-backup-snapshot-json
+  > div
+  strong {
+  color: #405a42;
+
+  font-size: 0.55rem;
+}
+
+.inmba-all-backup-snapshot-json
+  > div
+  small {
+  color: #899689;
+
+  font-size: 0.46rem;
+}
+
+.inmba-all-backup-snapshot-json
+  pre {
+  max-height: 500px;
+
+  margin: 0;
+
+  overflow: auto;
+
+  padding: 15px;
+
+  border:
+    1px solid #d3e3d0;
+
+  border-radius: 12px;
+
+  color: #365439;
+
+  background: #f7fbf6;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  font-size: 0.5rem;
+
+  line-height: 1.55;
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+}
+
+/* =========================================================
+   SNAPSHOT FOOTER
+========================================================= */
+
+.inmba-all-backup-snapshot-modal
+  > footer {
+  display: flex;
+
+  justify-content: flex-end;
+
+  padding:
+    0 17px 17px;
+}
+
+.inmba-all-backup-snapshot-modal
+  > footer
+  button {
+  min-height: 39px;
+
+  padding:
+    7px 14px;
+
+  border: 0;
+
+  border-radius: 9px;
+
+  color: #ffffff;
+
+  background: #24742c;
+
+  font-size: 0.52rem;
+
+  font-weight: 900;
+}
+
+/* =========================================================
+   DISABLED
+========================================================= */
+
+.inmba-all-backup-page
+  button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.5;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (
+  max-width: 1100px
+) {
+  .inmba-all-backup-stats {
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(
+          0,
+          1fr
+        )
+      );
+  }
+
+  .inmba-all-backup-snapshot-meta,
+  .inmba-all-backup-snapshot-details {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      );
+  }
+}
+
+@media (
+  max-width: 760px
+) {
+  .inmba-all-backup-header,
+  .inmba-all-backup-toolbar {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .inmba-all-backup-info {
+    grid-template-columns:
+      auto 1fr;
+  }
+
+  .inmba-all-backup-last-time {
+    grid-column:
+      1 / -1;
+
+    width: 100%;
+  }
+
+  .inmba-all-backup-search {
+    width: 100%;
+  }
+}
+
+@media (
+  max-width: 560px
+) {
+  .inmba-all-backup-header {
+    padding: 17px;
+  }
+
+  .inmba-all-backup-header-actions {
+    display: grid;
+
+    grid-template-columns:
+      1fr;
+  }
+
+  .inmba-all-backup-stats {
+    grid-template-columns:
+      1fr;
+  }
+
+  .inmba-all-backup-confirm-current {
+    grid-template-columns:
+      1fr;
+  }
+
+  .inmba-all-backup-confirm-modal
+    > footer {
+    grid-template-columns:
+      1fr;
+  }
+
+  .inmba-all-backup-snapshot-meta,
+  .inmba-all-backup-snapshot-details {
+    grid-template-columns:
+      1fr;
+  }
+
+  .inmba-all-backup-modal-overlay {
+    padding: 10px;
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+    reduce
+) {
+  .inmba-all-backup-spinner {
+    animation: none;
+  }
+
+  .inmba-all-backup-stat {
+    transition: none;
+  }
+}

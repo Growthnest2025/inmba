@@ -1,0 +1,1105 @@
+:root {
+  --cr-red: #e23744;
+  --cr-red-dark: #b82431;
+  --cr-red-deep: #8f1823;
+  --cr-soft: #fff1f3;
+  --cr-bg: #fff8f9;
+
+  --cr-text: #251f20;
+  --cr-muted: #78666a;
+
+  --cr-border: #efd9dc;
+  --cr-danger: #b4232f;
+
+  --cr-white: #ffffff;
+}
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.commercial-review-page,
+.commercial-review-page * {
+  box-sizing: border-box;
+}
+
+.commercial-review-page {
+  min-height: 100vh;
+
+  padding:
+    0 0 60px;
+
+  color:
+    var(--cr-text);
+
+  background:
+    radial-gradient(
+      circle at 95% 0%,
+      rgba(226, 55, 68, 0.1),
+      transparent 27%
+    ),
+    linear-gradient(
+      180deg,
+      #fff5f6,
+      #fafafa 45%,
+      #ffffff
+    );
+
+  font-family:
+    Inter,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+
+.commercial-review-shell {
+  width:
+    min(
+      1180px,
+      calc(100% - 36px)
+    );
+
+  margin:
+    0 auto;
+}
+
+.commercial-review-shell {
+  width:
+    min(
+      1180px,
+      100%
+    );
+
+  margin:
+    0 auto;
+}
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.commercial-review-topbar {
+  display: flex;
+
+  align-items: center;
+
+  justify-content:
+    space-between;
+
+  gap: 16px;
+
+  margin-bottom:
+    22px;
+}
+
+.commercial-review-brand {
+  display: flex;
+
+  align-items:
+    center;
+
+  gap: 11px;
+}
+
+.commercial-review-brand-icon {
+  width: 46px;
+  height: 46px;
+
+  display: grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    14px;
+
+  color:
+    #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--cr-red-dark),
+      var(--cr-red)
+    );
+
+  box-shadow:
+    0 10px 22px
+    rgba(
+      226,
+      55,
+      68,
+      0.22
+    );
+}
+
+.commercial-review-brand span,
+.commercial-review-brand strong {
+  display: block;
+}
+
+.commercial-review-brand span {
+  margin-bottom:
+    2px;
+
+  color:
+    var(--cr-muted);
+
+  font-size:
+    0.63rem;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    1.2px;
+}
+
+.commercial-review-brand strong {
+  font-size:
+    0.98rem;
+
+  font-weight:
+    900;
+}
+
+.commercial-review-edit-top {
+  min-height:
+    40px;
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  gap:
+    7px;
+
+  padding:
+    9px 13px;
+
+  border:
+    1px solid
+    var(--cr-border);
+
+  border-radius:
+    11px;
+
+  color:
+    var(--cr-red-dark);
+
+  background:
+    #ffffff;
+
+  font-weight:
+    800;
+
+  cursor:
+    pointer;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.commercial-review-hero {
+  display:
+    grid;
+
+  grid-template-columns:
+    minmax(
+      0,
+      1fr
+    )
+    auto;
+
+  align-items:
+    center;
+
+  gap:
+    28px;
+
+  margin-bottom:
+    22px;
+
+  padding:
+    28px 30px;
+
+  overflow:
+    hidden;
+
+  border-radius:
+    24px;
+
+  color:
+    #ffffff;
+
+  background:
+    radial-gradient(
+      circle at 93% 15%,
+      rgba(
+        255,
+        255,
+        255,
+        0.16
+      ),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      var(--cr-red-deep),
+      var(--cr-red)
+    );
+
+  box-shadow:
+    0 18px 38px
+    rgba(
+      178,
+      36,
+      49,
+      0.18
+    );
+}
+
+.commercial-review-eyebrow {
+  display:
+    inline-block;
+
+  margin-bottom:
+    10px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.75
+    );
+
+  font-size:
+    0.66rem;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    1.3px;
+}
+
+.commercial-review-hero h1 {
+  margin:
+    0 0 9px;
+
+  font-size:
+    clamp(
+      1.75rem,
+      4vw,
+      2.7rem
+    );
+
+  font-weight:
+    900;
+}
+
+.commercial-review-hero p {
+  max-width:
+    720px;
+
+  margin:
+    0;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.78
+    );
+
+  font-size:
+    0.76rem;
+
+  line-height:
+    1.7;
+}
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.commercial-review-progress-card {
+  min-width:
+    155px;
+
+  padding:
+    18px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.2
+    );
+
+  border-radius:
+    18px;
+
+  text-align:
+    center;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.1
+    );
+
+  backdrop-filter:
+    blur(
+      8px
+    );
+}
+
+.commercial-review-progress-card span,
+.commercial-review-progress-card strong,
+.commercial-review-progress-card small {
+  display:
+    block;
+}
+
+.commercial-review-progress-card span {
+  margin-bottom:
+    6px;
+
+  font-size:
+    0.62rem;
+
+  font-weight:
+    800;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.7
+    );
+}
+
+.commercial-review-progress-card strong {
+  margin-bottom:
+    4px;
+
+  font-size:
+    1.8rem;
+
+  font-weight:
+    900;
+}
+
+.commercial-review-progress-card small {
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.72
+    );
+
+  font-size:
+    0.59rem;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.commercial-review-error {
+  display:
+    flex;
+
+  align-items:
+    flex-start;
+
+  gap:
+    9px;
+
+  margin-bottom:
+    18px;
+
+  padding:
+    13px 15px;
+
+  border:
+    1px solid
+    #efb8bd;
+
+  border-radius:
+    12px;
+
+  color:
+    var(--cr-danger);
+
+  background:
+    #fff0f2;
+
+  font-size:
+    0.72rem;
+
+  font-weight:
+    700;
+
+  line-height:
+    1.55;
+}
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.commercial-review-card {
+  margin-bottom:
+    16px;
+
+  padding:
+    22px;
+
+  border:
+    1px solid
+    var(--cr-border);
+
+  border-radius:
+    18px;
+
+  background:
+    #ffffff;
+
+  box-shadow:
+    0 10px 26px
+    rgba(
+      69,
+      35,
+      40,
+      0.055
+    );
+}
+
+/* =========================================================
+   SECTION TITLE
+========================================================= */
+
+.commercial-review-section-title {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    11px;
+
+  margin-bottom:
+    17px;
+}
+
+.commercial-review-section-title > b {
+  width:
+    38px;
+
+  height:
+    38px;
+
+  flex:
+    0 0 38px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    11px;
+
+  color:
+    var(--cr-red);
+
+  background:
+    var(--cr-soft);
+
+  font-size:
+    0.72rem;
+
+  font-weight:
+    900;
+}
+
+.commercial-review-section-title span,
+.commercial-review-section-title small {
+  display:
+    block;
+}
+
+.commercial-review-section-title span {
+  margin-bottom:
+    2px;
+
+  font-size:
+    0.86rem;
+
+  font-weight:
+    900;
+}
+
+.commercial-review-section-title small {
+  color:
+    var(--cr-muted);
+
+  font-size:
+    0.64rem;
+}
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.commercial-review-grid {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap:
+    0 22px;
+}
+
+/* =========================================================
+   ROW
+========================================================= */
+
+.commercial-review-row {
+  min-width:
+    0;
+
+  display:
+    grid;
+
+  grid-template-columns:
+    minmax(
+      130px,
+      0.7fr
+    )
+    minmax(
+      0,
+      1.3fr
+    );
+
+  gap:
+    12px;
+
+  align-items:
+    start;
+
+  padding:
+    11px 0;
+
+  border-bottom:
+    1px dashed
+    #eadcdf;
+}
+
+.commercial-review-row-full {
+  grid-column:
+    1 / -1;
+}
+
+.commercial-review-row span {
+  color:
+    var(--cr-muted);
+
+  font-size:
+    0.68rem;
+}
+
+.commercial-review-row strong {
+  min-width:
+    0;
+
+  overflow-wrap:
+    anywhere;
+
+  color:
+    #403436;
+
+  font-size:
+    0.73rem;
+
+  font-weight:
+    800;
+
+  line-height:
+    1.5;
+}
+
+/* =========================================================
+   INCOMPLETE
+========================================================= */
+
+.commercial-review-incomplete {
+  padding:
+    17px;
+
+  border:
+    1px solid
+    #f0cdd1;
+
+  border-radius:
+    14px;
+
+  background:
+    #fff6f7;
+}
+
+.commercial-review-incomplete > strong {
+  display:
+    block;
+
+  margin-bottom:
+    8px;
+
+  color:
+    var(--cr-red-dark);
+
+  font-size:
+    1.15rem;
+}
+
+.commercial-review-incomplete p {
+  margin:
+    5px 0;
+
+  color:
+    #765f63;
+
+  font-size:
+    0.7rem;
+
+  line-height:
+    1.55;
+}
+
+.commercial-review-incomplete .commercial-review-button {
+  margin-top:
+    14px;
+}
+
+/* =========================================================
+   CONSENT
+========================================================= */
+
+.commercial-review-consent-card {
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #fffafb
+    );
+}
+
+.commercial-review-consent {
+  display:
+    flex;
+
+  align-items:
+    flex-start;
+
+  gap:
+    10px;
+
+  margin-top:
+    11px;
+
+  padding:
+    13px 14px;
+
+  border:
+    1px solid
+    var(--cr-border);
+
+  border-radius:
+    12px;
+
+  color:
+    #5f4c50;
+
+  background:
+    #ffffff;
+
+  cursor:
+    pointer;
+
+  font-size:
+    0.7rem;
+
+  line-height:
+    1.55;
+}
+
+.commercial-review-consent input {
+  margin-top:
+    2px;
+
+  accent-color:
+    var(--cr-red);
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.commercial-review-actions {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    13px;
+
+  margin-top:
+    22px;
+}
+
+.commercial-review-button {
+  min-height:
+    50px;
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    9px;
+
+  padding:
+    11px 18px;
+
+  border-radius:
+    13px;
+
+  font-family:
+    inherit;
+
+  font-size:
+    0.74rem;
+
+  font-weight:
+    900;
+
+  cursor:
+    pointer;
+
+  transition:
+    transform
+    0.16s ease,
+    box-shadow
+    0.16s ease,
+    opacity
+    0.16s ease;
+}
+
+.commercial-review-button.secondary {
+  border:
+    1px solid
+    var(--cr-red);
+
+  color:
+    var(--cr-red-dark);
+
+  background:
+    #ffffff;
+}
+
+.commercial-review-button.primary {
+  min-width:
+    300px;
+
+  border:
+    0;
+
+  color:
+    #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--cr-red-dark),
+      var(--cr-red)
+    );
+
+  box-shadow:
+    0 12px 26px
+    rgba(
+      226,
+      55,
+      68,
+      0.23
+    );
+}
+
+.commercial-review-button:not(:disabled):hover {
+  transform:
+    translateY(
+      -1px
+    );
+}
+
+.commercial-review-button:disabled {
+  opacity:
+    0.5;
+
+  cursor:
+    not-allowed;
+}
+
+/* =========================================================
+   SPINNER
+========================================================= */
+
+.commercial-review-button-spinner,
+.commercial-review-spinner {
+  display:
+    inline-block;
+
+  border-radius:
+    50%;
+
+  animation:
+    commercialReviewSpin
+    0.75s
+    linear
+    infinite;
+}
+
+.commercial-review-button-spinner {
+  width:
+    15px;
+
+  height:
+    15px;
+
+  border:
+    2px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.42
+    );
+
+  border-top-color:
+    #ffffff;
+}
+
+.commercial-review-spinner {
+  width:
+    24px;
+
+  height:
+    24px;
+
+  border:
+    3px solid
+    #f1cbd0;
+
+  border-top-color:
+    var(--cr-red);
+}
+
+@keyframes commercialReviewSpin {
+  to {
+    transform:
+      rotate(
+        360deg
+      );
+  }
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.commercial-review-loading {
+  min-height:
+    70vh;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    11px;
+
+  color:
+    #654e53;
+
+  font-size:
+    0.8rem;
+
+  font-weight:
+    800;
+}
+
+/* =========================================================
+   SECURITY
+========================================================= */
+
+.commercial-review-security-note {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    6px;
+
+  margin:
+    16px 0 0;
+
+  color:
+    #9b8589;
+
+  font-size:
+    0.62rem;
+}
+
+.commercial-review-security-note i {
+  color:
+    var(--cr-red);
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (
+  max-width:
+    800px
+) {
+  .commercial-review-hero {
+    grid-template-columns:
+      1fr;
+  }
+
+  .commercial-review-progress-card {
+    width:
+      160px;
+  }
+
+  .commercial-review-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .commercial-review-row-full {
+    grid-column:
+      auto;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (
+  max-width:
+    600px
+) {
+  .commercial-review-page {
+    padding:
+      20px
+      11px
+      42px;
+  }
+
+  .commercial-review-topbar {
+    align-items:
+      flex-start;
+  }
+
+  .commercial-review-edit-top {
+    padding:
+      8px 10px;
+
+    font-size:
+      0.68rem;
+  }
+
+  .commercial-review-hero {
+    padding:
+      23px 18px;
+
+    border-radius:
+      19px;
+  }
+
+  .commercial-review-card {
+    padding:
+      18px 14px;
+
+    border-radius:
+      15px;
+  }
+
+  .commercial-review-row {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      4px;
+  }
+
+  .commercial-review-actions {
+    flex-direction:
+      column-reverse;
+  }
+
+  .commercial-review-button {
+    width:
+      100%;
+  }
+
+  .commercial-review-button.primary {
+    min-width:
+      0;
+  }
+}

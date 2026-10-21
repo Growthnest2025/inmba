@@ -1,0 +1,1594 @@
+/* =========================================================
+   COMMERCIAL PAYMENT
+   ZOMATO RED THEME
+========================================================= */
+
+:root {
+  --cp-red: #e23744;
+  --cp-red-dark: #b82431;
+  --cp-red-deep: #8f1823;
+
+  --cp-soft: #fff1f2;
+  --cp-soft-2: #fff7f8;
+  --cp-soft-3: #fffafb;
+
+  --cp-text: #261d1e;
+  --cp-text-soft: #5f4c4f;
+  --cp-muted: #8e797c;
+
+  --cp-border: #edd7da;
+  --cp-border-strong: #e9c3c7;
+
+  --cp-white: #ffffff;
+
+  --cp-success: #18864b;
+  --cp-danger: #c52d39;
+
+  --cp-shadow:
+    0 26px 70px rgba(140, 24, 36, 0.14);
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+
+.commercial-payment-page,
+.commercial-payment-page * {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.commercial-payment-page {
+  width: 100%;
+  min-height: 100vh;
+
+  margin: 0;
+  padding: 0;
+
+  background: #ffffff;
+
+  font-family:
+    Inter,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+
+/* =========================================================
+   MAIN SHELL
+========================================================= */
+
+.commercial-payment-shell {
+  width: 100%;
+  min-height: 100vh;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(320px, 40%)
+    minmax(0, 60%);
+
+  background: #ffffff;
+}
+
+/* =========================================================
+   LEFT PANEL
+========================================================= */
+
+.commercial-payment-left {
+  position: relative;
+
+  min-height: 100vh;
+
+  overflow: hidden;
+
+  display: flex;
+
+  padding:
+    42px
+    48px;
+
+  color: #ffffff;
+
+  background:
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(255, 255, 255, 0.15),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 88% 85%,
+      rgba(255, 255, 255, 0.1),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      var(--cp-red-deep),
+      var(--cp-red-dark) 45%,
+      var(--cp-red)
+    );
+}
+
+/* =========================================================
+   DECORATION
+========================================================= */
+
+.commercial-payment-circle {
+  position: absolute;
+
+  border-radius: 50%;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.12);
+
+  background:
+    rgba(255, 255, 255, 0.05);
+
+  pointer-events: none;
+}
+
+.commercial-payment-circle.circle-one {
+  width: 330px;
+  height: 330px;
+
+  top: -150px;
+  right: -170px;
+}
+
+.commercial-payment-circle.circle-two {
+  width: 440px;
+  height: 440px;
+
+  bottom: -260px;
+  left: -220px;
+}
+
+/* =========================================================
+   LEFT CONTENT
+========================================================= */
+
+.commercial-payment-left-content {
+  position: relative;
+  z-index: 2;
+
+  width: min(100%, 520px);
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.commercial-payment-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.commercial-payment-brand-icon {
+  width: 52px;
+  height: 52px;
+
+  flex:
+    0 0
+    52px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 16px;
+
+  color: var(--cp-red);
+
+  background: #ffffff;
+
+  box-shadow:
+    0 12px 28px
+    rgba(0, 0, 0, 0.15);
+
+  font-size: 1.15rem;
+}
+
+.commercial-payment-brand span,
+.commercial-payment-brand strong {
+  display: block;
+}
+
+.commercial-payment-brand span {
+  margin-bottom: 2px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.75
+    );
+
+  font-size: 0.7rem;
+  font-weight: 800;
+
+  letter-spacing: 1.6px;
+}
+
+.commercial-payment-brand strong {
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+/* =========================================================
+   INTRO
+========================================================= */
+
+.commercial-payment-intro {
+  margin-top: 70px;
+}
+
+.commercial-payment-kicker {
+  display: inline-flex;
+
+  margin-bottom: 14px;
+  padding: 7px 12px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.2);
+
+  border-radius: 999px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.92
+    );
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.09
+    );
+
+  font-size: 0.64rem;
+  font-weight: 900;
+
+  letter-spacing: 1.4px;
+}
+
+.commercial-payment-intro h1 {
+  margin:
+    0
+    0
+    14px;
+
+  font-size:
+    clamp(
+      2.4rem,
+      4vw,
+      4rem
+    );
+
+  line-height: 1.04;
+
+  font-weight: 900;
+}
+
+.commercial-payment-intro p {
+  max-width: 430px;
+
+  margin: 0;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.76
+    );
+
+  font-size: 0.82rem;
+
+  line-height: 1.75;
+}
+
+/* =========================================================
+   SELECTED PLAN
+========================================================= */
+
+.commercial-payment-selected-card {
+  margin-top: 36px;
+  padding: 21px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.18);
+
+  border-radius: 18px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.1
+    );
+
+  backdrop-filter:
+    blur(10px);
+}
+
+.commercial-payment-selected-label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.68
+    );
+
+  font-size: 0.62rem;
+  font-weight: 900;
+
+  letter-spacing: 1.2px;
+}
+
+.commercial-payment-selected-card h2 {
+  margin:
+    0
+    0
+    10px;
+
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.commercial-payment-price {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+
+  font-size: 2.2rem;
+  font-weight: 900;
+}
+
+.commercial-payment-price span {
+  margin-top: 5px;
+
+  font-size: 1rem;
+}
+
+/* =========================================================
+   BENEFITS
+========================================================= */
+
+.commercial-payment-benefits {
+  display: grid;
+  gap: 11px;
+
+  margin-top: 27px;
+}
+
+.commercial-payment-benefit {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.88
+    );
+
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.commercial-payment-check {
+  width: 24px;
+  height: 24px;
+
+  flex:
+    0 0
+    24px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  color: var(--cp-red-dark);
+
+  background: #ffffff;
+
+  font-size: 0.55rem;
+}
+
+/* =========================================================
+   SECURITY
+========================================================= */
+
+.commercial-payment-security {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-top: auto;
+  padding-top: 40px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.62
+    );
+
+  font-size: 0.62rem;
+}
+
+/* =========================================================
+   RIGHT PANEL
+========================================================= */
+
+.commercial-payment-right {
+  min-width: 0;
+
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding:
+    38px
+    55px
+    65px;
+
+  background:
+    radial-gradient(
+      circle at 96% 6%,
+      rgba(226, 55, 68, 0.07),
+      transparent 28%
+    ),
+    linear-gradient(
+      180deg,
+      #fffafa,
+      #ffffff
+    );
+}
+
+/* =========================================================
+   FORM WRAP
+========================================================= */
+
+.commercial-payment-form-wrap {
+  width: min(100%, 760px);
+}
+
+/* =========================================================
+   TOP ROW
+========================================================= */
+
+.commercial-payment-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 30px;
+}
+
+.commercial-payment-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 0;
+
+  border: 0;
+
+  color: #7b686b;
+
+  background: transparent;
+
+  font-size: 0.68rem;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.commercial-payment-back:hover {
+  color: var(--cp-red);
+}
+
+.commercial-payment-secure-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding:
+    7px
+    10px;
+
+  border:
+    1px solid
+    #efcdd0;
+
+  border-radius: 999px;
+
+  color: var(--cp-red-dark);
+
+  background: var(--cp-soft);
+
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.commercial-payment-header {
+  margin-bottom: 26px;
+}
+
+.commercial-payment-header > span {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: var(--cp-red);
+
+  font-size: 0.63rem;
+  font-weight: 900;
+
+  letter-spacing: 1.4px;
+}
+
+.commercial-payment-header h2 {
+  margin:
+    0
+    0
+    7px;
+
+  color: var(--cp-text);
+
+  font-size: 1.75rem;
+  font-weight: 900;
+}
+
+.commercial-payment-header p {
+  margin: 0;
+
+  color: var(--cp-muted);
+
+  font-size: 0.73rem;
+
+  line-height: 1.6;
+}
+
+.commercial-payment-header p strong {
+  color: var(--cp-red-dark);
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.commercial-payment-form {
+  display: grid;
+  gap: 21px;
+
+  padding: 27px;
+
+  border:
+    1px solid
+    rgba(226, 55, 68, 0.11);
+
+  border-radius: 23px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.98
+    );
+
+  box-shadow:
+    0 20px 55px
+    rgba(
+      131,
+      36,
+      47,
+      0.1
+    );
+}
+
+/* =========================================================
+   FIELD
+========================================================= */
+
+.commercial-payment-field {
+  min-width: 0;
+}
+
+.commercial-payment-field > label,
+.commercial-payment-label-row label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #4c383b;
+
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.commercial-payment-field .required {
+  margin-left: 3px;
+
+  color: var(--cp-red);
+}
+
+/* =========================================================
+   LABEL ROW
+========================================================= */
+
+.commercial-payment-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+}
+
+.commercial-payment-label-row > span {
+  margin-bottom: 8px;
+
+  color: #a28e91;
+
+  font-size: 0.61rem;
+  font-weight: 700;
+}
+
+/* =========================================================
+   PLAN BOX
+========================================================= */
+
+.commercial-payment-plan-box {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  padding: 15px;
+
+  border:
+    1px solid
+    var(--cp-border);
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff4f5,
+      #fffafa
+    );
+}
+
+.commercial-payment-plan-icon {
+  width: 43px;
+  height: 43px;
+
+  flex:
+    0 0
+    43px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 12px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--cp-red-dark),
+      var(--cp-red)
+    );
+
+  box-shadow:
+    0 9px 19px
+    rgba(226, 55, 68, 0.2);
+}
+
+.commercial-payment-plan-text {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.commercial-payment-plan-text span,
+.commercial-payment-plan-text strong {
+  display: block;
+}
+
+.commercial-payment-plan-text span {
+  margin-bottom: 3px;
+
+  color: #9a8487;
+
+  font-size: 0.6rem;
+}
+
+.commercial-payment-plan-text strong {
+  color: #4b3437;
+
+  font-size: 0.77rem;
+  font-weight: 900;
+}
+
+.commercial-payment-plan-amount {
+  color: var(--cp-red-dark);
+
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+/* =========================================================
+   PAYMENT METHODS
+========================================================= */
+
+.commercial-payment-methods {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 10px;
+}
+
+.commercial-payment-method {
+  min-height: 53px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  padding:
+    9px
+    10px;
+
+  border:
+    1px solid
+    var(--cp-border);
+
+  border-radius: 12px;
+
+  color: #675255;
+
+  background: #fffafa;
+
+  font-size: 0.67rem;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    border-color
+      0.16s ease,
+    background
+      0.16s ease,
+    color
+      0.16s ease,
+    transform
+      0.16s ease;
+}
+
+.commercial-payment-method:hover {
+  transform:
+    translateY(-1px);
+
+  border-color:
+    #e6adb3;
+
+  background: #fff5f6;
+}
+
+.commercial-payment-method.active {
+  border-color:
+    var(--cp-red);
+
+  color:
+    var(--cp-red-dark);
+
+  background:
+    var(--cp-soft);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      226,
+      55,
+      68,
+      0.06
+    );
+}
+
+.commercial-payment-method input {
+  position: absolute;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.commercial-payment-radio {
+  width: 14px;
+  height: 14px;
+
+  flex:
+    0 0
+    14px;
+
+  position: relative;
+
+  border:
+    1.5px solid
+    #cfadb0;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+}
+
+.commercial-payment-method.active
+  .commercial-payment-radio {
+  border-color:
+    var(--cp-red);
+}
+
+.commercial-payment-method.active
+  .commercial-payment-radio::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 3px;
+
+  border-radius: 50%;
+
+  background:
+    var(--cp-red);
+}
+
+.commercial-payment-method > i {
+  color: #ac777c;
+}
+
+.commercial-payment-method.active > i {
+  color: var(--cp-red);
+}
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.commercial-payment-input-wrap {
+  position: relative;
+}
+
+.commercial-payment-input-wrap input {
+  width: 100%;
+  min-height: 49px;
+
+  padding:
+    10px
+    14px
+    10px
+    42px;
+
+  border:
+    1px solid
+    var(--cp-border);
+
+  border-radius: 12px;
+
+  color: var(--cp-text);
+
+  background: #fffafa;
+
+  font-family: inherit;
+  font-size: 0.77rem;
+
+  outline: none;
+
+  transition:
+    border-color
+      0.16s ease,
+    box-shadow
+      0.16s ease,
+    background
+      0.16s ease;
+}
+
+.commercial-payment-input-wrap input::placeholder {
+  color: #b6a3a6;
+}
+
+.commercial-payment-input-wrap input:focus {
+  border-color:
+    var(--cp-red);
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(
+      226,
+      55,
+      68,
+      0.07
+    );
+}
+
+/* =========================================================
+   INPUT ICON
+========================================================= */
+
+.commercial-payment-input-icon {
+  position: absolute;
+
+  top: 50%;
+  left: 14px;
+
+  transform:
+    translateY(-50%);
+
+  color: #aa777c;
+
+  z-index: 2;
+}
+
+/* =========================================================
+   AMOUNT
+========================================================= */
+
+.commercial-payment-amount-input input {
+  padding-left: 38px;
+  padding-right: 40px;
+
+  color: #8f343d;
+
+  background: #fff4f5;
+
+  font-weight: 900;
+
+  cursor: not-allowed;
+}
+
+.commercial-payment-prefix {
+  position: absolute;
+
+  top: 50%;
+  left: 15px;
+
+  transform:
+    translateY(-50%);
+
+  color: var(--cp-red-dark);
+
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.commercial-payment-locked {
+  position: absolute;
+
+  top: 50%;
+  right: 14px;
+
+  transform:
+    translateY(-50%);
+
+  color: #bc9094;
+
+  font-size: 0.68rem;
+}
+
+/* =========================================================
+   UPLOAD
+========================================================= */
+
+.commercial-payment-upload {
+  min-height: 90px;
+
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  padding:
+    14px
+    15px;
+
+  border:
+    1px dashed
+    #e5b6bb;
+
+  border-radius: 14px;
+
+  background:
+    #fffafb;
+
+  cursor: pointer;
+
+  transition:
+    border-color
+      0.16s ease,
+    background
+      0.16s ease,
+    transform
+      0.16s ease;
+}
+
+.commercial-payment-upload:hover {
+  transform:
+    translateY(-1px);
+
+  border-color:
+    var(--cp-red);
+
+  background:
+    #fff3f4;
+}
+
+.commercial-payment-upload input {
+  display: none;
+}
+
+.commercial-payment-upload-icon {
+  width: 42px;
+  height: 42px;
+
+  flex:
+    0 0
+    42px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 12px;
+
+  color: var(--cp-red);
+
+  background:
+    var(--cp-soft);
+
+  font-size: 1rem;
+}
+
+.commercial-payment-upload-text {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.commercial-payment-upload-text strong,
+.commercial-payment-upload-text span {
+  display: block;
+}
+
+.commercial-payment-upload-text strong {
+  margin-bottom: 4px;
+
+  color: #594044;
+
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.commercial-payment-upload-text span {
+  color: #9b878a;
+
+  font-size: 0.61rem;
+}
+
+.commercial-payment-browse {
+  padding:
+    7px
+    11px;
+
+  border-radius: 9px;
+
+  color: var(--cp-red-dark);
+
+  background:
+    var(--cp-soft);
+
+  font-size: 0.63rem;
+  font-weight: 900;
+}
+
+/* =========================================================
+   SELECTED FILE
+========================================================= */
+
+.commercial-payment-file {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding:
+    13px
+    14px;
+
+  border:
+    1px solid
+    #cfe7d8;
+
+  border-radius: 13px;
+
+  background:
+    #f3fbf6;
+}
+
+.commercial-payment-file-icon {
+  width: 40px;
+  height: 40px;
+
+  flex:
+    0 0
+    40px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: #ffffff;
+
+  background:
+    var(--cp-success);
+}
+
+.commercial-payment-file-details {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.commercial-payment-file-details strong,
+.commercial-payment-file-details span {
+  display: block;
+}
+
+.commercial-payment-file-details strong {
+  margin-bottom: 3px;
+
+  overflow: hidden;
+
+  color: #31533d;
+
+  font-size: 0.68rem;
+  font-weight: 900;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.commercial-payment-file-details span {
+  color: #71887a;
+
+  font-size: 0.6rem;
+}
+
+.commercial-payment-file-remove {
+  width: 32px;
+  height: 32px;
+
+  display: grid;
+  place-items: center;
+
+  border: 0;
+  border-radius: 9px;
+
+  color: #b53641;
+
+  background: #ffe9eb;
+
+  cursor: pointer;
+}
+
+/* =========================================================
+   INFO
+========================================================= */
+
+.commercial-payment-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+
+  padding:
+    13px
+    14px;
+
+  border:
+    1px solid
+    #efd0d3;
+
+  border-radius: 12px;
+
+  color: #81565b;
+
+  background:
+    var(--cp-soft-2);
+}
+
+.commercial-payment-info i {
+  margin-top: 3px;
+
+  color:
+    var(--cp-red);
+}
+
+.commercial-payment-info p {
+  margin: 0;
+
+  font-size: 0.66rem;
+
+  line-height: 1.55;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.commercial-payment-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  padding:
+    12px
+    13px;
+
+  border:
+    1px solid
+    #edb6bc;
+
+  border-radius: 11px;
+
+  color:
+    var(--cp-danger);
+
+  background:
+    #fff1f2;
+
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+/* =========================================================
+   SUBMIT BUTTON
+========================================================= */
+
+.commercial-payment-submit {
+  width: 100%;
+  min-height: 52px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  padding:
+    10px
+    18px;
+
+  border: 0;
+  border-radius: 13px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--cp-red-dark),
+      var(--cp-red)
+    );
+
+  box-shadow:
+    0 14px 28px
+    rgba(
+      226,
+      55,
+      68,
+      0.25
+    );
+
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    transform
+      0.16s ease,
+    box-shadow
+      0.16s ease,
+    opacity
+      0.16s ease;
+}
+
+.commercial-payment-submit:hover {
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 18px 34px
+    rgba(
+      226,
+      55,
+      68,
+      0.32
+    );
+}
+
+.commercial-payment-submit:active {
+  transform:
+    translateY(0);
+}
+
+/* =========================================================
+   FOOTER NOTE
+========================================================= */
+
+.commercial-payment-footer-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  margin:
+    -5px
+    0
+    0;
+
+  color: #9f898c;
+
+  font-size: 0.6rem;
+}
+
+.commercial-payment-footer-note i {
+  color:
+    var(--cp-red);
+}
+
+/* =========================================================
+   LARGE TABLET
+========================================================= */
+
+@media (
+  max-width: 1100px
+) {
+  .commercial-payment-shell {
+    grid-template-columns:
+      minmax(300px, 36%)
+      minmax(0, 64%);
+  }
+
+  .commercial-payment-left {
+    padding:
+      36px
+      30px;
+  }
+
+  .commercial-payment-right {
+    padding:
+      35px
+      35px
+      55px;
+  }
+
+  .commercial-payment-intro h1 {
+    font-size: 3rem;
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (
+  max-width: 850px
+) {
+  .commercial-payment-shell {
+    display: block;
+  }
+
+  .commercial-payment-left {
+    min-height: auto;
+
+    padding:
+      30px
+      24px
+      35px;
+  }
+
+  .commercial-payment-left-content {
+    width: 100%;
+  }
+
+  .commercial-payment-intro {
+    margin-top: 45px;
+  }
+
+  .commercial-payment-intro h1 {
+    font-size: 2.5rem;
+  }
+
+  .commercial-payment-selected-card {
+    max-width: 480px;
+  }
+
+  .commercial-payment-benefits {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+
+    max-width: 600px;
+  }
+
+  .commercial-payment-security {
+    padding-top: 30px;
+  }
+
+  .commercial-payment-right {
+    min-height: auto;
+
+    padding:
+      35px
+      24px
+      55px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (
+  max-width: 620px
+) {
+  .commercial-payment-left {
+    padding:
+      24px
+      17px
+      30px;
+  }
+
+  .commercial-payment-brand-icon {
+    width: 46px;
+    height: 46px;
+
+    flex-basis: 46px;
+  }
+
+  .commercial-payment-intro {
+    margin-top: 36px;
+  }
+
+  .commercial-payment-intro h1 {
+    font-size: 2rem;
+  }
+
+  .commercial-payment-intro p {
+    font-size: 0.76rem;
+  }
+
+  .commercial-payment-benefits {
+    grid-template-columns: 1fr;
+  }
+
+  .commercial-payment-right {
+    padding:
+      28px
+      12px
+      45px;
+  }
+
+  .commercial-payment-top-row {
+    margin-bottom: 24px;
+  }
+
+  .commercial-payment-header h2 {
+    font-size: 1.45rem;
+  }
+
+  .commercial-payment-form {
+    padding:
+      19px
+      16px;
+
+    border-radius: 18px;
+  }
+
+  .commercial-payment-methods {
+    grid-template-columns: 1fr;
+  }
+
+  .commercial-payment-method {
+    justify-content: flex-start;
+
+    min-height: 50px;
+  }
+
+  .commercial-payment-upload {
+    align-items: flex-start;
+  }
+
+  .commercial-payment-browse {
+    display: none;
+  }
+}
+
+/* =========================================================
+   EXTRA SMALL
+========================================================= */
+
+@media (
+  max-width: 400px
+) {
+  .commercial-payment-intro h1 {
+    font-size: 1.8rem;
+  }
+
+  .commercial-payment-selected-card {
+    padding: 17px;
+  }
+
+  .commercial-payment-price {
+    font-size: 1.9rem;
+  }
+
+  .commercial-payment-form {
+    padding:
+      16px
+      13px;
+  }
+
+  .commercial-payment-plan-box {
+    gap: 10px;
+
+    padding: 12px;
+  }
+
+  .commercial-payment-plan-amount {
+    font-size: 0.9rem;
+  }
+}

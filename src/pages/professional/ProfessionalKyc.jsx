@@ -1,0 +1,5266 @@
+
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+import {
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
+import {
+  PROFESSIONAL_KYC_SECTIONS,
+  PROFESSIONAL_KYC_SECTION_TITLES,
+  getProfessionalKyc,
+  getProfessionalKycSection,
+  normalizeProfessionalKycError,
+  saveProfessionalKycDraft,
+  saveProfessionalKycAndNext,
+} from "../../services/professionalKyc.service";
+
+import "./ProfessionalKyc.css";
+import { asObject } from "../../utils/commonHelpers";
+
+/* =========================================================
+   FALLBACK SECTIONS
+========================================================= */
+
+const DEFAULT_SECTIONS = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+];
+
+const KYC_SECTIONS =
+  Array.isArray(
+    PROFESSIONAL_KYC_SECTIONS
+  ) &&
+  PROFESSIONAL_KYC_SECTIONS.length
+    ? PROFESSIONAL_KYC_SECTIONS
+    : DEFAULT_SECTIONS;
+
+/* =========================================================
+   PROFILE UPGRADE
+========================================================= */
+
+const PROFILE_UPGRADE_PLAN = {
+  planId:
+    "profile_upgrade",
+
+  planName:
+    "Profile Upgrade",
+
+  amount:
+    1500,
+
+  membershipType:
+    "Professional Member",
+};
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+const PROFESSIONAL_MEMBERSHIP_STORAGE_KEY =
+  "inmba_professional_membership_plan";
+
+const PROFESSIONAL_NEXT_ROUTE_STORAGE_KEY =
+  "inmba_professional_next_route";
+
+const PROFESSIONAL_KYC_COMPLETED_STORAGE_KEY =
+  "inmba_professional_kyc_completed";
+
+/* =========================================================
+   MAIN FLOW
+========================================================= */
+
+const MAIN_FLOW_STEPS = [
+  {
+    key: "basic",
+    label: "Basic KYC",
+    icon: "fa-solid fa-user",
+  },
+
+  {
+    key: "login",
+    label: "Login",
+    icon: "fa-solid fa-right-to-bracket",
+  },
+
+  {
+    key: "membership",
+    label: "Membership",
+    icon: "fa-solid fa-id-card",
+  },
+
+  {
+    key: "full-kyc",
+    label: "Full KYC",
+    icon: "fa-solid fa-file-shield",
+  },
+
+  {
+    key: "review",
+    label: "Review",
+    icon: "fa-solid fa-clipboard-check",
+  },
+
+  {
+    key: "payment",
+    label: "Payment",
+    icon: "fa-solid fa-credit-card",
+  },
+
+  {
+    key: "complete",
+    label: "Complete",
+    icon: "fa-solid fa-circle-check",
+  },
+];
+
+/* =========================================================
+   SECTION META
+========================================================= */
+
+const SECTION_META = {
+  A: {
+    shortTitle:
+      "Identity & KYC",
+
+    icon:
+      "fa-solid fa-address-card",
+
+    noteTitle:
+      "Identity Verification",
+
+    note:
+      "Your legal identity and government KYC documents are securely stored as private records.",
+  },
+
+  B: {
+    shortTitle:
+      "Contact & Address",
+
+    icon:
+      "fa-solid fa-location-dot",
+
+    noteTitle:
+      "Contact & Address",
+
+    note:
+      "Your detailed mobile, email and address information remains private. Only permitted area-level information may be public.",
+  },
+
+  C: {
+    shortTitle:
+      "Legal & Professional",
+
+    icon:
+      "fa-solid fa-scale-balanced",
+
+    noteTitle:
+      "Legal & Professional Compliance",
+
+    note:
+      "Enter professional licence, council registration, business PAN and GST information wherever applicable.",
+  },
+
+  D: {
+    shortTitle:
+      "Education",
+
+    icon:
+      "fa-solid fa-graduation-cap",
+
+    noteTitle:
+      "Education & Qualification",
+
+    note:
+      "Add your qualification, institution, certification and language information.",
+  },
+
+  E: {
+    shortTitle:
+      "Achievements",
+
+    icon:
+      "fa-solid fa-award",
+
+    noteTitle:
+      "Achievements & Certifications",
+
+    note:
+      "Add awards, publications, professional certifications, milestones and professional references.",
+  },
+
+  F: {
+    shortTitle:
+      "Experience",
+
+    icon:
+      "fa-solid fa-briefcase",
+
+    noteTitle:
+      "Work Experience & Portfolio",
+
+    note:
+      "Provide your professional experience, previous employers or clients, work portfolio and availability.",
+  },
+
+  G: {
+    shortTitle:
+      "Skills & Bio",
+
+    icon:
+      "fa-solid fa-user-tie",
+
+    noteTitle:
+      "Interest, Skills & Bio",
+
+    note:
+      "Build your professional public profile using your bio, skills, interests, profile photo and portfolio links.",
+  },
+
+  H: {
+    shortTitle:
+      "Bank & Financial",
+
+    icon:
+      "fa-solid fa-building-columns",
+
+    noteTitle:
+      "Financial & Bank Details",
+
+    note:
+      "Bank, payout, tax and nominee financial details are private and used only for authorised transactions.",
+  },
+
+  I: {
+    shortTitle:
+      "Network & Royalty",
+
+    icon:
+      "fa-solid fa-network-wired",
+
+    noteTitle:
+      "Network & Royalty",
+
+    note:
+      "Your referral, network and royalty information is generated by the INMBA system. You may select your preferred payout cycle.",
+  },
+
+  J: {
+    shortTitle:
+      "Emergency",
+
+    icon:
+      "fa-solid fa-phone-volume",
+
+    noteTitle:
+      "Emergency & Nominee",
+
+    note:
+      "Provide a trusted emergency contact for membership records.",
+  },
+};
+
+/* =========================================================
+   SECTION FIELD DEFINITIONS
+========================================================= */
+
+const SECTION_FIELDS = {
+  /* =======================================================
+     A. IDENTITY & KYC
+  ======================================================= */
+
+  A: [
+    {
+      name:
+        "first_name",
+
+      label:
+        "First Name",
+
+      required:
+        true,
+    },
+
+    {
+      name:
+        "last_name",
+
+      label:
+        "Last Name",
+
+      required:
+        true,
+    },
+
+    {
+      name:
+        "father_name",
+
+      label:
+        "Father's / Spouse Name",
+
+      required:
+        true,
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "dob",
+
+      label:
+        "Date of Birth",
+
+      type:
+        "date",
+
+      required:
+        true,
+    },
+
+    {
+      name:
+        "gender",
+
+      label:
+        "Gender",
+
+      type:
+        "select",
+
+      options: [
+        "Male",
+        "Female",
+        "Other",
+        "Prefer not to say",
+      ],
+    },
+
+    {
+      name:
+        "marital_status",
+
+      label:
+        "Marital Status",
+
+      type:
+        "select",
+
+      options: [
+        "Single",
+        "Married",
+        "Divorced",
+        "Widowed",
+      ],
+    },
+
+    {
+      name:
+        "nationality",
+
+      label:
+        "Nationality",
+
+      required:
+        true,
+    },
+
+    {
+      name:
+        "blood_group",
+
+      label:
+        "Blood Group",
+
+      type:
+        "select",
+
+      options: [
+        "A+",
+        "A-",
+        "B+",
+        "B-",
+        "AB+",
+        "AB-",
+        "O+",
+        "O-",
+      ],
+    },
+
+    {
+      name:
+        "aadhar",
+
+      label:
+        "Aadhaar Number",
+
+      required:
+        true,
+
+      maxLength:
+        12,
+
+      inputMode:
+        "numeric",
+    },
+
+    {
+      name:
+        "pan_number",
+
+      label:
+        "PAN Number",
+
+      required:
+        true,
+
+      maxLength:
+        10,
+
+      placeholder:
+        "ABCDE1234F",
+    },
+
+    {
+      name:
+        "passport_number",
+
+      label:
+        "Passport Number",
+    },
+
+    {
+      name:
+        "voter_id",
+
+      label:
+        "Voter ID",
+    },
+
+    {
+      name:
+        "driving_license",
+
+      label:
+        "Driving License",
+
+      full:
+        true,
+    },
+  ],
+
+  /* =======================================================
+     B. CONTACT & ADDRESS
+  ======================================================= */
+
+  B: [
+    {
+      name:
+        "phone",
+
+      label:
+        "Primary Mobile",
+
+      type:
+        "tel",
+
+      required:
+        true,
+
+      maxLength:
+        10,
+
+      inputMode:
+        "numeric",
+    },
+
+    {
+      name:
+        "secondary_mobile",
+
+      label:
+        "Secondary Mobile",
+
+      type:
+        "tel",
+
+      maxLength:
+        10,
+
+      inputMode:
+        "numeric",
+    },
+
+    {
+      name:
+        "email",
+
+      label:
+        "Primary Email",
+
+      type:
+        "email",
+
+      required:
+        true,
+    },
+
+    {
+      name:
+        "whatsapp_number",
+
+      label:
+        "WhatsApp Number",
+
+      type:
+        "tel",
+
+      maxLength:
+        10,
+
+      inputMode:
+        "numeric",
+    },
+
+    {
+      name:
+        "current_address",
+
+      label:
+        "Current Address",
+
+      type:
+        "textarea",
+
+      required:
+        true,
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "permanent_address",
+
+      label:
+        "Permanent Address",
+
+      type:
+        "textarea",
+
+      required:
+        true,
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "city",
+
+      label:
+        "City",
+    },
+
+    {
+      name:
+        "district",
+
+      label:
+        "District",
+
+      required:
+        true,
+    },
+
+    {
+      name:
+        "state",
+
+      label:
+        "State",
+
+      required:
+        true,
+    },
+
+    {
+      name:
+        "pincode",
+
+      label:
+        "Pincode",
+
+      required:
+        true,
+
+      maxLength:
+        6,
+
+      inputMode:
+        "numeric",
+    },
+
+    {
+      name:
+        "google_map_location",
+
+      label:
+        "Google Map Location Pin",
+
+      placeholder:
+        "Google Maps location link or pin",
+
+      full:
+        true,
+    },
+  ],
+
+  /* =======================================================
+     C. LEGAL & PROFESSIONAL COMPLIANCE
+  ======================================================= */
+
+  C: [
+    {
+      name:
+        "professional_license_number",
+
+      label:
+        "Professional License No.",
+
+      placeholder:
+        "Required if regulated profession",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "council_board_name",
+
+      label:
+        "Council / Board Name",
+
+      placeholder:
+        "Example: Bar Council / ICAI / Medical Council",
+    },
+
+    {
+      name:
+        "council_registration_number",
+
+      label:
+        "Council / Board Registration No.",
+    },
+
+    {
+      name:
+        "firm_pan_number",
+
+      label:
+        "Business / Firm PAN",
+
+      maxLength:
+        10,
+
+      placeholder:
+        "ABCDE1234F",
+    },
+
+    {
+      name:
+        "professional_gst_number",
+
+      label:
+        "GST Number",
+
+      maxLength:
+        15,
+
+      placeholder:
+        "If applicable",
+    },
+  ],
+
+  /* =======================================================
+     D. EDUCATION & QUALIFICATION
+  ======================================================= */
+
+  D: [
+    {
+      name:
+        "education",
+
+      label:
+        "Highest Qualification",
+
+      placeholder:
+        "Example: B.E, B.Tech, MBA, MBBS",
+    },
+
+    {
+      name:
+        "educational_qualification",
+
+      label:
+        "Qualification Details",
+
+      placeholder:
+        "Degree / specialization",
+    },
+
+    {
+      name:
+        "school_college_name",
+
+      label:
+        "School / College Name",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "degree_certificate_year",
+
+      label:
+        "Degree / Certificate Year",
+
+      placeholder:
+        "Example: 2025",
+    },
+
+    {
+      name:
+        "additional_certifications",
+
+      label:
+        "Additional Diploma / Certifications",
+
+      type:
+        "textarea",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "language_skills",
+
+      label:
+        "Language Skills",
+
+      type:
+        "textarea",
+
+      placeholder:
+        "Example: Tamil, English, Hindi",
+
+      full:
+        true,
+    },
+  ],
+
+  /* =======================================================
+     E. ACHIEVEMENTS & CERTIFICATIONS
+  ======================================================= */
+
+  E: [
+    {
+      name:
+        "awards_recognitions",
+
+      label:
+        "Awards & Recognitions",
+
+      type:
+        "textarea",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "publications",
+
+      label:
+        "Publications",
+
+      type:
+        "textarea",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "professional_certifications",
+
+      label:
+        "Professional Certifications",
+
+      type:
+        "textarea",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "key_milestones",
+
+      label:
+        "Key Milestones",
+
+      type:
+        "textarea",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "media_mentions",
+
+      label:
+        "Media Mentions / Press Coverage",
+
+      type:
+        "textarea",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "reference_letters",
+
+      label:
+        "Testimonials / Reference Letters",
+
+      type:
+        "textarea",
+
+      placeholder:
+        "Add reference details or links",
+
+      full:
+        true,
+    },
+  ],
+
+  /* =======================================================
+     F. WORK EXPERIENCE & PORTFOLIO
+  ======================================================= */
+
+  F: [
+    {
+      name:
+        "total_experience_years",
+
+      label:
+        "Total Years of Experience",
+
+      type:
+        "number",
+
+      required:
+        true,
+
+      step:
+        "0.1",
+
+      min:
+        "0",
+    },
+
+    {
+      name:
+        "availability_status",
+
+      label:
+        "Availability Status",
+
+      type:
+        "select",
+
+      options: [
+        "Available",
+        "Partially Available",
+        "Busy",
+        "Not Available",
+      ],
+    },
+
+    {
+      name:
+        "previous_employers_clients",
+
+      label:
+        "Previous Employers / Clients",
+
+      type:
+        "textarea",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "work_samples",
+
+      label:
+        "Portfolio Link / Work Samples",
+
+      type:
+        "textarea",
+
+      placeholder:
+        "Add portfolio links or work sample information",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "hourly_project_rate",
+
+      label:
+        "Hourly / Project Rate",
+
+      placeholder:
+        "Example: ₹1000/hour or project based",
+    },
+  ],
+
+  /* =======================================================
+     G. INTEREST, SKILLS & BIO
+  ======================================================= */
+
+  G: [
+    {
+      name:
+        "professional_bio",
+
+      label:
+        "Bio / About Me",
+
+      type:
+        "textarea",
+
+      placeholder:
+        "Write a short professional introduction",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "interest_categories",
+
+      label:
+        "Interest Categories",
+
+      type:
+        "textarea",
+
+      placeholder:
+        "Example: Technology, Business, Finance",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "skills",
+
+      label:
+        "Skills Tags",
+
+      type:
+        "textarea",
+
+      placeholder:
+        "Example: React, Accounting, Marketing",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "hobbies",
+
+      label:
+        "Hobbies",
+
+      type:
+        "textarea",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "preferred_industry",
+
+      label:
+        "Preferred Industry",
+    },
+
+    {
+      name:
+        "social_link",
+
+      label:
+        "Social Media Links",
+
+      type:
+        "url",
+
+      placeholder:
+        "https://",
+    },
+
+    {
+      name:
+        "portfolio_url",
+
+      label:
+        "Website / Portfolio Link",
+
+      type:
+        "url",
+
+      placeholder:
+        "https://",
+    },
+
+    {
+      name:
+        "intro_video",
+
+      label:
+        "Intro Video Link",
+
+      type:
+        "url",
+
+      placeholder:
+        "YouTube / video link",
+
+      full:
+        true,
+    },
+  ],
+
+  /* =======================================================
+     H. FINANCIAL & BANK
+  ======================================================= */
+
+  H: [
+    {
+      name:
+        "account_holder",
+
+      label:
+        "Account Holder Name",
+    },
+
+    {
+      name:
+        "bank_name",
+
+      label:
+        "Bank Name",
+    },
+
+    {
+      name:
+        "account_number",
+
+      label:
+        "Bank Account Number",
+
+      required:
+        true,
+    },
+
+    {
+      name:
+        "ifsc",
+
+      label:
+        "IFSC Code",
+
+      required:
+        true,
+
+      maxLength:
+        11,
+    },
+
+    {
+      name:
+        "branch",
+
+      label:
+        "Bank Branch",
+
+      required:
+        true,
+    },
+
+    {
+      name:
+        "upi_id",
+
+      label:
+        "UPI ID",
+
+      placeholder:
+        "example@upi",
+    },
+
+    {
+      name:
+        "professional_gst_number",
+
+      label:
+        "GST Number",
+
+      maxLength:
+        15,
+
+      placeholder:
+        "If applicable",
+    },
+
+    {
+      name:
+        "nomini_name",
+
+      label:
+        "Nominee Name",
+    },
+
+    {
+      name:
+        "nomini_relationship",
+
+      label:
+        "Nominee Relationship",
+    },
+
+    {
+      name:
+        "nomini_aadhar",
+
+      label:
+        "Nominee Aadhaar / ID",
+
+      maxLength:
+        12,
+    },
+  ],
+
+  /* =======================================================
+     I. NETWORK / ROYALTY
+  ======================================================= */
+
+  I: [
+    {
+      name:
+        "referral_id",
+
+      label:
+        "Sponsor / Referral ID",
+
+      readOnly:
+        true,
+    },
+
+    {
+      name:
+        "referred_by",
+
+      label:
+        "Referred By",
+
+      readOnly:
+        true,
+    },
+
+    {
+      name:
+        "network_level",
+
+      label:
+        "Network Level / Rank",
+
+      readOnly:
+        true,
+    },
+
+    {
+      name:
+        "team_size",
+
+      label:
+        "Team Size / Downline Count",
+
+      readOnly:
+        true,
+    },
+
+    {
+      name:
+        "direct_network",
+
+      label:
+        "Direct Network",
+
+      readOnly:
+        true,
+    },
+
+    {
+      name:
+        "indirect_network",
+
+      label:
+        "Indirect Network",
+
+      readOnly:
+        true,
+    },
+
+    {
+      name:
+        "royalty_slab_category",
+
+      label:
+        "Royalty Slab Category",
+
+      readOnly:
+        true,
+    },
+
+    {
+      name:
+        "preferred_payout_cycle",
+
+      label:
+        "Preferred Payout Cycle",
+
+      type:
+        "select",
+
+      options: [
+        "Monthly",
+        "Quarterly",
+        "Half-Yearly",
+        "Yearly",
+      ],
+
+      full:
+        true,
+    },
+  ],
+
+  /* =======================================================
+     J. EMERGENCY & NOMINEE
+  ======================================================= */
+
+  J: [
+    {
+      name:
+        "emergency_contact_name",
+
+      label:
+        "Emergency Contact Name",
+
+      full:
+        true,
+    },
+
+    {
+      name:
+        "emergency_contact_number",
+
+      label:
+        "Emergency Contact Number",
+
+      type:
+        "tel",
+
+      maxLength:
+        10,
+
+      inputMode:
+        "numeric",
+    },
+
+    {
+      name:
+        "emergency_relationship",
+
+      label:
+        "Relationship",
+    },
+  ],
+};
+
+/* =========================================================
+   FILE DEFINITIONS
+========================================================= */
+
+const SECTION_UPLOADS = {
+  A: [
+    {
+      name:
+        "aadhar_front",
+
+      label:
+        "Aadhaar Front",
+
+      required:
+        true,
+    },
+
+    {
+      name:
+        "aadhar_back",
+
+      label:
+        "Aadhaar Back",
+    },
+
+    {
+      name:
+        "pan_front",
+
+      label:
+        "PAN Card Scan",
+
+      required:
+        true,
+    },
+  ],
+
+  B: [
+    {
+      name:
+        "address_proof",
+
+      label:
+        "Address Proof",
+
+      required:
+        true,
+    },
+  ],
+
+  C: [
+    {
+      name:
+        "professional_license_document",
+
+      label:
+        "Professional License Document",
+    },
+
+    {
+      name:
+        "council_registration_document",
+
+      label:
+        "Council / Board Registration Document",
+    },
+
+    {
+      name:
+        "professional_indemnity_insurance",
+
+      label:
+        "Professional Indemnity Insurance",
+    },
+
+    {
+      name:
+        "firm_pan_document",
+
+      label:
+        "Business / Firm PAN Document",
+    },
+
+    {
+      name:
+        "professional_gst_document",
+
+      label:
+        "GST Supporting Document",
+    },
+  ],
+
+  D: [
+    {
+      name:
+        "education_certificate",
+
+      label:
+        "Degree / Certificate Scan",
+    },
+  ],
+
+  E: [],
+
+  F: [
+    {
+      name:
+        "resume_cv",
+
+      label:
+        "Resume / CV Upload",
+    },
+  ],
+
+  G: [
+    {
+      name:
+        "profile_pic",
+
+      label:
+        "Profile Photo HD",
+
+      imageOnly:
+        true,
+    },
+
+    {
+      name:
+        "cover_photo",
+
+      label:
+        "Cover Photo / Banner",
+
+      imageOnly:
+        true,
+    },
+
+    {
+      name:
+        "gallery_photos",
+
+      label:
+        "Gallery Photo",
+
+      imageOnly:
+        true,
+    },
+  ],
+
+  H: [
+    {
+      name:
+        "bank_proof",
+
+      label:
+        "Passbook / Cancelled Cheque Scan",
+
+      required:
+        true,
+    },
+
+    {
+      name:
+        "income_tax_declaration",
+
+      label:
+        "Income Tax / 15G-15H Document",
+    },
+
+    {
+      name:
+        "nomini_id_document",
+
+      label:
+        "Nominee ID Document",
+    },
+  ],
+
+  I: [],
+
+  J: [],
+};
+
+/* =========================================================
+   FIELD REQUIREMENT DISPLAY
+
+   IMPORTANT:
+   - This is UI-only metadata.
+   - Existing field names, order, types, options and validation
+     are NOT changed.
+   - `required: true` remains the source of truth for validation.
+========================================================= */
+
+const PROFESSIONAL_KYC_CONDITIONAL_LABELS = {
+  passport_number: "Optional",
+  voter_id: "Optional",
+  driving_license: "Optional",
+  professional_license_number: "If Applicable",
+  professional_license_document: "If Applicable",
+  council_board_name: "If Applicable",
+  council_registration_number: "If Applicable",
+  council_registration_document: "If Applicable",
+  professional_indemnity_insurance: "Optional",
+  firm_pan_number: "If Freelance Firm",
+  firm_pan_document: "If Freelance Firm",
+  professional_gst_number: "If Applicable",
+  professional_gst_document: "If Applicable",
+  hourly_project_rate: "Optional",
+  intro_video: "Optional",
+};
+
+const getProfessionalKycRequirementMeta = (
+  item = {}
+) => {
+  if (item.readOnly) {
+    return {
+      label: "System Generated",
+      tone: "system",
+    };
+  }
+
+  if (item.required) {
+    return {
+      label: "Required",
+      tone: "required",
+    };
+  }
+
+  const conditionalLabel =
+    PROFESSIONAL_KYC_CONDITIONAL_LABELS[
+      item.name
+    ];
+
+  if (conditionalLabel) {
+    return {
+      label: conditionalLabel,
+      tone:
+        conditionalLabel === "Optional"
+          ? "optional"
+          : "conditional",
+    };
+  }
+
+  return {
+    label: "Optional",
+    tone: "optional",
+  };
+};
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+const toText = (
+  value
+) => {
+  if (
+    value === null ||
+    typeof value ===
+      "undefined"
+  ) {
+    return "";
+  }
+
+  return String(
+    value
+  );
+};
+
+const formatDateForInput = (
+  value
+) => {
+  const text =
+    toText(
+      value
+    ).trim();
+
+  if (!text) {
+    return "";
+  }
+
+  const matched =
+    text.match(
+      /^(\d{4}-\d{2}-\d{2})/
+    );
+
+  return (
+    matched?.[1] ||
+    ""
+  );
+};
+
+const getErrorText = (
+  error,
+  fallback
+) => {
+  try {
+    const normalized =
+      normalizeProfessionalKycError(
+        error,
+        fallback
+      );
+
+    if (
+      typeof normalized ===
+      "string"
+    ) {
+      return normalized;
+    }
+
+    if (
+      normalized instanceof
+      Error
+    ) {
+      return (
+        normalized.message ||
+        fallback
+      );
+    }
+
+    if (
+      normalized &&
+      typeof normalized.message ===
+        "string"
+    ) {
+      return (
+        normalized.message ||
+        fallback
+      );
+    }
+  } catch {
+    // Use fallback below.
+  }
+
+  return (
+    error?.response?.data
+      ?.message ||
+    error?.response?.data
+      ?.error ||
+    error?.message ||
+    fallback
+  );
+};
+
+const extractSectionValues = (
+  response
+) => {
+  const source =
+    asObject(
+      response
+    );
+
+  const data =
+    asObject(
+      source.data
+    );
+
+  const section =
+    asObject(
+      source.section ||
+        data.section
+    );
+
+  const values =
+    asObject(
+      section.values ||
+        source.values ||
+        data.values ||
+        section.data ||
+        data.data
+    );
+
+  if (
+    Object.keys(
+      values
+    ).length
+  ) {
+    return values;
+  }
+
+  return {
+    ...data,
+    ...section,
+  };
+};
+
+const getFullKycData = (
+  response
+) => {
+  const source =
+    asObject(
+      response
+    );
+
+  const data =
+    asObject(
+      source.data
+    );
+
+  return {
+    ...source,
+    ...data,
+  };
+};
+
+const getMemberFromResponse = (
+  response
+) => {
+  const source =
+    asObject(
+      response
+    );
+
+  const data =
+    asObject(
+      source.data
+    );
+
+  return (
+    source.member ||
+    data.member ||
+    source.kyc ||
+    data.kyc ||
+    data.user ||
+    source.user ||
+    data
+  );
+};
+
+const getFileName = (
+  value
+) => {
+  const text =
+    toText(
+      value
+    ).trim();
+
+  if (!text) {
+    return "";
+  }
+
+  return (
+    text
+      .replace(
+        /\\/g,
+        "/"
+      )
+      .split(
+        "/"
+      )
+      .filter(
+        Boolean
+      )
+      .pop() ||
+    text
+  );
+};
+
+const hasExistingFile = (
+  value
+) => {
+  return Boolean(
+    toText(
+      value
+    ).trim()
+  );
+};
+
+/* =========================================================
+   EMPTY STATE BUILDERS
+========================================================= */
+
+const buildEmptyForms =
+  () => {
+    const result = {};
+
+    KYC_SECTIONS.forEach(
+      (
+        section
+      ) => {
+        result[
+          section
+        ] = {};
+
+        (
+          SECTION_FIELDS[
+            section
+          ] || []
+        ).forEach(
+          (
+            field
+          ) => {
+            result[
+              section
+            ][
+              field.name
+            ] = "";
+          }
+        );
+      }
+    );
+
+    return result;
+  };
+
+const buildEmptyFiles =
+  () => {
+    const result = {};
+
+    KYC_SECTIONS.forEach(
+      (
+        section
+      ) => {
+        result[
+          section
+        ] = {};
+
+        (
+          SECTION_UPLOADS[
+            section
+          ] || []
+        ).forEach(
+          (
+            upload
+          ) => {
+            result[
+              section
+            ][
+              upload.name
+            ] = null;
+          }
+        );
+      }
+    );
+
+    return result;
+  };
+
+const buildEmptyExistingFiles =
+  () => {
+    const result = {};
+
+    KYC_SECTIONS.forEach(
+      (
+        section
+      ) => {
+        result[
+          section
+        ] = {};
+
+        (
+          SECTION_UPLOADS[
+            section
+          ] || []
+        ).forEach(
+          (
+            upload
+          ) => {
+            result[
+              section
+            ][
+              upload.name
+            ] = "";
+          }
+        );
+      }
+    );
+
+    return result;
+  };
+
+/* =========================================================
+   VALIDATION HELPERS
+========================================================= */
+
+const isValidEmail = (
+  value
+) => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+    toText(
+      value
+    ).trim()
+  );
+};
+
+const isValidMobile = (
+  value
+) => {
+  return /^\d{10}$/.test(
+    toText(
+      value
+    ).replace(
+      /\D/g,
+      ""
+    )
+  );
+};
+
+const isValidPincode = (
+  value
+) => {
+  return /^\d{6}$/.test(
+    toText(
+      value
+    ).replace(
+      /\D/g,
+      ""
+    )
+  );
+};
+
+const isValidPan = (
+  value
+) => {
+  return /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(
+    toText(
+      value
+    )
+      .trim()
+      .toUpperCase()
+  );
+};
+
+const isValidGst = (
+  value
+) => {
+  return /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(
+    toText(
+      value
+    )
+      .trim()
+      .toUpperCase()
+  );
+};
+
+const isValidIfsc = (
+  value
+) => {
+  return /^[A-Z]{4}0[A-Z0-9]{6}$/.test(
+    toText(
+      value
+    )
+      .trim()
+      .toUpperCase()
+  );
+};
+
+/* =========================================================
+   FILE VALIDATION
+========================================================= */
+
+const validateFile = (
+  file,
+  imageOnly = false
+) => {
+  if (!file) {
+    return "";
+  }
+
+  const imageTypes = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+  ];
+
+  const documentTypes = [
+    ...imageTypes,
+    "application/pdf",
+  ];
+
+  const allowedTypes =
+    imageOnly
+      ? imageTypes
+      : documentTypes;
+
+  if (
+    file.type &&
+    !allowedTypes.includes(
+      file.type
+    )
+  ) {
+    return imageOnly
+      ? "Only JPG and PNG images are allowed."
+      : "Only PDF, JPG and PNG files are allowed.";
+  }
+
+  const maxSize =
+    5 *
+    1024 *
+    1024;
+
+  if (
+    file.size >
+    maxSize
+  ) {
+    return "File size must be below 5 MB.";
+  }
+
+  return "";
+};
+
+/* =========================================================
+   MAIN COMPONENT
+========================================================= */
+
+export default function ProfessionalKyc() {
+  const navigate =
+    useNavigate();
+
+  const {
+    token,
+  } =
+    useParams();
+
+  /* =======================================================
+     PAGE STATE
+  ======================================================= */
+
+  const [
+    loading,
+    setLoading,
+  ] =
+    useState(
+      true
+    );
+
+  const [
+    sectionLoading,
+    setSectionLoading,
+  ] =
+    useState(
+      false
+    );
+
+  const [
+    pageError,
+    setPageError,
+  ] =
+    useState(
+      ""
+    );
+
+  const [
+    member,
+    setMember,
+  ] =
+    useState(
+      {}
+    );
+
+  const [
+    professionalKyc,
+    setProfessionalKyc,
+  ] =
+    useState(
+      {}
+    );
+
+  const [
+    activeSection,
+    setActiveSection,
+  ] =
+    useState(
+      "A"
+    );
+
+  const [
+    forms,
+    setForms,
+  ] =
+    useState(
+      buildEmptyForms
+    );
+
+  const [
+    files,
+    setFiles,
+  ] =
+    useState(
+      buildEmptyFiles
+    );
+
+  const [
+    existingFiles,
+    setExistingFiles,
+  ] =
+    useState(
+      buildEmptyExistingFiles
+    );
+
+  const [
+    errors,
+    setErrors,
+  ] =
+    useState(
+      {}
+    );
+
+  const [
+    successMessages,
+    setSuccessMessages,
+  ] =
+    useState(
+      {}
+    );
+
+  const [
+    savingSections,
+    setSavingSections,
+  ] =
+    useState(
+      {}
+    );
+
+  /* =======================================================
+     HYDRATE SECTION
+  ======================================================= */
+
+  const hydrateSection =
+    useCallback(
+      (
+        section,
+        response
+      ) => {
+        const values =
+          extractSectionValues(
+            response
+          );
+
+        const nextValues =
+          {};
+
+        (
+          SECTION_FIELDS[
+            section
+          ] || []
+        ).forEach(
+          (
+            field
+          ) => {
+            if (
+              field.name ===
+              "team_size"
+            ) {
+              const direct =
+                Number(
+                  values
+                    .direct_network ||
+                    0
+                );
+
+              const indirect =
+                Number(
+                  values
+                    .indirect_network ||
+                    0
+                );
+
+              nextValues[
+                field.name
+              ] =
+                String(
+                  direct +
+                    indirect
+                );
+
+              return;
+            }
+
+            if (
+              field.type ===
+              "date"
+            ) {
+              nextValues[
+                field.name
+              ] =
+                formatDateForInput(
+                  values[
+                    field.name
+                  ]
+                );
+
+              return;
+            }
+
+            nextValues[
+              field.name
+            ] =
+              toText(
+                values[
+                  field.name
+                ]
+              );
+          }
+        );
+
+        setForms(
+          (
+            previous
+          ) => ({
+            ...previous,
+
+            [section]: {
+              ...previous[
+                section
+              ],
+
+              ...nextValues,
+            },
+          })
+        );
+
+        const nextExisting =
+          {};
+
+        (
+          SECTION_UPLOADS[
+            section
+          ] || []
+        ).forEach(
+          (
+            upload
+          ) => {
+            nextExisting[
+              upload.name
+            ] =
+              toText(
+                values[
+                  upload.name
+                ]
+              );
+          }
+        );
+
+        setExistingFiles(
+          (
+            previous
+          ) => ({
+            ...previous,
+
+            [section]: {
+              ...previous[
+                section
+              ],
+
+              ...nextExisting,
+            },
+          })
+        );
+
+        setFiles(
+          (
+            previous
+          ) => ({
+            ...previous,
+
+            [section]: {
+              ...buildEmptyFiles()[
+                section
+              ],
+            },
+          })
+        );
+      },
+      []
+    );
+
+  /* =======================================================
+     LOAD ONE SECTION
+  ======================================================= */
+
+  const loadSection =
+    useCallback(
+      async (
+        section
+      ) => {
+        setSectionLoading(
+          true
+        );
+
+        setErrors(
+          (
+            previous
+          ) => ({
+            ...previous,
+
+            [section]: {},
+          })
+        );
+
+        try {
+          const response =
+            await getProfessionalKycSection(
+              section,{
+                token,
+              }
+              
+            );
+
+          hydrateSection(
+            section,
+            response
+          );
+        } catch (
+          error
+        ) {
+          setErrors(
+            (
+              previous
+            ) => ({
+              ...previous,
+
+              [section]: {
+                general:
+                  getErrorText(
+                    error,
+                    `Unable to load Section ${section}.`
+                  ),
+              },
+            })
+          );
+        } finally {
+          setSectionLoading(
+            false
+          );
+        }
+      },
+      [
+        token,
+        hydrateSection,
+      ]
+    );
+
+  /* =======================================================
+     LOAD FULL PROFESSIONAL KYC
+  ======================================================= */
+
+  const loadProfessionalKyc =
+    useCallback(
+      async () => {
+        setLoading(
+          true
+        );
+
+        setPageError(
+          ""
+        );
+
+        try {
+          const response =
+            await getProfessionalKyc({token,}
+              
+            );
+
+          setProfessionalKyc(
+            response ||
+              {}
+          );
+
+          setMember(
+            getMemberFromResponse(
+              response
+            )
+          );
+
+          const fullData =
+            getFullKycData(
+              response
+            );
+
+          const progressData =
+            asObject(
+              response
+                ?.progress ||
+                response
+                  ?.data
+                  ?.progress
+            );
+
+          const currentStep =
+            toText(
+              progressData
+                .currentStep ||
+                progressData
+                  .current_step ||
+                fullData
+                  .professional_kyc_current_step ||
+                fullData
+                  .currentStep ||
+                "A"
+            )
+              .trim()
+              .toUpperCase();
+
+          const section =
+            KYC_SECTIONS.includes(
+              currentStep
+            )
+              ? currentStep
+              : "A";
+
+          setActiveSection(
+            section
+          );
+
+          const sectionResponse =
+            await getProfessionalKycSection(
+              section,
+              {
+              token,
+              }
+            );
+
+          hydrateSection(
+            section,
+            sectionResponse
+          );
+        } catch (
+          error
+        ) {
+          setPageError(
+            getErrorText(
+              error,
+              "Unable to load Professional KYC."
+            )
+          );
+        } finally {
+          setLoading(
+            false
+          );
+        }
+      },
+      [
+        token,
+        hydrateSection,
+      ]
+    );
+
+  useEffect(
+    () => {
+      loadProfessionalKyc();
+    },
+    [
+      loadProfessionalKyc,
+    ]
+  );
+
+  /* =======================================================
+     STATUS
+  ======================================================= */
+
+  const fullKycData =
+    useMemo(
+      () =>
+        getFullKycData(
+          professionalKyc
+        ),
+      [
+        professionalKyc,
+      ]
+    );
+
+  const kycStatus =
+    toText(
+      fullKycData
+        .professional_kyc_status ||
+        fullKycData
+          .status ||
+        "draft"
+    )
+      .trim()
+      .toLowerCase();
+
+  const editable =
+    ![
+      "submitted",
+      "under_review",
+      "approved",
+      "completed",
+    ].includes(
+      kycStatus
+    );
+
+  /* =======================================================
+     COMPLETED SECTIONS
+  ======================================================= */
+
+  const completedSectionSet =
+    useMemo(
+      () => {
+        const completed =
+          new Set();
+
+        const progress =
+          asObject(
+            professionalKyc
+              ?.progress ||
+              professionalKyc
+                ?.data
+                ?.progress
+          );
+
+        const progressSections =
+          asObject(
+            progress.sections
+          );
+
+        KYC_SECTIONS.forEach(
+          (
+            section
+          ) => {
+            const lower =
+              section.toLowerCase();
+
+            const field =
+              `professional_section_${lower}_completed`;
+
+            const value =
+              progressSections[
+                section
+              ] ??
+              progressSections[
+                lower
+              ] ??
+              progress[
+                field
+              ] ??
+              fullKycData[
+                field
+              ];
+
+            if (
+              value === true ||
+              value === 1 ||
+              value === "1"
+            ) {
+              completed.add(
+                section
+              );
+            }
+          }
+        );
+
+        return completed;
+      },
+      [
+        professionalKyc,
+        fullKycData,
+      ]
+    );
+
+  const progressPercent =
+    Math.round(
+      (
+        completedSectionSet.size /
+        KYC_SECTIONS.length
+      ) *
+        100
+    );
+
+  /* =======================================================
+     INPUT CHANGE
+  ======================================================= */
+
+  const handleInputChange =
+    (
+      section,
+      event
+    ) => {
+      const {
+        name,
+        value,
+      } =
+        event.target;
+
+      let nextValue =
+        value;
+
+      if (
+        [
+          "phone",
+          "secondary_mobile",
+          "whatsapp_number",
+          "emergency_contact_number",
+        ].includes(
+          name
+        )
+      ) {
+        nextValue =
+          value
+            .replace(
+              /\D/g,
+              ""
+            )
+            .slice(
+              0,
+              10
+            );
+      }
+
+      if (
+        [
+          "aadhar",
+          "nomini_aadhar",
+        ].includes(
+          name
+        )
+      ) {
+        nextValue =
+          value
+            .replace(
+              /\D/g,
+              ""
+            )
+            .slice(
+              0,
+              12
+            );
+      }
+
+      if (
+        name ===
+        "pincode"
+      ) {
+        nextValue =
+          value
+            .replace(
+              /\D/g,
+              ""
+            )
+            .slice(
+              0,
+              6
+            );
+      }
+
+      if (
+        [
+          "pan_number",
+          "firm_pan_number",
+        ].includes(
+          name
+        )
+      ) {
+        nextValue =
+          value
+            .toUpperCase()
+            .replace(
+              /[^A-Z0-9]/g,
+              ""
+            )
+            .slice(
+              0,
+              10
+            );
+      }
+
+      if (
+        name ===
+        "professional_gst_number"
+      ) {
+        nextValue =
+          value
+            .toUpperCase()
+            .replace(
+              /[^A-Z0-9]/g,
+              ""
+            )
+            .slice(
+              0,
+              15
+            );
+      }
+
+      if (
+        name ===
+        "ifsc"
+      ) {
+        nextValue =
+          value
+            .toUpperCase()
+            .replace(
+              /[^A-Z0-9]/g,
+              ""
+            )
+            .slice(
+              0,
+              11
+            );
+      }
+
+      setForms(
+        (
+          previous
+        ) => ({
+          ...previous,
+
+          [section]: {
+            ...previous[
+              section
+            ],
+
+            [name]:
+              nextValue,
+          },
+        })
+      );
+
+      setErrors(
+        (
+          previous
+        ) => ({
+          ...previous,
+
+          [section]: {
+            ...previous[
+              section
+            ],
+
+            [name]:
+              "",
+          },
+        })
+      );
+
+      setSuccessMessages(
+        (
+          previous
+        ) => ({
+          ...previous,
+
+          [section]:
+            "",
+        })
+      );
+    };
+
+  /* =======================================================
+     FILE CHANGE
+  ======================================================= */
+
+  const handleFileChange =
+    (
+      section,
+      upload,
+      event
+    ) => {
+      const file =
+        event.target
+          .files?.[0] ||
+        null;
+
+      const fileError =
+        validateFile(
+          file,
+          Boolean(
+            upload.imageOnly
+          )
+        );
+
+      if (
+        fileError
+      ) {
+        setErrors(
+          (
+            previous
+          ) => ({
+            ...previous,
+
+            [section]: {
+              ...previous[
+                section
+              ],
+
+              [upload.name]:
+                fileError,
+            },
+          })
+        );
+
+        event.target.value =
+          "";
+
+        return;
+      }
+
+      setFiles(
+        (
+          previous
+        ) => ({
+          ...previous,
+
+          [section]: {
+            ...previous[
+              section
+            ],
+
+            [upload.name]:
+              file,
+          },
+        })
+      );
+
+      setErrors(
+        (
+          previous
+        ) => ({
+          ...previous,
+
+          [section]: {
+            ...previous[
+              section
+            ],
+
+            [upload.name]:
+              "",
+          },
+        })
+      );
+
+      setSuccessMessages(
+        (
+          previous
+        ) => ({
+          ...previous,
+
+          [section]:
+            "",
+        })
+      );
+    };
+
+  /* =======================================================
+     REMOVE FILE
+  ======================================================= */
+
+  const removeFile =
+    (
+      section,
+      field
+    ) => {
+      setFiles(
+        (
+          previous
+        ) => ({
+          ...previous,
+
+          [section]: {
+            ...previous[
+              section
+            ],
+
+            [field]:
+              null,
+          },
+        })
+      );
+
+      setExistingFiles(
+        (
+          previous
+        ) => ({
+          ...previous,
+
+          [section]: {
+            ...previous[
+              section
+            ],
+
+            [field]:
+              "",
+          },
+        })
+      );
+
+      setErrors(
+        (
+          previous
+        ) => ({
+          ...previous,
+
+          [section]: {
+            ...previous[
+              section
+            ],
+
+            [field]:
+              "",
+          },
+        })
+      );
+    };
+
+  /* =======================================================
+     SECTION VALIDATION
+  ======================================================= */
+
+  const validateSection =
+    (
+      section,
+      requireRequired
+    ) => {
+      const nextErrors =
+        {};
+
+      const currentForm =
+        forms[
+          section
+        ] || {};
+
+      const currentFiles =
+        files[
+          section
+        ] || {};
+
+      const currentExisting =
+        existingFiles[
+          section
+        ] || {};
+
+      (
+        SECTION_FIELDS[
+          section
+        ] || []
+      ).forEach(
+        (
+          field
+        ) => {
+          if (
+            field.readOnly
+          ) {
+            return;
+          }
+
+          const value =
+            toText(
+              currentForm[
+                field.name
+              ]
+            ).trim();
+
+          if (
+            requireRequired &&
+            field.required &&
+            !value
+          ) {
+            nextErrors[
+              field.name
+            ] =
+              `${field.label} is required.`;
+
+            return;
+          }
+
+          if (
+            !value
+          ) {
+            return;
+          }
+
+          if (
+            field.name ===
+              "email" &&
+            !isValidEmail(
+              value
+            )
+          ) {
+            nextErrors[
+              field.name
+            ] =
+              "Enter a valid email address.";
+          }
+
+          if (
+            [
+              "phone",
+              "secondary_mobile",
+              "whatsapp_number",
+              "emergency_contact_number",
+            ].includes(
+              field.name
+            ) &&
+            !isValidMobile(
+              value
+            )
+          ) {
+            nextErrors[
+              field.name
+            ] =
+              "Enter a valid 10-digit mobile number.";
+          }
+
+          if (
+            field.name ===
+              "pincode" &&
+            !isValidPincode(
+              value
+            )
+          ) {
+            nextErrors[
+              field.name
+            ] =
+              "Enter a valid 6-digit pincode.";
+          }
+
+          if (
+            field.name ===
+              "aadhar" &&
+            !/^\d{12}$/.test(
+              value
+            )
+          ) {
+            nextErrors[
+              field.name
+            ] =
+              "Enter a valid 12-digit Aadhaar number.";
+          }
+
+          if (
+            field.name ===
+              "nomini_aadhar" &&
+            value &&
+            !/^\d{12}$/.test(
+              value
+            )
+          ) {
+            nextErrors[
+              field.name
+            ] =
+              "Enter a valid 12-digit Aadhaar / ID number.";
+          }
+
+          if (
+            [
+              "pan_number",
+              "firm_pan_number",
+            ].includes(
+              field.name
+            ) &&
+            !isValidPan(
+              value
+            )
+          ) {
+            nextErrors[
+              field.name
+            ] =
+              "Enter a valid PAN number.";
+          }
+
+          if (
+            field.name ===
+              "professional_gst_number" &&
+            value &&
+            !isValidGst(
+              value
+            )
+          ) {
+            nextErrors[
+              field.name
+            ] =
+              "Enter a valid GST number.";
+          }
+
+          if (
+            field.name ===
+              "ifsc" &&
+            !isValidIfsc(
+              value
+            )
+          ) {
+            nextErrors[
+              field.name
+            ] =
+              "Enter a valid IFSC code.";
+          }
+
+          if (
+            field.name ===
+              "total_experience_years" &&
+            Number(
+              value
+            ) <
+              0
+          ) {
+            nextErrors[
+              field.name
+            ] =
+              "Experience cannot be negative.";
+          }
+        }
+      );
+
+      (
+        SECTION_UPLOADS[
+          section
+        ] || []
+      ).forEach(
+        (
+          upload
+        ) => {
+          if (
+            !requireRequired ||
+            !upload.required
+          ) {
+            return;
+          }
+
+          const available =
+            Boolean(
+              currentFiles[
+                upload.name
+              ] ||
+                hasExistingFile(
+                  currentExisting[
+                    upload.name
+                  ]
+                )
+            );
+
+          if (
+            !available
+          ) {
+            nextErrors[
+              upload.name
+            ] =
+              `${upload.label} is required.`;
+          }
+        }
+      );
+
+      /* ===================================================
+         SECTION C CONDITIONAL VALIDATION
+      =================================================== */
+
+      if (
+        section ===
+        "C"
+      ) {
+        const councilName =
+          toText(
+            currentForm
+              .council_board_name
+          ).trim();
+
+        const councilNumber =
+          toText(
+            currentForm
+              .council_registration_number
+          ).trim();
+
+        if (
+          councilName &&
+          !councilNumber
+        ) {
+          nextErrors
+            .council_registration_number =
+            "Council / Board Registration Number is required.";
+        }
+
+        if (
+          councilNumber &&
+          !councilName
+        ) {
+          nextErrors
+            .council_board_name =
+            "Council / Board Name is required.";
+        }
+
+        if (
+          currentFiles
+            .professional_license_document &&
+          !toText(
+            currentForm
+              .professional_license_number
+          ).trim()
+        ) {
+          nextErrors
+            .professional_license_number =
+            "Professional License Number is required for the uploaded document.";
+        }
+      }
+
+      /* ===================================================
+         SECTION J RECOMMENDED GROUP VALIDATION
+      =================================================== */
+
+      if (
+        section ===
+        "J"
+      ) {
+        const name =
+          toText(
+            currentForm
+              .emergency_contact_name
+          ).trim();
+
+        const number =
+          toText(
+            currentForm
+              .emergency_contact_number
+          ).trim();
+
+        const relationship =
+          toText(
+            currentForm
+              .emergency_relationship
+          ).trim();
+
+        const anyEntered =
+          Boolean(
+            name ||
+              number ||
+              relationship
+          );
+
+        if (
+          anyEntered
+        ) {
+          if (
+            !name
+          ) {
+            nextErrors
+              .emergency_contact_name =
+              "Emergency Contact Name is required.";
+          }
+
+          if (
+            !number
+          ) {
+            nextErrors
+              .emergency_contact_number =
+              "Emergency Contact Number is required.";
+          }
+
+          if (
+            !relationship
+          ) {
+            nextErrors
+              .emergency_relationship =
+              "Relationship is required.";
+          }
+        }
+      }
+
+      setErrors(
+        (
+          previous
+        ) => ({
+          ...previous,
+
+          [section]:
+            nextErrors,
+        })
+      );
+
+      return (
+        Object.keys(
+          nextErrors
+        ).length ===
+        0
+      );
+    };
+
+  /* =======================================================
+     BUILD SECTION PAYLOAD
+  ======================================================= */
+
+  const buildPayload =
+    (
+      section
+    ) => {
+      const payload =
+        {};
+
+      (
+        SECTION_FIELDS[
+          section
+        ] || []
+      ).forEach(
+        (
+          field
+        ) => {
+          if (
+            field.readOnly ||
+            field.name ===
+              "team_size"
+          ) {
+            return;
+          }
+
+          let value =
+            forms[
+              section
+            ]?.[
+              field.name
+            ] ??
+            "";
+
+          if (
+            [
+              "pan_number",
+              "firm_pan_number",
+              "professional_gst_number",
+              "ifsc",
+            ].includes(
+              field.name
+            )
+          ) {
+            value =
+              toText(
+                value
+              )
+                .trim()
+                .toUpperCase();
+          }
+
+          payload[
+            field.name
+          ] =
+            value;
+        }
+      );
+
+      return payload;
+    };
+
+  /* =======================================================
+     BUILD SECTION FILES
+  ======================================================= */
+
+  const buildFiles =
+    (
+      section
+    ) => {
+      const selected =
+        {};
+
+      (
+        SECTION_UPLOADS[
+          section
+        ] || []
+      ).forEach(
+        (
+          upload
+        ) => {
+          const file =
+            files[
+              section
+            ]?.[
+              upload.name
+            ];
+
+          if (
+            file
+          ) {
+            selected[
+              upload.name
+            ] =
+              file;
+          }
+        }
+      );
+
+      return selected;
+    };
+
+  /* =======================================================
+     SAVE DRAFT
+  ======================================================= */
+
+  const handleSaveDraft =
+    async () => {
+      const section =
+        activeSection;
+
+      if (
+        !validateSection(
+          section,
+          false
+        )
+      ) {
+        return;
+      }
+
+      setSavingSections(
+        (
+          previous
+        ) => ({
+          ...previous,
+
+          [section]:
+            true,
+        })
+      );
+
+      setSuccessMessages(
+        (
+          previous
+        ) => ({
+          ...previous,
+
+          [section]:
+            "",
+        })
+      );
+
+      try {
+        await saveProfessionalKycDraft(
+  section,
+  buildPayload(
+    section
+  ),
+  {
+    files:
+      buildFiles(
+        section
+      ),
+
+    token,
+  }
+);
+
+        setSuccessMessages(
+          (
+            previous
+          ) => ({
+            ...previous,
+
+            [section]:
+              `Section ${section} draft saved successfully.`,
+          })
+        );
+
+        const response =
+          await getProfessionalKycSection(
+            section,{
+            token,
+            }
+          );
+
+        hydrateSection(
+          section,
+          response
+        );
+      } catch (
+        error
+      ) {
+        setErrors(
+          (
+            previous
+          ) => ({
+            ...previous,
+
+            [section]: {
+              ...previous[
+                section
+              ],
+
+              general:
+                getErrorText(
+                  error,
+                  `Unable to save Section ${section}.`
+                ),
+            },
+          })
+        );
+      } finally {
+        setSavingSections(
+          (
+            previous
+          ) => ({
+            ...previous,
+
+            [section]:
+              false,
+          })
+        );
+      }
+    };
+
+  /* =======================================================
+     MOVE TO PROFESSIONAL REVIEW
+
+     IMPORTANT FLOW:
+
+     A → B → C → ... → J
+                 ↓
+          Save & Complete
+                 ↓
+       /professional-review
+                 ↓
+        Confirm Details
+                 ↓
+      /professional-payment
+                 ↓
+             ₹1500
+  ======================================================= */
+
+  const moveToProfessionalReview =
+    (
+      freshResponse = null
+    ) => {
+      const freshMember =
+        freshResponse
+          ? getMemberFromResponse(
+              freshResponse
+            )
+          : member;
+
+      const loginId =
+        toText(
+          freshMember
+            ?.login_id ||
+            member
+              ?.login_id
+        ).trim();
+
+      const membershipSelection = {
+        ...PROFILE_UPGRADE_PLAN,
+
+        loginId,
+
+        kycCompleted:
+          true,
+
+        kycConfirmed:
+          false,
+
+        completedSections:
+          [
+            ...KYC_SECTIONS,
+          ],
+
+        selectedAt:
+          new Date().toISOString(),
+      };
+
+      /* ===================================================
+         STORE PROFILE UPGRADE PLAN
+
+         Review / Payment page reload ஆனாலும்
+         ₹1500 plan details available இருக்கும்.
+      =================================================== */
+
+      sessionStorage.setItem(
+        PROFESSIONAL_MEMBERSHIP_STORAGE_KEY,
+        JSON.stringify(
+          membershipSelection
+        )
+      );
+
+      /* ===================================================
+         KYC COMPLETED
+      =================================================== */
+
+      sessionStorage.setItem(
+        PROFESSIONAL_KYC_COMPLETED_STORAGE_KEY,
+        "true"
+      );
+
+      /* ===================================================
+         NEXT ROUTE = REVIEW
+      =================================================== */
+
+      sessionStorage.setItem(
+        PROFESSIONAL_NEXT_ROUTE_STORAGE_KEY,
+        "/professional-review"
+      );
+
+      /* ===================================================
+         NAVIGATE REVIEW
+      =================================================== */
+
+      navigate(
+        "/professional-review",
+        {
+          replace:
+            true,
+
+          state: {
+            loginId,
+
+            token:
+              token || "",
+
+            member:
+              freshMember ||
+              member,
+
+            membershipType:
+              "Professional Member",
+
+            membershipSelection,
+
+            professionalFlow:
+              "profile_upgrade",
+
+            kycCompleted:
+              true,
+
+            completedSections:
+              [
+                ...KYC_SECTIONS,
+              ],
+          },
+        }
+      );
+    };
+
+  /* =======================================================
+     SAVE & NEXT
+  ======================================================= */
+
+  const handleSaveAndNext =
+    async () => {
+      const section =
+        activeSection;
+
+      if (
+        !validateSection(
+          section,
+          true
+        )
+      ) {
+        return;
+      }
+
+      setSavingSections(
+        (
+          previous
+        ) => ({
+          ...previous,
+
+          [section]:
+            true,
+        })
+      );
+
+      setSuccessMessages(
+        (
+          previous
+        ) => ({
+          ...previous,
+
+          [section]:
+            "",
+        })
+      );
+
+      try {
+        /* =================================================
+           SAVE CURRENT SECTION TO BACKEND
+        ================================================= */
+
+        await saveProfessionalKycAndNext(
+  section,
+  buildPayload(
+    section
+  ),
+  {
+    files:
+      buildFiles(
+        section
+      ),
+
+    token,
+  }
+);
+
+        const currentIndex =
+          KYC_SECTIONS.indexOf(
+            section
+          );
+
+        const nextSection =
+          KYC_SECTIONS[
+            currentIndex +
+              1
+          ];
+
+        /* =================================================
+           REFRESH FULL KYC AFTER SAVE
+        ================================================= */
+
+        let fresh =
+          null;
+
+        try {
+          fresh =
+            await getProfessionalKyc(
+              {token
+        });
+
+          setProfessionalKyc(
+            fresh ||
+              {}
+          );
+
+          setMember(
+            getMemberFromResponse(
+              fresh
+            )
+          );
+        } catch {
+          /*
+            Section save success.
+
+            Full summary refresh fail ஆனாலும்
+            section navigation stop ஆகக்கூடாது.
+          */
+        }
+
+        /* =================================================
+           A → I
+
+           NEXT SECTION EXISTS
+        ================================================= */
+
+        if (
+          nextSection
+        ) {
+          setActiveSection(
+            nextSection
+          );
+
+          await loadSection(
+            nextSection
+          );
+
+          window.scrollTo({
+            top: 0,
+            behavior:
+              "smooth",
+          });
+
+          return;
+        }
+
+        /* =================================================
+           J COMPLETE
+
+           IMPORTANT UPDATE:
+
+           OLD:
+           Message மட்டும் காட்டியது.
+
+           NEW:
+           J save success
+              ↓
+           Professional Review Page
+              ↓
+           Confirm Details
+              ↓
+           ₹1500 Payment
+        ================================================= */
+
+        if (
+          section ===
+          "J"
+        ) {
+          setSuccessMessages(
+            (
+              previous
+            ) => ({
+              ...previous,
+
+              J:
+                "Professional KYC A–J completed successfully. Opening review page...",
+            })
+          );
+
+          moveToProfessionalReview(
+            fresh
+          );
+
+          return;
+        }
+      } catch (
+        error
+      ) {
+        setErrors(
+          (
+            previous
+          ) => ({
+            ...previous,
+
+            [section]: {
+              ...previous[
+                section
+              ],
+
+              general:
+                getErrorText(
+                  error,
+                  `Unable to complete Section ${section}.`
+                ),
+            },
+          })
+        );
+      } finally {
+        setSavingSections(
+          (
+            previous
+          ) => ({
+            ...previous,
+
+            [section]:
+              false,
+          })
+        );
+      }
+    };
+
+  /* =======================================================
+     SECTION NAVIGATION
+  ======================================================= */
+
+  const handleSectionChange =
+    async (
+      section
+    ) => {
+      if (
+        !KYC_SECTIONS.includes(
+          section
+        )
+      ) {
+        return;
+      }
+
+      setActiveSection(
+        section
+      );
+
+      await loadSection(
+        section
+      );
+
+      window.scrollTo({
+        top: 0,
+        behavior:
+          "smooth",
+      });
+    };
+
+  /* =======================================================
+     PREVIOUS
+  ======================================================= */
+
+  const handlePrevious =
+    async () => {
+      const currentIndex =
+        KYC_SECTIONS.indexOf(
+          activeSection
+        );
+
+      if (
+        currentIndex <=
+        0
+      ) {
+        navigate(
+          "/dashboard"
+        );
+
+        return;
+      }
+
+      const previousSection =
+        KYC_SECTIONS[
+          currentIndex -
+            1
+        ];
+
+      setActiveSection(
+        previousSection
+      );
+
+      await loadSection(
+        previousSection
+      );
+
+      window.scrollTo({
+        top: 0,
+        behavior:
+          "smooth",
+      });
+    };
+
+  /* =======================================================
+     ACTIVE VALUES
+  ======================================================= */
+
+  const activeMeta =
+    SECTION_META[
+      activeSection
+    ] ||
+    SECTION_META.A;
+
+  const activeFields =
+    SECTION_FIELDS[
+      activeSection
+    ] || [];
+
+  const activeUploads =
+    SECTION_UPLOADS[
+      activeSection
+    ] || [];
+
+  const activeErrors =
+    errors[
+      activeSection
+    ] || {};
+
+  const activeSuccess =
+    successMessages[
+      activeSection
+    ] || "";
+
+  const currentSaving =
+    Boolean(
+      savingSections[
+        activeSection
+      ]
+    );
+
+  /* =======================================================
+     LOADING PAGE
+  ======================================================= */
+
+  if (
+    loading
+  ) {
+    return (
+      <div className="professional-kyc-loading-page">
+        <div className="professional-kyc-loading-card">
+          <div className="professional-kyc-spinner" />
+
+          <h2>
+            Loading Professional KYC
+          </h2>
+
+          <p>
+            Please wait while your membership information is loaded.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  /* =======================================================
+     PAGE ERROR
+  ======================================================= */
+
+  if (
+    pageError
+  ) {
+    return (
+      <div className="professional-kyc-loading-page">
+        <div className="professional-kyc-error-card">
+          <div className="professional-kyc-error-icon">
+            <i className="fa-solid fa-triangle-exclamation" />
+          </div>
+
+          <h2>
+            Unable to Load KYC
+          </h2>
+
+          <p>
+            {pageError}
+          </p>
+
+          <div className="professional-kyc-error-actions">
+            <button
+              type="button"
+              onClick={
+                loadProfessionalKyc
+              }
+            >
+              <i className="fa-solid fa-rotate-right" />
+
+              Retry
+            </button>
+
+            <button
+              type="button"
+              className="secondary"
+              onClick={
+                () =>
+                  navigate(
+                    "/dashboard"
+                  )
+              }
+            >
+              Dashboard
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* =======================================================
+     MAIN PAGE
+  ======================================================= */
+
+  return (
+    <div className="professional-kyc-page">
+      {/* ===================================================
+          HEADER
+      =================================================== */}
+
+      <header className="professional-kyc-header">
+        <div className="professional-kyc-header-inner">
+          <div className="professional-kyc-brand">
+            <div className="professional-kyc-brand-icon">
+              <i className="fa-solid fa-shield-halved" />
+            </div>
+
+            <div>
+              <h1>
+                INMBA Professional
+              </h1>
+
+              <p>
+                Membership KYC Portal
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className="professional-kyc-dashboard-button"
+            onClick={
+              () =>
+                navigate(
+                  "/dashboard"
+                )
+            }
+          >
+            <i className="fa-solid fa-house" />
+
+            Dashboard
+          </button>
+        </div>
+      </header>
+
+      {/* ===================================================
+          TOP FLOW
+      =================================================== */}
+
+      <section className="professional-kyc-flow-wrapper">
+        <div className="professional-kyc-flow">
+          {MAIN_FLOW_STEPS.map(
+            (
+              step,
+              index
+            ) => {
+              const completed =
+                index <
+                3;
+
+              const active =
+                step.key ===
+                "full-kyc";
+
+              return (
+                <React.Fragment
+                  key={
+                    step.key
+                  }
+                >
+                  <div
+                    className={[
+                      "professional-kyc-flow-item",
+
+                      completed
+                        ? "completed"
+                        : "",
+
+                      active
+                        ? "active"
+                        : "",
+                    ]
+                      .filter(
+                        Boolean
+                      )
+                      .join(
+                        " "
+                      )}
+                  >
+                    <div className="professional-kyc-flow-icon">
+                      {completed ? (
+                        <i className="fa-solid fa-check" />
+                      ) : (
+                        <i
+                          className={
+                            step.icon
+                          }
+                        />
+                      )}
+                    </div>
+
+                    <span>
+                      {
+                        step.label
+                      }
+                    </span>
+                  </div>
+
+                  {index <
+                    MAIN_FLOW_STEPS.length -
+                      1 && (
+                    <div
+                      className={[
+                        "professional-kyc-flow-line",
+
+                        index <
+                        3
+                          ? "completed"
+                          : "",
+                      ]
+                        .filter(
+                          Boolean
+                        )
+                        .join(
+                          " "
+                        )}
+                    />
+                  )}
+                </React.Fragment>
+              );
+            }
+          )}
+        </div>
+      </section>
+
+      {/* ===================================================
+          CONTAINER
+      =================================================== */}
+
+      <main className="professional-kyc-container">
+        {/* =================================================
+            MEMBER DETAILS
+        ================================================= */}
+
+        <section className="professional-kyc-member-card">
+          <div className="professional-kyc-member-left">
+            <div className="professional-kyc-member-avatar">
+              {member
+                ?.profile_pic ? (
+                <img
+                  src={
+                    member
+                      .profile_pic
+                  }
+                  alt="Professional Member"
+                />
+              ) : (
+                <i className="fa-solid fa-user-tie" />
+              )}
+            </div>
+
+            <div>
+              <span className="professional-kyc-member-label">
+                Professional Membership
+              </span>
+
+              <h2>
+                {[
+                  member
+                    ?.first_name,
+
+                  member
+                    ?.last_name,
+                ]
+                  .filter(
+                    Boolean
+                  )
+                  .join(
+                    " "
+                  ) ||
+                  "Professional Member"}
+              </h2>
+
+              <div className="professional-kyc-member-meta">
+                <span>
+                  <i className="fa-solid fa-id-badge" />
+
+                  {member
+                    ?.login_id ||
+                    "—"}
+                </span>
+
+                <span>
+                  <i className="fa-solid fa-envelope" />
+
+                  {member
+                    ?.email ||
+                    "—"}
+                </span>
+
+                <span>
+                  <i className="fa-solid fa-phone" />
+
+                  {member
+                    ?.phone ||
+                    "—"}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="professional-kyc-member-status">
+            <span>
+              KYC Status
+            </span>
+
+            <strong>
+              {(
+                kycStatus ||
+                "draft"
+              )
+                .replace(
+                  /_/g,
+                  " "
+                )
+                .toUpperCase()}
+            </strong>
+          </div>
+        </section>
+
+        {/* =================================================
+            PROGRESS
+        ================================================= */}
+
+        <section className="professional-kyc-progress-card">
+          <div className="professional-kyc-progress-heading">
+            <div>
+              <span>
+                Full KYC Progress
+              </span>
+
+              <h3>
+                Complete all A–J sections
+              </h3>
+            </div>
+
+            <strong>
+              {
+                progressPercent
+              }
+              %
+            </strong>
+          </div>
+
+          <div className="professional-kyc-progress-track">
+            <div
+              className="professional-kyc-progress-bar"
+              style={{
+                width:
+                  `${progressPercent}%`,
+              }}
+            />
+          </div>
+        </section>
+
+        {/* =================================================
+            WORKSPACE
+        ================================================= */}
+
+        <div className="professional-kyc-workspace">
+          {/* ===============================================
+              A-J NAVIGATION
+          =============================================== */}
+
+          <aside className="professional-kyc-sidebar">
+            <div className="professional-kyc-sidebar-title">
+              <span>
+                Full KYC
+              </span>
+
+              <strong>
+                Sections A–J
+              </strong>
+            </div>
+
+            <div className="professional-kyc-section-list">
+              {KYC_SECTIONS.map(
+                (
+                  section
+                ) => {
+                  const meta =
+                    SECTION_META[
+                      section
+                    ];
+
+                  const completed =
+                    completedSectionSet.has(
+                      section
+                    );
+
+                  const active =
+                    activeSection ===
+                    section;
+
+                  return (
+                    <button
+                      key={
+                        section
+                      }
+                      type="button"
+                      className={[
+                        "professional-kyc-section-button",
+
+                        active
+                          ? "active"
+                          : "",
+
+                        completed
+                          ? "completed"
+                          : "",
+                      ]
+                        .filter(
+                          Boolean
+                        )
+                        .join(
+                          " "
+                        )}
+                      onClick={
+                        () =>
+                          handleSectionChange(
+                            section
+                          )
+                      }
+                      disabled={
+                        sectionLoading ||
+                        currentSaving
+                      }
+                    >
+                      <div className="professional-kyc-section-letter">
+                        {completed ? (
+                          <i className="fa-solid fa-check" />
+                        ) : (
+                          section
+                        )}
+                      </div>
+
+                      <div className="professional-kyc-section-button-text">
+                        <span>
+                          Section{" "}
+                          {
+                            section
+                          }
+                        </span>
+
+                        <strong>
+                          {
+                            meta
+                              ?.shortTitle
+                          }
+                        </strong>
+                      </div>
+
+                      <i
+                        className={
+                          meta
+                            ?.icon
+                        }
+                      />
+                    </button>
+                  );
+                }
+              )}
+            </div>
+          </aside>
+
+          {/* ===============================================
+              ACTIVE SECTION CARD
+          =============================================== */}
+
+          <section className="professional-kyc-content-card">
+            <div className="professional-kyc-content-heading">
+              <div className="professional-kyc-content-icon">
+                <i
+                  className={
+                    activeMeta.icon
+                  }
+                />
+              </div>
+
+              <div>
+                <span>
+                  Section{" "}
+                  {
+                    activeSection
+                  }
+                </span>
+
+                <h2>
+                  {PROFESSIONAL_KYC_SECTION_TITLES?.[
+                    activeSection
+                  ] ||
+                    activeMeta
+                      .shortTitle}
+                </h2>
+              </div>
+
+              <div className="professional-kyc-private-badge">
+                <i className="fa-solid fa-lock" />
+
+                Secure KYC
+              </div>
+            </div>
+
+            {!editable && (
+              <div className="professional-kyc-readonly-alert">
+                <i className="fa-solid fa-circle-info" />
+
+                This Professional KYC is currently read-only.
+              </div>
+            )}
+
+            {sectionLoading ? (
+              <div className="professional-kyc-coming-section">
+                <div className="professional-kyc-spinner" />
+
+                <h3>
+                  Loading Section{" "}
+                  {
+                    activeSection
+                  }
+                </h3>
+
+                <p>
+                  Please wait...
+                </p>
+              </div>
+            ) : (
+              <div className="professional-kyc-form-section">
+                {/* =========================================
+                    SECTION NOTE
+                ========================================= */}
+
+                <div className="professional-kyc-section-note">
+                  <i
+                    className={
+                      activeMeta.icon
+                    }
+                  />
+
+                  <div>
+                    <strong>
+                      {
+                        activeMeta
+                          .noteTitle
+                      }
+                    </strong>
+
+                    <p>
+                      {
+                        activeMeta
+                          .note
+                      }
+                    </p>
+                  </div>
+                </div>
+
+                {/* =========================================
+                    GENERAL ERROR
+                ========================================= */}
+
+                {activeErrors
+                  .general && (
+                  <div className="professional-kyc-form-error-box">
+                    {
+                      activeErrors
+                        .general
+                    }
+                  </div>
+                )}
+
+                {/* =========================================
+                    SUCCESS
+                ========================================= */}
+
+                {activeSuccess && (
+                  <div className="professional-kyc-form-success-box">
+                    <i className="fa-solid fa-circle-check" />
+
+                    {
+                      activeSuccess
+                    }
+                  </div>
+                )}
+
+                {/* =========================================
+                    SECTION I SYSTEM NOTE
+                ========================================= */}
+
+                {activeSection ===
+                  "I" && (
+                  <div className="professional-kyc-security-note">
+                    <i className="fa-solid fa-circle-info" />
+
+                    <div>
+                      <strong>
+                        System Generated Information
+                      </strong>
+
+                      <p>
+                        Referral ID, network level, team size and royalty slab are generated automatically and cannot be manually edited.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* =========================================
+                    FIELDS
+                ========================================= */}
+
+                <div className="professional-kyc-form-grid">
+                  {activeFields.map(
+                    (
+                      field
+                    ) => (
+                      <KycField
+                        key={
+                          field.name
+                        }
+                        label={
+                          field.label
+                        }
+                        required={
+                          field.required
+                        }
+                        requirement={
+                          getProfessionalKycRequirementMeta(
+                            field
+                          )
+                        }
+                        error={
+                          activeErrors[
+                            field.name
+                          ]
+                        }
+                        full={
+                          field.full
+                        }
+                      >
+                        <FieldInput
+                          field={
+                            field
+                          }
+                          value={
+                            forms[
+                              activeSection
+                            ]?.[
+                              field.name
+                            ] ??
+                            ""
+                          }
+                          onChange={
+                            (
+                              event
+                            ) =>
+                              handleInputChange(
+                                activeSection,
+                                event
+                              )
+                          }
+                          disabled={
+                            !editable ||
+                            field.readOnly
+                          }
+                        />
+                      </KycField>
+                    )
+                  )}
+                </div>
+
+                {/* =========================================
+                    UPLOADS
+                ========================================= */}
+
+                {activeUploads.length >
+                  0 && (
+                  <div
+                    className={[
+                      "professional-kyc-upload-grid",
+
+                      activeUploads.length ===
+                      1
+                        ? "single"
+                        : "",
+                    ]
+                      .filter(
+                        Boolean
+                      )
+                      .join(
+                        " "
+                      )}
+                  >
+                    {activeUploads.map(
+                      (
+                        upload
+                      ) => (
+                        <KycUpload
+                          key={
+                            upload.name
+                          }
+                          label={
+                            upload.label
+                          }
+                          required={
+                            upload.required
+                          }
+                          requirement={
+                            getProfessionalKycRequirementMeta(
+                              upload
+                            )
+                          }
+                          name={
+                            upload.name
+                          }
+                          imageOnly={
+                            upload.imageOnly
+                          }
+                          file={
+                            files[
+                              activeSection
+                            ]?.[
+                              upload.name
+                            ]
+                          }
+                          existing={
+                            existingFiles[
+                              activeSection
+                            ]?.[
+                              upload.name
+                            ]
+                          }
+                          error={
+                            activeErrors[
+                              upload.name
+                            ]
+                          }
+                          onChange={
+                            (
+                              event
+                            ) =>
+                              handleFileChange(
+                                activeSection,
+                                upload,
+                                event
+                              )
+                          }
+                          onRemove={
+                            () =>
+                              removeFile(
+                                activeSection,
+                                upload.name
+                              )
+                          }
+                          disabled={
+                            !editable
+                          }
+                        />
+                      )
+                    )}
+                  </div>
+                )}
+
+                {/* =========================================
+                    PRIVACY NOTE
+                ========================================= */}
+
+                {[
+                  "A",
+                  "B",
+                  "C",
+                  "H",
+                  "J",
+                ].includes(
+                  activeSection
+                ) && (
+                  <div className="professional-kyc-security-note">
+                    <i className="fa-solid fa-lock" />
+
+                    <div>
+                      <strong>
+                        Private & Secure Information
+                      </strong>
+
+                      <p>
+                        Sensitive KYC, address, government ID, bank and emergency information is not displayed as public profile information.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* =============================================
+                ACTION BAR
+            ============================================= */}
+
+            <div className="professional-kyc-action-bar">
+              <button
+                type="button"
+                className="professional-kyc-previous-button"
+                onClick={
+                  handlePrevious
+                }
+                disabled={
+                  currentSaving ||
+                  sectionLoading
+                }
+              >
+                <i className="fa-solid fa-arrow-left" />
+
+                Previous
+              </button>
+
+              <div className="professional-kyc-action-right">
+                {editable && (
+                  <button
+                    type="button"
+                    className="professional-kyc-draft-button"
+                    onClick={
+                      handleSaveDraft
+                    }
+                    disabled={
+                      currentSaving ||
+                      sectionLoading
+                    }
+                  >
+                    {currentSaving ? (
+                      <i className="fa-solid fa-spinner fa-spin" />
+                    ) : (
+                      <i className="fa-regular fa-floppy-disk" />
+                    )}
+
+                    Save Draft
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  className="professional-kyc-next-button"
+                  onClick={
+                    handleSaveAndNext
+                  }
+                  disabled={
+                    !editable ||
+                    currentSaving ||
+                    sectionLoading
+                  }
+                >
+                  {currentSaving ? (
+                    <>
+                      <i className="fa-solid fa-spinner fa-spin" />
+
+                      Saving...
+                    </>
+                  ) : activeSection ===
+                    "J" ? (
+                    <>
+                      Save & Complete
+
+                      <i className="fa-solid fa-check" />
+                    </>
+                  ) : (
+                    <>
+                      Save & Next
+
+                      <i className="fa-solid fa-arrow-right" />
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+/* =========================================================
+   GENERIC FIELD INPUT
+========================================================= */
+
+function FieldInput({
+  field,
+  value,
+  onChange,
+  disabled,
+}) {
+  if (
+    field.type ===
+    "textarea"
+  ) {
+    return (
+      <textarea
+        name={
+          field.name
+        }
+        rows={4}
+        value={
+          value
+        }
+        placeholder={
+          field.placeholder ||
+          ""
+        }
+        onChange={
+          onChange
+        }
+        disabled={
+          disabled
+        }
+      />
+    );
+  }
+
+  if (
+    field.type ===
+    "select"
+  ) {
+    return (
+      <select
+        name={
+          field.name
+        }
+        value={
+          value
+        }
+        onChange={
+          onChange
+        }
+        disabled={
+          disabled
+        }
+      >
+        <option value="">
+          Select{" "}
+          {
+            field.label
+          }
+        </option>
+
+        {(
+          field.options ||
+          []
+        ).map(
+          (
+            option
+          ) => (
+            <option
+              key={
+                option
+              }
+              value={
+                option
+              }
+            >
+              {
+                option
+              }
+            </option>
+          )
+        )}
+      </select>
+    );
+  }
+
+  return (
+    <input
+      type={
+        field.type ||
+        "text"
+      }
+      name={
+        field.name
+      }
+      value={
+        value
+      }
+      placeholder={
+        field.placeholder ||
+        ""
+      }
+      maxLength={
+        field.maxLength
+      }
+      inputMode={
+        field.inputMode
+      }
+      step={
+        field.step
+      }
+      min={
+        field.min
+      }
+      onChange={
+        onChange
+      }
+      disabled={
+        disabled
+      }
+    />
+  );
+}
+
+/* =========================================================
+   FIELD WRAPPER
+========================================================= */
+
+function KycField({
+  label,
+  required = false,
+  requirement = null,
+  error = "",
+  full = false,
+  children,
+}) {
+  return (
+    <div
+      className={[
+        "professional-kyc-field",
+
+        full
+          ? "full"
+          : "",
+
+        error
+          ? "has-error"
+          : "",
+      ]
+        .filter(
+          Boolean
+        )
+        .join(
+          " "
+        )}
+    >
+      <label>
+        <span>
+          {label}
+
+          {required && (
+            <span className="professional-kyc-required">
+              *
+            </span>
+          )}
+        </span>
+
+        <RequirementBadge
+          requirement={
+            requirement
+          }
+        />
+      </label>
+
+      {children}
+
+      {error && (
+        <small className="professional-kyc-field-error">
+          <i className="fa-solid fa-circle-exclamation" />
+
+          {error}
+        </small>
+      )}
+    </div>
+  );
+}
+
+/* =========================================================
+   REQUIREMENT BADGE
+========================================================= */
+
+function RequirementBadge({
+  requirement,
+}) {
+  if (
+    !requirement?.label
+  ) {
+    return null;
+  }
+
+  const styles = {
+    required: {
+      background:
+        "rgba(220, 38, 38, 0.10)",
+      borderColor:
+        "rgba(220, 38, 38, 0.25)",
+      color:
+        "#b91c1c",
+    },
+
+    optional: {
+      background:
+        "rgba(100, 116, 139, 0.10)",
+      borderColor:
+        "rgba(100, 116, 139, 0.25)",
+      color:
+        "#475569",
+    },
+
+    conditional: {
+      background:
+        "rgba(217, 119, 6, 0.10)",
+      borderColor:
+        "rgba(217, 119, 6, 0.25)",
+      color:
+        "#a16207",
+    },
+
+    system: {
+      background:
+        "rgba(37, 99, 235, 0.10)",
+      borderColor:
+        "rgba(37, 99, 235, 0.25)",
+      color:
+        "#1d4ed8",
+    },
+  };
+
+  const toneStyle =
+    styles[
+      requirement.tone
+    ] || styles.optional;
+
+  return (
+    <span
+      style={{
+        display:
+          "inline-flex",
+        alignItems:
+          "center",
+        width:
+          "fit-content",
+        marginLeft:
+          "8px",
+        padding:
+          "2px 8px",
+        border:
+          "1px solid",
+        borderRadius:
+          "999px",
+        fontSize:
+          "11px",
+        fontWeight:
+          700,
+        lineHeight:
+          1.4,
+        whiteSpace:
+          "nowrap",
+        verticalAlign:
+          "middle",
+        ...toneStyle,
+      }}
+    >
+      {
+        requirement.label
+      }
+    </span>
+  );
+}
+
+/* =========================================================
+   UPLOAD COMPONENT
+========================================================= */
+
+function KycUpload({
+  label,
+  required = false,
+  requirement = null,
+  name,
+  imageOnly = false,
+  file,
+  existing,
+  error = "",
+  onChange,
+  onRemove,
+  disabled = false,
+}) {
+  const selectedName =
+    file?.name ||
+    getFileName(
+      existing
+    );
+
+  return (
+    <div
+      className={[
+        "professional-kyc-upload-card",
+
+        error
+          ? "has-error"
+          : "",
+      ]
+        .filter(
+          Boolean
+        )
+        .join(
+          " "
+        )}
+    >
+      <div className="professional-kyc-upload-card-heading">
+        <div>
+          <span>
+            {label}
+
+            {required && (
+              <b>
+                *
+              </b>
+            )}
+
+            <RequirementBadge
+              requirement={
+                requirement
+              }
+            />
+          </span>
+
+          <small>
+            {imageOnly
+              ? "JPG / PNG · Max 5 MB"
+              : "PDF / JPG / PNG · Max 5 MB"}
+          </small>
+        </div>
+
+        <div className="professional-kyc-private-mini-badge">
+          <i className="fa-solid fa-lock" />
+
+          Secure
+        </div>
+      </div>
+
+      {selectedName ? (
+        <div className="professional-kyc-selected-file">
+          <div className="professional-kyc-selected-file-icon">
+            <i
+              className={
+                imageOnly
+                  ? "fa-solid fa-image"
+                  : "fa-solid fa-file-shield"
+              }
+            />
+          </div>
+
+          <div className="professional-kyc-selected-file-info">
+            <strong>
+              {
+                selectedName
+              }
+            </strong>
+
+            <span>
+              {file
+                ? "Ready to upload"
+                : "Previously uploaded"}
+            </span>
+          </div>
+
+          {!disabled && (
+            <button
+              type="button"
+              onClick={
+                onRemove
+              }
+              title="Remove file"
+            >
+              <i className="fa-solid fa-xmark" />
+            </button>
+          )}
+        </div>
+      ) : (
+        <label className="professional-kyc-upload-box">
+          <input
+            type="file"
+            name={
+              name
+            }
+            accept={
+              imageOnly
+                ? ".jpg,.jpeg,.png,image/jpeg,image/png"
+                : ".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+            }
+            onChange={
+              onChange
+            }
+            disabled={
+              disabled
+            }
+          />
+
+          <i className="fa-solid fa-cloud-arrow-up" />
+
+          <strong>
+            Choose File
+          </strong>
+
+          <span>
+            Click to select document
+          </span>
+        </label>
+      )}
+
+      {error && (
+        <small className="professional-kyc-field-error">
+          <i className="fa-solid fa-circle-exclamation" />
+
+          {error}
+        </small>
+      )}
+    </div>
+  );
+}
