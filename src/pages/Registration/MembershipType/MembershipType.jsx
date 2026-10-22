@@ -183,7 +183,7 @@ export default function MembershipType() {
         searchParams,
       ]
     );
-  const registrationAvailable = false;
+  const registrationAvailable = true;
 
   if (!registrationAvailable) {
     return (

@@ -11,7 +11,7 @@ const ADMIN_DISPLAY_PHONE = "+91 89403 69361";
 const ADMIN_WHATSAPP = "https://wa.me/918940369361";
 
 // Keep member login closed until the backend is ready.
-const loginAvailable = false;
+const loginAvailable = true;
 
 const loginOptions = [
   {
