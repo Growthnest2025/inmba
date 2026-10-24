@@ -431,7 +431,7 @@ const handleSubmit = async (event) => {
     );
 
 navigate(
-  "/commercial/dashboard",
+  "/commercial/qr",
   {
     replace: true,
   }

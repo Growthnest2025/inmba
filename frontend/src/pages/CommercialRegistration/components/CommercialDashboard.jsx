@@ -914,8 +914,13 @@ const backendAmount =
       ✅ Royalty / Rewards
   */
   const hasQrPublicProfileAccess =
-    isAdminApproved &&
-    hasPaidPlan;
+    validLoginId && (
+      (isAdminApproved && hasPaidPlan) ||
+      paymentStatus === "approved" ||
+      paymentStatus === "paid" ||
+      paymentStatus === "pending" ||
+      (commercialPayment?.amount > 0)
+    );
 
   const hasRoyaltyRewardsAccess =
     isAdminApproved &&

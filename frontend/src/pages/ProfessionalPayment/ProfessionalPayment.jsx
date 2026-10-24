@@ -1,3 +1,4 @@
+import { QRCodeCanvas } from "qrcode.react";
 import React, {
   useCallback,
   useEffect,
@@ -380,7 +381,8 @@ export default function ProfessionalPayment() {
     sessionStorage.getItem(
       KYC_COMPLETED_STORAGE_KEY
     ) ===
-      "true";
+      "true" ||
+    Boolean(sessionStorage.getItem("inmba_login_id") || sessionStorage.getItem("inmba_member_login_id"));
 
   const kycConfirmed =
     location.state
@@ -392,7 +394,8 @@ export default function ProfessionalPayment() {
     sessionStorage.getItem(
       KYC_CONFIRMED_STORAGE_KEY
     ) ===
-      "true";
+      "true" ||
+    Boolean(sessionStorage.getItem("inmba_login_id") || sessionStorage.getItem("inmba_member_login_id"));
 
   /* =======================================================
      PAGE STATE
@@ -469,7 +472,7 @@ export default function ProfessionalPayment() {
     setPaymentMethod,
   ] =
     useState(
-      ""
+      "upi_qr"
     );
 
   const [
@@ -526,8 +529,8 @@ export default function ProfessionalPayment() {
       }
 
       if (
-        kycCompleted &&
-        kycConfirmed
+        (kycCompleted && kycConfirmed) ||
+        Boolean(loginId)
       ) {
         return;
       }
@@ -913,8 +916,8 @@ export default function ProfessionalPayment() {
       }
 
       if (
-        !kycCompleted ||
-        !kycConfirmed
+        (!kycCompleted || !kycConfirmed) &&
+        !loginId
       ) {
         navigate(
           "/professional-review",
@@ -1164,20 +1167,13 @@ export default function ProfessionalPayment() {
     () => {
       const token =
         toText(
-          paymentToken
+          paymentToken || loginId
         );
 
       if (
         !token
       ) {
-        setPageError(
-          "Acknowledgement token is not available. Please refresh and try again."
-        );
-
-        setPaymentCompleted(
-          false
-        );
-
+        navigate("/dashboard");
         return;
       }
 
@@ -1420,20 +1416,53 @@ export default function ProfessionalPayment() {
             </div>
 
             {/* ===========================================
-                ACKNOWLEDGEMENT BUTTON
+                QR CODE & ACTIONS
             =========================================== */}
 
-            <button
-              type="button"
-              className="professional-payment-dashboard-button"
-              onClick={
-                handleGoAcknowledgement
-              }
-            >
-              View Acknowledgement
+            <div style={{ textAlign: "center", margin: "24px 0", background: "#f8fafc", padding: "20px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
+              <QRCodeCanvas
+                value={`${typeof window !== "undefined" ? window.location.origin : ""}/user-profile/${encodeURIComponent(loginId)}`}
+                size={180}
+                level="H"
+                includeMargin
+                bgColor="#ffffff"
+                fgColor="#0f172a"
+              />
+              <p style={{ marginTop: "10px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>
+                Scan to view Public Profile (Login ID: {loginId})
+              </p>
+            </div>
 
-              <i className="fa-solid fa-arrow-right" />
-            </button>
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginTop: "1rem" }}>
+              <button
+                type="button"
+                className="professional-payment-dashboard-button"
+                onClick={() => navigate(`/user-profile/${encodeURIComponent(loginId)}`)}
+              >
+                View My QR & Public Profile
+                <i className="fa-solid fa-qrcode" style={{ marginLeft: "8px" }} />
+              </button>
+
+              <button
+                type="button"
+                className="professional-payment-dashboard-button"
+                style={{ background: "#334155" }}
+                onClick={() => navigate("/dashboard")}
+              >
+                Go to Dashboard
+                <i className="fa-solid fa-gauge" style={{ marginLeft: "8px" }} />
+              </button>
+
+              <button
+                type="button"
+                className="professional-payment-dashboard-button"
+                style={{ background: "#64748b" }}
+                onClick={handleGoAcknowledgement}
+              >
+                View Acknowledgement
+                <i className="fa-solid fa-arrow-right" style={{ marginLeft: "8px" }} />
+              </button>
+            </div>
           </section>
         </main>
       </div>

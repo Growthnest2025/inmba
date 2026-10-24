@@ -1013,7 +1013,7 @@ export default function CommercialProfileUpgrade() {
           inferPlanIdFromAmount(
             amountHint
           ) ||
-          ""
+          "basic"
         );
       },
       [
@@ -1110,13 +1110,7 @@ export default function CommercialProfileUpgrade() {
         const config =
           COMMERCIAL_PLAN_CONFIG[
             selectedPlanId
-          ];
-
-        if (
-          !config
-        ) {
-          return null;
-        }
+          ] || COMMERCIAL_PLAN_CONFIG.basic;
 
         return {
           ...config,
@@ -3633,8 +3627,25 @@ export default function CommercialProfileUpgrade() {
                 : "Your Commercial KYC has been submitted. Review your saved details before continuing to payment."}
             </p>
 
-            {normalizedStatus !==
-              "approved" && (
+            {normalizedStatus === "approved" ? (
+              <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "1rem", flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  className="commercial-kyc-next"
+                  onClick={() => navigate("/commercial/payment")}
+                >
+                  Proceed to Payment <i className="fa-solid fa-arrow-right" />
+                </button>
+                <button
+                  type="button"
+                  className="commercial-kyc-next"
+                  style={{ background: "#1e293b" }}
+                  onClick={() => navigate("/commercial/dashboard")}
+                >
+                  Go to Dashboard / QR <i className="fa-solid fa-qrcode" />
+                </button>
+              </div>
+            ) : (
               <button
                 type="button"
                 className="commercial-kyc-next"
