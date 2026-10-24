@@ -49,29 +49,19 @@ const normalizeLoginId =
    actual domain
 ========================================================= */
 
-const getPublicOrigin =
-  () => {
+const getPublicOrigin = () => {
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname || "";
     if (
-      typeof window ===
-      "undefined"
+      !hostname.includes("vercel.app") &&
+      !hostname.includes("localhost") &&
+      !hostname.includes("127.0.0.1")
     ) {
-      return "";
+      return window.location.origin;
     }
-
-    const hostname =
-      window.location.hostname;
-
-    if (
-      hostname ===
-        "localhost" ||
-      hostname ===
-        "127.0.0.1"
-    ) {
-      return "http://192.168.31.155:5173";
-    }
-
-    return window.location.origin;
-  };
+  }
+  return "https://inmba.org";
+};
 
 /* =========================================================
    STATUS

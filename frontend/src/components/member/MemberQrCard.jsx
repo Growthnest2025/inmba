@@ -61,22 +61,14 @@ const buildPublicProfileUrl =
 
     let baseUrl = "";
     if (typeof window !== "undefined" && window.location?.origin) {
-      if (!window.location.hostname.includes("localhost") && !window.location.hostname.includes("127.0.0.1")) {
+      if (!window.location.hostname.includes("localhost") && !window.location.hostname.includes("127.0.0.1") && !window.location.hostname.includes("vercel.app")) {
         baseUrl = window.location.origin;
       }
     }
     if (!baseUrl) {
-      const configuredBase = toText(process.env.REACT_APP_PUBLIC_FRONTEND_URL || process.env.REACT_APP_FRONTEND_BASE_URL);
-      if (configuredBase && !configuredBase.includes("localhost") && !configuredBase.includes("127.0.0.1")) {
-        baseUrl = configuredBase;
-      }
+      baseUrl = "https://inmba.org";
     }
-    if (!baseUrl && typeof window !== "undefined" && window.location?.origin) {
-      baseUrl = window.location.origin;
-    }
-    if (baseUrl) {
-      return `${baseUrl.replace(/\/+$/, "")}${profilePath}`;
-    }
+    return `${baseUrl.replace(/\/+$/, "")}${profilePath}`;
 
     return profilePath;
   };

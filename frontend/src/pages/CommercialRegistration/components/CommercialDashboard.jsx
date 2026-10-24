@@ -975,15 +975,12 @@ const backendAmount =
   ======================================================= */
 
   const frontendBaseUrl =
-    String(
-      process.env.REACT_APP_FRONTEND_BASE_URL ||
-      window.location.origin
-    )
-      .trim()
-      .replace(
-        /\/+$/,
-        ""
-      );
+    typeof window !== "undefined" &&
+    !window.location.hostname.includes("vercel.app") &&
+    !window.location.hostname.includes("localhost") &&
+    !window.location.hostname.includes("127.0.0.1")
+      ? window.location.origin
+      : "https://inmba.org";
 
 
   const validLoginId =

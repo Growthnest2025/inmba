@@ -1421,7 +1421,7 @@ export default function ProfessionalPayment() {
 
             <div style={{ textAlign: "center", margin: "24px 0", background: "#f8fafc", padding: "20px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
               <QRCodeCanvas
-                value={`${typeof window !== "undefined" ? window.location.origin : ""}/user-profile/${encodeURIComponent(loginId)}`}
+                value={`https://inmba.org/user-profile/${encodeURIComponent(loginId)}`}
                 size={180}
                 level="H"
                 includeMargin
