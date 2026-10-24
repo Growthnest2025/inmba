@@ -513,6 +513,22 @@ export const submitCommercialPayment =
     const payload =
       new FormData();
 
+    const currentLoginId =
+      (typeof sessionStorage !== "undefined" && (
+        sessionStorage.getItem("commercial_login_id") ||
+        sessionStorage.getItem("inmba_commercial_login_id") ||
+        sessionStorage.getItem("inmba_member_login_id")
+      )) ||
+      (typeof localStorage !== "undefined" && (
+        localStorage.getItem("commercial_login_id") ||
+        localStorage.getItem("inmba_commercial_login_id") ||
+        localStorage.getItem("inmba_member_login_id")
+      )) || "";
+
+    if (currentLoginId) {
+      payload.append("login_id", currentLoginId);
+    }
+
     payload.append(
       "plan_id",
       safePlanId

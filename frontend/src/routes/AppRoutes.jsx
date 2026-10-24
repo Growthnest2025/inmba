@@ -450,6 +450,10 @@ export default function AppRoutes() {
           path="/commercial/payment"
           element={<CommercialPayment />}
         />
+        <Route
+          path="/commercial-payment"
+          element={<Navigate to="/commercial/payment" replace />}
+        />
 
         {/* 1500 FULL COMMERCIAL KYC */}
 

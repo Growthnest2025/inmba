@@ -5,12 +5,14 @@ import React, {
 
 import {
   useNavigate,
+  useLocation,
 } from "react-router-dom";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import "./CommercialPayment.css";
-import api from "../../../services/api";
+import api from "../../../api/api";
+import { useAuth } from "../../../context/AuthContext";
 
 /* =========================================================
    DEFAULT BASIC PLAN
@@ -191,6 +193,10 @@ const readSelectedPlan =
 export default function CommercialPayment() {
   const navigate =
     useNavigate();
+  const location =
+    useLocation();
+  const { member: authMember } =
+    useAuth() || {};
 
   /* =======================================================
      PLAN
@@ -198,10 +204,19 @@ export default function CommercialPayment() {
 
   const plan =
     useMemo(
-      () =>
-        readSelectedPlan(),
-      []
+      () => {
+        if (location?.state?.plan && location?.state?.plan?.amount) {
+          return location.state.plan;
+        }
+        return readSelectedPlan();
+      },
+      [location?.state?.plan]
     );
+
+  const [
+    submitting,
+    setSubmitting,
+  ] = useState(false);
 
   /* =======================================================
      FORM STATE
@@ -388,64 +403,88 @@ const handleSubmit = async (event) => {
   const loginId =
     sessionStorage.getItem("commercial_login_id") ||
     localStorage.getItem("commercial_login_id") ||
-    sessionStorage.getItem("inmba_commercial_login_id");
+    sessionStorage.getItem("inmba_commercial_login_id") ||
+    localStorage.getItem("inmba_commercial_login_id") ||
+    sessionStorage.getItem("inmba_member_login_id") ||
+    localStorage.getItem("inmba_member_login_id") ||
+    sessionStorage.getItem("inmba_login_id") ||
+    localStorage.getItem("inmba_login_id") ||
+    authMember?.login_id ||
+    location?.state?.loginId ||
+    location?.state?.login_id ||
+    "";
 
   if (!loginId) {
-    setError("Commercial Login ID is missing.");
+    setError("Commercial Login ID is missing. Please log in again.");
     return;
   }
 
   try {
+    sessionStorage.setItem("commercial_login_id", loginId);
+    localStorage.setItem("commercial_login_id", loginId);
+    sessionStorage.setItem("inmba_commercial_login_id", loginId);
+    localStorage.setItem("inmba_commercial_login_id", loginId);
+    sessionStorage.setItem("inmba_member_login_id", loginId);
+  } catch {}
+
+  try {
+    setSubmitting(true);
     setError("");
 
-    const formData = new FormData();
+    const endpoint = `/commercial-payment?login_id=${encodeURIComponent(loginId)}`;
+    const headers = {
+      "X-Login-Id": loginId,
+      "X-Commercial-Login-Id": loginId,
+    };
 
-    formData.append("login_id", loginId);
-    formData.append("plan_id", plan.id);
-    formData.append("plan_name", plan.name);
-    formData.append("amount", String(plan.amount));
-    formData.append("payment_method", paymentMethod);
-
-    if (transactionId.trim()) {
-      formData.append(
-        "transaction_id",
-        transactionId.trim()
-      );
-    }
-
+    let response;
     if (paymentProof) {
-      formData.append(
-        "payment_proof",
-        paymentProof
-      );
+      const formData = new FormData();
+      formData.append("login_id", loginId);
+      formData.append("plan_id", plan.id);
+      formData.append("plan_name", plan.name);
+      formData.append("amount", String(plan.amount));
+      formData.append("payment_method", paymentMethod);
+
+      if (transactionId.trim()) {
+        formData.append("transaction_id", transactionId.trim());
+      }
+      formData.append("payment_proof", paymentProof);
+
+      response = await api.post(endpoint, formData, { headers });
+    } else {
+      const payload = {
+        login_id: loginId,
+        plan_id: plan.id,
+        plan_name: plan.name,
+        amount: Number(plan.amount),
+        payment_method: paymentMethod,
+        transaction_id: transactionId.trim(),
+      };
+
+      response = await api.post(endpoint, payload, { headers });
     }
 
-    const response = await api.post(
-      "/commercial-payment",
-      formData
-    );
+    console.log("Commercial Payment Success:", response?.data);
 
-    console.log(
-      "Commercial Payment Success:",
-      response.data
-    );
-
-navigate(
-  "/commercial/qr",
-  {
-    replace: true,
-  }
-);
+    navigate("/commercial/qr", {
+      replace: true,
+      state: {
+        loginId,
+        paymentSuccess: true,
+      },
+    });
   } catch (error) {
-    console.error(
-      "Commercial Payment Error:",
-      error
-    );
+    console.error("Commercial Payment Error:", error);
 
     setError(
       error?.response?.data?.message ||
+      error?.response?.data?.error ||
+      error?.message ||
       "Payment submission failed."
     );
+  } finally {
+    setSubmitting(false);
   }
 };
   /* =======================================================
@@ -939,12 +978,13 @@ navigate(
               <button
                 type="submit"
                 className="commercial-payment-submit"
+                disabled={submitting}
               >
                 <span>
-                  Confirm ₹{plan.amount} Payment
+                  {submitting ? "Submitting Payment..." : `Confirm ₹${plan.amount} Payment`}
                 </span>
 
-                <i className="fa-solid fa-arrow-right" />
+                <i className={submitting ? "fa-solid fa-spinner fa-spin" : "fa-solid fa-arrow-right"} />
               </button>
 
               <p className="commercial-payment-footer-note">

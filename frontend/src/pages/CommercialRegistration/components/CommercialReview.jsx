@@ -664,6 +664,22 @@ const progress =
 
   const goToPayment =
     () => {
+      const loginId =
+        sessionStorage.getItem("commercial_login_id") ||
+        localStorage.getItem("commercial_login_id") ||
+        sessionStorage.getItem("inmba_commercial_login_id") ||
+        localStorage.getItem("inmba_commercial_login_id") ||
+        sessionStorage.getItem("inmba_member_login_id") ||
+        localStorage.getItem("inmba_member_login_id") ||
+        sessionStorage.getItem("inmba_login_id") ||
+        localStorage.getItem("inmba_login_id") ||
+        "";
+
+      if (loginId) {
+        sessionStorage.setItem("commercial_login_id", loginId);
+        localStorage.setItem("commercial_login_id", loginId);
+      }
+
       sessionStorage.setItem(
         "commercial_selected_plan",
         JSON.stringify(

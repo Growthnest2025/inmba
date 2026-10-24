@@ -1942,9 +1942,24 @@ async function handleSubmitCommercialPayment(request, db, cors) {
   const input = await parseRequestBody(request);
   let member = await getCurrentMember(request, db);
 
-  const loginId = String(input.login_id || input.loginId || "").trim();
+  let loginId = String(input.login_id || input.loginId || "").trim();
+  if (!loginId) {
+    loginId = String(
+      request.headers.get("X-Login-Id") ||
+      request.headers.get("x-login-id") ||
+      request.headers.get("X-Commercial-Login-Id") ||
+      ""
+    ).trim();
+  }
+  if (!loginId) {
+    try {
+      const url = new URL(request.url);
+      loginId = String(url.searchParams.get("login_id") || url.searchParams.get("loginId") || "").trim();
+    } catch {}
+  }
+
   if (!member && loginId) {
-    member = await db.prepare("SELECT * FROM kyc_members WHERE login_id = ?").bind(loginId).first();
+    member = await db.prepare("SELECT * FROM kyc_members WHERE login_id = ? OR CAST(id AS TEXT) = ?").bind(loginId, loginId).first();
   }
 
   if (!member) {

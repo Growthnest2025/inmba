@@ -332,12 +332,15 @@ export default function CommercialLogin() {
         if (
           member?.login_id
         ) {
-          sessionStorage.setItem(
-            "inmba_member_login_id",
-            String(
-              member.login_id
-            )
-          );
+          const commLoginId = String(member.login_id);
+          sessionStorage.setItem("commercial_login_id", commLoginId);
+          localStorage.setItem("commercial_login_id", commLoginId);
+          sessionStorage.setItem("inmba_commercial_login_id", commLoginId);
+          localStorage.setItem("inmba_commercial_login_id", commLoginId);
+          sessionStorage.setItem("inmba_member_login_id", commLoginId);
+          localStorage.setItem("inmba_member_login_id", commLoginId);
+          sessionStorage.setItem("inmba_login_id", commLoginId);
+          localStorage.setItem("inmba_login_id", commLoginId);
         }
 
         window.dispatchEvent(

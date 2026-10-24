@@ -2011,6 +2011,159 @@ export default function CommercialProfileUpgrade() {
      G -> REVIEW
   ======================================================= */
 
+  /* =======================================================
+     SECTION VALIDATION
+  ======================================================= */
+
+  const validateCommercialSection = (sectionId, values, uploadFiles, existingDocs) => {
+    const errors = {};
+
+    const isNonEmpty = (val) => {
+      if (val === undefined || val === null) return false;
+      return String(val).trim().length > 0;
+    };
+
+    const hasDoc = (name) => {
+      if (uploadFiles && uploadFiles[name]) {
+        if (Array.isArray(uploadFiles[name])) return uploadFiles[name].length > 0;
+        return Boolean(uploadFiles[name]);
+      }
+      if (existingDocs && (existingDocs[name] || existingDocs[name.replace(/_([a-z])/g, (_, l) => l.toUpperCase())])) {
+        return Boolean(existingDocs[name] || existingDocs[name.replace(/_([a-z])/g, (_, l) => l.toUpperCase())]);
+      }
+      if (values && (values[name] || values[name.replace(/_([a-z])/g, (_, l) => l.toUpperCase())])) {
+        return Boolean(values[name] || values[name.replace(/_([a-z])/g, (_, l) => l.toUpperCase())]);
+      }
+      return false;
+    };
+
+    if (sectionId === "A") {
+      if (!isNonEmpty(values.owner_full_legal_name || values.full_legal_name)) {
+        errors.owner_full_legal_name = "Owner full legal name is required.";
+      }
+      if (!isNonEmpty(values.father_spouse_name)) {
+        errors.father_spouse_name = "Father / spouse name is required.";
+      }
+      if (!isNonEmpty(values.date_of_birth || values.dob)) {
+        errors.date_of_birth = "Date of birth is required.";
+      }
+      if (!isNonEmpty(values.nationality)) {
+        errors.nationality = "Nationality is required.";
+      }
+      if (!isNonEmpty(values.aadhaar_number)) {
+        errors.aadhaar_number = "Aadhaar number is required.";
+      } else {
+        const cleanAadhaar = String(values.aadhaar_number).replace(/[\s\-]/g, "");
+        if (!/^\d{12}$/.test(cleanAadhaar)) {
+          errors.aadhaar_number = "Aadhaar must be a 12-digit number.";
+        }
+      }
+      if (!isNonEmpty(values.pan_number)) {
+        errors.pan_number = "PAN number is required.";
+      } else {
+        const cleanPan = String(values.pan_number).trim();
+        if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/i.test(cleanPan)) {
+          errors.pan_number = "Enter a valid 10-character PAN number.";
+        }
+      }
+      if (!hasDoc("aadhaar_front")) {
+        errors.aadhaar_front = "Aadhaar Front document is required.";
+      }
+      if (!hasDoc("aadhaar_back")) {
+        errors.aadhaar_back = "Aadhaar Back document is required.";
+      }
+      if (!hasDoc("pan_card_scan")) {
+        errors.pan_card_scan = "PAN Card Scan document is required.";
+      }
+    } else if (sectionId === "B") {
+      if (!isNonEmpty(values.business_company_name || values.business_name)) {
+        errors.business_company_name = "Business / company name is required.";
+      }
+      if (!isNonEmpty(values.business_type)) {
+        errors.business_type = "Business type is required.";
+      }
+      if (!isNonEmpty(values.business_registration_number || values.registration_number)) {
+        errors.business_registration_number = "Registration / Udyam number is required.";
+      }
+      if (!isNonEmpty(values.company_pan_tan || values.company_pan)) {
+        errors.company_pan_tan = "Company PAN / TAN is required.";
+      }
+      if (Boolean(values.gst_applicable) && !hasDoc("gst_certificate")) {
+        errors.gst_certificate = "GST certificate is required.";
+      }
+      if (!hasDoc("authorized_signatory_id_proof")) {
+        errors.authorized_signatory_id_proof = "Authorized signatory ID proof is required.";
+      }
+    } else if (sectionId === "C") {
+      if (!isNonEmpty(values.registered_business_address || values.business_address)) {
+        errors.registered_business_address = "Registered business address is required.";
+      }
+      if (!isNonEmpty(values.business_contact_number || values.business_phone)) {
+        errors.business_contact_number = "Business contact number is required.";
+      } else {
+        const cleanPhone = String(values.business_contact_number || values.business_phone).replace(/[\s\-\+]/g, "").slice(-10);
+        if (!/^\d{10}$/.test(cleanPhone)) {
+          errors.business_contact_number = "Enter a valid 10-digit mobile number.";
+        }
+      }
+      if (!isNonEmpty(values.business_email)) {
+        errors.business_email = "Business email is required.";
+      } else {
+        const cleanEmail = String(values.business_email).trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+          errors.business_email = "Enter a valid email address.";
+        }
+      }
+    } else if (sectionId === "D") {
+      if (!isNonEmpty(values.bank_account_number)) {
+        errors.bank_account_number = "Bank account number is required.";
+      }
+      if (!isNonEmpty(values.ifsc_code)) {
+        errors.ifsc_code = "IFSC code is required.";
+      } else {
+        const cleanIfsc = String(values.ifsc_code).trim();
+        if (!/^[A-Z]{4}0[A-Z0-9]{6}$/i.test(cleanIfsc)) {
+          errors.ifsc_code = "Enter a valid 11-character IFSC code (e.g. SBIN0001234).";
+        }
+      }
+      if (!isNonEmpty(values.bank_branch_name || values.bank_branch)) {
+        errors.bank_branch_name = "Bank branch name is required.";
+      }
+      if (!hasDoc("bank_proof")) {
+        errors.bank_proof = "Passbook / cancelled cheque proof is required.";
+      }
+    } else if (sectionId === "E") {
+      if (!isNonEmpty(values.business_category_tags)) {
+        errors.business_category_tags = "Business category tags are required.";
+      }
+      if (!isNonEmpty(values.products_services_offered || values.products_services)) {
+        errors.products_services_offered = "Products / services offered description is required.";
+      }
+      if (!hasDoc("business_logo")) {
+        errors.business_logo = "Business logo or photo is required.";
+      }
+    } else if (sectionId === "F") {
+      // Preferred payout cycle has default "Monthly"
+    } else if (sectionId === "G") {
+      if (!isNonEmpty(values.emergency_contact_name)) {
+        errors.emergency_contact_name = "Emergency contact name is required.";
+      }
+      if (!isNonEmpty(values.emergency_contact_number)) {
+        errors.emergency_contact_number = "Emergency contact number is required.";
+      } else {
+        const cleanPhone = String(values.emergency_contact_number).replace(/[\s\-\+]/g, "").slice(-10);
+        if (!/^\d{10}$/.test(cleanPhone)) {
+          errors.emergency_contact_number = "Enter a valid 10-digit emergency contact number.";
+        }
+      }
+      if (!isNonEmpty(values.relationship || values.emergency_relationship)) {
+        errors.relationship = "Relationship is required.";
+      }
+    }
+
+    return errors;
+  };
+
   const handleSave =
     async (
       completed
@@ -2026,6 +2179,40 @@ export default function CommercialProfileUpgrade() {
         );
 
         return;
+      }
+
+      const values =
+        form[
+          activeSection
+        ] || {};
+
+      const uploadFiles =
+        files[
+          activeSection
+        ] || {};
+
+      const existingDocs =
+        serverSections[
+          activeSection
+        ] || {};
+
+      if (completed) {
+        const validationErrors = validateCommercialSection(
+          activeSection,
+          values,
+          uploadFiles,
+          existingDocs
+        );
+
+        if (Object.keys(validationErrors).length > 0) {
+          setFieldErrors(validationErrors);
+          setError("Please fill in all required fields before continuing.");
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+          return;
+        }
       }
 
       try {
@@ -2044,16 +2231,6 @@ export default function CommercialProfileUpgrade() {
         setFieldErrors(
           {}
         );
-
-        const values =
-          form[
-            activeSection
-          ] || {};
-
-        const uploadFiles =
-          files[
-            activeSection
-          ] || {};
 
         let result;
 
