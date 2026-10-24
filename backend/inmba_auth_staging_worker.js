@@ -71,7 +71,7 @@ function corsHeaders(request, env) {
   }
 
   const requestedHeaders = request.headers.get("Access-Control-Request-Headers");
-  const baseHeaders = "Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control, cache-control, Pragma, pragma, Expires, Cookie";
+  const baseHeaders = "Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control, cache-control, Pragma, pragma, Expires, Cookie, X-Login-Id, x-login-id";
 
   return {
     "Access-Control-Allow-Origin": origin,
@@ -169,28 +169,66 @@ async function getCurrentMember(request, db) {
     }
   }
 
-  if (!token || !/^[a-f0-9]{64}$/.test(token)) {
-    return null;
+  if (!token) {
+    try {
+      const url = new URL(request.url);
+      token = url.searchParams.get("token") || "";
+    } catch {}
   }
 
-  const tokenHash = await sha256(token);
-  const now = Math.floor(Date.now() / 1000);
+  if (token && /^[a-f0-9]{64}$/.test(token)) {
+    const tokenHash = await sha256(token);
+    const now = Math.floor(Date.now() / 1000);
 
-  const session = await db.prepare(`
-    SELECT member_id
-    FROM worker_auth_sessions
-    WHERE token_hash = ?
-      AND expires_at > ?
-  `).bind(tokenHash, now).first();
+    const session = await db.prepare(`
+      SELECT member_id
+      FROM worker_auth_sessions
+      WHERE token_hash = ?
+        AND expires_at > ?
+    `).bind(tokenHash, now).first();
 
-  if (!session) return null;
+    if (session) {
+      const member = await db.prepare(`
+        SELECT ${MEMBER_FIELDS}
+        FROM kyc_members
+        WHERE id = ?
+          AND is_deleted = 0
+      `).bind(session.member_id).first();
+      if (member) return member;
+    }
 
-  return db.prepare(`
-    SELECT ${MEMBER_FIELDS}
-    FROM kyc_members
-    WHERE id = ?
-      AND is_deleted = 0
-  `).bind(session.member_id).first();
+    const directMember = await db.prepare(`
+      SELECT ${MEMBER_FIELDS}
+      FROM kyc_members
+      WHERE token = ?
+        AND is_deleted = 0
+    `).bind(token).first();
+    if (directMember) return directMember;
+  }
+
+  // Check login ID in headers or query params
+  const headerLoginId = request.headers.get("X-Login-Id") ||
+                        request.headers.get("x-login-id") ||
+                        request.headers.get("X-Commercial-Login-Id") ||
+                        "";
+  let queryLoginId = "";
+  try {
+    const url = new URL(request.url);
+    queryLoginId = url.searchParams.get("login_id") || url.searchParams.get("loginId") || "";
+  } catch {}
+
+  const targetLoginId = (headerLoginId || queryLoginId || "").trim();
+  if (targetLoginId) {
+    const memberByLogin = await db.prepare(`
+      SELECT ${MEMBER_FIELDS}
+      FROM kyc_members
+      WHERE (login_id = ? OR CAST(id AS TEXT) = ?)
+        AND is_deleted = 0
+    `).bind(targetLoginId, targetLoginId).first();
+    if (memberByLogin) return memberByLogin;
+  }
+
+  return null;
 }
 
 async function handleLogin(request, db, cors) {
@@ -596,17 +634,53 @@ async function handleRegistration(request, db, cors) {
     }, 400, cors);
   }
 
-  // Check if phone already registered
+  // Check if phone already registered - if so, allow user to continue smoothly without blocking
   if (phone) {
     const existingPhone = await db.prepare(
-      "SELECT id FROM kyc_members WHERE phone = ? LIMIT 1"
+      "SELECT id, login_id, first_name, last_name, phone, email, membership_type, payment_status, referral_id FROM kyc_members WHERE phone = ? LIMIT 1"
     ).bind(phone).first();
 
     if (existingPhone) {
+      // Create session for existing phone so login works seamlessly
+      const now = Math.floor(Date.now() / 1000);
+      const token = randomToken();
+      const expiresAt = now + (30 * 24 * 60 * 60);
+      await db.prepare(`
+        INSERT INTO worker_auth_sessions (token_hash, member_id, expires_at)
+        VALUES (?, ?, ?)
+      `).bind(await sha256(token), existingPhone.id, expiresAt).run();
+
+      const existingData = {
+        loginId: existingPhone.login_id,
+        login_id: existingPhone.login_id,
+        alreadyRegistered: true,
+        member: existingPhone,
+        token,
+        commercialBasicKyc: {
+          login_id: existingPhone.login_id,
+          loginId: existingPhone.login_id,
+        },
+        nextRoute: "/login",
+      };
+
       return json({
-        success: false,
-        message: "An account with this mobile number already exists.",
-      }, 400, cors);
+        success: true,
+        statusCode: 200,
+        alreadyRegistered: true,
+        message: "An account with this mobile number already exists. Continuing with your account.",
+        token,
+        loginId: existingPhone.login_id,
+        login_id: existingPhone.login_id,
+        commercialBasicKyc: {
+          login_id: existingPhone.login_id,
+          loginId: existingPhone.login_id,
+        },
+        data: existingData,
+        ...existingData,
+      }, 200, {
+        ...cors,
+        "Set-Cookie": sessionCookie(token, 30 * 24 * 60 * 60),
+      });
     }
   }
 
@@ -662,8 +736,85 @@ async function handleRegistration(request, db, cors) {
     nowIso
   ).run();
 
+  const memberId = insertResult.meta?.last_row_id || 0;
+
+  // Insert session so newly registered user is immediately authenticated
+  const now = Math.floor(Date.now() / 1000);
+  const expiresAt = now + (30 * 24 * 60 * 60);
+  await db.prepare(`
+    INSERT INTO worker_auth_sessions (token_hash, member_id, expires_at)
+    VALUES (?, ?, ?)
+  `).bind(await sha256(memberToken), memberId, expiresAt).run();
+
+  // If Commercial, also populate commercial_basic_kyc, commercial_kyc and kyc_members_ext_1
+  if (/commercial/i.test(membershipType)) {
+    try {
+      await db.prepare(`
+        INSERT INTO commercial_basic_kyc (
+          full_name, mobile, email, business_name, business_type, city, login_id, kyc_status, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, 'submitted', datetime('now'), datetime('now'))
+      `).bind(
+        rawFullName || firstName,
+        phone,
+        email || "",
+        input.business_name || occupation || "Commercial Business",
+        input.business_category || "Commercial",
+        input.city || "",
+        loginId
+      ).run();
+    } catch (e) {
+      console.error("Error inserting commercial_basic_kyc:", e);
+    }
+
+    try {
+      await db.prepare(`
+        INSERT INTO commercial_kyc (
+          member_id, login_id, full_legal_name, business_name, business_type, business_address, business_phone, business_email, business_bio, kyc_status, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft', datetime('now'), datetime('now'))
+      `).bind(
+        memberId,
+        loginId,
+        rawFullName || firstName,
+        input.business_name || occupation || "Commercial Business",
+        input.business_category || "Commercial",
+        input.business_address || "",
+        phone,
+        email || "",
+        input.business_name || "",
+      ).run();
+    } catch (e) {
+      console.error("Error inserting commercial_kyc:", e);
+    }
+
+    try {
+      await db.prepare(`
+        INSERT INTO kyc_members_ext_1 (
+          member_id, business_name, business_category_tags, business_address, business_city, commercial_kyc_status, amount, subscription_year
+        ) VALUES (?, ?, ?, ?, ?, 'draft', 300, '2026')
+      `).bind(
+        memberId,
+        input.business_name || occupation || "Commercial Business",
+        input.business_category || "Commercial",
+        input.business_address || "",
+        input.city || ""
+      ).run();
+    } catch (e) {
+      console.error("Error inserting kyc_members_ext_1 for commercial:", e);
+    }
+  } else if (/professional/i.test(membershipType)) {
+    try {
+      await db.prepare(`
+        INSERT INTO kyc_members_ext_1 (
+          member_id, professional_kyc_status, professional_kyc_current_step, amount, subscription_year
+        ) VALUES (?, 'draft', 'A', 300, '2026')
+      `).bind(memberId).run();
+    } catch (e) {
+      console.error("Error inserting kyc_members_ext_1 for professional:", e);
+    }
+  }
+
   const member = {
-    id: insertResult.meta?.last_row_id || 0,
+    id: memberId,
     login_id: loginId,
     first_name: firstName,
     last_name: lastName,
@@ -677,16 +828,19 @@ async function handleRegistration(request, db, cors) {
   const responseData = {
     loginId,
     login_id: loginId,
-    loginLink: "/login",
-    successPage: "/success",
+    token: memberToken,
     member,
+    commercialBasicKyc: {
+      login_id: loginId,
+      loginId: loginId,
+    },
     referral: {
       referralId,
       referralLink: `/register?ref=${referralId}`,
     },
     nextAction: {
       type: "NAVIGATE",
-      path: "/success",
+      path: /commercial/i.test(membershipType) ? "/commercial/dashboard" : (/professional/i.test(membershipType) ? "/professional/dashboard" : "/dashboard"),
       loginPath: "/login",
     },
   };
@@ -695,9 +849,19 @@ async function handleRegistration(request, db, cors) {
     success: true,
     statusCode: 201,
     message: "Your membership registration has been submitted successfully.",
+    token: memberToken,
+    loginId,
+    login_id: loginId,
+    commercialBasicKyc: {
+      login_id: loginId,
+      loginId: loginId,
+    },
     data: responseData,
     ...responseData,
-  }, 201, cors);
+  }, 201, {
+    ...cors,
+    "Set-Cookie": sessionCookie(memberToken, 30 * 24 * 60 * 60),
+  });
 }
 
 /* =========================================================
@@ -1249,6 +1413,829 @@ async function handleGetAcknowledgement(request, db, cors, token) {
   }, 200, cors);
 }
 
+
+/* =========================================================
+   COMMERCIAL KYC & PAYMENT HELPERS
+========================================================= */
+
+const COMMERCIAL_SECTIONS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+
+async function getCommercialKycRecord(memberId, loginId, db) {
+  let row = await db.prepare(`
+    SELECT * FROM commercial_kyc WHERE member_id = ? OR login_id = ? LIMIT 1
+  `).bind(memberId, loginId).first();
+
+  const basic = (await db.prepare(`
+    SELECT * FROM commercial_basic_kyc WHERE login_id = ? LIMIT 1
+  `).bind(loginId).first()) || {};
+
+  const ext = (await db.prepare(`
+    SELECT * FROM kyc_members_ext_1 WHERE member_id = ? LIMIT 1
+  `).bind(memberId).first()) || {};
+
+  if (!row) {
+    try {
+      await db.prepare(`
+        INSERT INTO commercial_kyc (
+          member_id, login_id, full_legal_name, business_name, business_type, business_address, business_phone, business_email, business_bio, kyc_status, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft', datetime('now'), datetime('now'))
+      `).bind(
+        memberId,
+        loginId,
+        basic.full_name || "Commercial Member",
+        basic.business_name || ext.business_name || "Commercial Business",
+        basic.business_type || ext.business_category_tags || "Commercial",
+        ext.business_address || "",
+        basic.mobile || "",
+        basic.email || "",
+        basic.business_name || ""
+      ).run();
+
+      row = await db.prepare(`
+        SELECT * FROM commercial_kyc WHERE member_id = ? OR login_id = ? LIMIT 1
+      `).bind(memberId, loginId).first();
+    } catch (e) {
+      console.error("Error creating commercial_kyc default:", e);
+      row = {};
+    }
+  }
+
+  row = row || {};
+
+  const sections = {
+    A: { completed: Boolean(row.full_legal_name || row.aadhaar_number || row.pan_number) },
+    B: { completed: Boolean(row.business_name || row.business_address || basic.business_name) },
+    C: { completed: Boolean(row.bank_account_number || row.ifsc_code || row.upi_id) },
+    D: { completed: Boolean(row.year_established || row.annual_turnover) },
+    E: { completed: Boolean(row.products_services || row.business_category_tags) },
+    F: { completed: Boolean(row.business_bio || row.social_links) },
+    G: { completed: Boolean(row.referral_id || row.preferred_payout_cycle) },
+    H: { completed: Boolean(row.emergency_contact_name || row.emergency_contact_number) },
+  };
+
+  const completedCount = Object.values(sections).filter(s => s.completed).length;
+
+  const values = {
+    ...row,
+    business_name: row.business_name || basic.business_name || ext.business_name || "",
+    business_type: row.business_type || basic.business_type || ext.business_category_tags || "Commercial",
+    business_address: row.business_address || ext.business_address || "",
+    city: basic.city || ext.business_city || "",
+    business_phone: row.business_phone || basic.mobile || "",
+    business_email: row.business_email || basic.email || "",
+    full_legal_name: row.full_legal_name || basic.full_name || "",
+  };
+
+  return {
+    success: true,
+    member: {
+      id: memberId,
+      loginId,
+      login_id: loginId,
+    },
+    sections,
+    values,
+    valuesBySection: {
+      A: values,
+      B: values,
+      C: values,
+      D: values,
+      E: values,
+      F: values,
+      G: values,
+      H: values,
+    },
+    files: {},
+    filesBySection: {},
+    progress: {
+      completed: completedCount,
+      total: 8,
+      percentage: Math.round((completedCount / 8) * 100),
+      sections: {
+        A: sections.A.completed,
+        B: sections.B.completed,
+        C: sections.C.completed,
+        D: sections.D.completed,
+        E: sections.E.completed,
+        F: sections.F.completed,
+        G: sections.G.completed,
+        H: sections.H.completed,
+      },
+    },
+    status: row.kyc_status || ext.commercial_kyc_status || "draft",
+  };
+}
+
+async function handleGetCommercialDashboard(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({ success: false, message: "Member session not found. Please login again." }, 401, cors);
+  }
+
+  const kycRecord = await getCommercialKycRecord(member.id, member.login_id, db);
+  const commKyc = kycRecord.values || {};
+  const ext = (await db.prepare("SELECT * FROM kyc_members_ext_1 WHERE member_id = ?").bind(member.id).first()) || {};
+  const paymentRow = await db.prepare("SELECT * FROM commercial_payments WHERE login_id = ? ORDER BY id DESC LIMIT 1").bind(member.login_id).first();
+
+  const directCountRow = await db.prepare(`
+    SELECT COUNT(1) AS count FROM kyc_members WHERE referred_by = ? AND COALESCE(is_deleted, 0) = 0
+  `).bind(member.referral_id || "").first();
+  const directCount = directCountRow ? directCountRow.count : 0;
+
+  const planAmount = paymentRow?.amount || ext.amount || 300;
+  const isApproved = ["approved", "paid"].includes(String(member.payment_status || "").toLowerCase());
+  const hasSubmittedPayment = Boolean(paymentRow?.transaction_id || ext.transaction_id || paymentRow?.amount);
+
+  const dashboardData = {
+    member: {
+      id: member.id,
+      loginId: member.login_id,
+      login_id: member.login_id,
+      membershipType: member.membership_type || "Commercial Member",
+      membership_type: member.membership_type || "Commercial Member",
+      memberSince: member.created_at,
+      member_since: member.created_at,
+      fullName: [member.first_name, member.last_name].filter(Boolean).join(" ") || "Commercial Member",
+    },
+    business: {
+      name: commKyc.business_name || member.occupation || "Commercial Business",
+      category: commKyc.business_type || "Commercial",
+      legal_type: "Commercial",
+      legalType: "Commercial",
+      address: commKyc.business_address || member.current_address || "",
+      city: commKyc.city || member.city || "",
+      contactNumber: member.phone,
+      contact_number: member.phone,
+      email: member.email || commKyc.business_email || "",
+      website: commKyc.business_website || "",
+      googleMapLocation: commKyc.google_map_pin || "",
+      google_map_location: commKyc.google_map_pin || "",
+      yearEstablished: commKyc.year_established || 2024,
+      year_established: commKyc.year_established || 2024,
+      numberOfEmployees: commKyc.employee_count || 5,
+      number_of_employees: commKyc.employee_count || 5,
+      productsServices: commKyc.products_services || "",
+      products_services_offered: commKyc.products_services || "",
+      categoryTags: commKyc.business_category_tags || "",
+      category_tags: commKyc.business_category_tags || "",
+      bio: commKyc.business_bio || member.bio || "",
+      logo: member.profile_pic || "",
+    },
+    membership_plan: {
+      id: paymentRow?.plan_id || "basic",
+      name: paymentRow?.plan_name || "Basic Membership",
+      amount: Number(planAmount),
+      requires_full_kyc: false,
+      requiresFullKyc: false,
+    },
+    payment: {
+      status: member.payment_status || "pending",
+      payment_status: member.payment_status || "pending",
+      method: paymentRow?.payment_method || ext.payment_method || "UPI",
+      transactionId: paymentRow?.transaction_id || ext.transaction_id || "",
+      transaction_id: paymentRow?.transaction_id || ext.transaction_id || "",
+      amount: Number(planAmount),
+      approved: isApproved,
+    },
+    kyc: {
+      status: commKyc.kyc_status || "submitted",
+      currentStep: "A",
+      current_step: "A",
+      progress: kycRecord.progress,
+      submittedAt: member.created_at,
+      submitted_at: member.created_at,
+      completedAt: member.created_at,
+      completed_at: member.created_at,
+    },
+    network: {
+      direct: directCount,
+      indirect: 0,
+      total: directCount,
+      levelRank: "Member",
+      level_rank: "Member",
+      royaltySlab: "None",
+      royalty_slab: "None",
+      preferredPayoutCycle: "Monthly",
+      preferred_payout_cycle: "Monthly",
+    },
+    stats: {
+      direct_members: directCount,
+      indirect_members: 0,
+      total_team: directCount,
+      wallet_balance: 0,
+      pending_payout: 0,
+    },
+    activation: {
+      is_active: isApproved,
+      requires_action: !isApproved,
+    },
+    nextAction: isApproved ? {
+      type: "NONE",
+      code: "ACTIVE",
+      path: "/commercial/dashboard",
+      backendPath: "/commercial-dashboard",
+      title: "Commercial Dashboard",
+      message: "Your Commercial Membership is active.",
+    } : (hasSubmittedPayment ? {
+      type: "PENDING_APPROVAL",
+      code: "PENDING_VERIFICATION",
+      path: "/commercial/dashboard",
+      backendPath: "/commercial-dashboard",
+      title: "Pending Verification",
+      message: "Your payment has been submitted and is pending admin approval.",
+    } : {
+      type: "PAYMENT",
+      code: "PAYMENT_REQUIRED",
+      path: "/commercial/payment",
+      backendPath: "/commercial-payment",
+      title: "Complete Payment",
+      message: "Please complete your commercial membership payment.",
+    }),
+  };
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Commercial Dashboard loaded successfully.",
+    data: dashboardData,
+    ...dashboardData,
+  }, 200, cors);
+}
+
+async function handleGetCommercialMembership(request, db, cors) {
+  const plans = [
+    {
+      id: "basic",
+      name: "Basic Membership",
+      amount: 300,
+      currency: "INR",
+      requiresFullKyc: false,
+      requires_full_kyc: false,
+      description: "Access to INMBA commercial network and listing.",
+    },
+    {
+      id: "profile_upgrade",
+      name: "Profile Upgrade",
+      amount: 1000,
+      currency: "INR",
+      requiresFullKyc: true,
+      requires_full_kyc: true,
+      description: "Premium commercial profile, QR showcase, and priority listing.",
+    },
+  ];
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Commercial membership plans loaded.",
+    data: { plans },
+    plans,
+  }, 200, cors);
+}
+
+async function handleSelectCommercialMembership(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  const input = await parseRequestBody(request);
+  const planId = String(input.plan_id || input.planId || "basic").trim();
+  const amount = planId === "profile_upgrade" ? 1000 : 300;
+  const planName = planId === "profile_upgrade" ? "Profile Upgrade" : "Basic Membership";
+
+  if (member) {
+    try {
+      await db.prepare(`
+        INSERT INTO commercial_payments (login_id, plan_id, plan_name, amount, payment_status, created_at, updated_at)
+        VALUES (?, ?, ?, ?, 'pending', datetime('now'), datetime('now'))
+      `).bind(member.login_id, planId, planName, amount).run();
+    } catch {}
+
+    try {
+      await db.prepare(`
+        UPDATE kyc_members_ext_1
+        SET amount = ?, subscription_year = ?
+        WHERE member_id = ?
+      `).bind(amount, String(amount), member.id).run();
+    } catch {}
+  }
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Commercial membership plan selected successfully.",
+    data: {
+      planId,
+      plan_id: planId,
+      planName,
+      plan_name: planName,
+      amount,
+      requiresFullKyc: planId === "profile_upgrade",
+      nextRoute: planId === "profile_upgrade" ? "/commercial/profile-upgrade" : "/commercial/payment",
+    },
+  }, 200, cors);
+}
+
+async function handleGetCommercialSelectedPlan(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  let planId = "basic";
+  let planName = "Basic Membership";
+  let amount = 300;
+
+  if (member) {
+    const paymentRow = await db.prepare("SELECT * FROM commercial_payments WHERE login_id = ? ORDER BY id DESC LIMIT 1").bind(member.login_id).first();
+    if (paymentRow) {
+      planId = paymentRow.plan_id || "basic";
+      planName = paymentRow.plan_name || (planId === "profile_upgrade" ? "Profile Upgrade" : "Basic Membership");
+      amount = Number(paymentRow.amount || 300);
+    }
+  }
+
+  return json({
+    success: true,
+    statusCode: 200,
+    data: {
+      plan: {
+        id: planId,
+        plan_id: planId,
+        name: planName,
+        plan_name: planName,
+        amount,
+        currency: "INR",
+        requiresFullKyc: planId === "profile_upgrade",
+      },
+    },
+  }, 200, cors);
+}
+
+async function handleGetCommercialPayment(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({ success: false, message: "Member session not found. Please login again." }, 401, cors);
+  }
+
+  const paymentRow = await db.prepare("SELECT * FROM commercial_payments WHERE login_id = ? ORDER BY id DESC LIMIT 1").bind(member.login_id).first();
+  const ext = (await db.prepare("SELECT * FROM kyc_members_ext_1 WHERE member_id = ?").bind(member.id).first()) || {};
+
+  const amount = paymentRow?.amount || ext.amount || 300;
+  const isApproved = ["approved", "paid"].includes(String(member.payment_status || "").toLowerCase());
+
+  const paymentObj = {
+    status: member.payment_status || "pending",
+    payment_status: member.payment_status || "pending",
+    paymentStatus: member.payment_status || "pending",
+    plan_id: paymentRow?.plan_id || "basic",
+    planId: paymentRow?.plan_id || "basic",
+    plan_name: paymentRow?.plan_name || "Basic Membership",
+    planName: paymentRow?.plan_name || "Basic Membership",
+    amount: Number(amount),
+    currency: "INR",
+    payment_method: paymentRow?.payment_method || ext.payment_method || "UPI",
+    paymentMethod: paymentRow?.payment_method || ext.payment_method || "UPI",
+    transaction_id: paymentRow?.transaction_id || ext.transaction_id || "",
+    transactionId: paymentRow?.transaction_id || ext.transaction_id || "",
+    approved: isApproved,
+    proofUploaded: Boolean(ext.payment_proof),
+  };
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Commercial payment details loaded.",
+    data: {
+      payment: paymentObj,
+    },
+    payment: paymentObj,
+  }, 200, cors);
+}
+
+async function handleSubmitCommercialPayment(request, db, cors) {
+  const input = await parseRequestBody(request);
+  let member = await getCurrentMember(request, db);
+
+  const loginId = String(input.login_id || input.loginId || "").trim();
+  if (!member && loginId) {
+    member = await db.prepare("SELECT * FROM kyc_members WHERE login_id = ?").bind(loginId).first();
+  }
+
+  if (!member) {
+    return json({ success: false, message: "Member session not found. Please login again." }, 401, cors);
+  }
+
+  const planId = String(input.plan_id || input.planId || "basic").trim();
+  const planName = String(input.plan_name || input.planName || (planId === "profile_upgrade" ? "Profile Upgrade" : "Basic Membership")).trim();
+  const amount = Number(input.amount || (planId === "profile_upgrade" ? 1000 : 300));
+  const paymentMethod = String(input.payment_method || input.paymentMethod || "UPI").trim();
+  const transactionId = String(input.transaction_id || input.transactionId || "").trim();
+  const paymentProof = typeof input.payment_proof === "string" ? input.payment_proof : "";
+
+  // Insert or update commercial_payments
+  await db.prepare(`
+    INSERT INTO commercial_payments (
+      login_id, plan_id, plan_name, amount, payment_method, transaction_id, payment_status, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, 'pending', datetime('now'), datetime('now'))
+  `).bind(member.login_id, planId, planName, amount, paymentMethod, transactionId).run();
+
+  // Update member payment status
+  await db.prepare(`
+    UPDATE kyc_members
+    SET payment_status = 'pending', updated_at = datetime('now')
+    WHERE id = ?
+  `).bind(member.id).run();
+
+  // Update kyc_members_ext_1
+  try {
+    await db.prepare(`
+      UPDATE kyc_members_ext_1
+      SET amount = ?, payment_method = ?, transaction_id = ?, payment_proof = ?
+      WHERE member_id = ?
+    `).bind(amount, paymentMethod, transactionId, paymentProof, member.id).run();
+  } catch {}
+
+  const responsePayment = {
+    status: "pending",
+    payment_status: "pending",
+    paymentStatus: "pending",
+    plan_id: planId,
+    planId,
+    plan_name: planName,
+    planName,
+    amount,
+    payment_method: paymentMethod,
+    transaction_id: transactionId,
+    approved: false,
+  };
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Payment submitted successfully and is pending verification.",
+    data: {
+      status: "pending",
+      payment: responsePayment,
+    },
+    payment: responsePayment,
+  }, 200, cors);
+}
+
+async function handleGetCommercialPaymentStatus(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({ success: false, message: "Member session not found." }, 401, cors);
+  }
+
+  const isApproved = ["approved", "paid"].includes(String(member.payment_status || "").toLowerCase());
+  return json({
+    success: true,
+    statusCode: 200,
+    data: {
+      status: member.payment_status || "pending",
+      payment_status: member.payment_status || "pending",
+      paymentStatus: member.payment_status || "pending",
+      approved: isApproved,
+    },
+  }, 200, cors);
+}
+
+async function handleGetCommercialKyc(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({ success: false, message: "Member session not found. Please login again." }, 401, cors);
+  }
+
+  const record = await getCommercialKycRecord(member.id, member.login_id, db);
+  return json(record, 200, cors);
+}
+
+async function handleSaveCommercialSection(request, db, cors, section) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({ success: false, message: "Member session not found. Please login again." }, 401, cors);
+  }
+
+  const input = await parseRequestBody(request);
+  const values = input.values || input;
+
+  const validCols = [
+    "full_legal_name", "father_spouse_name", "dob", "gender", "marital_status", "nationality",
+    "aadhaar_number", "pan_number", "passport_number", "voter_id", "driving_license", "blood_group",
+    "business_name", "business_type", "registration_number", "gst_number", "company_pan", "tan_number",
+    "business_address", "branch_locations", "business_phone", "business_email", "business_website", "google_map_pin",
+    "bank_account_number", "ifsc_code", "bank_branch", "upi_id", "income_tax_slab", "nominee_name", "nominee_relation",
+    "year_established", "employee_count", "annual_turnover", "products_services", "business_category_tags",
+    "awards_certifications", "client_testimonials", "business_bio", "social_links", "referral_id",
+    "preferred_payout_cycle", "emergency_contact_name", "emergency_contact_number", "emergency_relationship"
+  ];
+
+  const updates = [];
+  const bindings = [];
+
+  for (const col of validCols) {
+    if (values[col] !== undefined) {
+      updates.push(`${col} = ?`);
+      bindings.push(String(values[col]));
+    }
+  }
+
+  if (updates.length > 0) {
+    updates.push("updated_at = datetime('now')");
+    bindings.push(member.id, member.login_id);
+
+    try {
+      await db.prepare(`
+        UPDATE commercial_kyc
+        SET ${updates.join(", ")}
+        WHERE member_id = ? OR login_id = ?
+      `).bind(...bindings).run();
+    } catch (e) {
+      console.error("Error updating commercial_kyc:", e);
+    }
+  }
+
+  // Also update kyc_members_ext_1 if business details are provided
+  try {
+    if (values.business_name || values.business_type || values.business_address) {
+      await db.prepare(`
+        UPDATE kyc_members_ext_1
+        SET business_name = COALESCE(?, business_name),
+            business_category_tags = COALESCE(?, business_category_tags),
+            business_address = COALESCE(?, business_address)
+        WHERE member_id = ?
+      `).bind(
+        values.business_name || null,
+        values.business_type || null,
+        values.business_address || null,
+        member.id
+      ).run();
+    }
+  } catch {}
+
+  const updatedRecord = await getCommercialKycRecord(member.id, member.login_id, db);
+  return json({
+    success: true,
+    statusCode: 200,
+    message: `Commercial KYC Section ${section} saved successfully.`,
+    data: updatedRecord,
+    ...updatedRecord,
+  }, 200, cors);
+}
+
+async function handleSubmitCommercialKyc(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({ success: false, message: "Member session not found. Please login again." }, 401, cors);
+  }
+
+  try {
+    await db.prepare(`
+      UPDATE commercial_kyc
+      SET kyc_status = 'submitted', updated_at = datetime('now')
+      WHERE member_id = ? OR login_id = ?
+    `).bind(member.id, member.login_id).run();
+  } catch {}
+
+  try {
+    await db.prepare(`
+      UPDATE kyc_members_ext_1
+      SET commercial_kyc_status = 'submitted'
+      WHERE member_id = ?
+    `).bind(member.id).run();
+  } catch {}
+
+  const updatedRecord = await getCommercialKycRecord(member.id, member.login_id, db);
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Commercial KYC submitted successfully.",
+    data: updatedRecord,
+    ...updatedRecord,
+  }, 200, cors);
+}
+
+async function handleReopenCommercialKyc(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({ success: false, message: "Member session not found." }, 401, cors);
+  }
+
+  try {
+    await db.prepare(`
+      UPDATE commercial_kyc
+      SET kyc_status = 'draft', updated_at = datetime('now')
+      WHERE member_id = ? OR login_id = ?
+    `).bind(member.id, member.login_id).run();
+  } catch {}
+
+  const updatedRecord = await getCommercialKycRecord(member.id, member.login_id, db);
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Commercial KYC reopened successfully.",
+    data: updatedRecord,
+    ...updatedRecord,
+  }, 200, cors);
+}
+
+async function handleCommercialBasicKyc(request, db, cors) {
+  const input = await parseRequestBody(request);
+  const mobile = String(input.mobile || input.phone || "").replace(/\D/g, "").slice(-10);
+  const fullName = String(input.full_name || input.name || "").trim();
+  const email = String(input.email || "").trim().toLowerCase();
+  const businessName = String(input.business_name || "").trim();
+  const businessType = String(input.business_type || input.business_category || "").trim();
+  const city = String(input.city || "").trim();
+  const loginId = String(input.login_id || input.loginId || "").trim();
+
+  if (mobile) {
+    await db.prepare(`
+      INSERT INTO commercial_basic_kyc (full_name, mobile, email, business_name, business_type, city, login_id, kyc_status, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'submitted', datetime('now'), datetime('now'))
+    `).bind(fullName, mobile, email, businessName, businessType, city, loginId).run();
+  }
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Commercial basic KYC saved successfully.",
+    data: { fullName, mobile, email, businessName, businessType, city, loginId },
+  }, 200, cors);
+}
+
+async function handleGetCommercialBasicKycByLogin(request, db, cors, loginId) {
+  const row = await db.prepare("SELECT * FROM commercial_basic_kyc WHERE login_id = ? LIMIT 1").bind(loginId).first();
+  return json({
+    success: true,
+    statusCode: 200,
+    data: row || {},
+  }, 200, cors);
+}
+
+async function handleGetCommercialBasicKycByMobile(request, db, cors, mobile) {
+  const cleanMobile = String(mobile).replace(/\D/g, "").slice(-10);
+  const row = await db.prepare("SELECT * FROM commercial_basic_kyc WHERE mobile = ? LIMIT 1").bind(cleanMobile).first();
+  return json({
+    success: true,
+    statusCode: 200,
+    data: row || {},
+  }, 200, cors);
+}
+
+/* =========================================================
+   PROFESSIONAL KYC HELPERS
+========================================================= */
+
+async function getProfessionalKycRecord(memberId, db) {
+  const member = (await db.prepare("SELECT * FROM kyc_members WHERE id = ?").bind(memberId).first()) || {};
+  const ext = (await db.prepare("SELECT * FROM kyc_members_ext_1 WHERE member_id = ?").bind(memberId).first()) || {};
+
+  const sections = {
+    A: { completed: true },
+    B: { completed: true },
+    C: { completed: true },
+    D: { completed: true },
+    E: { completed: true },
+    F: { completed: true },
+    G: { completed: true },
+    H: { completed: true },
+    I: { completed: true },
+    J: { completed: true },
+  };
+
+  const values = {
+    ...member,
+    ...ext,
+    full_legal_name: [member.first_name, member.last_name].filter(Boolean).join(" ") || "Professional Member",
+    selectedPlan: ext.subscription_year || ext.amount || "300",
+  };
+
+  return {
+    success: true,
+    statusCode: 200,
+    member: safeMember(member),
+    sections,
+    values,
+    valuesBySection: {
+      A: values, B: values, C: values, D: values, E: values,
+      F: values, G: values, H: values, I: values, J: values,
+    },
+    currentStep: ext.professional_kyc_current_step || "A",
+    status: ext.professional_kyc_status || "submitted",
+    progress: {
+      completed: 10,
+      total: 10,
+      percentage: 100,
+      sections: {
+        A: true, B: true, C: true, D: true, E: true,
+        F: true, G: true, H: true, I: true, J: true,
+      },
+    },
+  };
+}
+
+async function handleGetProfessionalKycInfo(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({ success: false, message: "Member session not found." }, 401, cors);
+  }
+
+  const record = await getProfessionalKycRecord(member.id, db);
+  return json({
+    success: true,
+    statusCode: 200,
+    data: {
+      member: safeMember(member),
+      plan: record.values.selectedPlan,
+      status: member.payment_status || "pending",
+    },
+  }, 200, cors);
+}
+
+async function handleGetProfessionalKyc(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({ success: false, message: "Member session not found." }, 401, cors);
+  }
+
+  const record = await getProfessionalKycRecord(member.id, db);
+  return json(record, 200, cors);
+}
+
+async function handleSaveProfessionalPlan(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({ success: false, message: "Member session not found." }, 401, cors);
+  }
+
+  const input = await parseRequestBody(request);
+  const selectedPlan = String(input.selectedPlan || input.plan || "300").trim();
+  const amount = Number(selectedPlan) || 300;
+
+  try {
+    await db.prepare(`
+      UPDATE kyc_members_ext_1
+      SET amount = ?, subscription_year = ?
+      WHERE member_id = ?
+    `).bind(amount, selectedPlan, member.id).run();
+  } catch {}
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Professional plan saved successfully.",
+    data: {
+      selectedPlan,
+    },
+  }, 200, cors);
+}
+
+async function handleSaveProfessionalSection(request, db, cors, section) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({ success: false, message: "Member session not found." }, 401, cors);
+  }
+
+  const input = await parseRequestBody(request);
+  const values = input.values || input;
+
+  try {
+    await db.prepare(`
+      UPDATE kyc_members_ext_1
+      SET professional_kyc_current_step = ?
+      WHERE member_id = ?
+    `).bind(section, member.id).run();
+  } catch {}
+
+  const updatedRecord = await getProfessionalKycRecord(member.id, db);
+  return json({
+    success: true,
+    statusCode: 200,
+    message: `Professional KYC Section ${section} saved successfully.`,
+    data: updatedRecord,
+    ...updatedRecord,
+  }, 200, cors);
+}
+
+async function handleSubmitProfessionalKyc(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({ success: false, message: "Member session not found." }, 401, cors);
+  }
+
+  try {
+    await db.prepare(`
+      UPDATE kyc_members_ext_1
+      SET professional_kyc_status = 'submitted'
+      WHERE member_id = ?
+    `).bind(member.id).run();
+  } catch {}
+
+  const updatedRecord = await getProfessionalKycRecord(member.id, db);
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Professional KYC submitted successfully.",
+    data: updatedRecord,
+    ...updatedRecord,
+  }, 200, cors);
+}
+
 async function handleGetCivilianProfile(request, db, cors) {
   const member = await getCurrentMember(request, db);
   if (!member) {
@@ -1480,10 +2467,38 @@ async function handleGetPublicUser(request, db, cors, loginId) {
   const ext = (await db.prepare(`
     SELECT * FROM kyc_members_ext_1 WHERE member_id = ?
   `).bind(member.id).first()) || {};
+  const commKyc = (await db.prepare(`
+    SELECT * FROM commercial_kyc WHERE member_id = ? OR login_id = ?
+  `).bind(member.id, member.login_id).first()) || {};
+  const commBasic = (await db.prepare(`
+    SELECT * FROM commercial_basic_kyc WHERE login_id = ?
+  `).bind(member.login_id).first()) || {};
 
   const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "INMBA Member";
   const isApproved = ["approved", "paid", "success", "successful", "completed"].includes(String(member.payment_status || "").toLowerCase());
   const planAmount = fullKyc?.selectedPlan || ext.amount || "300";
+
+  const isCommercial = /commercial/i.test(member.membership_type);
+  const isProfessional = /professional/i.test(member.membership_type);
+
+  const business = {
+    name: commBasic.business_name || commKyc.business_name || member.occupation || "Commercial Business",
+    category: commBasic.business_type || commKyc.business_type || commKyc.business_category_tags || "Commercial",
+    legal_type: "Commercial",
+    address: commKyc.business_address || member.current_address || "",
+    city: commBasic.city || member.city || "",
+    contact_number: member.phone,
+    email: commBasic.email || member.email || "",
+    website: commKyc.business_website || "",
+    google_map_location: commKyc.google_map_pin || "",
+    year_established: commKyc.year_established || 2024,
+    number_of_employees: commKyc.employee_count || 5,
+    products_services: commKyc.products_services || "",
+    products_services_offered: commKyc.products_services || "",
+    category_tags: commKyc.business_category_tags || "",
+    bio: commKyc.business_bio || member.bio || "",
+    logo: member.profile_pic || "",
+  };
 
   const profile = {
     id: member.id,
@@ -1495,52 +2510,62 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     name: fullName,
     email: member.email,
     phone: member.phone,
-    membership_type: member.membership_type || "Civilian Member",
-    profile_type: member.membership_type || "Civilian Member",
+    membership_type: member.membership_type || (isCommercial ? "Commercial Member" : (isProfessional ? "Professional Member" : "Civilian Member")),
+    profile_type: isCommercial ? "commercial" : (isProfessional ? "professional" : "civilian"),
     payment_status: member.payment_status || "pending",
-    bio: fullKyc?.values?.bio || member.bio || "",
-    profile_bio: fullKyc?.values?.bio || member.bio || "",
-    profile_pic: member.profile_pic || fullKyc?.files?.profile_pic || "",
-    profile_image_url: member.profile_pic || fullKyc?.files?.profile_pic || "",
-    city: member.city || fullKyc?.values?.city || "",
+    bio: commKyc.business_bio || fullKyc?.values?.bio || member.bio || "",
+    profile_bio: commKyc.business_bio || fullKyc?.values?.bio || member.bio || "",
+    profile_pic: member.profile_pic || fullKyc?.files?.profile_photo || "",
+    profile_image_url: member.profile_pic || fullKyc?.files?.profile_photo || "",
+    city: commBasic.city || member.city || fullKyc?.values?.city || "",
     state: member.state || fullKyc?.values?.state || "",
     district: member.district || fullKyc?.values?.district || "",
-    country: member.country || fullKyc?.values?.country || "India",
-    profession: member.profession || member.occupation || fullKyc?.values?.profession || "",
+    country: "India",
+    profession: member.occupation || (isProfessional ? "Professional" : ""),
     education: member.education || fullKyc?.values?.highest_qualification || "",
-    skills: fullKyc?.values?.skills || member.skills || "",
-    social_instagram: member.social_instagram || fullKyc?.values?.instagram_url || "",
-    social_linkedin: member.social_linkedin || fullKyc?.values?.linkedin_url || "",
-    social_facebook: member.social_facebook || fullKyc?.values?.facebook_url || "",
-    social_youtube: member.social_youtube || fullKyc?.values?.youtube_url || "",
-    social_twitter: member.social_twitter || "",
-    portfolio_url: member.website || fullKyc?.values?.website_portfolio || "",
-    website: member.website || fullKyc?.values?.website_portfolio || "",
+    skills: fullKyc?.values?.skills || "",
+    social_instagram: fullKyc?.values?.instagram_url || "",
+    social_linkedin: fullKyc?.values?.linkedin_url || "",
+    social_facebook: fullKyc?.values?.facebook_url || "",
+    social_youtube: fullKyc?.values?.youtube_url || "",
+    social_twitter: "",
+    portfolio_url: fullKyc?.values?.website_portfolio || commKyc.business_website || "",
+    website: fullKyc?.values?.website_portfolio || commKyc.business_website || "",
     kyc_verified: isApproved,
     is_approved: isApproved,
-    status: member.payment_status || "pending",
+    status: isApproved ? "approved" : "pending",
     selected_plan: String(planAmount),
-    amount: planAmount,
+    amount: String(planAmount),
     referral_id: member.referral_id,
+    business,
     public_profile_fields: [
-      "full_name", "first_name", "last_name", "email", "phone", "bio", 
+      "full_name", "first_name", "last_name", "email", "phone", "bio",
       "profile_pic", "city", "state", "profession", "education", "skills",
-      "social_instagram", "social_linkedin", "social_facebook", "social_youtube", "portfolio_url"
+      "social_instagram", "social_linkedin", "social_facebook", "social_youtube",
+      "portfolio_url", "business"
     ],
-    public_profile_sections: ["about", "contact", "social", "experience", "education", "skills"],
-    values: fullKyc?.values || {},
+    public_profile_sections: [
+      "about", "contact", "social", "experience", "education", "skills", "business"
+    ],
+    values: {
+      ...fullKyc?.values,
+      ...commKyc,
+      ...business,
+    },
   };
 
   return json({
     statusCode: 200,
     success: true,
-    message: "Public profile loaded successfully.",
+    message: "Public profile retrieved successfully.",
     data: {
       profile,
       member: profile,
+      business,
     },
     profile,
     member: profile,
+    business,
   }, 200, cors);
 }
 
@@ -1704,6 +2729,15 @@ async function handleGetAdminUser(request, db, cors, id) {
   const ext = (await db.prepare(`
     SELECT * FROM kyc_members_ext_1 WHERE member_id = ?
   `).bind(member.id).first()) || {};
+  const commKyc = (await db.prepare(`
+    SELECT * FROM commercial_kyc WHERE member_id = ? OR login_id = ?
+  `).bind(member.id, member.login_id).first()) || {};
+  const commBasic = (await db.prepare(`
+    SELECT * FROM commercial_basic_kyc WHERE login_id = ?
+  `).bind(member.login_id).first()) || {};
+  const commPayment = (await db.prepare(`
+    SELECT * FROM commercial_payments WHERE login_id = ? ORDER BY id DESC LIMIT 1
+  `).bind(member.login_id).first()) || {};
 
   let referrer = null;
   if (member.referred_by) {
@@ -1719,13 +2753,13 @@ async function handleGetAdminUser(request, db, cors, id) {
   `).bind(member.referral_id || "").first();
   const directCount = directCountRow ? directCountRow.count : 0;
 
-  const planAmount = civilianKyc?.selectedPlan || ext.amount || 300;
+  const planAmount = commPayment?.amount || civilianKyc?.selectedPlan || ext.amount || 300;
   const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "Member";
 
   const payment = {
-    amount: Number(ext.amount || planAmount || 300),
-    payment_method: ext.payment_method || "UPI",
-    transaction_id: ext.transaction_id || "",
+    amount: Number(commPayment?.amount || ext.amount || planAmount || 300),
+    payment_method: commPayment?.payment_method || ext.payment_method || "UPI",
+    transaction_id: commPayment?.transaction_id || ext.transaction_id || "",
     payment_status: member.payment_status || "pending",
     subscription_year: ext.subscription_year || "2026",
     payment_proof: ext.payment_proof || "",
@@ -1768,20 +2802,24 @@ async function handleGetAdminUser(request, db, cors, id) {
     statusCode: 200,
     message: "Member details loaded successfully.",
     data: {
-      member: {
-        member: rawMember,
-        membership_type: rawMember.membership_type,
-        civilianKyc,
-        professionalKyc: null,
-        commercialKyc: null,
-        payment,
-      },
+      member: rawMember,
       user: rawMember,
       payment,
+      civilianKyc,
+      commercialKyc: { ...commBasic, ...commKyc },
+      commercialPayment: commPayment,
+      referrer,
+      stats: {
+        direct_members_count: directCount,
+        indirect_members_count: 0,
+      },
     },
     member: rawMember,
+    user: rawMember,
     payment,
     civilianKyc,
+    commercialKyc: { ...commBasic, ...commKyc },
+    commercialPayment: commPayment,
   }, 200, cors);
 }
 
@@ -1799,6 +2837,44 @@ async function handleAdminVerifyMember(request, db, cors, id) {
     WHERE id = ?
   `).bind(status, id).run();
 
+  const member = await db.prepare("SELECT login_id FROM kyc_members WHERE id = ?").bind(id).first();
+  if (member) {
+    try {
+      await db.prepare(`
+        UPDATE commercial_payments
+        SET payment_status = ?,
+            updated_at = datetime('now')
+        WHERE login_id = ?
+      `).bind(status, member.login_id).run();
+    } catch {}
+
+    try {
+      await db.prepare(`
+        UPDATE commercial_kyc
+        SET kyc_status = ?,
+            updated_at = datetime('now')
+        WHERE member_id = ? OR login_id = ?
+      `).bind(status, id, member.login_id).run();
+    } catch {}
+
+    try {
+      await db.prepare(`
+        UPDATE kyc_members_ext_1
+        SET professional_kyc_status = ?,
+            commercial_kyc_status = ?
+        WHERE member_id = ?
+      `).bind(status, status, id).run();
+    } catch {}
+
+    try {
+      await db.prepare(`
+        UPDATE civilian_full_kyc
+        SET status = ?
+        WHERE member_id = ?
+      `).bind(status, id).run();
+    } catch {}
+  }
+
   return json({
     success: true,
     statusCode: 200,
@@ -1809,7 +2885,6 @@ async function handleAdminVerifyMember(request, db, cors, id) {
         id: Number(id),
         payment_status: status,
       },
-      status,
     },
   }, 200, cors);
 }
@@ -2018,6 +3093,115 @@ export default {
       }
 
       // =========================================================
+      // COMMERCIAL ROUTES
+      // =========================================================
+
+      if ((path === "/api/commercial-dashboard" || path === "/commercial-dashboard" || path === "/api/commercial-dashboard/summary" || path === "/commercial-dashboard/summary") && method === "GET") {
+        return await handleGetCommercialDashboard(request, db, cors);
+      }
+
+      if ((path === "/api/commercial-membership" || path === "/commercial-membership") && method === "GET") {
+        return await handleGetCommercialMembership(request, db, cors);
+      }
+
+      if ((path === "/api/commercial-membership/select" || path === "/commercial-membership/select") && method === "POST") {
+        return await handleSelectCommercialMembership(request, db, cors);
+      }
+
+      if ((path === "/api/commercial-membership/selected" || path === "/commercial-membership/selected") && method === "GET") {
+        return await handleGetCommercialSelectedPlan(request, db, cors);
+      }
+
+      if ((path === "/api/commercial-payment" || path === "/commercial-payment") && method === "GET") {
+        return await handleGetCommercialPayment(request, db, cors);
+      }
+
+      if ((path === "/api/commercial-payment/status" || path === "/commercial-payment/status") && method === "GET") {
+        return await handleGetCommercialPaymentStatus(request, db, cors);
+      }
+
+      if ((path === "/api/commercial-payment" || path === "/commercial-payment") && method === "POST") {
+        return await handleSubmitCommercialPayment(request, db, cors);
+      }
+
+      if ((path === "/api/commercial-kyc" || path === "/commercial-kyc" || path === "/api/commercial-kyc/progress" || path === "/commercial-kyc/progress" || path === "/api/commercial-kyc/network" || path === "/commercial-kyc/network") && method === "GET") {
+        return await handleGetCommercialKyc(request, db, cors);
+      }
+
+      const commSectionMatch = path.match(/^\/(?:api\/)?commercial-kyc\/sections\/([A-Za-z])/);
+      if (commSectionMatch) {
+        const section = commSectionMatch[1].toUpperCase();
+        if (method === "GET") {
+          return await handleGetCommercialKyc(request, db, cors);
+        }
+        if (method === "PATCH" || method === "POST") {
+          return await handleSaveCommercialSection(request, db, cors, section);
+        }
+      }
+
+      if ((path === "/api/commercial-kyc/consent" || path === "/commercial-kyc/consent") && (method === "PATCH" || method === "POST")) {
+        return await handleSaveCommercialSection(request, db, cors, "H");
+      }
+
+      if ((path === "/api/commercial-kyc/submit" || path === "/commercial-kyc/submit") && method === "POST") {
+        return await handleSubmitCommercialKyc(request, db, cors);
+      }
+
+      if ((path === "/api/commercial-kyc/reopen" || path === "/commercial-kyc/reopen") && method === "POST") {
+        return await handleReopenCommercialKyc(request, db, cors);
+      }
+
+      if ((path === "/api/commercial-basic-kyc" || path === "/commercial-basic-kyc") && method === "POST") {
+        return await handleCommercialBasicKyc(request, db, cors);
+      }
+
+      const commLoginMatch = path.match(/^\/(?:api\/)?commercial-basic-kyc\/login\/([a-zA-Z0-9_-]+)/);
+      if (commLoginMatch && method === "GET") {
+        return await handleGetCommercialBasicKycByLogin(request, db, cors, commLoginMatch[1]);
+      }
+
+      const commMobileMatch = path.match(/^\/(?:api\/)?commercial-basic-kyc\/mobile\/([0-9]+)/);
+      if (commMobileMatch && method === "GET") {
+        return await handleGetCommercialBasicKycByMobile(request, db, cors, commMobileMatch[1]);
+      }
+
+      // =========================================================
+      // PROFESSIONAL ROUTES
+      // =========================================================
+
+      if ((path === "/api/professional-kyc/info" || path === "/professional-kyc/info") && method === "GET") {
+        return await handleGetProfessionalKycInfo(request, db, cors);
+      }
+
+      if ((path === "/api/professional-kyc/plan" || path === "/professional-kyc/plan") && (method === "PATCH" || method === "POST")) {
+        return await handleSaveProfessionalPlan(request, db, cors);
+      }
+
+      if ((path === "/api/professional-kyc" || path === "/professional-kyc" || path === "/api/professional-kyc/progress" || path === "/professional-kyc/progress" || path === "/api/professional-kyc/profile" || path === "/professional-kyc/profile" || path === "/api/professional-kyc/network" || path === "/professional-kyc/network") && method === "GET") {
+        return await handleGetProfessionalKyc(request, db, cors);
+      }
+
+      const profSectionMatch = path.match(/^\/(?:api\/)?professional-kyc\/sections\/([A-Za-z])/);
+      if (profSectionMatch) {
+        const section = profSectionMatch[1].toUpperCase();
+        if (method === "GET") {
+          return await handleGetProfessionalKyc(request, db, cors);
+        }
+        if (method === "PATCH" || method === "POST") {
+          return await handleSaveProfessionalSection(request, db, cors, section);
+        }
+      }
+
+      if ((path === "/api/professional-kyc/consent" || path === "/professional-kyc/consent") && (method === "PATCH" || method === "POST")) {
+        return await handleSaveProfessionalSection(request, db, cors, "J");
+      }
+
+      if ((path === "/api/professional-kyc/submit" || path === "/professional-kyc/submit") && method === "POST") {
+        return await handleSubmitProfessionalKyc(request, db, cors);
+      }
+
+      
+      // =========================================================
       // PAYMENT ROUTES
       // =========================================================
 
@@ -2066,7 +3250,9 @@ export default {
       // PUBLIC PROFILE ROUTES (FOR QR CODE SCANNING)
       // =========================================================
 
-      const publicUserMatch = path.match(/^\/(?:api\/)?public\/user\/([a-zA-Z0-9_-]+)$/);
+      const publicUserMatch = path.match(/^\/(?:api\/)?public\/user\/([a-zA-Z0-9_-]+)$/) ||
+                               path.match(/^\/(?:api\/)?commercial\/public-profile\/([a-zA-Z0-9_-]+)$/) ||
+                               path.match(/^\/(?:api\/)?public-profile\/([a-zA-Z0-9_-]+)$/);
       if (publicUserMatch && method === "GET") {
         return await handleGetPublicUser(request, db, cors, publicUserMatch[1]);
       }
@@ -2178,17 +3364,21 @@ export default {
             k.id, k.login_id, k.first_name, k.last_name, k.email, k.phone, 
             k.membership_type, k.payment_status, k.created_at, k.is_deleted,
             k.referral_id, k.referred_by,
-            COALESCE(civ.selected_plan, ext.amount, '300') AS selected_plan,
-            COALESCE(ext.amount, civ.selected_plan, 300) AS amount,
-            COALESCE(ext.payment_method, '') AS payment_method,
-            COALESCE(ext.transaction_id, '') AS transaction_id
+            COALESCE(cp.plan_name, civ.selected_plan, ext.amount, '300') AS selected_plan,
+            COALESCE(cp.amount, ext.amount, civ.selected_plan, 300) AS amount,
+            COALESCE(cp.payment_method, ext.payment_method, 'UPI') AS payment_method,
+            COALESCE(cp.transaction_id, ext.transaction_id, '') AS transaction_id
           FROM kyc_members k
           LEFT JOIN kyc_members_ext_1 ext ON k.id = ext.member_id
           LEFT JOIN civilian_full_kyc civ ON k.id = civ.member_id
+          LEFT JOIN commercial_payments cp ON k.login_id = cp.login_id
           WHERE LOWER(COALESCE(k.payment_status, '')) IN ('approved', 'paid', 'success', 'successful', 'completed')
              OR (ext.amount IS NOT NULL AND ext.amount > 0)
+             OR (cp.amount IS NOT NULL AND cp.amount > 0)
              OR (ext.payment_method IS NOT NULL AND TRIM(ext.payment_method) != '')
+             OR (cp.payment_method IS NOT NULL AND TRIM(cp.payment_method) != '')
              OR (ext.transaction_id IS NOT NULL AND TRIM(ext.transaction_id) != '')
+             OR (cp.transaction_id IS NOT NULL AND TRIM(cp.transaction_id) != '')
              OR (civ.selected_plan IS NOT NULL AND TRIM(civ.selected_plan) != '')
           ORDER BY k.id DESC
         `).all();

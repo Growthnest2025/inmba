@@ -97,6 +97,14 @@ api.interceptors.request.use(
           config.headers.Authorization = `Bearer ${token}`;
         }
       }
+      if (typeof sessionStorage !== "undefined" || typeof localStorage !== "undefined") {
+        const loginId =
+          (typeof sessionStorage !== "undefined" && (sessionStorage.getItem("commercial_login_id") || sessionStorage.getItem("inmba_commercial_login_id") || sessionStorage.getItem("inmba_login_id"))) ||
+          (typeof localStorage !== "undefined" && (localStorage.getItem("commercial_login_id") || localStorage.getItem("login_id") || localStorage.getItem("inmba_login_id")));
+        if (loginId && !config.headers["X-Login-Id"]) {
+          config.headers["X-Login-Id"] = String(loginId).trim();
+        }
+      }
     } catch {}
 
     /*
