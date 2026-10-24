@@ -1393,6 +1393,325 @@ async function handleProfilePhotoUpload(request, db, cors) {
   }, 200, cors);
 }
 
+async function handleGetDashboard(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({
+      success: false,
+      statusCode: 401,
+      message: "Authentication required.",
+    }, 401, cors);
+  }
+
+  const fullMember = (await db.prepare(`
+    SELECT * FROM kyc_members WHERE id = ?
+  `).bind(member.id).first()) || member;
+
+  const fullKyc = await getCivilianFullKycRecord(member.id, db);
+  const ext = (await db.prepare(`
+    SELECT * FROM kyc_members_ext_1 WHERE member_id = ?
+  `).bind(member.id).first()) || {};
+
+  const directResult = await db.prepare(`
+    SELECT id, login_id, first_name, last_name, payment_status, created_at
+    FROM kyc_members
+    WHERE referred_by = ? AND COALESCE(is_deleted, 0) = 0
+    ORDER BY id DESC
+  `).bind(member.referral_id || "").all();
+
+  const directList = directResult.results || [];
+  const directCount = directList.length;
+  const directPaid = directList.filter(m =>
+    ["approved", "paid", "success", "successful", "completed"].includes(String(m.payment_status || "").toLowerCase())
+  ).length;
+  const directUnpaid = directCount - directPaid;
+
+  let sponsor = null;
+  if (member.referred_by) {
+    sponsor = await db.prepare(`
+      SELECT id, login_id, first_name, last_name, phone, email, referral_id
+      FROM kyc_members
+      WHERE referral_id = ? OR login_id = ?
+    `).bind(member.referred_by, member.referred_by).first();
+  }
+
+  const planAmount = fullKyc?.selectedPlan || ext.amount || "300";
+  const fullName = [fullMember.first_name, fullMember.last_name].filter(Boolean).join(" ") || "Member";
+
+  const memberObj = {
+    ...fullMember,
+    ...ext,
+    id: member.id,
+    login_id: member.login_id,
+    first_name: member.first_name,
+    last_name: member.last_name,
+    full_name: fullName,
+    name: fullName,
+    email: member.email,
+    phone: member.phone,
+    membership_type: member.membership_type || "Civilian Member",
+    payment_status: member.payment_status || "pending",
+    selected_plan: String(planAmount),
+    amount: planAmount,
+    referral_id: member.referral_id,
+    referred_by: member.referred_by,
+  };
+
+  const dashboard = {
+    member: memberObj,
+    user: memberObj,
+    profile: memberObj,
+    network: {
+      direct: directCount,
+      indirect: 0,
+      total: directCount,
+      direct_paid: directPaid,
+      direct_unpaid: directUnpaid,
+      indirect_paid: 0,
+      indirect_unpaid: 0,
+      paid_direct: directPaid,
+      unpaid_direct: directUnpaid,
+      paid_indirect: 0,
+      unpaid_indirect: 0,
+      network_strength: directCount,
+    },
+    sponsor,
+    referred_user: sponsor,
+    direct: directCount,
+    indirect: 0,
+    paid_direct: directPaid,
+    unpaid_direct: directUnpaid,
+    paid_indirect: 0,
+    unpaid_indirect: 0,
+    network_strength: directCount,
+    referral_id: member.referral_id,
+    acknowledgement_url: member.token ? `/acknowledgement/${member.token}` : null,
+  };
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Dashboard loaded successfully.",
+    data: {
+      dashboard,
+      member: memberObj,
+      network: dashboard.network,
+      sponsor,
+    },
+    dashboard,
+    member: memberObj,
+    network: dashboard.network,
+    sponsor,
+  }, 200, cors);
+}
+
+async function handleGetAdminUser(request, db, cors, id) {
+  const member = await db.prepare(`
+    SELECT * FROM kyc_members WHERE id = ?
+  `).bind(id).first();
+
+  if (!member) {
+    return json({
+      success: false,
+      statusCode: 404,
+      message: "Member not found.",
+    }, 404, cors);
+  }
+
+  const civilianKyc = await getCivilianFullKycRecord(member.id, db);
+  const ext = (await db.prepare(`
+    SELECT * FROM kyc_members_ext_1 WHERE member_id = ?
+  `).bind(member.id).first()) || {};
+
+  let referrer = null;
+  if (member.referred_by) {
+    referrer = await db.prepare(`
+      SELECT id, login_id, first_name, last_name, phone, email, referral_id
+      FROM kyc_members
+      WHERE referral_id = ? OR login_id = ?
+    `).bind(member.referred_by, member.referred_by).first();
+  }
+
+  const directCountRow = await db.prepare(`
+    SELECT COUNT(1) AS count FROM kyc_members WHERE referred_by = ? AND COALESCE(is_deleted, 0) = 0
+  `).bind(member.referral_id || "").first();
+  const directCount = directCountRow ? directCountRow.count : 0;
+
+  const planAmount = civilianKyc?.selectedPlan || ext.amount || 300;
+  const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "Member";
+
+  const payment = {
+    amount: Number(ext.amount || planAmount || 300),
+    payment_method: ext.payment_method || "UPI",
+    transaction_id: ext.transaction_id || "",
+    payment_status: member.payment_status || "pending",
+    subscription_year: ext.subscription_year || "2026",
+    payment_proof: ext.payment_proof || "",
+    account_holder: ext.account_holder || fullName,
+    bank_name: ext.bank_name || "",
+    account_number: ext.account_number || "",
+    ifsc: ext.ifsc || "",
+    paid_at: member.created_at,
+  };
+
+  const rawMember = {
+    ...member,
+    ...ext,
+    id: member.id,
+    login_id: member.login_id,
+    first_name: member.first_name,
+    last_name: member.last_name,
+    full_name: fullName,
+    fullname: fullName,
+    name: fullName,
+    email: member.email,
+    phone: member.phone,
+    membership_type: member.membership_type || "Civilian Member",
+    payment_status: member.payment_status || "pending",
+    selected_plan: String(planAmount),
+    amount: payment.amount,
+    payment_method: payment.payment_method,
+    transaction_id: payment.transaction_id,
+    payment_proof: payment.payment_proof,
+    referrer_name: referrer ? [referrer.first_name, referrer.last_name].filter(Boolean).join(" ") : null,
+    referrer_id: referrer ? referrer.login_id || referrer.referral_id : member.referred_by,
+    referrer_phone: referrer ? referrer.phone : null,
+    direct_members_count: directCount,
+    indirect_members_count: 0,
+    descendant_members_count: directCount,
+  };
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Member details loaded successfully.",
+    data: {
+      member: {
+        member: rawMember,
+        membership_type: rawMember.membership_type,
+        civilianKyc,
+        professionalKyc: null,
+        commercialKyc: null,
+        payment,
+      },
+      user: rawMember,
+      payment,
+    },
+    member: rawMember,
+    payment,
+    civilianKyc,
+  }, 200, cors);
+}
+
+async function handleAdminVerifyMember(request, db, cors, id) {
+  const input = await parseRequestBody(request);
+  let status = String(input.status || "approved").trim().toLowerCase();
+  if (!["approved", "rejected", "pending"].includes(status)) {
+    status = "approved";
+  }
+
+  await db.prepare(`
+    UPDATE kyc_members
+    SET payment_status = ?,
+        updated_at = datetime('now')
+    WHERE id = ?
+  `).bind(status, id).run();
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: `Member status updated to ${status}.`,
+    status,
+    data: {
+      member: {
+        id: Number(id),
+        payment_status: status,
+      },
+      status,
+    },
+  }, 200, cors);
+}
+
+async function handleAdminSoftDelete(request, db, cors, id) {
+  await db.prepare(`
+    UPDATE kyc_members SET is_deleted = 1, updated_at = datetime('now') WHERE id = ?
+  `).bind(id).run();
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "User temporarily deactivated.",
+  }, 200, cors);
+}
+
+async function handleAdminRestore(request, db, cors, id) {
+  await db.prepare(`
+    UPDATE kyc_members SET is_deleted = 0, updated_at = datetime('now') WHERE id = ?
+  `).bind(id).run();
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "User restored successfully.",
+  }, 200, cors);
+}
+
+async function handleAdminPermanentDelete(request, db, cors, id) {
+  await db.prepare(`DELETE FROM civilian_full_kyc WHERE member_id = ?`).bind(id).run();
+  await db.prepare(`DELETE FROM kyc_members_ext_1 WHERE member_id = ?`).bind(id).run();
+  await db.prepare(`DELETE FROM kyc_members WHERE id = ?`).bind(id).run();
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "User permanently deleted.",
+  }, 200, cors);
+}
+
+async function handleAdminRequestUserOtp(request, db, cors, id) {
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  await db.prepare(`
+    INSERT INTO kyc_members_ext_1 (member_id, otp, otp_expires)
+    VALUES (?, ?, datetime('now', '+15 minutes'))
+    ON CONFLICT(member_id) DO UPDATE SET
+      otp = excluded.otp,
+      otp_expires = excluded.otp_expires
+  `).bind(id, otp).run();
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: `OTP generated and sent. (Test OTP: ${otp})`,
+    data: {
+      otp_sent: true,
+    },
+  }, 200, cors);
+}
+
+async function handleAdminVerifyUserOtp(request, db, cors) {
+  const input = await parseRequestBody(request);
+  const userId = input.user_id || input.userId;
+  const otp = String(input.otp || "").trim();
+
+  const record = await db.prepare(`
+    SELECT otp, otp_expires FROM kyc_members_ext_1 WHERE member_id = ?
+  `).bind(userId).first();
+
+  if (!record || record.otp !== otp) {
+    return json({
+      success: false,
+      statusCode: 400,
+      message: "Invalid or expired OTP.",
+    }, 400, cors);
+  }
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "OTP verified successfully.",
+    data: {
+      verified: true,
+    },
+  }, 200, cors);
+}
+
 export default {
   async fetch(request, env) {
     const path = new URL(request.url).pathname;
@@ -1534,6 +1853,14 @@ export default {
       }
 
       // =========================================================
+      // DASHBOARD ROUTE
+      // =========================================================
+
+      if ((path === "/api/dashboard" || path === "/dashboard") && method === "GET") {
+        return await handleGetDashboard(request, db, cors);
+      }
+
+      // =========================================================
       // PROFILE ROUTES
       // =========================================================
 
@@ -1551,6 +1878,44 @@ export default {
 
       if ((path === "/profile/upload-photo" || path === "/api/profile/upload-photo") && method === "POST") {
         return await handleProfilePhotoUpload(request, db, cors);
+      }
+
+      // =========================================================
+      // ADMIN MEMBER ROUTES
+      // =========================================================
+
+      const adminUserMatch = path.match(/^\/(?:api\/)?admin\/user\/(\d+)$/) || path.match(/^\/(?:api\/)?admin\/member\/(\d+)$/);
+      if (adminUserMatch && method === "GET") {
+        return await handleGetAdminUser(request, db, cors, adminUserMatch[1]);
+      }
+
+      const adminVerifyMatch = path.match(/^\/(?:api\/)?admin_verify\/(\d+)$/) || path.match(/^\/(?:api\/)?admin\/verify(?:\/user)?\/(\d+)$/);
+      if (adminVerifyMatch && method === "POST") {
+        return await handleAdminVerifyMember(request, db, cors, adminVerifyMatch[1]);
+      }
+
+      const softDeleteMatch = path.match(/^\/(?:api\/)?soft_delete\/(\d+)$/);
+      if (softDeleteMatch && method === "POST") {
+        return await handleAdminSoftDelete(request, db, cors, softDeleteMatch[1]);
+      }
+
+      const restoreMatch = path.match(/^\/(?:api\/)?restore_user\/(\d+)$/);
+      if (restoreMatch && method === "POST") {
+        return await handleAdminRestore(request, db, cors, restoreMatch[1]);
+      }
+
+      const permDeleteMatch = path.match(/^\/(?:api\/)?permanent_delete\/(\d+)$/);
+      if (permDeleteMatch && method === "POST") {
+        return await handleAdminPermanentDelete(request, db, cors, permDeleteMatch[1]);
+      }
+
+      const otpReqMatch = path.match(/^\/(?:api\/)?admin\/request-user-otp\/(\d+)$/);
+      if (otpReqMatch && method === "POST") {
+        return await handleAdminRequestUserOtp(request, db, cors, otpReqMatch[1]);
+      }
+
+      if ((path === "/api/admin/verify-user-otp" || path === "/admin/verify-user-otp") && method === "POST") {
+        return await handleAdminVerifyUserOtp(request, db, cors);
       }
 
       if (path === "/api/logout" && method === "POST") {
@@ -1584,9 +1949,21 @@ export default {
 
       if ((path === "/api/admin/users" || path === "/admin/users") && method === "GET") {
         const users = await db.prepare(`
-          SELECT id, login_id, first_name, last_name, email, phone, membership_type, payment_status, created_at, is_deleted
-          FROM kyc_members
-          ORDER BY id DESC
+          SELECT 
+            k.id, k.login_id, k.first_name, k.last_name, k.email, k.phone, 
+            k.membership_type, k.payment_status, k.created_at, k.is_deleted,
+            k.referral_id, k.referred_by,
+            COALESCE(civ.selected_plan, ext.amount, '300') AS selected_plan,
+            COALESCE(ext.amount, civ.selected_plan, 300) AS amount,
+            COALESCE(ext.payment_method, '') AS payment_method,
+            COALESCE(ext.transaction_id, '') AS transaction_id,
+            COALESCE(ext.payment_proof, '') AS payment_proof,
+            (SELECT COUNT(1) FROM kyc_members d WHERE d.referred_by = k.referral_id AND COALESCE(d.is_deleted, 0) = 0) AS direct_members_count,
+            0 AS indirect_members_count
+          FROM kyc_members k
+          LEFT JOIN kyc_members_ext_1 ext ON k.id = ext.member_id
+          LEFT JOIN civilian_full_kyc civ ON k.id = civ.member_id
+          ORDER BY k.id DESC
         `).all();
 
         return json({
@@ -1602,10 +1979,23 @@ export default {
 
       if ((path === "/api/admin/paid_users" || path === "/admin/paid_users") && method === "GET") {
         const paidUsers = await db.prepare(`
-          SELECT id, login_id, first_name, last_name, email, phone, membership_type, payment_status, created_at, is_deleted
-          FROM kyc_members
-          WHERE LOWER(payment_status) IN ('approved', 'paid', 'success', 'successful', 'completed')
-          ORDER BY id DESC
+          SELECT DISTINCT
+            k.id, k.login_id, k.first_name, k.last_name, k.email, k.phone, 
+            k.membership_type, k.payment_status, k.created_at, k.is_deleted,
+            k.referral_id, k.referred_by,
+            COALESCE(civ.selected_plan, ext.amount, '300') AS selected_plan,
+            COALESCE(ext.amount, civ.selected_plan, 300) AS amount,
+            COALESCE(ext.payment_method, '') AS payment_method,
+            COALESCE(ext.transaction_id, '') AS transaction_id
+          FROM kyc_members k
+          LEFT JOIN kyc_members_ext_1 ext ON k.id = ext.member_id
+          LEFT JOIN civilian_full_kyc civ ON k.id = civ.member_id
+          WHERE LOWER(COALESCE(k.payment_status, '')) IN ('approved', 'paid', 'success', 'successful', 'completed')
+             OR (ext.amount IS NOT NULL AND ext.amount > 0)
+             OR (ext.payment_method IS NOT NULL AND TRIM(ext.payment_method) != '')
+             OR (ext.transaction_id IS NOT NULL AND TRIM(ext.transaction_id) != '')
+             OR (civ.selected_plan IS NOT NULL AND TRIM(civ.selected_plan) != '')
+          ORDER BY k.id DESC
         `).all();
 
         return json({
