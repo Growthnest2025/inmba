@@ -1041,10 +1041,20 @@ async function handleGetPayment(request, db, cors) {
     SELECT selected_plan FROM civilian_full_kyc WHERE member_id = ?
   `).bind(member.id).first()) || {};
 
-  const amount = civilian.selected_plan || member.amount || "300";
+  const ext = (await db.prepare(`
+    SELECT payment_method, transaction_id, subscription_year, amount, payment_proof
+    FROM kyc_members_ext_1
+    WHERE member_id = ?
+  `).bind(member.id).first()) || {};
+
+  const fullMember = (await db.prepare(`
+    SELECT token FROM kyc_members WHERE id = ?
+  `).bind(member.id).first()) || {};
+
+  const amount = civilian.selected_plan || ext.amount || "300";
   const paymentStatus = member.payment_status || "pending";
   const isApproved = ["approved", "paid", "success", "successful"].includes(paymentStatus.toLowerCase());
-  const isSubmitted = Boolean(member.transaction_id || member.payment_proof || isApproved);
+  const isSubmitted = Boolean(ext.transaction_id || ext.payment_proof || isApproved);
 
   const paymentData = {
     member_id: member.id,
@@ -1058,8 +1068,9 @@ async function handleGetPayment(request, db, cors) {
     payment_status: paymentStatus,
     payment_submitted: isSubmitted,
     payment_approved: isApproved,
-    transaction_id: member.transaction_id || null,
-    payment_proof_url: member.payment_proof || null,
+    transaction_id: ext.transaction_id || null,
+    payment_proof_url: ext.payment_proof || null,
+    token: fullMember.token || "",
   };
 
   return json({
@@ -1086,27 +1097,123 @@ async function handleSubmitPayment(request, db, cors) {
   const transactionId = String(input.transaction_id || input.transactionId || input.utr || "").trim();
   const paymentMethod = String(input.payment_method || input.paymentMethod || "UPI").trim();
   const amount = String(input.amount || "").trim();
+  const subscriptionYear = String(input.subscription_year || input.subscriptionYear || new Date().getFullYear()).trim();
   const paymentProof = String(input.payment_proof || input.paymentProof || "").trim();
 
+  // 1. Update kyc_members: only payment_status and updated_at exist in kyc_members
   await db.prepare(`
     UPDATE kyc_members
     SET payment_status = 'pending',
-        transaction_id = COALESCE(NULLIF(?, ''), transaction_id),
-        payment_method = COALESCE(NULLIF(?, ''), payment_method),
-        amount = COALESCE(NULLIF(?, ''), amount),
-        payment_proof = COALESCE(NULLIF(?, ''), payment_proof),
         updated_at = datetime('now')
     WHERE id = ?
-  `).bind(transactionId, paymentMethod, amount, paymentProof, member.id).run();
+  `).bind(member.id).run();
+
+  // 2. Upsert kyc_members_ext_1: payment_method, transaction_id, subscription_year, amount, payment_proof
+  await db.prepare(`
+    INSERT INTO kyc_members_ext_1 (member_id, payment_method, transaction_id, subscription_year, amount, payment_proof)
+    VALUES (?, ?, ?, ?, ?, ?)
+    ON CONFLICT(member_id) DO UPDATE SET
+      payment_method = COALESCE(NULLIF(excluded.payment_method, ''), kyc_members_ext_1.payment_method),
+      transaction_id = COALESCE(NULLIF(excluded.transaction_id, ''), kyc_members_ext_1.transaction_id),
+      subscription_year = COALESCE(NULLIF(excluded.subscription_year, ''), kyc_members_ext_1.subscription_year),
+      amount = COALESCE(NULLIF(excluded.amount, ''), kyc_members_ext_1.amount),
+      payment_proof = COALESCE(NULLIF(excluded.payment_proof, ''), kyc_members_ext_1.payment_proof)
+  `).bind(member.id, paymentMethod, transactionId, subscriptionYear, amount, paymentProof).run();
+
+  // 3. Get member's token for civilian acknowledgement
+  const fullMember = (await db.prepare(`
+    SELECT token FROM kyc_members WHERE id = ?
+  `).bind(member.id).first()) || {};
+
+  const token = fullMember.token || member.token || "";
+  const nextPath = token ? `/civilian-acknowledgement/${token}` : "/dashboard";
 
   return json({
     statusCode: 200,
     success: true,
     message: "Payment details submitted successfully.",
+    token,
+    nextPath,
+    nextRoute: nextPath,
+    redirectTo: nextPath,
     data: {
       payment_status: "pending",
       transaction_id: transactionId,
+      token,
+      nextPath,
+      nextRoute: nextPath,
+      redirectTo: nextPath,
     },
+  }, 200, cors);
+}
+
+async function handleGetAcknowledgement(request, db, cors, token) {
+  const safeToken = String(token || "").trim();
+  if (!safeToken) {
+    return json({
+      success: false,
+      message: "Acknowledgement token is required.",
+    }, 400, cors);
+  }
+
+  const member = await db.prepare(`
+    SELECT ${MEMBER_FIELDS}, token, created_at
+    FROM kyc_members
+    WHERE token = ? AND is_deleted = 0
+  `).bind(safeToken).first();
+
+  if (!member) {
+    return json({
+      success: false,
+      message: "Member not found for the given acknowledgement token.",
+    }, 404, cors);
+  }
+
+  const ext = (await db.prepare(`
+    SELECT payment_method, transaction_id, subscription_year, amount, payment_proof
+    FROM kyc_members_ext_1
+    WHERE member_id = ?
+  `).bind(member.id).first()) || {};
+
+  const civilian = (await db.prepare(`
+    SELECT selected_plan FROM civilian_full_kyc WHERE member_id = ?
+  `).bind(member.id).first()) || {};
+
+  const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "Member";
+  const planAmount = civilian.selected_plan || ext.amount || "300";
+
+  const ackData = {
+    token: safeToken,
+    login_id: member.login_id,
+    first_name: member.first_name,
+    last_name: member.last_name,
+    full_name: fullName,
+    name: fullName,
+    email: member.email,
+    phone: member.phone,
+    membership_type: member.membership_type || "Civilian Member",
+    payment_status: member.payment_status || "pending",
+    selected_plan: planAmount,
+    amount: planAmount,
+    transaction_id: ext.transaction_id || null,
+    payment_method: ext.payment_method || "UPI",
+    payment_proof: ext.payment_proof || null,
+    created_at: member.created_at,
+  };
+
+  return json({
+    statusCode: 200,
+    success: true,
+    message: "Acknowledgement loaded successfully.",
+    token: safeToken,
+    data: {
+      token: safeToken,
+      acknowledgement: ackData,
+      member: ackData,
+      ...ackData,
+    },
+    acknowledgement: ackData,
+    member: ackData,
   }, 200, cors);
 }
 
@@ -1243,6 +1350,11 @@ export default {
 
       if ((path === "/payment_submit" || path === "/api/payment_submit" || path === "/api/payment" || path === "/payment") && method === "POST") {
         return await handleSubmitPayment(request, db, cors);
+      }
+
+      const ackMatch = path.match(/^\/(?:api\/)?acknowledgement\/([a-zA-Z0-9_-]+)/);
+      if (ackMatch && method === "GET") {
+        return await handleGetAcknowledgement(request, db, cors, ackMatch[1]);
       }
 
       if (path === "/api/logout" && method === "POST") {
