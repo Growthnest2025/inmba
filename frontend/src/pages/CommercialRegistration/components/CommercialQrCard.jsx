@@ -140,7 +140,7 @@ export default function CommercialQrCard({
           return "";
         }
 
-        return `/user-profile/${encodeURIComponent(
+        return `/commercial/public-profile/${encodeURIComponent(
           safeLoginId
         )}`;
       },

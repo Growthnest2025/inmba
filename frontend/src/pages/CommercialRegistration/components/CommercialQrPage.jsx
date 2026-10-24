@@ -356,7 +356,7 @@ export default function CommercialQrPage() {
           return "";
         }
 
-        return `/user-profile/${encodeURIComponent(
+        return `/commercial/public-profile/${encodeURIComponent(
           safeLoginId
         )}`;
       },

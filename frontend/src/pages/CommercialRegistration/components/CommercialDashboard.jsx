@@ -716,6 +716,17 @@ api.get(
       "Not available"
     );
 
+  const validLoginId =
+    loginId !== "Not available" && Boolean(loginId.trim());
+
+  const frontendBaseUrl =
+    typeof window !== "undefined" &&
+    !window.location.hostname.includes("vercel.app") &&
+    !window.location.hostname.includes("localhost") &&
+    !window.location.hostname.includes("127.0.0.1")
+      ? window.location.origin
+      : "https://inmba.org";
+
 
   const storedPlan =
     useMemo(
@@ -973,20 +984,6 @@ const backendAmount =
   /* =======================================================
      PUBLIC PROFILE
   ======================================================= */
-
-  const frontendBaseUrl =
-    typeof window !== "undefined" &&
-    !window.location.hostname.includes("vercel.app") &&
-    !window.location.hostname.includes("localhost") &&
-    !window.location.hostname.includes("127.0.0.1")
-      ? window.location.origin
-      : "https://inmba.org";
-
-
-  const validLoginId =
-    loginId !==
-    "Not available";
-
 
   const publicProfilePath =
     hasQrPublicProfileAccess &&
