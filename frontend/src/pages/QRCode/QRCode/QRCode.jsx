@@ -457,11 +457,11 @@ export default function QRCode() {
 
   const frontendBaseUrl =
     String(
-      process.env
-        .REACT_APP_PUBLIC_FRONTEND_URL ||
-        process.env
-          .REACT_APP_FRONTEND_BASE_URL ||
-        window.location.origin
+      (typeof window !== "undefined" && window.location?.origin && !window.location.hostname.includes("localhost") && !window.location.hostname.includes("127.0.0.1"))
+        ? window.location.origin
+        : (process.env.REACT_APP_PUBLIC_FRONTEND_URL ||
+           process.env.REACT_APP_FRONTEND_BASE_URL ||
+           (typeof window !== "undefined" ? window.location.origin : "https://inmba.org"))
     )
       .trim()
       .replace(/\/+$/, "");

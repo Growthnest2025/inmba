@@ -59,28 +59,23 @@ const buildPublicProfileUrl =
         safeLoginId
       )}`;
 
-    const configuredBase =
-      toText(
-        process.env
-          .REACT_APP_FRONTEND_BASE_URL
-      );
-
-    if (
-      configuredBase
-    ) {
-      return `${configuredBase.replace(
-        /\/+$/,
-        ""
-      )}${profilePath}`;
+    let baseUrl = "";
+    if (typeof window !== "undefined" && window.location?.origin) {
+      if (!window.location.hostname.includes("localhost") && !window.location.hostname.includes("127.0.0.1")) {
+        baseUrl = window.location.origin;
+      }
     }
-
-    if (
-      typeof window !==
-        "undefined" &&
-      window.location
-        ?.origin
-    ) {
-      return `${window.location.origin}${profilePath}`;
+    if (!baseUrl) {
+      const configuredBase = toText(process.env.REACT_APP_PUBLIC_FRONTEND_URL || process.env.REACT_APP_FRONTEND_BASE_URL);
+      if (configuredBase && !configuredBase.includes("localhost") && !configuredBase.includes("127.0.0.1")) {
+        baseUrl = configuredBase;
+      }
+    }
+    if (!baseUrl && typeof window !== "undefined" && window.location?.origin) {
+      baseUrl = window.location.origin;
+    }
+    if (baseUrl) {
+      return `${baseUrl.replace(/\/+$/, "")}${profilePath}`;
     }
 
     return profilePath;

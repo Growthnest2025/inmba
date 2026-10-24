@@ -543,23 +543,51 @@ async function parseRequestBody(request) {
 
 async function handleRegistration(request, db, cors) {
   const input = await parseRequestBody(request);
+  const path = new URL(request.url).pathname;
 
-  const firstName = String(input.first_name || "").trim();
-  const lastName = String(input.last_name || "").trim();
+  const rawFullName = String(
+    input.first_name ||
+    input.full_name ||
+    input.fullname ||
+    input.name ||
+    input.owner_full_name ||
+    input.owner_name ||
+    ""
+  ).trim();
+
+  let firstName = String(input.first_name || "").trim();
+  let lastName = String(input.last_name || "").trim();
+
+  if (!firstName && rawFullName) {
+    const parts = rawFullName.split(/\s+/);
+    firstName = parts[0] || "";
+    lastName = parts.slice(1).join(" ") || "";
+  }
+
   const fatherName = String(input.father_name || input.father_spouse_name || "").trim();
   const dob = String(input.dob || "").trim();
   const email = String(input.email || "").trim().toLowerCase();
-  const phone = String(input.phone || input.mobile || "").trim();
+  let phone = String(input.phone || input.mobile || input.mobile_number || input.primary_mobile || "").trim();
+  phone = phone.replace(/\D/g, "").slice(-10);
+
   const pincode = String(input.pincode || "").trim();
   const gender = String(input.gender || "").trim();
   const maritalStatus = String(input.marital_status || "").trim();
   const nationality = String(input.nationality || "Indian").trim();
-  const occupation = String(input.occupation || "").trim();
+  const occupation = String(input.business_name || input.occupation || input.profession || "").trim();
   const education = String(input.education || "").trim();
-  const membershipType = String(input.membership_type || "Civilian Member").trim();
+
+  let membershipType = String(input.membership_type || "").trim();
+  if (!membershipType) {
+    if (path.includes("professional")) membershipType = "Professional Member";
+    else if (path.includes("commercial")) membershipType = "Commercial Member";
+    else if (path.includes("student")) membershipType = "Student Member";
+    else membershipType = "Civilian Member";
+  }
+
   const referral = String(input.referral || input.referred_by || "").trim();
   const aadhar = String(input.aadhar || input.aadhaar_number || "").trim();
-  const password = String(input.password || "");
+  const password = String(input.password || input.pin || "");
 
   if (!firstName || !phone || !password) {
     return json({
@@ -1325,30 +1353,102 @@ async function handleGetProfessionalProfile(request, db, cors) {
 }
 
 async function handleProfileUpdate(request, db, cors) {
-  const member = await getCurrentMember(request, db);
+  const input = await parseRequestBody(request);
+  let member = await getCurrentMember(request, db);
+
+  if (!member && input.token && /^[a-f0-9]{64}$/.test(input.token)) {
+    const tokenHash = await sha256(input.token);
+    const session = await db.prepare(`
+      SELECT member_id FROM worker_auth_sessions
+      WHERE token_hash = ? AND expires_at > ?
+    `).bind(tokenHash, Math.floor(Date.now() / 1000)).first();
+    if (session && session.member_id) {
+      member = await db.prepare("SELECT * FROM kyc_members WHERE id = ?").bind(session.member_id).first();
+    }
+  }
+
   if (!member) {
     return json({
       success: false,
+      statusCode: 401,
       message: "Authentication required.",
     }, 401, cors);
   }
 
-  const input = await parseRequestBody(request);
   const firstName = input.first_name || input.name;
   const lastName = input.last_name;
   const email = input.email;
   const phone = input.phone;
+  const bio = input.bio || input.profile_bio;
+  const occupation = input.occupation || input.profession || input.professional_role;
+  const education = input.education || input.educational_qualification || input.highest_qualification;
+  const city = input.city;
+  const state = input.state;
+  const district = input.district;
+  const pincode = input.pincode;
+  const address = input.address || input.current_address;
+  const photoUrl = input.photo_url || input.profile_pic || input.profile_image_url;
+  const instagram = input.social_instagram || input.instagram_url;
+  const linkedin = input.social_linkedin || input.linkedin_url;
+  const facebook = input.social_facebook || input.facebook_url;
+  const youtube = input.social_youtube || input.youtube_url;
+  const twitter = input.social_twitter;
+  const website = input.website || input.portfolio_url;
 
-  if (firstName || email || phone) {
+  await db.prepare(`
+    UPDATE kyc_members
+    SET first_name = COALESCE(NULLIF(?, ''), first_name),
+        last_name = COALESCE(NULLIF(?, ''), last_name),
+        email = COALESCE(NULLIF(?, ''), email),
+        phone = COALESCE(NULLIF(?, ''), phone),
+        bio = COALESCE(NULLIF(?, ''), bio),
+        occupation = COALESCE(NULLIF(?, ''), occupation),
+        profession = COALESCE(NULLIF(?, ''), profession),
+        education = COALESCE(NULLIF(?, ''), education),
+        city = COALESCE(NULLIF(?, ''), city),
+        state = COALESCE(NULLIF(?, ''), state),
+        district = COALESCE(NULLIF(?, ''), district),
+        pincode = COALESCE(NULLIF(?, ''), pincode),
+        address = COALESCE(NULLIF(?, ''), address),
+        profile_pic = COALESCE(NULLIF(?, ''), profile_pic),
+        social_instagram = COALESCE(NULLIF(?, ''), social_instagram),
+        social_linkedin = COALESCE(NULLIF(?, ''), social_linkedin),
+        social_facebook = COALESCE(NULLIF(?, ''), social_facebook),
+        social_youtube = COALESCE(NULLIF(?, ''), social_youtube),
+        social_twitter = COALESCE(NULLIF(?, ''), social_twitter),
+        social_link = COALESCE(NULLIF(?, ''), social_link),
+        updated_at = datetime('now')
+    WHERE id = ?
+  `).bind(
+    firstName || "", lastName || "", email || "", phone || "", bio || "",
+    occupation || "", occupation || "", education || "", city || "", state || "",
+    district || "", pincode || "", address || "", photoUrl || "",
+    instagram || "", linkedin || "", facebook || "", youtube || "", twitter || "", website || "",
+    member.id
+  ).run();
+
+  try {
     await db.prepare(`
-      UPDATE kyc_members
-      SET first_name = COALESCE(NULLIF(?, ''), first_name),
-          last_name = COALESCE(NULLIF(?, ''), last_name),
-          email = COALESCE(NULLIF(?, ''), email),
-          phone = COALESCE(NULLIF(?, ''), phone),
+      UPDATE civilian_full_kyc
+      SET bio = COALESCE(NULLIF(?, ''), bio),
+          current_address = COALESCE(NULLIF(?, ''), current_address),
+          district = COALESCE(NULLIF(?, ''), district),
+          state = COALESCE(NULLIF(?, ''), state),
+          pincode = COALESCE(NULLIF(?, ''), pincode),
+          instagram_url = COALESCE(NULLIF(?, ''), instagram_url),
+          linkedin_url = COALESCE(NULLIF(?, ''), linkedin_url),
+          facebook_url = COALESCE(NULLIF(?, ''), facebook_url),
+          youtube_url = COALESCE(NULLIF(?, ''), youtube_url),
+          website_portfolio = COALESCE(NULLIF(?, ''), website_portfolio),
           updated_at = datetime('now')
-      WHERE id = ?
-    `).bind(firstName || "", lastName || "", email || "", phone || "", member.id).run();
+      WHERE member_id = ?
+    `).bind(
+      bio || "", address || "", district || "", state || "", pincode || "",
+      instagram || "", linkedin || "", facebook || "", youtube || "", website || "",
+      member.id
+    ).run();
+  } catch (civErr) {
+    console.error("Civilian KYC update warning:", civErr);
   }
 
   return json({
@@ -1359,6 +1459,88 @@ async function handleProfileUpdate(request, db, cors) {
       id: member.id,
       login_id: member.login_id,
     },
+  }, 200, cors);
+}
+
+async function handleGetPublicUser(request, db, cors, loginId) {
+  const member = await db.prepare(`
+    SELECT * FROM kyc_members
+    WHERE login_id = ? OR CAST(id AS TEXT) = ? OR referral_id = ?
+  `).bind(loginId, loginId, loginId).first();
+
+  if (!member) {
+    return json({
+      success: false,
+      statusCode: 404,
+      message: "Public profile not found.",
+    }, 404, cors);
+  }
+
+  const fullKyc = await getCivilianFullKycRecord(member.id, db);
+  const ext = (await db.prepare(`
+    SELECT * FROM kyc_members_ext_1 WHERE member_id = ?
+  `).bind(member.id).first()) || {};
+
+  const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "INMBA Member";
+  const isApproved = ["approved", "paid", "success", "successful", "completed"].includes(String(member.payment_status || "").toLowerCase());
+  const planAmount = fullKyc?.selectedPlan || ext.amount || "300";
+
+  const profile = {
+    id: member.id,
+    login_id: member.login_id,
+    first_name: member.first_name,
+    last_name: member.last_name,
+    full_name: fullName,
+    fullname: fullName,
+    name: fullName,
+    email: member.email,
+    phone: member.phone,
+    membership_type: member.membership_type || "Civilian Member",
+    profile_type: member.membership_type || "Civilian Member",
+    payment_status: member.payment_status || "pending",
+    bio: fullKyc?.values?.bio || member.bio || "",
+    profile_bio: fullKyc?.values?.bio || member.bio || "",
+    profile_pic: member.profile_pic || fullKyc?.files?.profile_pic || "",
+    profile_image_url: member.profile_pic || fullKyc?.files?.profile_pic || "",
+    city: member.city || fullKyc?.values?.city || "",
+    state: member.state || fullKyc?.values?.state || "",
+    district: member.district || fullKyc?.values?.district || "",
+    country: member.country || fullKyc?.values?.country || "India",
+    profession: member.profession || member.occupation || fullKyc?.values?.profession || "",
+    education: member.education || fullKyc?.values?.highest_qualification || "",
+    skills: fullKyc?.values?.skills || member.skills || "",
+    social_instagram: member.social_instagram || fullKyc?.values?.instagram_url || "",
+    social_linkedin: member.social_linkedin || fullKyc?.values?.linkedin_url || "",
+    social_facebook: member.social_facebook || fullKyc?.values?.facebook_url || "",
+    social_youtube: member.social_youtube || fullKyc?.values?.youtube_url || "",
+    social_twitter: member.social_twitter || "",
+    portfolio_url: member.website || fullKyc?.values?.website_portfolio || "",
+    website: member.website || fullKyc?.values?.website_portfolio || "",
+    kyc_verified: isApproved,
+    is_approved: isApproved,
+    status: member.payment_status || "pending",
+    selected_plan: String(planAmount),
+    amount: planAmount,
+    referral_id: member.referral_id,
+    public_profile_fields: [
+      "full_name", "first_name", "last_name", "email", "phone", "bio", 
+      "profile_pic", "city", "state", "profession", "education", "skills",
+      "social_instagram", "social_linkedin", "social_facebook", "social_youtube", "portfolio_url"
+    ],
+    public_profile_sections: ["about", "contact", "social", "experience", "education", "skills"],
+    values: fullKyc?.values || {},
+  };
+
+  return json({
+    statusCode: 200,
+    success: true,
+    message: "Public profile loaded successfully.",
+    data: {
+      profile,
+      member: profile,
+    },
+    profile,
+    member: profile,
   }, 200, cors);
 }
 
@@ -1878,6 +2060,19 @@ export default {
 
       if ((path === "/profile/upload-photo" || path === "/api/profile/upload-photo") && method === "POST") {
         return await handleProfilePhotoUpload(request, db, cors);
+      }
+
+      // =========================================================
+      // PUBLIC PROFILE ROUTES (FOR QR CODE SCANNING)
+      // =========================================================
+
+      const publicUserMatch = path.match(/^\/(?:api\/)?public\/user\/([a-zA-Z0-9_-]+)$/);
+      if (publicUserMatch && method === "GET") {
+        return await handleGetPublicUser(request, db, cors, publicUserMatch[1]);
+      }
+
+      if ((path === "/api/public/user/update" || path === "/public/user/update") && method === "POST") {
+        return await handleProfileUpdate(request, db, cors);
       }
 
       // =========================================================
