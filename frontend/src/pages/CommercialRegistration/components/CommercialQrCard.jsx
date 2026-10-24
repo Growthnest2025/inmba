@@ -618,30 +618,36 @@ export default function CommercialQrCard({
 
           <div className="commercial-qr-preview">
 
-            <div className="commercial-qr-code-shell">
+            <div className="commercial-qr-code-shell" style={!verified ? { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "210px", padding: "20px", background: "#f8fafc", borderRadius: "12px", border: "2px dashed #cbd5e1" } : undefined}>
 
-              <QRCodeCanvas
-                id="commercial-public-profile-qr"
-                value={
-                  profileUrl
-                }
-                size={
-                  210
-                }
-                level="H"
-                includeMargin
-                bgColor="#ffffff"
-                fgColor="#E23744"
-                title={`INMBA Commercial QR ${safeLoginId}`}
-              />
+              {verified ? (
+                <>
+                  <QRCodeCanvas
+                    id="commercial-public-profile-qr"
+                    value={
+                      profileUrl
+                    }
+                    size={
+                      210
+                    }
+                    level="H"
+                    includeMargin
+                    bgColor="#ffffff"
+                    fgColor="#E23744"
+                    title={`INMBA Commercial QR ${safeLoginId}`}
+                  />
 
-              {/* =============================================
-                  QR CENTER ICON
-              ============================================= */}
-
-              <span className="commercial-qr-center-logo">
-                <i className="fa-solid fa-store" />
-              </span>
+                  <span className="commercial-qr-center-logo">
+                    <i className="fa-solid fa-store" />
+                  </span>
+                </>
+              ) : (
+                <div style={{ textAlign: "center" }}>
+                  <i className="fa-solid fa-lock" style={{ fontSize: "48px", color: "#f59e0b", marginBottom: "10px", display: "block" }} />
+                  <strong style={{ fontSize: "16px", color: "#1e293b", display: "block", marginBottom: "4px" }}>QR Code Locked</strong>
+                  <span style={{ fontSize: "12px", color: "#64748b", display: "block" }}>Awaiting Admin Approval</span>
+                </div>
+              )}
 
             </div>
 

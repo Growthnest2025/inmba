@@ -671,7 +671,7 @@ async function handleRegistration(request, db, cors) {
           login_id: existingPhone.login_id,
           loginId: existingPhone.login_id,
         },
-        nextRoute: "/login",
+        nextRoute: /commercial/i.test(existingPhone.membership_type) ? "/login/commercial" : (/professional/i.test(existingPhone.membership_type) ? "/professional-login" : "/success"),
       };
 
       return json({
@@ -851,7 +851,7 @@ async function handleRegistration(request, db, cors) {
     },
     nextAction: {
       type: "NAVIGATE",
-      path: /commercial/i.test(membershipType) ? "/commercial/dashboard" : (/professional/i.test(membershipType) ? "/professional/dashboard" : "/dashboard"),
+      path: /commercial/i.test(membershipType) ? "/commercial/dashboard" : (/professional/i.test(membershipType) ? "/professional-registration-success" : "/success"),
       loginPath: "/login",
     },
   };

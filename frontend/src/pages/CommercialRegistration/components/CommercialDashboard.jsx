@@ -928,9 +928,7 @@ const backendAmount =
     validLoginId && (
       (isAdminApproved && hasPaidPlan) ||
       paymentStatus === "approved" ||
-      paymentStatus === "paid" ||
-      paymentStatus === "pending" ||
-      (commercialPayment?.amount > 0)
+      paymentStatus === "paid"
     );
 
   const hasRoyaltyRewardsAccess =
@@ -2138,6 +2136,51 @@ const backendAmount =
 
           </section>
 
+        )}
+
+        {!hasQrPublicProfileAccess && (
+          <section className="commercial-dashboard-card commercial-dashboard-qr-card">
+            <div className="commercial-dashboard-qr-content">
+              <div>
+                <p className="commercial-dashboard-eyebrow">
+                  Digital Business Identity
+                </p>
+
+                <h2>
+                  Commercial Profile QR Locked
+                </h2>
+
+                <p>
+                  Your Commercial QR code and public profile are currently locked. They will unlock automatically once your KYC and payment are approved by the administrator.
+                </p>
+
+                <div style={{ marginTop: "12px" }}>
+                  <span className="badge bg-warning text-dark px-3 py-2" style={{ borderRadius: "8px", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                    <i className="fas fa-clock" aria-hidden="true"></i>
+                    Awaiting Admin Approval
+                  </span>
+                </div>
+              </div>
+
+              <div className="commercial-dashboard-qr-preview">
+                <div className="commercial-dashboard-qr-placeholder" style={{ textAlign: "center", padding: "24px 16px" }}>
+                  <i
+                    className="fas fa-lock"
+                    aria-hidden="true"
+                    style={{ fontSize: "48px", color: "#f59e0b", marginBottom: "12px" }}
+                  ></i>
+
+                  <strong style={{ display: "block", fontSize: "16px", color: "#1e293b", marginBottom: "4px" }}>
+                    QR Code Locked
+                  </strong>
+
+                  <span style={{ fontSize: "13px", color: "#64748b" }}>
+                    Pending Admin Approval
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
         )}
 
 

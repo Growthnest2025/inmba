@@ -451,6 +451,16 @@ export default function QRCode() {
   const memberStatus =
     getMemberStatus(member);
 
+  const paymentStatus = toText(
+    member.payment_status ??
+      member.paymentStatus ??
+      dashboardData?.member?.payment_status ??
+      dashboardData?.payment_status,
+    "pending"
+  ).toLowerCase().trim();
+
+  const isApproved = ["approved", "paid"].includes(paymentStatus);
+
   /* =========================
      PUBLIC PROFILE URL
   ========================= */
@@ -550,10 +560,10 @@ export default function QRCode() {
 
   const handleDownloadQr =
     () => {
-      if (
-        downloading ||
-        !publicProfileUrl
-      ) {
+      if (downloading || !publicProfileUrl || !isApproved) {
+        if (!isApproved) {
+          toast.warning("QR Code downloads unlock after admin payment approval.");
+        }
         return;
       }
 
@@ -747,7 +757,7 @@ export default function QRCode() {
             </div>
 
             <div className="inmba-qr-preview-wrapper">
-              {publicProfileUrl ? (
+              {isApproved && publicProfileUrl ? (
                 <div className="inmba-qr-preview">
                   <QRCodeCanvas
                     id={qrCanvasId}
@@ -767,18 +777,21 @@ export default function QRCode() {
                   />
                 </div>
               ) : (
-                <div className="inmba-qr-preview inmba-qr-placeholder">
+                <div className="inmba-qr-preview inmba-qr-placeholder" style={{ textAlign: "center", padding: "30px 20px" }}>
                   <i
-                    className="fas fa-qrcode"
+                    className="fas fa-lock"
                     aria-hidden="true"
+                    style={{ fontSize: "52px", color: "#f59e0b", marginBottom: "16px" }}
                   ></i>
 
-                  <strong>
-                    QR Code
+                  <strong style={{ display: "block", fontSize: "18px", color: "#1e293b", marginBottom: "8px" }}>
+                    QR Code Locked
                   </strong>
 
-                  <span>
-                    Member Login ID is unavailable.
+                  <span style={{ display: "block", fontSize: "14px", color: "#64748b", lineHeight: "1.5", maxWidth: "260px", margin: "0 auto" }}>
+                    {!isApproved
+                      ? "Your payment verification is pending admin approval. The QR code will be generated once approved."
+                      : "Member Login ID is unavailable."}
                   </span>
                 </div>
               )}
@@ -933,9 +946,7 @@ export default function QRCode() {
                   onClick={
                     handleCopyProfileLink
                   }
-                  disabled={
-                    !publicProfileUrl
-                  }
+                  disabled={!isApproved || !publicProfileUrl}
                   aria-label="Copy public profile link"
                 >
                   <i
@@ -953,10 +964,7 @@ export default function QRCode() {
                 onClick={
                   handleDownloadQr
                 }
-                disabled={
-                  downloading ||
-                  !publicProfileUrl
-                }
+                disabled={downloading || !isApproved || !publicProfileUrl}
               >
                 {downloading ? (
                   <>
@@ -985,9 +993,7 @@ export default function QRCode() {
                 onClick={
                   handleShareProfile
                 }
-                disabled={
-                  !publicProfileUrl
-                }
+                disabled={!isApproved || !publicProfileUrl}
               >
                 <i
                   className="fas fa-share-nodes"

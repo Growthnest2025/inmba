@@ -732,7 +732,7 @@ export default function CommercialQrPage() {
 
               <div className="cqd-qr-frame">
 
-                {publicProfileUrl ? (
+                {verified && publicProfileUrl ? (
                   <QRCodeCanvas
                     id="commercial-qr-details-canvas"
                     value={
@@ -748,8 +748,10 @@ export default function CommercialQrPage() {
                     title={`Commercial QR for ${businessName}`}
                   />
                 ) : (
-                  <div className="cqd-qr-empty">
-                    QR
+                  <div className="cqd-qr-empty" style={{ textAlign: "center", padding: "30px 16px" }}>
+                    <i className="fa-solid fa-lock" style={{ fontSize: "44px", color: "#f59e0b", marginBottom: "8px", display: "block" }} />
+                    <span style={{ fontSize: "14px", fontWeight: "600", color: "#334155", display: "block" }}>QR Locked</span>
+                    <small style={{ fontSize: "12px", color: "#64748b", display: "block" }}>Awaiting Admin Approval</small>
                   </div>
                 )}
 
@@ -925,6 +927,7 @@ export default function CommercialQrPage() {
               <button
                 type="button"
                 className="primary"
+                disabled={!verified || !publicProfileUrl}
                 onClick={
                   handleDownload
                 }

@@ -120,15 +120,35 @@ export default function KycSubmitted() {
             registrationResult.member
           );
 
+        const searchParams = new URLSearchParams(location.search);
+        const queryLoginId = searchParams.get("loginId") || searchParams.get("id");
+
+        let storedLoginId = "";
+        if (typeof window !== "undefined") {
+          try {
+            storedLoginId =
+              window.sessionStorage.getItem("civilian_login_id") ||
+              window.localStorage.getItem("civilian_login_id") ||
+              window.sessionStorage.getItem("inmba_civilian_login_id") ||
+              window.sessionStorage.getItem("last_registered_login_id") ||
+              "";
+          } catch {
+            // Storage access fallback
+          }
+        }
+
         return toText(
-          state.loginId ??
-            registrationResult.loginId ??
-            registrationResult.login_id ??
-            member.login_id
+          state.loginId ||
+            queryLoginId ||
+            registrationResult.loginId ||
+            registrationResult.login_id ||
+            member.login_id ||
+            storedLoginId
         );
       },
       [
         location.state,
+        location.search,
         registrationResult,
       ]
     );
