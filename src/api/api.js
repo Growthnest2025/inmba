@@ -4,8 +4,12 @@ import axios from "axios";
    DEFAULT URLS
 ========================= */
 
+const isLocalhostUrl = (url) => /localhost|127\.0\.0\.1|0\.0\.0\.0/i.test(String(url || ""));
+
 const DEFAULT_BACKEND_URL =
-  "http://127.0.0.1:5000";
+  process.env.NODE_ENV === "production"
+    ? "https://inmba-auth-staging.venkatgrowthnest.workers.dev"
+    : "http://127.0.0.1:5000";
 
 /*
   URL முடிவில் இருக்கும் unnecessary
@@ -28,25 +32,28 @@ const normalizeUrl = (value) => {
    BACKEND BASE URL
 ========================= */
 
-export const BACKEND_URL =
-  normalizeUrl(
-    process.env
-      .REACT_APP_BACKEND_URL ||
-      process.env
-        .REACT_APP_API_URL ||
-      DEFAULT_BACKEND_URL
-  );
+const rawBackendUrl =
+  process.env.REACT_APP_BACKEND_URL ||
+  process.env.REACT_APP_API_URL ||
+  "";
+
+export const BACKEND_URL = normalizeUrl(
+  process.env.NODE_ENV === "production" && (!rawBackendUrl || isLocalhostUrl(rawBackendUrl))
+    ? DEFAULT_BACKEND_URL
+    : (rawBackendUrl || DEFAULT_BACKEND_URL)
+);
 
 /* =========================
    API BASE URL
 ========================= */
 
-export const API_BASE_URL =
-  normalizeUrl(
-    process.env
-      .REACT_APP_API_BASE_URL ||
-      `${BACKEND_URL}/api`
-  );
+const rawApiUrl = process.env.REACT_APP_API_BASE_URL || "";
+
+export const API_BASE_URL = normalizeUrl(
+  process.env.NODE_ENV === "production" && (!rawApiUrl || isLocalhostUrl(rawApiUrl))
+    ? `${BACKEND_URL}/api`
+    : (rawApiUrl || `${BACKEND_URL}/api`)
+);
 
 /* =========================
    AXIOS INSTANCE
