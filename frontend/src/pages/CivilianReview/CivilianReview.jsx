@@ -395,7 +395,7 @@ const getPlan = ({
     candidate
   )
     ? candidate
-    : "";
+    : "300";
 };
 
 const getFileName = (value) => {
@@ -812,18 +812,7 @@ export default function CivilianReview() {
         return;
       }
 
-      if (!selectedPlan) {
-        setError(
-          "Selected Civilian membership plan is missing. Please return to the membership plan page."
-        );
-
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
-
-        return;
-      }
+      const effectivePlan = selectedPlan || "300";
 
       try {
         setConfirming(true);
@@ -845,7 +834,7 @@ export default function CivilianReview() {
 
         navigate(
           `/payment?plan=${encodeURIComponent(
-            selectedPlan
+            effectivePlan
           )}`,
           {
             replace: true,

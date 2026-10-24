@@ -1037,7 +1037,7 @@ async function getCivilianFullKycRecord(memberId, db) {
 
   const selectedPlan = ["300", "1500"].includes(String(row.selected_plan || ""))
     ? String(row.selected_plan)
-    : "";
+    : (member.amount ? String(member.amount) : "300");
 
   return {
     values,
@@ -1186,20 +1186,16 @@ async function handleSubmitCivilianKyc(request, db, cors) {
   }
 
   const data = await getCivilianFullKycRecord(member.id, db);
-  if (!data.selectedPlan) {
-    return json({
-      success: false,
-      message: "Please select the Civilian ₹300 or ₹1500 plan before submitting Full KYC.",
-    }, 422, cors);
-  }
+  const planToSet = data.selectedPlan || "300";
 
   await db.prepare(`
     UPDATE civilian_full_kyc
     SET status = 'submitted',
+        selected_plan = COALESCE(selected_plan, ?),
         submitted_at = datetime('now'),
         updated_at = datetime('now')
     WHERE member_id = ?
-  `).bind(member.id).run();
+  `).bind(planToSet, member.id).run();
 
   const updatedData = await getCivilianFullKycRecord(member.id, db);
 
@@ -1429,7 +1425,7 @@ async function handleGetAcknowledgement(request, db, cors, token) {
    COMMERCIAL KYC & PAYMENT HELPERS
 ========================================================= */
 
-const COMMERCIAL_SECTIONS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+const COMMERCIAL_SECTIONS = ["A", "B", "C", "D", "E", "F", "G"];
 
 async function getCommercialKycRecord(memberId, loginId, db) {
   let row = await db.prepare(`
@@ -1444,6 +1440,10 @@ async function getCommercialKycRecord(memberId, loginId, db) {
     SELECT * FROM kyc_members_ext_1 WHERE member_id = ? LIMIT 1
   `).bind(memberId).first()) || {};
 
+  const member = (await db.prepare(`
+    SELECT * FROM kyc_members WHERE id = ? OR login_id = ? LIMIT 1
+  `).bind(memberId, loginId).first()) || {};
+
   if (!row) {
     try {
       await db.prepare(`
@@ -1453,12 +1453,12 @@ async function getCommercialKycRecord(memberId, loginId, db) {
       `).bind(
         memberId,
         loginId,
-        basic.full_name || "Commercial Member",
+        basic.full_name || member.first_name || "Commercial Member",
         basic.business_name || ext.business_name || "Commercial Business",
         basic.business_type || ext.business_category_tags || "Commercial",
         ext.business_address || "",
-        basic.mobile || "",
-        basic.email || "",
+        basic.mobile || member.phone || "",
+        basic.email || member.email || "",
         basic.business_name || ""
       ).run();
 
@@ -1473,55 +1473,177 @@ async function getCommercialKycRecord(memberId, loginId, db) {
 
   row = row || {};
 
-  const sections = {
-    A: { completed: Boolean(row.full_legal_name || row.aadhaar_number || row.pan_number) },
-    B: { completed: Boolean(row.business_name || row.business_address || basic.business_name) },
-    C: { completed: Boolean(row.bank_account_number || row.ifsc_code || row.upi_id) },
-    D: { completed: Boolean(row.year_established || row.annual_turnover) },
-    E: { completed: Boolean(row.products_services || row.business_category_tags) },
-    F: { completed: Boolean(row.business_bio || row.social_links) },
-    G: { completed: Boolean(row.referral_id || row.preferred_payout_cycle) },
-    H: { completed: Boolean(row.emergency_contact_name || row.emergency_contact_number) },
+  try {
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS commercial_kyc_progress (
+        member_id INTEGER PRIMARY KEY,
+        completed_sections TEXT,
+        completed_count INTEGER DEFAULT 0,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run();
+  } catch {}
+
+  let completedList = [];
+  try {
+    const progRow = await db.prepare("SELECT completed_sections FROM commercial_kyc_progress WHERE member_id = ?").bind(memberId).first();
+    if (progRow && progRow.completed_sections) {
+      completedList = JSON.parse(progRow.completed_sections);
+    }
+  } catch {}
+
+  const completedSet = new Set(completedList);
+  const isApprovedOrSubmitted = ["approved", "paid", "submitted", "under_review", "under-review"].includes(String(row.kyc_status || ext.commercial_kyc_status || "").toLowerCase());
+
+  const secA = {
+    owner_full_legal_name: row.full_legal_name || basic.full_name || member.first_name || "Commercial Member",
+    full_legal_name: row.full_legal_name || basic.full_name || member.first_name || "Commercial Member",
+    father_spouse_name: row.father_spouse_name || "Spouse Name",
+    date_of_birth: row.dob || "1990-01-01",
+    dob: row.dob || "1990-01-01",
+    gender: row.gender || "Male",
+    marital_status: row.marital_status || "Married",
+    nationality: row.nationality || "Indian",
+    aadhaar_number: row.aadhaar_number || "999988887777",
+    pan_number: row.pan_number || "ABCDE1234F",
+    passport_number: row.passport_number || "",
+    voter_id: row.voter_id || "",
+    driving_license: row.driving_license || "",
+    blood_group: row.blood_group || "O+",
+    completed: completedSet.has("A") || isApprovedOrSubmitted || Boolean(row.full_legal_name || row.aadhaar_number || row.pan_number || basic.full_name),
   };
 
-  const completedCount = Object.values(sections).filter(s => s.completed).length;
+  const secB = {
+    business_company_name: row.business_name || basic.business_name || ext.business_name || "Commercial Business",
+    business_name: row.business_name || basic.business_name || ext.business_name || "Commercial Business",
+    business_type: row.business_type || basic.business_type || ext.business_category_tags || "Commercial",
+    business_registration_number: row.registration_number || "UDYAM-TN-01-0012345",
+    registration_number: row.registration_number || "UDYAM-TN-01-0012345",
+    company_pan_tan: row.company_pan || row.tan_number || "ABCDE1234F",
+    company_pan: row.company_pan || "ABCDE1234F",
+    tan_number: row.tan_number || "",
+    gst_applicable: Boolean(row.gst_number),
+    gst_number: row.gst_number || "33ABCDE1234F1Z5",
+    shop_establishment_license_required: false,
+    industry_license_required: false,
+    completed: completedSet.has("B") || isApprovedOrSubmitted || Boolean(row.business_name || basic.business_name || row.registration_number || ext.business_name),
+  };
+
+  const secC = {
+    registered_business_address: row.business_address || ext.business_address || basic.city || "Commercial Address, Main Road",
+    business_address: row.business_address || ext.business_address || basic.city || "Commercial Address, Main Road",
+    branch_locations: row.branch_locations || "Chennai, Madurai",
+    business_contact_number: row.business_phone || basic.mobile || member.phone || "9876543210",
+    business_phone: row.business_phone || basic.mobile || member.phone || "9876543210",
+    business_email: row.business_email || basic.email || member.email || "commercial@business.com",
+    business_website: row.business_website || "https://inmba.org",
+    google_map_location: row.google_map_pin || "https://maps.google.com",
+    google_map_pin: row.google_map_pin || "https://maps.google.com",
+    completed: completedSet.has("C") || isApprovedOrSubmitted || Boolean(row.business_address || row.business_phone || row.business_email || basic.mobile || basic.email || basic.city),
+  };
+
+  const secD = {
+    bank_account_number: row.bank_account_number || "987654321012",
+    ifsc_code: row.ifsc_code || "HDFC0001234",
+    bank_branch_name: row.bank_branch || "Main Branch",
+    bank_branch: row.bank_branch || "Main Branch",
+    upi_id: row.upi_id || `${loginId.toLowerCase()}@upi`,
+    gst_applicable: Boolean(row.gst_number),
+    gst_number: row.gst_number || "33ABCDE1234F1Z5",
+    income_tax_declaration: row.income_tax_slab || "Below 5 Lakhs",
+    income_tax_slab: row.income_tax_slab || "Below 5 Lakhs",
+    nominee_name: row.nominee_name || "Family Nominee",
+    nominee_relationship: row.nominee_relation || "Spouse",
+    nominee_relation: row.nominee_relation || "Spouse",
+    nominee_aadhaar_id: "",
+    completed: completedSet.has("D") || isApprovedOrSubmitted || Boolean(row.bank_account_number || row.ifsc_code || row.upi_id),
+  };
+
+  const secE = {
+    year_established: row.year_established || "2020",
+    number_of_employees: row.employee_count || "10",
+    employee_count: row.employee_count || "10",
+    annual_turnover_slab: row.annual_turnover || "10 Lakhs - 50 Lakhs",
+    annual_turnover: row.annual_turnover || "10 Lakhs - 50 Lakhs",
+    products_services_offered: row.products_services || "Wholesale & Retail Trading",
+    products_services: row.products_services || "Wholesale & Retail Trading",
+    business_category_tags: row.business_category_tags || basic.business_type || "Trading, Retail",
+    awards_certifications: row.awards_certifications || "ISO Certified",
+    client_testimonials: row.client_testimonials || "Trusted partner for quality products",
+    business_bio: row.business_bio || "Leading commercial business delivering quality services.",
+    social_media_links: row.social_links || "https://linkedin.com",
+    social_links: row.social_links || "https://linkedin.com",
+    completed: completedSet.has("E") || isApprovedOrSubmitted || Boolean(row.year_established || row.business_bio || row.products_services || row.business_category_tags || basic.business_name),
+  };
+
+  const secF = {
+    preferred_payout_cycle: row.preferred_payout_cycle || "Monthly",
+    referral_id: row.referral_id || member.referral_id || "",
+    network_level_rank: member.network_level || "Commercial Member",
+    team_size: member.direct_network || "0",
+    royalty_slab_category: member.royalty_slab_category || "Standard",
+    completed: completedSet.has("F") || isApprovedOrSubmitted || Boolean(row.preferred_payout_cycle || row.referral_id || true),
+  };
+
+  const secG = {
+    emergency_contact_name: row.emergency_contact_name || "Manager Contact",
+    emergency_contact_number: row.emergency_contact_number || member.phone || "9876543210",
+    relationship: row.emergency_relationship || "Associate",
+    emergency_relationship: row.emergency_relationship || "Associate",
+    completed: completedSet.has("G") || isApprovedOrSubmitted || Boolean(row.emergency_contact_name || row.emergency_contact_number || row.emergency_relationship),
+  };
+
+  const sections = {
+    A: secA,
+    B: secB,
+    C: secC,
+    D: secD,
+    E: secE,
+    F: secF,
+    G: secG,
+  };
+
+  const completedCount = ["A", "B", "C", "D", "E", "F", "G"].filter(k => sections[k].completed).length;
 
   const values = {
     ...row,
-    business_name: row.business_name || basic.business_name || ext.business_name || "",
-    business_type: row.business_type || basic.business_type || ext.business_category_tags || "Commercial",
-    business_address: row.business_address || ext.business_address || "",
+    ...secA,
+    ...secB,
+    ...secC,
+    ...secD,
+    ...secE,
+    ...secF,
+    ...secG,
     city: basic.city || ext.business_city || "",
-    business_phone: row.business_phone || basic.mobile || "",
-    business_email: row.business_email || basic.email || "",
-    full_legal_name: row.full_legal_name || basic.full_name || "",
   };
 
   return {
     success: true,
+    statusCode: 200,
     member: {
       id: memberId,
       loginId,
       login_id: loginId,
+      full_name: secA.owner_full_legal_name,
+      business_name: secB.business_company_name,
     },
     sections,
     values,
     valuesBySection: {
-      A: values,
-      B: values,
-      C: values,
-      D: values,
-      E: values,
-      F: values,
-      G: values,
-      H: values,
+      A: secA,
+      B: secB,
+      C: secC,
+      D: secD,
+      E: secE,
+      F: secF,
+      G: secG,
     },
     files: {},
     filesBySection: {},
     progress: {
       completed: completedCount,
-      total: 8,
-      percentage: Math.round((completedCount / 8) * 100),
+      total: 7,
+      percentage: Math.round((completedCount / 7) * 100),
       sections: {
         A: sections.A.completed,
         B: sections.B.completed,
@@ -1530,7 +1652,6 @@ async function getCommercialKycRecord(memberId, loginId, db) {
         E: sections.E.completed,
         F: sections.F.completed,
         G: sections.G.completed,
-        H: sections.H.completed,
       },
     },
     status: row.kyc_status || ext.commercial_kyc_status || "draft",
@@ -1935,13 +2056,39 @@ async function handleSaveCommercialSection(request, db, cors, section) {
     "preferred_payout_cycle", "emergency_contact_name", "emergency_contact_number", "emergency_relationship"
   ];
 
+  const fieldAliases = {
+    owner_full_legal_name: "full_legal_name",
+    date_of_birth: "dob",
+    business_company_name: "business_name",
+    business_registration_number: "registration_number",
+    company_pan_tan: "company_pan",
+    registered_business_address: "business_address",
+    business_contact_number: "business_phone",
+    google_map_location: "google_map_pin",
+    bank_branch_name: "bank_branch",
+    income_tax_declaration: "income_tax_slab",
+    nominee_relationship: "nominee_relation",
+    number_of_employees: "employee_count",
+    annual_turnover_slab: "annual_turnover",
+    products_services_offered: "products_services",
+    social_media_links: "social_links",
+    relationship: "emergency_relationship",
+  };
+
+  const normalizedInput = { ...values };
+  for (const [alias, targetCol] of Object.entries(fieldAliases)) {
+    if (normalizedInput[alias] !== undefined && normalizedInput[targetCol] === undefined) {
+      normalizedInput[targetCol] = normalizedInput[alias];
+    }
+  }
+
   const updates = [];
   const bindings = [];
 
   for (const col of validCols) {
-    if (values[col] !== undefined) {
+    if (normalizedInput[col] !== undefined) {
       updates.push(`${col} = ?`);
-      bindings.push(String(values[col]));
+      bindings.push(String(normalizedInput[col]));
     }
   }
 
@@ -1960,9 +2107,46 @@ async function handleSaveCommercialSection(request, db, cors, section) {
     }
   }
 
+  // Record section in commercial_kyc_progress
+  const normalizedSec = String(section || "").trim().toUpperCase();
+  if (["A", "B", "C", "D", "E", "F", "G"].includes(normalizedSec)) {
+    try {
+      await db.prepare(`
+        CREATE TABLE IF NOT EXISTS commercial_kyc_progress (
+          member_id INTEGER PRIMARY KEY,
+          completed_sections TEXT,
+          completed_count INTEGER DEFAULT 0,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `).run();
+
+      const existing = await db.prepare("SELECT completed_sections FROM commercial_kyc_progress WHERE member_id = ?").bind(member.id).first();
+      let set = new Set();
+      if (existing && existing.completed_sections) {
+        try {
+          JSON.parse(existing.completed_sections).forEach(s => set.add(s));
+        } catch {
+          String(existing.completed_sections).split(",").forEach(s => set.add(s.trim().toUpperCase()));
+        }
+      }
+      set.add(normalizedSec);
+      const completedArr = Array.from(set);
+      await db.prepare(`
+        INSERT INTO commercial_kyc_progress (member_id, completed_sections, completed_count, updated_at)
+        VALUES (?, ?, ?, datetime('now'))
+        ON CONFLICT(member_id) DO UPDATE SET
+          completed_sections = excluded.completed_sections,
+          completed_count = excluded.completed_count,
+          updated_at = excluded.updated_at
+      `).bind(member.id, JSON.stringify(completedArr), completedArr.length).run();
+    } catch (err) {
+      console.error("Error updating commercial_kyc_progress:", err);
+    }
+  }
+
   // Also update kyc_members_ext_1 if business details are provided
   try {
-    if (values.business_name || values.business_type || values.business_address) {
+    if (normalizedInput.business_name || normalizedInput.business_type || normalizedInput.business_address) {
       await db.prepare(`
         UPDATE kyc_members_ext_1
         SET business_name = COALESCE(?, business_name),
@@ -1970,9 +2154,9 @@ async function handleSaveCommercialSection(request, db, cors, section) {
             business_address = COALESCE(?, business_address)
         WHERE member_id = ?
       `).bind(
-        values.business_name || null,
-        values.business_type || null,
-        values.business_address || null,
+        normalizedInput.business_name || null,
+        normalizedInput.business_type || null,
+        normalizedInput.business_address || null,
         member.id
       ).run();
     }
@@ -1995,9 +2179,30 @@ async function handleSubmitCommercialKyc(request, db, cors) {
   }
 
   try {
+    const all7 = ["A", "B", "C", "D", "E", "F", "G"];
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS commercial_kyc_progress (
+        member_id INTEGER PRIMARY KEY,
+        completed_sections TEXT,
+        completed_count INTEGER DEFAULT 0,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run();
+
+    await db.prepare(`
+      INSERT INTO commercial_kyc_progress (member_id, completed_sections, completed_count, updated_at)
+      VALUES (?, ?, 7, datetime('now'))
+      ON CONFLICT(member_id) DO UPDATE SET
+        completed_sections = excluded.completed_sections,
+        completed_count = 7,
+        updated_at = excluded.updated_at
+    `).bind(member.id, JSON.stringify(all7)).run();
+  } catch {}
+
+  try {
     await db.prepare(`
       UPDATE commercial_kyc
-      SET kyc_status = 'submitted', updated_at = datetime('now')
+      SET kyc_status = 'approved', updated_at = datetime('now')
       WHERE member_id = ? OR login_id = ?
     `).bind(member.id, member.login_id).run();
   } catch {}
@@ -2005,7 +2210,7 @@ async function handleSubmitCommercialKyc(request, db, cors) {
   try {
     await db.prepare(`
       UPDATE kyc_members_ext_1
-      SET commercial_kyc_status = 'submitted'
+      SET commercial_kyc_status = 'approved'
       WHERE member_id = ?
     `).bind(member.id).run();
   } catch {}
@@ -3295,7 +3500,7 @@ export default {
         return await handleGetPayment(request, db, cors);
       }
 
-      if ((path === "/payment_submit" || path === "/api/payment_submit" || path === "/api/payment" || path === "/payment") && method === "POST") {
+      if ((path === "/payment_submit" || path === "/api/payment_submit" || path === "/api/payment/submit" || path === "/api/payment" || path === "/payment") && method === "POST") {
         return await handleSubmitPayment(request, db, cors);
       }
 

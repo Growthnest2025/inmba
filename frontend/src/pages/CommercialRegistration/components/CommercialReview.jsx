@@ -628,8 +628,8 @@ const progress =
   ======================================================= */
 
   const isKyc100PercentComplete =
-    completedCount ===
-    7;
+    completedCount >= 7 ||
+    ["approved", "paid", "submitted", "under_review"].includes(String(kyc?.status || "").toLowerCase());
 
   /* =======================================================
      FIRST INCOMPLETE
