@@ -6,20 +6,11 @@ import axios from "axios";
 
 const isLocalhostUrl = (url) => /localhost|127\.0\.0\.1|0\.0\.0\.0/i.test(String(url || ""));
 
-const DEFAULT_BACKEND_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://inmba-auth-staging.venkatgrowthnest.workers.dev"
-    : "http://127.0.0.1:5000";
+const DEFAULT_BACKEND_URL = "https://inmba-auth-staging.venkatgrowthnest.workers.dev";
 
 /*
   URL முடிவில் இருக்கும் unnecessary
   slash-ஐ remove செய்யும்.
-
-  Example:
-
-  http://localhost:5000/
-  becomes
-  http://localhost:5000
 */
 
 const normalizeUrl = (value) => {
@@ -38,9 +29,9 @@ const rawBackendUrl =
   "";
 
 export const BACKEND_URL = normalizeUrl(
-  process.env.NODE_ENV === "production" && (!rawBackendUrl || isLocalhostUrl(rawBackendUrl))
-    ? DEFAULT_BACKEND_URL
-    : (rawBackendUrl || DEFAULT_BACKEND_URL)
+  rawBackendUrl && !isLocalhostUrl(rawBackendUrl)
+    ? rawBackendUrl
+    : DEFAULT_BACKEND_URL
 );
 
 /* =========================
@@ -50,9 +41,9 @@ export const BACKEND_URL = normalizeUrl(
 const rawApiUrl = process.env.REACT_APP_API_BASE_URL || "";
 
 export const API_BASE_URL = normalizeUrl(
-  process.env.NODE_ENV === "production" && (!rawApiUrl || isLocalhostUrl(rawApiUrl))
-    ? `${BACKEND_URL}/api`
-    : (rawApiUrl || `${BACKEND_URL}/api`)
+  rawApiUrl && !isLocalhostUrl(rawApiUrl)
+    ? rawApiUrl
+    : `${BACKEND_URL}/api`
 );
 
 /* =========================
