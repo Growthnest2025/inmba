@@ -70,12 +70,16 @@ function corsHeaders(request, env) {
     return {};
   }
 
+  const requestedHeaders = request.headers.get("Access-Control-Request-Headers");
+  const baseHeaders = "Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control, cache-control, Pragma, pragma, Expires, Cookie";
+
   return {
     "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Credentials": "true",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, DELETE, PATCH",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With, Accept, Origin",
-    "Vary": "Origin",
+    "Access-Control-Allow-Headers": requestedHeaders ? `${baseHeaders}, ${requestedHeaders}` : baseHeaders,
+    "Access-Control-Max-Age": "86400",
+    "Vary": "Origin, Access-Control-Request-Headers",
   };
 }
 
@@ -1217,6 +1221,178 @@ async function handleGetAcknowledgement(request, db, cors, token) {
   }, 200, cors);
 }
 
+async function handleGetCivilianProfile(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({
+      success: false,
+      message: "Authentication required.",
+    }, 401, cors);
+  }
+
+  const fullKyc = await getCivilianFullKycRecord(member.id, db);
+  const ext = (await db.prepare(`
+    SELECT payment_method, transaction_id, subscription_year, amount, payment_proof
+    FROM kyc_members_ext_1
+    WHERE member_id = ?
+  `).bind(member.id).first()) || {};
+
+  const fullMember = (await db.prepare(`
+    SELECT * FROM kyc_members WHERE id = ?
+  `).bind(member.id).first()) || member;
+
+  const profile = {
+    ...fullMember,
+    ...fullKyc.values,
+    ...fullKyc.files,
+    ...ext,
+    id: member.id,
+    login_id: member.login_id,
+    first_name: member.first_name,
+    last_name: member.last_name,
+    full_name: [member.first_name, member.last_name].filter(Boolean).join(" ") || "Civilian Member",
+    name: [member.first_name, member.last_name].filter(Boolean).join(" ") || "Civilian Member",
+    email: member.email,
+    phone: member.phone,
+    membership_type: member.membership_type || "Civilian Member",
+    payment_status: member.payment_status || "pending",
+    selected_plan: fullKyc.selectedPlan || ext.amount || "300",
+    amount: fullKyc.selectedPlan || ext.amount || "300",
+    sections: fullKyc.sections,
+    status: fullKyc.status || "draft",
+  };
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Civilian owner profile loaded successfully.",
+    data: {
+      profile,
+      member: profile,
+    },
+    profile,
+    member: profile,
+    owner: true,
+    visibility: "private",
+  }, 200, cors);
+}
+
+async function handleGetProfessionalProfile(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({
+      success: false,
+      message: "Authentication required.",
+    }, 401, cors);
+  }
+
+  const ext1 = (await db.prepare(`
+    SELECT * FROM kyc_members_ext_1 WHERE member_id = ?
+  `).bind(member.id).first()) || {};
+
+  const fullMember = (await db.prepare(`
+    SELECT * FROM kyc_members WHERE id = ?
+  `).bind(member.id).first()) || member;
+
+  const profile = {
+    ...fullMember,
+    ...ext1,
+    id: member.id,
+    login_id: member.login_id,
+    first_name: member.first_name,
+    last_name: member.last_name,
+    full_name: [member.first_name, member.last_name].filter(Boolean).join(" ") || "Professional Member",
+    name: [member.first_name, member.last_name].filter(Boolean).join(" ") || "Professional Member",
+    email: member.email,
+    phone: member.phone,
+    membership_type: member.membership_type || "Professional Member",
+    payment_status: member.payment_status || "pending",
+  };
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Professional owner profile loaded successfully.",
+    data: {
+      profile,
+      member: profile,
+    },
+    profile,
+    member: profile,
+    owner: true,
+    visibility: "private",
+  }, 200, cors);
+}
+
+async function handleProfileUpdate(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({
+      success: false,
+      message: "Authentication required.",
+    }, 401, cors);
+  }
+
+  const input = await parseRequestBody(request);
+  const firstName = input.first_name || input.name;
+  const lastName = input.last_name;
+  const email = input.email;
+  const phone = input.phone;
+
+  if (firstName || email || phone) {
+    await db.prepare(`
+      UPDATE kyc_members
+      SET first_name = COALESCE(NULLIF(?, ''), first_name),
+          last_name = COALESCE(NULLIF(?, ''), last_name),
+          email = COALESCE(NULLIF(?, ''), email),
+          phone = COALESCE(NULLIF(?, ''), phone),
+          updated_at = datetime('now')
+      WHERE id = ?
+    `).bind(firstName || "", lastName || "", email || "", phone || "", member.id).run();
+  }
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Profile updated successfully.",
+    data: {
+      id: member.id,
+      login_id: member.login_id,
+    },
+  }, 200, cors);
+}
+
+async function handleProfilePhotoUpload(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({
+      success: false,
+      message: "Authentication required.",
+    }, 401, cors);
+  }
+
+  const input = await parseRequestBody(request);
+  const photoUrl = String(input.photo_url || input.profile_photo || input.photo || "").trim();
+
+  if (photoUrl) {
+    await db.prepare(`
+      UPDATE kyc_members
+      SET profile_pic = ?,
+          updated_at = datetime('now')
+      WHERE id = ?
+    `).bind(photoUrl, member.id).run();
+  }
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Profile photo uploaded successfully.",
+    data: {
+      photo_url: photoUrl,
+    },
+  }, 200, cors);
+}
+
 export default {
   async fetch(request, env) {
     const path = new URL(request.url).pathname;
@@ -1355,6 +1531,26 @@ export default {
       const ackMatch = path.match(/^\/(?:api\/)?acknowledgement\/([a-zA-Z0-9_-]+)/);
       if (ackMatch && method === "GET") {
         return await handleGetAcknowledgement(request, db, cors, ackMatch[1]);
+      }
+
+      // =========================================================
+      // PROFILE ROUTES
+      // =========================================================
+
+      if ((path === "/api/me/civilian-profile" || path === "/me/civilian-profile") && method === "GET") {
+        return await handleGetCivilianProfile(request, db, cors);
+      }
+
+      if ((path === "/api/me/professional-profile" || path === "/me/professional-profile") && method === "GET") {
+        return await handleGetProfessionalProfile(request, db, cors);
+      }
+
+      if ((path === "/profile/update" || path === "/api/profile/update") && method === "POST") {
+        return await handleProfileUpdate(request, db, cors);
+      }
+
+      if ((path === "/profile/upload-photo" || path === "/api/profile/upload-photo") && method === "POST") {
+        return await handleProfilePhotoUpload(request, db, cors);
       }
 
       if (path === "/api/logout" && method === "POST") {
