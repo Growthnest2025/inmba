@@ -80,8 +80,7 @@ const getMemberStatus = (member) => {
     ).toLowerCase();
 
   const verified =
-    paymentStatus === "approved" ||
-    paymentStatus === "paid";
+    paymentStatus === "approved";
 
   return {
     verified,
@@ -459,7 +458,7 @@ export default function QRCode() {
     "pending"
   ).toLowerCase().trim();
 
-  const isApproved = ["approved", "paid"].includes(paymentStatus);
+  const isApproved = paymentStatus === "approved";
 
   /* =========================
      PUBLIC PROFILE URL

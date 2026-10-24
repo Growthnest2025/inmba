@@ -1173,7 +1173,9 @@ export default function ProfessionalPayment() {
       if (
         !token
       ) {
-        navigate("/dashboard");
+        navigate("/professional-dashboard", {
+          state: { loginId },
+        });
         return;
       }
 
@@ -1416,28 +1418,46 @@ export default function ProfessionalPayment() {
             </div>
 
             {/* ===========================================
-                QR CODE & ACTIONS
+                QR CODE & ACTIONS (LOCKED UNTIL ADMIN APPROVAL)
             =========================================== */}
 
-            <div style={{ textAlign: "center", margin: "24px 0", background: "#f8fafc", padding: "20px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
-              <QRCodeCanvas
-                value={`https://inmba.org/user-profile/${encodeURIComponent(loginId)}`}
-                size={180}
-                level="H"
-                includeMargin
-                bgColor="#ffffff"
-                fgColor="#0f172a"
-              />
-              <p style={{ marginTop: "10px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>
-                Scan to view Public Profile (Login ID: {loginId})
-              </p>
-            </div>
+            {paymentStatus === "approved" || paymentResult?.status === "approved" || paymentResult?.payment_status === "approved" ? (
+              <div style={{ textAlign: "center", margin: "24px 0", background: "#f8fafc", padding: "20px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
+                <QRCodeCanvas
+                  value={`https://inmba.org/user-profile/${encodeURIComponent(loginId)}`}
+                  size={180}
+                  level="H"
+                  includeMargin
+                  bgColor="#ffffff"
+                  fgColor="#0f172a"
+                />
+                <p style={{ marginTop: "10px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>
+                  Scan to view Public Profile (Login ID: {loginId})
+                </p>
+              </div>
+            ) : (
+              <div style={{ textAlign: "center", margin: "24px 0", background: "#f8fafc", padding: "28px 20px", borderRadius: "12px", border: "2px dashed #cbd5e1" }}>
+                <i className="fa-solid fa-lock" style={{ fontSize: "44px", color: "#f59e0b", marginBottom: "12px", display: "block" }} />
+                <strong style={{ display: "block", fontSize: "16px", color: "#1e293b", marginBottom: "6px" }}>
+                  QR Code Locked
+                </strong>
+                <p style={{ margin: 0, fontSize: "13px", color: "#64748b", maxWidth: "340px", marginInline: "auto", lineHeight: "1.4" }}>
+                  Your QR code and Public Profile will be generated automatically once your payment is approved by the admin.
+                </p>
+              </div>
+            )}
 
             <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginTop: "1rem" }}>
               <button
                 type="button"
                 className="professional-payment-dashboard-button"
-                onClick={() => navigate(`/user-profile/${encodeURIComponent(loginId)}`)}
+                disabled={paymentStatus !== "approved" && paymentResult?.status !== "approved" && paymentResult?.payment_status !== "approved"}
+                style={paymentStatus !== "approved" && paymentResult?.status !== "approved" && paymentResult?.payment_status !== "approved" ? { opacity: 0.6, cursor: "not-allowed" } : undefined}
+                onClick={() => {
+                  if (paymentStatus === "approved" || paymentResult?.status === "approved" || paymentResult?.payment_status === "approved") {
+                    navigate(`/user-profile/${encodeURIComponent(loginId)}`);
+                  }
+                }}
               >
                 View My QR & Public Profile
                 <i className="fa-solid fa-qrcode" style={{ marginLeft: "8px" }} />
@@ -1447,7 +1467,7 @@ export default function ProfessionalPayment() {
                 type="button"
                 className="professional-payment-dashboard-button"
                 style={{ background: "#334155" }}
-                onClick={() => navigate("/dashboard")}
+                onClick={() => navigate("/professional-dashboard", { state: { loginId } })}
               >
                 Go to Dashboard
                 <i className="fa-solid fa-gauge" style={{ marginLeft: "8px" }} />

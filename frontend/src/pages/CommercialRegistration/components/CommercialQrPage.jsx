@@ -317,19 +317,17 @@ export default function CommercialQrPage() {
      VERIFIED
   ======================================================= */
 
-  const verified =
-    Boolean(
-      publicProfileCard
-        ?.commercial_verified ||
-      activation
-        ?.profileUpgradeActive ||
-      String(
-        kyc?.status ||
-        ""
-      )
-        .toLowerCase() ===
-        "approved"
-    );
+  const paymentStatus = String(
+    dashboard?.payment?.payment_status ||
+    dashboard?.payment?.status ||
+    member?.payment_status ||
+    sessionStorage.getItem("commercial_payment_status") ||
+    ""
+  ).toLowerCase();
+
+  const isPaymentApproved = paymentStatus === "approved" || Boolean(dashboard?.payment?.approved);
+
+  const verified = isPaymentApproved;
 
   /* =======================================================
      PROFILE PATH
@@ -748,10 +746,10 @@ export default function CommercialQrPage() {
                     title={`Commercial QR for ${businessName}`}
                   />
                 ) : (
-                  <div className="cqd-qr-empty" style={{ textAlign: "center", padding: "30px 16px" }}>
-                    <i className="fa-solid fa-lock" style={{ fontSize: "44px", color: "#f59e0b", marginBottom: "8px", display: "block" }} />
-                    <span style={{ fontSize: "14px", fontWeight: "600", color: "#334155", display: "block" }}>QR Locked</span>
-                    <small style={{ fontSize: "12px", color: "#64748b", display: "block" }}>Awaiting Admin Approval</small>
+                  <div className="cqd-qr-empty" style={{ textAlign: "center", padding: "40px 16px" }}>
+                    <i className="fa-solid fa-lock" style={{ fontSize: "52px", color: "#f59e0b", marginBottom: "12px", display: "block" }} />
+                    <strong style={{ fontSize: "16px", fontWeight: "700", color: "#1e293b", display: "block", marginBottom: "6px" }}>QR Code Locked</strong>
+                    <span style={{ fontSize: "13px", color: "#64748b", display: "block", maxWidth: "260px", margin: "0 auto", lineHeight: "1.4" }}>Your QR code will be generated and visible here once your payment is approved by the admin.</span>
                   </div>
                 )}
 

@@ -913,7 +913,7 @@ export default function ProfessionalDashboard() {
     );
 
   const isApproved =
-    ["approved", "paid"].includes(paymentStatus);
+    paymentStatus === "approved";
 
   /* =======================================================
      PROFESSIONAL MEMBERSHIP PLAN / LEVEL

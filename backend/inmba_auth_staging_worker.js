@@ -1256,7 +1256,7 @@ async function handleGetPayment(request, db, cors) {
 
   const amount = civilian.selected_plan || ext.amount || "300";
   const paymentStatus = member.payment_status || "pending";
-  const isApproved = ["approved", "paid", "success", "successful"].includes(paymentStatus.toLowerCase());
+  const isApproved = paymentStatus.toLowerCase() === "approved";
   const isSubmitted = Boolean(ext.transaction_id || ext.payment_proof || isApproved);
 
   const paymentData = {
@@ -1675,7 +1675,7 @@ async function handleGetCommercialDashboard(request, db, cors) {
   const directCount = directCountRow ? directCountRow.count : 0;
 
   const planAmount = paymentRow?.amount || ext.amount || 300;
-  const isApproved = ["approved", "paid"].includes(String(member.payment_status || "").toLowerCase());
+  const isApproved = String(member.payment_status || "").toLowerCase() === "approved";
   const hasSubmittedPayment = Boolean(paymentRow?.transaction_id || ext.transaction_id || paymentRow?.amount);
 
   const dashboardData = {
@@ -1907,7 +1907,7 @@ async function handleGetCommercialPayment(request, db, cors) {
   const ext = (await db.prepare("SELECT * FROM kyc_members_ext_1 WHERE member_id = ?").bind(member.id).first()) || {};
 
   const amount = paymentRow?.amount || ext.amount || 300;
-  const isApproved = ["approved", "paid"].includes(String(member.payment_status || "").toLowerCase());
+  const isApproved = String(member.payment_status || "").toLowerCase() === "approved";
 
   const paymentObj = {
     status: member.payment_status || "pending",
@@ -2028,7 +2028,7 @@ async function handleGetCommercialPaymentStatus(request, db, cors) {
     return json({ success: false, message: "Member session not found." }, 401, cors);
   }
 
-  const isApproved = ["approved", "paid"].includes(String(member.payment_status || "").toLowerCase());
+  const isApproved = String(member.payment_status || "").toLowerCase() === "approved";
   return json({
     success: true,
     statusCode: 200,
@@ -2781,7 +2781,7 @@ async function handleGetPublicUser(request, db, cors, loginId) {
   `).bind(member.login_id).first()) || {};
 
   const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "INMBA Member";
-  const isApproved = ["approved", "paid", "success", "successful", "completed"].includes(String(member.payment_status || "").toLowerCase());
+  const isApproved = String(member.payment_status || "").toLowerCase() === "approved";
   const planAmount = fullKyc?.selectedPlan || ext.amount || "300";
 
   const isCommercial = /commercial/i.test(member.membership_type);

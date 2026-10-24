@@ -661,6 +661,10 @@ export default function AppRoutes() {
         path="/professional-dashboard"
         element={<ProfessionalDashboard />}
       />
+      <Route
+        path="/professional/dashboard"
+        element={<Navigate to="/professional-dashboard" replace />}
+      />
 
       {/* PROFESSIONAL PROFILE */}
 

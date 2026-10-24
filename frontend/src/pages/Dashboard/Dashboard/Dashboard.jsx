@@ -942,7 +942,7 @@ export default function Dashboard() {
      when payment_status becomes "approved".
   */
   const isApproved =
-    ["approved", "paid"].includes(paymentStatus);
+    paymentStatus === "approved";
 
   /* =======================================================
      MEMBERSHIP LEVEL
