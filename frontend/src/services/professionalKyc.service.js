@@ -186,7 +186,8 @@ const normalizeApiResponse =
 
       data:
         body.data ??
-        null,
+        (body.member || body.sections || body.progress || body.values ? body : null) ??
+        body,
 
       raw:
         body,

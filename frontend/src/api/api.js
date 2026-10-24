@@ -90,8 +90,23 @@ api.interceptors.request.use(
       }
       if (typeof sessionStorage !== "undefined" || typeof localStorage !== "undefined") {
         const loginId =
-          (typeof sessionStorage !== "undefined" && (sessionStorage.getItem("commercial_login_id") || sessionStorage.getItem("inmba_commercial_login_id") || sessionStorage.getItem("inmba_login_id"))) ||
-          (typeof localStorage !== "undefined" && (localStorage.getItem("commercial_login_id") || localStorage.getItem("login_id") || localStorage.getItem("inmba_login_id")));
+          (typeof sessionStorage !== "undefined" && (
+            sessionStorage.getItem("inmba_member_login_id") ||
+            sessionStorage.getItem("inmba_professional_login_id") ||
+            sessionStorage.getItem("professional_login_id") ||
+            sessionStorage.getItem("commercial_login_id") ||
+            sessionStorage.getItem("inmba_commercial_login_id") ||
+            sessionStorage.getItem("inmba_login_id") ||
+            sessionStorage.getItem("login_id")
+          )) ||
+          (typeof localStorage !== "undefined" && (
+            localStorage.getItem("inmba_member_login_id") ||
+            localStorage.getItem("inmba_professional_login_id") ||
+            localStorage.getItem("professional_login_id") ||
+            localStorage.getItem("commercial_login_id") ||
+            localStorage.getItem("login_id") ||
+            localStorage.getItem("inmba_login_id")
+          ));
         if (loginId && !config.headers["X-Login-Id"]) {
           config.headers["X-Login-Id"] = String(loginId).trim();
         }

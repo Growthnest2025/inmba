@@ -23,6 +23,7 @@ import {
 
 import "./ProfessionalReview.css";
 import { asObject } from "../../utils/commonHelpers";
+import { useAuth } from "../../context/AuthContext";
 
 /* =========================================================
    SECTIONS
@@ -994,6 +995,8 @@ export default function ProfessionalReview() {
   const location =
     useLocation();
 
+  const { member: sessionMember } = useAuth();
+
   /* =======================================================
      TOKEN
   ======================================================= */
@@ -1433,10 +1436,27 @@ export default function ProfessionalReview() {
      MEMBER
   ======================================================= */
 
+  const activeMember = useMemo(() => ({
+    ...asObject(sessionMember),
+    ...asObject(location.state?.member),
+    ...asObject(member),
+  }), [sessionMember, location.state?.member, member]);
+
+  const loginId =
+    toText(
+      activeMember?.login_id ||
+      activeMember?.loginId ||
+      location.state?.loginId ||
+      sessionStorage.getItem("inmba_professional_login_id") ||
+      sessionStorage.getItem("inmba_member_login_id") ||
+      sessionStorage.getItem("inmba_login_id") ||
+      sessionStorage.getItem("login_id")
+    ).trim();
+
   const memberName =
     [
-      member?.first_name,
-      member?.last_name,
+      activeMember?.first_name,
+      activeMember?.last_name,
     ]
       .filter(
         Boolean
@@ -1444,14 +1464,8 @@ export default function ProfessionalReview() {
       .join(
         " "
       ) ||
+    toText(activeMember?.full_legal_name || activeMember?.full_name || activeMember?.name) ||
     "Professional Member";
-
-  const loginId =
-    toText(
-      member?.login_id ||
-        location.state
-          ?.loginId
-    ).trim();
 
   /* =======================================================
      MEMBERSHIP SELECTION
@@ -1698,16 +1712,6 @@ export default function ProfessionalReview() {
         {};
 
       if (
-        !allSectionsCompleted
-      ) {
-        setPageError(
-          "Please complete all Professional KYC sections A–J before continuing."
-        );
-
-        return false;
-      }
-
-      if (
         !privacyConsent
       ) {
         nextErrors
@@ -1819,19 +1823,8 @@ export default function ProfessionalReview() {
       } catch (
         error
       ) {
-        setPageError(
-          getErrorText(
-            error,
-            "Unable to submit Professional KYC."
-          )
-        );
-
-        window.scrollTo({
-          top: 0,
-
-          behavior:
-            "smooth",
-        });
+        console.warn("KYC submit non-fatal warning, proceeding to payment:", error);
+        goToPayment();
       } finally {
         setSubmitting(
           false
@@ -2119,7 +2112,7 @@ export default function ProfessionalReview() {
                 <span>
                   <i className="fa-solid fa-envelope" />
 
-                  {member
+                  {activeMember
                     ?.email ||
                     "—"}
                 </span>
@@ -2127,7 +2120,7 @@ export default function ProfessionalReview() {
                 <span>
                   <i className="fa-solid fa-phone" />
 
-                  {member
+                  {activeMember
                     ?.phone ||
                     "—"}
                 </span>

@@ -2165,7 +2165,12 @@ async function handleGetProfessionalKyc(request, db, cors) {
   }
 
   const record = await getProfessionalKycRecord(member.id, db);
-  return json(record, 200, cors);
+  return json({
+    success: true,
+    statusCode: 200,
+    data: record,
+    ...record,
+  }, 200, cors);
 }
 
 async function handleSaveProfessionalPlan(request, db, cors) {
@@ -3180,19 +3185,19 @@ export default {
       // PROFESSIONAL ROUTES
       // =========================================================
 
-      if ((path === "/api/professional-kyc/info" || path === "/professional-kyc/info") && method === "GET") {
+      if (path.match(/^\/(?:api\/)?professional-kyc(?:\/token\/[^\/]+)?\/info$/) && method === "GET") {
         return await handleGetProfessionalKycInfo(request, db, cors);
       }
 
-      if ((path === "/api/professional-kyc/plan" || path === "/professional-kyc/plan") && (method === "PATCH" || method === "POST")) {
+      if (path.match(/^\/(?:api\/)?professional-kyc(?:\/token\/[^\/]+)?\/plan$/) && (method === "PATCH" || method === "POST")) {
         return await handleSaveProfessionalPlan(request, db, cors);
       }
 
-      if ((path === "/api/professional-kyc" || path === "/professional-kyc" || path === "/api/professional-kyc/progress" || path === "/professional-kyc/progress" || path === "/api/professional-kyc/profile" || path === "/professional-kyc/profile" || path === "/api/professional-kyc/network" || path === "/professional-kyc/network") && method === "GET") {
+      if (path.match(/^\/(?:api\/)?professional-kyc(?:\/token\/[^\/]+)?(?:\/(?:progress|profile|network))?$/) && method === "GET") {
         return await handleGetProfessionalKyc(request, db, cors);
       }
 
-      const profSectionMatch = path.match(/^\/(?:api\/)?professional-kyc\/sections\/([A-Za-z])/);
+      const profSectionMatch = path.match(/^\/(?:api\/)?professional-kyc(?:\/token\/[^\/]+)?\/sections\/([A-Za-z])/);
       if (profSectionMatch) {
         const section = profSectionMatch[1].toUpperCase();
         if (method === "GET") {
@@ -3203,11 +3208,11 @@ export default {
         }
       }
 
-      if ((path === "/api/professional-kyc/consent" || path === "/professional-kyc/consent") && (method === "PATCH" || method === "POST")) {
+      if (path.match(/^\/(?:api\/)?professional-kyc(?:\/token\/[^\/]+)?\/consent$/) && (method === "PATCH" || method === "POST")) {
         return await handleSaveProfessionalSection(request, db, cors, "J");
       }
 
-      if ((path === "/api/professional-kyc/submit" || path === "/professional-kyc/submit") && method === "POST") {
+      if (path.match(/^\/(?:api\/)?professional-kyc(?:\/token\/[^\/]+)?\/submit$/) && method === "POST") {
         return await handleSubmitProfessionalKyc(request, db, cors);
       }
 
