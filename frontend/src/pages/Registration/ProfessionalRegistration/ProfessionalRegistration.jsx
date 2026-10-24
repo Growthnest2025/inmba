@@ -25,6 +25,7 @@ import {
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./ProfessionalRegistration.css";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    INITIAL FORM
@@ -43,17 +44,6 @@ const INITIAL_FORM_DATA = {
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text = String(
-    value ?? ""
-  ).trim();
-
-  return text || fallback;
-};
 
 const getErrorText = (
   value

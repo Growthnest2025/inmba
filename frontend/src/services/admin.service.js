@@ -1,6 +1,7 @@
 import axios from "axios";
 
-import api from "../api/api";
+import api, { BACKEND_URL } from "../api/api";
+import { toText, asObject, toNumber } from "../utils/commonHelpers";
 
 /* =========================================================
    ROOT ADMIN API
@@ -20,7 +21,7 @@ import api from "../api/api";
 
 const rootAdminApi =
   axios.create({
-    baseURL: "/",
+    baseURL: BACKEND_URL,
 
     withCredentials: true,
 
@@ -32,65 +33,39 @@ const rootAdminApi =
     },
   });
 
+rootAdminApi.interceptors.request.use((config) => {
+  config.withCredentials = true;
+  try {
+    if (typeof localStorage !== "undefined") {
+      const token = localStorage.getItem("inmba_session_token");
+      if (token && !config.headers.Authorization) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+  } catch {}
+  return config;
+});
+
+rootAdminApi.interceptors.response.use((response) => {
+  try {
+    if (typeof localStorage !== "undefined" && response?.data?.token) {
+      localStorage.setItem("inmba_session_token", response.data.token);
+    }
+  } catch {}
+  return response;
+});
+
 /* =========================================================
    BASIC HELPERS
 ========================================================= */
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
-};
 
 /* =========================================================
    TO TEXT
 ========================================================= */
 
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalized =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalized ||
-    fallback
-  );
-};
-
 /* =========================================================
    TO NUMBER
 ========================================================= */
-
-const toNumber = (
-  value,
-  fallback = 0
-) => {
-  const numberValue =
-    Number(
-      value
-    );
-
-  return Number.isFinite(
-    numberValue
-  )
-    ? numberValue
-    : fallback;
-};
 
 /* =========================================================
    ARRAY RESPONSE EXTRACTOR

@@ -26,6 +26,7 @@ import {
 } from "../../../utils/apiError";
 
 import "./BankDetails.css";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    INITIAL FORM
@@ -44,18 +45,6 @@ const INITIAL_FORM = {
 /* =========================================================
    TEXT
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return text || fallback;
-};
 
 /* =========================================================
    CREATE FORM FROM API

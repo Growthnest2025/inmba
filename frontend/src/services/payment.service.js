@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import api from "../api/api";
+import api, { BACKEND_URL } from "../api/api";
 
 /* =========================================================
    ROOT PAYMENT API
@@ -13,7 +13,7 @@ import api from "../api/api";
 
 const paymentApi =
   axios.create({
-    baseURL: "/",
+    baseURL: BACKEND_URL,
 
     withCredentials:
       true,
@@ -35,6 +35,16 @@ paymentApi.interceptors.request.use(
   (config) => {
     config.withCredentials =
       true;
+
+    try {
+      const token =
+        window?.localStorage?.getItem?.("inmba_session_token") ||
+        window?.sessionStorage?.getItem?.("inmba_session_token");
+
+      if (token && !config.headers.Authorization) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch {}
 
     const isFormData =
       typeof FormData !==

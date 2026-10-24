@@ -18,6 +18,7 @@ import {
 } from "../../../services/kyc.service";
 
 import "./Acknowledgement.css";
+import { toText, asObject } from "../../../utils/commonHelpers";
 
 
 /* =========================================================
@@ -44,30 +45,6 @@ const NEXT_ROUTE_STORAGE_KEY =
    HELPERS
 ========================================================= */
 
-const asObject = (value) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return text || fallback;
-};
 
 
 const safeParse = (

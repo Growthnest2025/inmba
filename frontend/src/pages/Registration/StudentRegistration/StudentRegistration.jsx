@@ -26,6 +26,7 @@ import {
 } from "../../../utils/apiError";
 
 import "./StudentRegistration.css";
+import { toText, asObject } from "../../../utils/commonHelpers";
 
 /* ========================================
    EDUCATION LEVELS
@@ -90,28 +91,6 @@ const INITIAL_FORM_DATA = {
 /* ========================================
    HELPERS
 ======================================== */
-
-const asObject = (value) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalizedValue =
-    String(value ?? "").trim();
-
-  return normalizedValue || fallback;
-};
 
 const getErrorText = (
   value

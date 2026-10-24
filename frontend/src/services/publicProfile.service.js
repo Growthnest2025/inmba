@@ -1,6 +1,7 @@
 import api, {
   BACKEND_URL,
 } from "../api/api";
+import { toText, asObject } from "../utils/commonHelpers";
 
 /* =========================================================
    INMBA
@@ -22,36 +23,9 @@ import api, {
    OBJECT
 ========================================================= */
 
-const asObject = (value) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
 /* =========================================================
    TEXT
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalized =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalized ||
-    fallback
-  );
-};
 
 /* =========================================================
    BOOLEAN

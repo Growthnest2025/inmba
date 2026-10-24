@@ -1,0 +1,16 @@
+{
+  "name": "inmba-api",
+  "main": "inmba-api-worker.js",
+  "compatibility_date": "2026-10-21",
+  "d1_databases": [
+    {
+      "binding": "inmba_db",
+      "database_name": "inmba-db",
+      "database_id": "5761cc1e-b2f8-4944-8b13-52464dcc0cd1"
+    }
+  ],
+  "vars": {
+    "FRONTEND_ORIGIN": "https://inmba.org,http://localhost:5173"
+  }
+}
+

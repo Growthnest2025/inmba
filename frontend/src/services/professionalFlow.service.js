@@ -1,3 +1,4 @@
+import { toText } from "../utils/commonHelpers";
 /* =========================================================
    PROFESSIONAL ONBOARDING FLOW
 
@@ -35,21 +36,6 @@ const PROFESSIONAL_MEMBERSHIP_TYPE_KEY =
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    text ||
-    fallback
-  );
-};
 
 /* =========================================================
    PROFESSIONAL MEMBERSHIP CHECK

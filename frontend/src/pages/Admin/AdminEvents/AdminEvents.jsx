@@ -25,6 +25,7 @@ import {
 } from "../../../utils/apiError";
 
 import "./AdminEvents.css";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    EVENT BADGES
@@ -85,21 +86,6 @@ const EMPTY_EVENT = {
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalized =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalized ||
-    fallback
-  );
-};
 
 /* =========================================================
    FORMAT DATE

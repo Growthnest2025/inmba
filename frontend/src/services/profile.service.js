@@ -9,6 +9,7 @@ import {
   createPublicAssetUrl,
   createPublicProfilePhotoUrl,
 } from "./publicProfile.service";
+import { toText, asObject } from "../utils/commonHelpers";
 
 /* =========================================================
    INMBA PROFILE SERVICE
@@ -65,41 +66,9 @@ const profileApi =
    OBJECT
 ========================================================= */
 
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
 /* =========================================================
    TEXT
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const result =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    result ||
-    fallback
-  );
-};
 
 /* =========================================================
    ARRAY

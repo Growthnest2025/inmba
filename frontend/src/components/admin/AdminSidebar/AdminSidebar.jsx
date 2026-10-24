@@ -8,25 +8,11 @@ import {
 import {
   getAdminRoleLabel,
 } from "../../../services/adminAuth.service";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalized =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalized ||
-    fallback
-  );
-};
 
 /* =========================================================
    MEMBER FILTERS

@@ -20,6 +20,7 @@ import {
 } from "../../../utils/apiError";
 
 import "./AdminDashboard.css";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    FILTER CONFIG
@@ -70,21 +71,6 @@ const PAGE_SIZE = 10;
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalized =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalized ||
-    fallback
-  );
-};
 
 /* =========================================================
    VALID LOGIN ID

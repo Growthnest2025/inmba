@@ -27,6 +27,7 @@ import {
 } from "../../../utils/apiError";
 
 import "./OrganizationMemberRegistration.css";
+import { toText, asObject } from "../../../utils/commonHelpers";
 
 /* ========================================
    MEMBERSHIP OPTIONS
@@ -187,30 +188,6 @@ const INITIAL_FORM_DATA = {
 /* ========================================
    HELPERS
 ======================================== */
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalizedValue =
-    String(value ?? "").trim();
-
-  return normalizedValue || fallback;
-};
 
 const getErrorText = (
   value

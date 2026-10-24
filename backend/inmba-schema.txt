@@ -1,0 +1,913 @@
+/* =========================================================
+   INMBA DATABASE SCHEMA DEFINITION
+
+   Recovery-safe schema definition.
+
+   IMPORTANT:
+   - Existing tables are preserved.
+   - Existing columns are not deleted.
+   - Missing declared columns may be added by schemaBootstrap.
+========================================================= */
+
+const SCHEMA_VERSION =
+  "33.0.0";
+
+const SCHEMA_MIGRATION_NAME =
+  "inmba_schema_v33";
+
+
+/* =========================================================
+   COLUMN HELPER
+========================================================= */
+
+const column = (
+  definition,
+  addIfMissing = true
+) => ({
+  definition,
+  addIfMissing,
+});
+
+
+/* =========================================================
+   TABLE SCHEMAS
+========================================================= */
+
+const TABLE_SCHEMAS = {
+
+  /* =======================================================
+     SCHEMA MIGRATIONS
+  ======================================================= */
+
+  schema_migrations: {
+
+    columns: {
+
+      id: column(
+        "INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY"
+      ),
+
+      migration_name: column(
+        "VARCHAR(190) NOT NULL"
+      ),
+
+      migration_version: column(
+        "VARCHAR(50) NOT NULL"
+      ),
+
+      details_json: column(
+        "LONGTEXT NULL"
+      ),
+
+      applied_at: column(
+        "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      ),
+
+      last_verified_at: column(
+        "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+      ),
+
+    },
+
+    indexes: [
+      {
+        name:
+          "uq_schema_migrations_migration_name",
+
+        unique:
+          true,
+
+        columns: [
+          "migration_name",
+        ],
+      },
+    ],
+
+  },
+
+
+  /* =======================================================
+     COMMERCIAL BASIC KYC
+  ======================================================= */
+
+  commercial_basic_kyc: {
+
+    columns: {
+
+      id: column(
+        "INT NOT NULL AUTO_INCREMENT PRIMARY KEY"
+      ),
+
+      full_name: column(
+        "VARCHAR(150) NOT NULL"
+      ),
+
+      mobile: column(
+        "VARCHAR(15) NOT NULL"
+      ),
+
+      email: column(
+        "VARCHAR(150) NOT NULL"
+      ),
+
+      business_name: column(
+        "VARCHAR(200) NOT NULL"
+      ),
+
+      business_type: column(
+        "VARCHAR(100) NOT NULL"
+      ),
+
+      city: column(
+        "VARCHAR(100) NOT NULL"
+      ),
+
+      login_id: column(
+        "VARCHAR(50) NULL"
+      ),
+
+      kyc_status: column(
+        "VARCHAR(30) NOT NULL DEFAULT 'submitted'"
+      ),
+
+      created_at: column(
+        "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      ),
+
+      updated_at: column(
+        "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+      ),
+
+    },
+
+    indexes: [
+      {
+        name:
+          "uq_commercial_basic_kyc_mobile",
+
+        unique:
+          true,
+
+        columns: [
+          "mobile",
+        ],
+      },
+
+      {
+        name:
+          "uq_commercial_basic_kyc_email",
+
+        unique:
+          true,
+
+        columns: [
+          "email",
+        ],
+      },
+
+      {
+        name:
+          "uq_commercial_basic_kyc_login_id",
+
+        unique:
+          true,
+
+        columns: [
+          "login_id",
+        ],
+
+        ignoreEmpty:
+          true,
+      },
+    ],
+
+  },
+
+
+  /* =======================================================
+     COMMERCIAL PAYMENTS
+  ======================================================= */
+
+  commercial_payments: {
+
+    columns: {
+
+      id: column(
+        "INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY"
+      ),
+
+      login_id: column(
+        "VARCHAR(50) NOT NULL"
+      ),
+
+      plan_id: column(
+        "VARCHAR(50) NOT NULL"
+      ),
+
+      plan_name: column(
+        "VARCHAR(100) NOT NULL"
+      ),
+
+      amount: column(
+        "DECIMAL(10,2) NOT NULL"
+      ),
+
+      payment_method: column(
+        "VARCHAR(100) NULL"
+      ),
+
+      transaction_id: column(
+        "VARCHAR(255) NULL"
+      ),
+
+      payment_status: column(
+        "VARCHAR(50) NOT NULL DEFAULT 'pending'"
+      ),
+
+      created_at: column(
+        "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      ),
+
+      updated_at: column(
+        "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+      ),
+
+    },
+
+    indexes: [
+      {
+        name:
+          "idx_commercial_payments_login_id",
+
+        unique:
+          false,
+
+        columns: [
+          "login_id",
+        ],
+      },
+    ],
+
+  },
+
+
+  /* =======================================================
+     COMMERCIAL FULL KYC
+  ======================================================= */
+
+  commercial_kyc: {
+
+    columns: {
+
+      id: column(
+        "INT NOT NULL AUTO_INCREMENT PRIMARY KEY"
+      ),
+
+      member_id: column(
+        "INT NULL"
+      ),
+
+      login_id: column(
+        "VARCHAR(50) NULL"
+      ),
+
+      full_legal_name: column(
+        "VARCHAR(150) NULL"
+      ),
+
+      father_spouse_name: column(
+        "VARCHAR(150) NULL"
+      ),
+
+      dob: column(
+        "DATE NULL"
+      ),
+
+      gender: column(
+        "VARCHAR(30) NULL"
+      ),
+
+      marital_status: column(
+        "VARCHAR(30) NULL"
+      ),
+
+      nationality: column(
+        "VARCHAR(80) NULL"
+      ),
+
+      aadhaar_number: column(
+        "VARCHAR(20) NULL"
+      ),
+
+      pan_number: column(
+        "VARCHAR(20) NULL"
+      ),
+
+      passport_number: column(
+        "VARCHAR(30) NULL"
+      ),
+
+      voter_id: column(
+        "VARCHAR(30) NULL"
+      ),
+
+      driving_license: column(
+        "VARCHAR(30) NULL"
+      ),
+
+      blood_group: column(
+        "VARCHAR(10) NULL"
+      ),
+
+      business_name: column(
+        "VARCHAR(200) NULL"
+      ),
+
+      business_type: column(
+        "VARCHAR(100) NULL"
+      ),
+
+      registration_number: column(
+        "VARCHAR(100) NULL"
+      ),
+
+      gst_number: column(
+        "VARCHAR(30) NULL"
+      ),
+
+      company_pan: column(
+        "VARCHAR(20) NULL"
+      ),
+
+      tan_number: column(
+        "VARCHAR(30) NULL"
+      ),
+
+      business_address: column(
+        "TEXT NULL"
+      ),
+
+      branch_locations: column(
+        "TEXT NULL"
+      ),
+
+      business_phone: column(
+        "VARCHAR(30) NULL"
+      ),
+
+      business_email: column(
+        "VARCHAR(150) NULL"
+      ),
+
+      business_website: column(
+        "VARCHAR(255) NULL"
+      ),
+
+      google_map_pin: column(
+        "VARCHAR(255) NULL"
+      ),
+
+      bank_account_number: column(
+        "VARCHAR(100) NULL"
+      ),
+
+      ifsc_code: column(
+        "VARCHAR(20) NULL"
+      ),
+
+      bank_branch: column(
+        "VARCHAR(150) NULL"
+      ),
+
+      upi_id: column(
+        "VARCHAR(100) NULL"
+      ),
+
+      income_tax_slab: column(
+        "VARCHAR(100) NULL"
+      ),
+
+      nominee_name: column(
+        "VARCHAR(150) NULL"
+      ),
+
+      nominee_relation: column(
+        "VARCHAR(80) NULL"
+      ),
+
+      year_established: column(
+        "VARCHAR(20) NULL"
+      ),
+
+      employee_count: column(
+        "VARCHAR(50) NULL"
+      ),
+
+      annual_turnover: column(
+        "VARCHAR(100) NULL"
+      ),
+
+      products_services: column(
+        "TEXT NULL"
+      ),
+
+      business_category_tags: column(
+        "TEXT NULL"
+      ),
+
+      awards_certifications: column(
+        "TEXT NULL"
+      ),
+
+      client_testimonials: column(
+        "TEXT NULL"
+      ),
+
+      business_bio: column(
+        "TEXT NULL"
+      ),
+
+      social_links: column(
+        "TEXT NULL"
+      ),
+
+      referral_id: column(
+        "VARCHAR(100) NULL"
+      ),
+
+      preferred_payout_cycle: column(
+        "VARCHAR(80) NULL"
+      ),
+
+      emergency_contact_name: column(
+        "VARCHAR(150) NULL"
+      ),
+
+      emergency_contact_number: column(
+        "VARCHAR(30) NULL"
+      ),
+
+      emergency_relationship: column(
+        "VARCHAR(80) NULL"
+      ),
+
+      kyc_status: column(
+        "VARCHAR(30) NULL DEFAULT 'draft'"
+      ),
+
+      created_at: column(
+        "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      ),
+
+      updated_at: column(
+        "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+      ),
+
+    },
+
+    indexes: [],
+
+  },
+
+
+  /* =======================================================
+     KYC MEMBERS
+
+     Only core columns are declared here.
+
+     Your existing DB contains many Professional + Commercial
+     extension columns. schemaBootstrap DOES NOT delete extra
+     columns, therefore they remain safe.
+  ======================================================= */
+
+  kyc_members: {
+
+    columns: {
+
+      id: column(
+        "INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY",
+        false
+      ),
+
+      salutation: column(
+        "VARCHAR(30) NULL"
+      ),
+
+      first_name: column(
+        "VARCHAR(120) NULL"
+      ),
+
+      last_name: column(
+        "VARCHAR(120) NULL"
+      ),
+
+      email: column(
+        "VARCHAR(255) NULL"
+      ),
+
+      phone: column(
+        "VARCHAR(30) NULL"
+      ),
+
+      educational_qualification:
+        column(
+          "TEXT NULL"
+        ),
+
+      membership_type: column(
+        "VARCHAR(120) NULL"
+      ),
+
+      profile_pic: column(
+        "TEXT NULL"
+      ),
+
+      business_name: column(
+        "VARCHAR(255) NULL"
+      ),
+
+      business_category: column(
+        "VARCHAR(255) NULL"
+      ),
+
+      business_address: column(
+        "TEXT NULL"
+      ),
+
+      login_id: column(
+        "VARCHAR(100) NULL"
+      ),
+
+      referral_id: column(
+        "VARCHAR(100) NULL"
+      ),
+
+      referred_by: column(
+        "VARCHAR(100) NULL"
+      ),
+
+      payment_status: column(
+        "VARCHAR(30) NOT NULL DEFAULT 'pending'"
+      ),
+
+      commercial_kyc_status:
+        column(
+          "VARCHAR(50) NULL DEFAULT 'draft'"
+        ),
+
+      commercial_kyc_current_step:
+        column(
+          "VARCHAR(5) NULL DEFAULT 'A'"
+        ),
+
+      commercial_section_a_completed:
+        column(
+          "TINYINT(1) NOT NULL DEFAULT 0"
+        ),
+
+      commercial_section_b_completed:
+        column(
+          "TINYINT(1) NOT NULL DEFAULT 0"
+        ),
+
+      commercial_section_c_completed:
+        column(
+          "TINYINT(1) NOT NULL DEFAULT 0"
+        ),
+
+      commercial_section_d_completed:
+        column(
+          "TINYINT(1) NOT NULL DEFAULT 0"
+        ),
+
+      commercial_section_e_completed:
+        column(
+          "TINYINT(1) NOT NULL DEFAULT 0"
+        ),
+
+      commercial_section_f_completed:
+        column(
+          "TINYINT(1) NOT NULL DEFAULT 0"
+        ),
+
+      commercial_section_g_completed:
+        column(
+          "TINYINT(1) NOT NULL DEFAULT 0"
+        ),
+
+      commercial_privacy_consent:
+        column(
+          "TINYINT(1) NOT NULL DEFAULT 0"
+        ),
+
+      commercial_declaration_accepted:
+        column(
+          "TINYINT(1) NOT NULL DEFAULT 0"
+        ),
+
+      commercial_kyc_submitted_at:
+        column(
+          "DATETIME NULL"
+        ),
+
+      commercial_kyc_completed_at:
+        column(
+          "DATETIME NULL"
+        ),
+
+      commercial_kyc_rejection_reason:
+        column(
+          "TEXT NULL"
+        ),
+
+      commercial_declaration_at:
+        column(
+          "DATETIME NULL"
+        ),
+
+      commercial_network_level:
+        column(
+          "VARCHAR(100) NULL"
+        ),
+
+      commercial_royalty_slab_category:
+        column(
+          "VARCHAR(100) NULL"
+        ),
+
+      commercial_preferred_payout_cycle:
+        column(
+          "VARCHAR(100) NULL"
+        ),
+
+      business_legal_type:
+        column(
+          "VARCHAR(100) NULL"
+        ),
+
+      business_registration_number:
+        column(
+          "VARCHAR(150) NULL"
+        ),
+
+      business_contact_number:
+        column(
+          "VARCHAR(30) NULL"
+        ),
+
+      business_email: column(
+        "VARCHAR(255) NULL"
+      ),
+
+      business_website: column(
+        "TEXT NULL"
+      ),
+
+      business_google_map_location:
+        column(
+          "TEXT NULL"
+        ),
+
+      commercial_upi_id:
+        column(
+          "VARCHAR(150) NULL"
+        ),
+
+      commercial_gst_number:
+        column(
+          "VARCHAR(30) NULL"
+        ),
+
+      business_year_established:
+        column(
+          "YEAR NULL"
+        ),
+
+      business_number_of_employees:
+        column(
+          "INT NULL"
+        ),
+
+      business_annual_turnover_slab:
+        column(
+          "VARCHAR(100) NULL"
+        ),
+
+      products_services_offered:
+        column(
+          "LONGTEXT NULL"
+        ),
+
+      business_category_tags:
+        column(
+          "TEXT NULL"
+        ),
+
+      business_awards_certifications:
+        column(
+          "LONGTEXT NULL"
+        ),
+
+      business_client_testimonials:
+        column(
+          "LONGTEXT NULL"
+        ),
+
+      business_bio: column(
+        "LONGTEXT NULL"
+      ),
+
+      business_logo: column(
+        "TEXT NULL"
+      ),
+
+      business_gallery_photos:
+        column(
+          "LONGTEXT NULL"
+        ),
+
+      business_promo_video:
+        column(
+          "TEXT NULL"
+        ),
+
+      business_social_media_links:
+        column(
+          "LONGTEXT NULL"
+        ),
+
+      commercial_emergency_contact_name:
+        column(
+          "VARCHAR(255) NULL"
+        ),
+
+      commercial_emergency_contact_number:
+        column(
+          "VARCHAR(30) NULL"
+        ),
+
+      commercial_emergency_relationship:
+        column(
+          "VARCHAR(100) NULL"
+        ),
+
+      created_at: column(
+        "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      ),
+
+      updated_at: column(
+        "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+      ),
+
+    },
+
+    indexes: [
+      {
+        name:
+          "idx_kyc_members_email",
+
+        unique:
+          false,
+
+        columns: [
+          "email",
+        ],
+      },
+
+      {
+        name:
+          "idx_kyc_members_phone",
+
+        unique:
+          false,
+
+        columns: [
+          "phone",
+        ],
+      },
+
+      {
+        name:
+          "idx_kyc_members_membership_type",
+
+        unique:
+          false,
+
+        columns: [
+          "membership_type",
+        ],
+      },
+
+      {
+        name:
+          "uq_kyc_members_login_id",
+
+        unique:
+          true,
+
+        columns: [
+          "login_id",
+        ],
+
+        ignoreEmpty:
+          true,
+      },
+
+      {
+        name:
+          "uq_kyc_members_referral_id",
+
+        unique:
+          true,
+
+        columns: [
+          "referral_id",
+        ],
+
+        ignoreEmpty:
+          true,
+      },
+    ],
+
+  },
+
+};
+
+
+/* =========================================================
+   CREATE TABLE SQL
+========================================================= */
+
+const buildCreateTableSql = (
+  tableName,
+  schema
+) => {
+
+  if (
+    !tableName ||
+    !schema ||
+    !schema.columns
+  ) {
+    throw new Error(
+      `Invalid schema definition for table: ${tableName}`
+    );
+  }
+
+
+  const columnSql =
+    Object.entries(
+      schema.columns
+    )
+      .map(
+        ([
+          columnName,
+          config,
+        ]) => {
+
+          if (
+            !/^[A-Za-z0-9_]+$/.test(
+              columnName
+            )
+          ) {
+            throw new Error(
+              `Unsafe schema column: ${columnName}`
+            );
+          }
+
+          return (
+            `\`${columnName}\` ` +
+            config.definition
+          );
+        }
+      )
+      .join(",\n");
+
+
+  return `
+    CREATE TABLE IF NOT EXISTS
+      \`${tableName}\`
+    (
+      ${columnSql}
+    )
+    ENGINE=InnoDB
+    DEFAULT CHARSET=utf8mb4
+    COLLATE=utf8mb4_unicode_ci
+  `;
+};
+
+
+/* =========================================================
+   EXPORTS
+========================================================= */
+
+module.exports = {
+
+  SCHEMA_VERSION,
+
+  SCHEMA_MIGRATION_NAME,
+
+  TABLE_SCHEMAS,
+
+  buildCreateTableSql,
+
+};

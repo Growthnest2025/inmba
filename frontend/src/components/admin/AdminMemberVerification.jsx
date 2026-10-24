@@ -17,6 +17,7 @@ import {
 } from "../../utils/apiError";
 
 import "./AdminMemberVerification.css";
+import { toText } from "../../utils/commonHelpers";
 
 /* =========================================================
    STATUS OPTIONS
@@ -84,21 +85,6 @@ const SEND_METHODS = [
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalized =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalized ||
-    fallback
-  );
-};
 
 const normalizeStatus = (
   value

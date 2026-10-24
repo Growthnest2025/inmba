@@ -31,60 +31,14 @@ import api, {
 } from "../../../api/api";
 
 import "./CommercialDashboard.css";
+import { toText, asObject, toNumber } from "../../../utils/commonHelpers";
 
 
 /* =========================================================
    HELPERS
 ========================================================= */
 
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
 
-  return {};
-};
-
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const result =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    result ||
-    fallback
-  );
-};
-
-
-const toNumber = (
-  value
-) => {
-  const number =
-    Number(
-      value
-    );
-
-  return Number.isFinite(
-    number
-  )
-    ? number
-    : 0;
-};
 
 
 const getBackendFileUrl = (

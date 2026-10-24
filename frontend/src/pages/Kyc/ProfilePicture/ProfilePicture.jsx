@@ -26,6 +26,7 @@ import {
 } from "../../../utils/apiError";
 
 import "./ProfilePicture.css";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    INITIAL FORM
@@ -62,14 +63,6 @@ const INITIAL_FORM = {
 /* =========================================================
    TEXT
 ========================================================= */
-
-const toText = (
-  value
-) => {
-  return String(
-    value ?? ""
-  ).trim();
-};
 
 /* =========================================================
    SOCIAL LINKS

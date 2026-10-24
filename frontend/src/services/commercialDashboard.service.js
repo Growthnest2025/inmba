@@ -1,4 +1,5 @@
 import api from "../api/api";
+import { toNumber } from "../utils/commonHelpers";
 
 /* =========================================================
    COMMERCIAL DASHBOARD SERVICE
@@ -48,18 +49,6 @@ const COMMERCIAL_ROUTE_MAP = Object.freeze({
 const toText = (value) =>
   String(value ?? "").trim();
 
-
-const toNumber = (
-  value,
-  fallback = 0
-) => {
-  const number =
-    Number(value);
-
-  return Number.isFinite(number)
-    ? number
-    : fallback;
-};
 
 
 const extractData = (response) =>

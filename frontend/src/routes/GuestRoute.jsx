@@ -13,18 +13,11 @@ import {
   getProfessionalNextRoute,
   isProfessionalMembership,
 } from "../services/professionalFlow.service";
+import { toText } from "../utils/commonHelpers";
 
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value
-) => {
-  return String(
-    value ?? ""
-  ).trim();
-};
 
 /* =========================================================
    GUEST ROUTE

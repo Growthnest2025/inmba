@@ -31,44 +31,15 @@ import {
 } from "../../../utils/apiError";
 
 import "./PublicProfile.css";
+import { toText, asObject } from "../../../utils/commonHelpers";
 
 /* =========================
    OBJECT HELPER
 ========================= */
 
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
 /* =========================
    TEXT HELPER
 ========================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalizedValue =
-    String(
-      value ??
-      ""
-    ).trim();
-
-  return (
-    normalizedValue ||
-    fallback
-  );
-};
 
 /* =========================
    DATE FORMATTER

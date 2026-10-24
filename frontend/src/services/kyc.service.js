@@ -1,4 +1,6 @@
 import axios from "axios";
+import { BACKEND_URL } from "../api/api";
+import { toText, asObject } from "../utils/commonHelpers";
 
 /* =========================================================
    KYC ROOT API
@@ -23,7 +25,7 @@ import axios from "axios";
 
 const kycApi =
   axios.create({
-    baseURL: "/",
+    baseURL: BACKEND_URL,
 
     withCredentials:
       true,
@@ -179,38 +181,9 @@ kycApi.interceptors.response.use(
    HELPERS
 ========================================================= */
 
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
 /* =========================================================
    TEXT
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return text || fallback;
-};
 
 /* =========================================================
    TOKEN

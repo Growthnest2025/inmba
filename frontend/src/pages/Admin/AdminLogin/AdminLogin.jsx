@@ -24,6 +24,7 @@ import {
 } from "../../../utils/apiError";
 
 import "./AdminLogin.css";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    PENDING OTP STORAGE
@@ -106,21 +107,6 @@ const INITIAL_FORM = {
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalized =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalized ||
-    fallback
-  );
-};
 
 /* =========================================================
    SAFE ADMIN REDIRECT

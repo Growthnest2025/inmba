@@ -183,7 +183,7 @@ export default function MembershipType() {
         searchParams,
       ]
     );
-  const registrationAvailable = false;
+  const registrationAvailable = true;
 
   if (!registrationAvailable) {
     return (
@@ -201,14 +201,14 @@ export default function MembershipType() {
 
           <section className="inmba-registration-unavailable">
             <div className="inmba-registration-unavailable-icon">
-              <i className="fas fa-screwdriver-wrench" aria-hidden="true" />
+              <i className="fas fa-hourglass-half" aria-hidden="true" />
             </div>
 
             <span className="inmba-registration-unavailable-label">
-              REGISTRATION UPDATE
+              MEMBERSHIP REGISTRATION
             </span>
 
-            <h1>Membership registration is temporarily unavailable</h1>
+            <h1>Coming Soon</h1>
 
             <p>
               We’re setting up our membership registration service.

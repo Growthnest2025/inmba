@@ -35,26 +35,11 @@ import {
 import ProfessionalVisibility from "./ProfessionalVisibility/ProfessionalVisibility";
 
 import "./ProfessionalProfile.css";
+import { asObject } from "../../utils/commonHelpers";
 
 /* =========================================================
    OBJECT
 ========================================================= */
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
-};
 
 /* =========================================================
    TEXT

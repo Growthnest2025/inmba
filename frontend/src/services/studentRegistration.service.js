@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toText, asObject } from "../utils/commonHelpers";
 
 /* ========================================
    STUDENT REGISTRATION API
@@ -26,28 +27,6 @@ const studentRegistrationApi =
 /* ========================================
    COMMON HELPERS
 ======================================== */
-
-const asObject = (value) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalizedValue =
-    String(value ?? "").trim();
-
-  return normalizedValue || fallback;
-};
 
 const normalizeDigits = (
   value,

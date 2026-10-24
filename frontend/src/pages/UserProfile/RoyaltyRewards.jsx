@@ -9,41 +9,15 @@ import {
   Banner,
   Section,
 } from "./Shared";
+import { toText, toNumber } from "../../utils/commonHelpers";
 
 /* =========================================================
    TEXT HELPER
 ========================================================= */
 
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return text || fallback;
-};
-
 /* =========================================================
    NUMBER HELPER
 ========================================================= */
-
-const toNumber = (
-  value
-) => {
-  const number =
-    Number(
-      value
-    );
-
-  return Number.isFinite(
-    number
-  )
-    ? number
-    : 0;
-};
 
 /* =========================================================
    MONEY FORMATTER

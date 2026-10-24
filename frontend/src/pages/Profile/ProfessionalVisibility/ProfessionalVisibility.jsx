@@ -16,25 +16,11 @@ import {
 } from "../../../utils/apiError";
 
 import "./ProfessionalVisibility.css";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    text ||
-    fallback
-  );
-};
 
 const toArray = (
   value

@@ -27,6 +27,7 @@ import {
 } from "../../../utils/apiError";
 
 import "./DirectNetwork.css";
+import { toText, asObject, toNumber } from "../../../utils/commonHelpers";
 
 /* =========================
    INITIAL NETWORK DATA
@@ -53,46 +54,6 @@ const INITIAL_NETWORK_DATA = {
 /* =========================
    COMMON HELPERS
 ========================= */
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalizedValue =
-    String(
-      value ?? ""
-    ).trim();
-
-  return normalizedValue || fallback;
-};
-
-const toNumber = (
-  value
-) => {
-  const normalizedValue =
-    Number(value);
-
-  return Number.isFinite(
-    normalizedValue
-  )
-    ? normalizedValue
-    : 0;
-};
 
 /* =========================
    NUMBER FORMATTER

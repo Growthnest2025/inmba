@@ -18,6 +18,7 @@ import {
 } from "../../services/payment.service";
 
 import "./ProfessionalPayment.css";
+import { toText, asObject } from "../../utils/commonHelpers";
 
 /* =========================================================
    PAYMENT CONSTANTS
@@ -145,21 +146,6 @@ const PAYMENT_METHODS = [
    HELPERS
 ========================================================= */
 
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    text ||
-    fallback
-  );
-};
-
 /* =========================================================
    SAFE JSON
 ========================================================= */
@@ -179,23 +165,6 @@ const safeParse = (
 /* =========================================================
    OBJECT
 ========================================================= */
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
-};
 
 /* =========================================================
    ERROR TEXT

@@ -1,4 +1,5 @@
 import api from "../api/api";
+import { toText } from "../utils/commonHelpers";
 
 /* =========================================================
    COMMERCIAL PAYMENT SERVICE
@@ -17,14 +18,6 @@ import api from "../api/api";
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value
-) => {
-  return String(
-    value ?? ""
-  ).trim();
-};
 
 const normalizeStatus = (
   value

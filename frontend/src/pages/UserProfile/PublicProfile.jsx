@@ -17,46 +17,15 @@ import {
   burst,
   showToast,
 } from "./helpers";
+import { toText, asObject } from "../../utils/commonHelpers";
 
 /* =========================================================
    HELPERS
 ========================================================= */
 
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    text ||
-    fallback
-  );
-};
-
 /* =========================================================
    OBJECT
 ========================================================= */
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
-};
 
 /* =========================================================
    ARRAY

@@ -13,39 +13,11 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import api from "../../../api/api";
 
 import "./Login.css";
+import { toText, asObject } from "../../../utils/commonHelpers";
 
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    text ||
-    fallback
-  );
-};
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
 
 /* =========================================================
    ERROR MESSAGE

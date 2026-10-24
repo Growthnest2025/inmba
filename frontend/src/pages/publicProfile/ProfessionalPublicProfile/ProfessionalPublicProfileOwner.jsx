@@ -20,38 +20,13 @@ import ProfessionalPublicProfile
   from "./ProfessionalPublicProfile";
 
 import "./ProfessionalPublicProfile.css";
+import { toText, asObject } from "../../../utils/commonHelpers";
 
 
 /* =========================================================
    HELPERS
 ========================================================= */
 
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return text || fallback;
-};
 
 
 /* =========================================================

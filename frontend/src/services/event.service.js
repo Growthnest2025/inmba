@@ -1,38 +1,9 @@
 import api from "../api/api";
+import { toText, asObject } from "../utils/commonHelpers";
 
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalized =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalized ||
-    fallback
-  );
-};
 
 /* =========================================================
    EXTRACT EVENTS

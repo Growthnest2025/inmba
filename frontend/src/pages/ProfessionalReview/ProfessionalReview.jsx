@@ -22,6 +22,7 @@ import {
 } from "../../services/professionalKyc.service";
 
 import "./ProfessionalReview.css";
+import { asObject } from "../../utils/commonHelpers";
 
 /* =========================================================
    SECTIONS
@@ -631,23 +632,6 @@ const toText = (
   return String(
     value
   );
-};
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
 };
 
 const safeParse = (

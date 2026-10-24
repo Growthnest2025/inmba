@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toText, asObject } from "../utils/commonHelpers";
 
 /* ========================================
    POLICY API CLIENT
@@ -27,35 +28,6 @@ const policyApi =
 /* ========================================
    COMMON HELPERS
 ======================================== */
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalizedValue =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalizedValue ||
-    fallback
-  );
-};
 
 /* ========================================
    URL TO INTERNAL ROUTE

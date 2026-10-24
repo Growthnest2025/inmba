@@ -16,25 +16,11 @@ import CivilianPublicProfile
   from "./CivilianPublicProfile";
 
 import "./CivilianPublicProfile.css";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    HELPER
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const result =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    result ||
-    fallback
-  );
-};
 
 /* =========================================================
    CIVILIAN OWNER WRAPPER

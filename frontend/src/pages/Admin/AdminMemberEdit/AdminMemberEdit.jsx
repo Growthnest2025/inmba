@@ -26,25 +26,11 @@ import {
 } from "../../../utils/apiError";
 
 import "./AdminMemberEdit.css";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    BASIC HELPERS
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalized =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalized ||
-    fallback
-  );
-};
 
 /* =========================================================
    DATE INPUT VALUE

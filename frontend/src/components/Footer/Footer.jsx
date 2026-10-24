@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import inmbaLogo from "../../assets/images/logo.png";
+import inmbaLogo from "../../assets/images/inmba_logo.png";
 
 export default function Footer() {
   const location = useLocation();
@@ -298,8 +298,21 @@ export default function Footer() {
           display: block;
           margin: 0 auto 14px;
           object-fit: contain;
-          border-radius: 0;
-          background: transparent;
+          padding: 8px;
+          border: 1px solid rgba(255,255,255,0.85);
+          border-radius: 20px;
+          background: #ffffff;
+          box-shadow: 0 10px 28px rgba(0,0,0,0.2);
+          transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .footer-logo-img:hover {
+          transform: translateY(-3px) scale(1.04);
+          box-shadow: 0 14px 32px rgba(0,0,0,0.25);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .footer-logo-img { transition: none; }
         }
 
         .footer-logo {

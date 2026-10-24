@@ -25,6 +25,7 @@ import {
 } from "../../../utils/apiError";
 
 import "./Policy.css";
+import { toText, asObject } from "../../../utils/commonHelpers";
 
 /* ========================================
    POLICY SECTIONS
@@ -155,36 +156,6 @@ const POLICY_SECTIONS = [
 /* ========================================
    HELPERS
 ======================================== */
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalizedValue =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalizedValue ||
-    fallback
-  );
-};
 
 /* ========================================
    MEMBER NAME

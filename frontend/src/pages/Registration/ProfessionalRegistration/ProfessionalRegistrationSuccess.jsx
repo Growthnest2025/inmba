@@ -10,22 +10,11 @@ import {
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./ProfessionalRegistrationSuccess.css";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    HELPER
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return text || fallback;
-};
 
 /* =========================================================
    COMPONENT

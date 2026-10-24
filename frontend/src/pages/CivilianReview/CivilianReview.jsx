@@ -18,6 +18,7 @@ import {
 } from "../../services/CivilianKyc.service";
 
 import "./CivilianReview.css";
+import { asObject } from "../../utils/commonHelpers";
 
 /* =========================================================
    CIVILIAN REVIEW
@@ -265,18 +266,6 @@ const toText = (value) => {
   }
 
   return String(value).trim();
-};
-
-const asObject = (value) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
 };
 
 const unwrapResult = (result) => {

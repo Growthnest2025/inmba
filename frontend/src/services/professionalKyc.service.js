@@ -1,4 +1,5 @@
 import api from "../api/api";
+import { toText, asObject } from "../utils/commonHelpers";
 
 /* =========================================================
    PROFESSIONAL KYC CONSTANTS
@@ -76,41 +77,9 @@ export const PROFESSIONAL_KYC_STATUS = {
    OBJECT HELPER
 ========================================================= */
 
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
 /* =========================================================
    TEXT HELPER
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    text ||
-    fallback
-  );
-};
 
 /* =========================================================
    SECTION NORMALIZER

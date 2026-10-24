@@ -19,25 +19,11 @@ import {
 } from "../../../utils/apiError";
 
 import "./DeletedUsersBackup.css";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalized =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalized ||
-    fallback
-  );
-};
 
 /* =========================================================
    DATE FORMAT

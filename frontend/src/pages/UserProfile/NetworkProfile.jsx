@@ -10,41 +10,15 @@ import {
   Banner,
   Section,
 } from "./Shared";
+import { toText, toNumber } from "../../utils/commonHelpers";
 
 /* =========================================================
    HELPERS
 ========================================================= */
 
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return text || fallback;
-};
-
 /* =========================================================
    SAFE NUMBER
 ========================================================= */
-
-const toNumber = (
-  value
-) => {
-  const number =
-    Number(
-      value
-    );
-
-  return Number.isFinite(
-    number
-  )
-    ? number
-    : 0;
-};
 
 /* =========================================================
    SAFE ARRAY

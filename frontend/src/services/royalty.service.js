@@ -1,44 +1,9 @@
 import api from "../api/api";
+import { toText, asObject, toNumber } from "../utils/commonHelpers";
 
 /* =========================
    COMMON HELPERS
 ========================= */
-
-const asObject = (value) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalizedValue =
-    String(value ?? "").trim();
-
-  return normalizedValue || fallback;
-};
-
-const toNumber = (
-  value,
-  fallback = 0
-) => {
-  const normalizedValue =
-    Number(value);
-
-  return Number.isFinite(
-    normalizedValue
-  )
-    ? normalizedValue
-    : fallback;
-};
 
 /* =========================
    LOGIN ID NORMALIZER

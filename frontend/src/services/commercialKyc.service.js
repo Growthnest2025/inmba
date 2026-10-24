@@ -1,4 +1,5 @@
 import api from "../api/api";
+import { toText, asObject } from "../utils/commonHelpers";
 
 /* =========================================================
    COMMERCIAL KYC SERVICE
@@ -27,35 +28,6 @@ const VALID_SECTIONS =
 /* =========================================================
    BASIC HELPERS
 ========================================================= */
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const result =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    result ||
-    fallback
-  );
-};
 
 /* =========================================================
    SECTION NORMALIZER

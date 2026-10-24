@@ -18,6 +18,7 @@ import {
 } from "../../context/AuthContext";
 
 import "./ProfessionalLogin.css";
+import { toText, asObject } from "../../../utils/commonHelpers";
 
 /* =========================================================
    CONSTANTS
@@ -29,38 +30,6 @@ const PROFESSIONAL_NEXT_ROUTE_STORAGE_KEY =
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    text ||
-    fallback
-  );
-};
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
-};
 
 /* =========================================================
    MEMBER EXTRACTOR

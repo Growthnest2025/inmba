@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toText, asObject } from "../utils/commonHelpers";
 
 /* =========================================================
    BACKUP API
@@ -28,41 +29,9 @@ const backupApi =
    BASIC HELPERS
 ========================================================= */
 
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
 /* =========================================================
    TO TEXT
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalized =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalized ||
-    fallback
-  );
-};
 
 /* =========================================================
    CHECK HTML RESPONSE

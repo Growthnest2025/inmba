@@ -15,36 +15,13 @@ import {
 } from "../../../services/kyc.service";
 
 import "./CivilianAcknowledgement.css";
+import { toText, asObject } from "../../../utils/commonHelpers";
 
 
 /* =========================================
    HELPERS
 ========================================= */
 
-const asObject = (value) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const result =
-    String(
-      value ?? ""
-    ).trim();
-
-  return result || fallback;
-};
 
 
 const formatDate = (value) => {

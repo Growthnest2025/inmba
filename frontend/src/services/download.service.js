@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toText } from "../utils/commonHelpers";
 
 /* =========================================================
    ROOT DOWNLOAD API
@@ -30,21 +31,6 @@ const downloadApi =
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    text ||
-    fallback
-  );
-};
 
 /* =========================================================
    SAFE FILE NAME

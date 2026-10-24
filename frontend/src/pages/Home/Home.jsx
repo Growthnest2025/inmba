@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AOS from "aos";
 
-import commerciImage from "../../assets/images/commerci.png";
+import inmba from "../../assets/images/inmba_logo.png";
 import chamberImage from "../../assets/images/chamber.png";
 import foundationImage from "../../assets/images/foundation.png";
 
@@ -22,31 +22,37 @@ const membershipTypes = [
   {
     id: 1,
     title: "Inmba Commercial",
+    to: "/membership/commercial",
     icon: "bi bi-shop",
   },
   {
     id: 2,
     title: "Inmba Professional",
+    to: "/professional",
     icon: "bi bi-briefcase-fill",
   },
   {
     id: 3,
     title: "Inmba Civilian",
+    to: "/membership/civilian",
     icon: "bi bi-person-fill",
   },
   {
     id: 4,
     title: "Inmba Special",
+    to: "/membership/special",
     icon: "bi bi-star-fill",
   },
   {
     id: 5,
     title: "Inmba Honor",
+    to: "/membership/honor",
     icon: "bi bi-award-fill",
   },
   {
     id: 6,
     title: "Inmba Student",
+    to: "/student",
     icon: "bi bi-mortarboard-fill",
   },
 ];
@@ -367,10 +373,10 @@ export default function Home() {
               data-aos="fade-up"
               data-aos-delay="100"
             >
-              <div className="division-card">
+              <Link to="/chamber" className="division-card ic-home-chamber-link" style={{ display: "block", height: "100%", textDecoration: "none", color: "inherit" }}>
                 <div className="division-icon">
                   <img
-                    src={commerciImage}
+                    src={inmba}
                     alt="INMBA Chamber"
                   />
                 </div>
@@ -382,12 +388,12 @@ export default function Home() {
                   community engagement.
                 </p>
 
-                <Link to="/organization">
+                <span className="ic-home-cta">
                   Explore Chamber
 
                   <i className="fas fa-arrow-right"></i>
-                </Link>
-              </div>
+                </span>
+              </Link>
             </div>
 
             <div
@@ -473,20 +479,30 @@ export default function Home() {
           <div className="stats-grid membership-grid">
             {membershipTypes.map((type, index) => (
               <div
-                className="stat-box"
+                className="membership-item"
                 key={type.id}
                 data-aos="fade-up"
                 data-aos-delay={100 + index * 80}
               >
-                <div className="stat-icon">
-                  <i className={type.icon}></i>
-                </div>
+                <Link
+                  to={type.to}
+                  className="stat-box"
+                  aria-label={`${type.title} Membership`}
+                >
+                  <div className="stat-icon">
+                    <i className={type.icon}></i>
+                  </div>
 
-                <h2 className="membership-title">
-                  {type.title}
-                </h2>
+                  <h2 className="membership-title">
+                    {type.title}
+                  </h2>
 
-                <p>Membership</p>
+                  <p>Membership</p>
+
+                  <span className="membership-arrow" aria-hidden="true">
+                    <i className="fas fa-arrow-right"></i>
+                  </span>
+                </Link>
               </div>
             ))}
           </div>

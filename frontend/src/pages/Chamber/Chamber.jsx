@@ -1,251 +1,403 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-import Navbar from "../../components/Navbar/Navbar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import {
+  faGlobe,
+  faEnvelope,
+  faLink,
+} from "@fortawesome/free-solid-svg-icons";
+
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+
+import "../Organization/Organization.css";
 import "./Chamber.css";
+import Navbar from "../../components/Navbar/Navbar";
+import { Link } from "react-router-dom";
 
 /* =========================================================
-   CHAMBER PAGE - small section helpers (used only in this page)
+   NETWORK LOGOS
+
+   Imported directly from src/assets/images, same pattern
+   used everywhere else in this project (bundled by webpack,
+   so no public/ folder or fallback handling is needed).
 ========================================================= */
 
-function PageShell({ children }) {
+import inmbacom1 from "../../assets/images/inmbacom (1).png";
+import inmbacom2 from "../../assets/images/inmbacom (2).png";
+import inmbacom3 from "../../assets/images/inmbacom (3).png";
+import inmbacom4 from "../../assets/images/inmbacom (4).png";
+import inmbacom5 from "../../assets/images/inmbacom (5).png";
+import inmbacom6 from "../../assets/images/inmbacom (6).png";
+import inmbacom7 from "../../assets/images/inmbacom (7).png";
+import inmbacom8 from "../../assets/images/inmbacom (8).png";
+import inmbacom9 from "../../assets/images/inmbacom (9).png";
+
+const networkLogos = [
+  inmbacom1,
+  inmbacom2,
+  inmbacom3,
+  inmbacom4,
+  inmbacom5,
+  inmbacom6,
+  inmbacom7,
+  inmbacom8,
+  inmbacom9,
+];
+
+/* =========================================================
+   CHAMBER MEMBERSHIP TYPES
+========================================================= */
+
+const membershipTypes = [
+  "Inmba Commercial",
+  "Inmba Professional",
+  "Inmba Civilian",
+  "Inmba Special",
+  "Inmba Honor",
+  "Inmba Student",
+];
+
+/* =========================================================
+   CHAMBER AT A GLANCE
+========================================================= */
+
+const chamberGlance = [
+  { icon: "bi-people-fill", title: "31 members minimum", text: "The Patron plus 30 directly connected members" },
+  { icon: "bi-person-badge-fill", title: "10% to the Patron", text: "Share of subscriptions collected through the Chamber" },
+  { icon: "bi-pie-chart-fill", title: "20% Development Fund", text: "Allocated back to the Chamber" },
+];
+
+/* =========================================================
+   CONTACT DATA
+========================================================= */
+
+const contactDetails = [
+  {
+    id: 1,
+    type: "phone",
+    label: "WhatsApp Us",
+    icon: faWhatsapp,
+    value: "+91 89403 69361",
+    href: "https://wa.me/918940369361",
+    external: true,
+  },
+
+  {
+    id: 2,
+    type: "website",
+    label: "Visit Website",
+    icon: faGlobe,
+    value: "www.inmba.org",
+    href: "https://www.inmba.org",
+    external: true,
+  },
+
+  {
+    id: 3,
+    type: "email",
+    label: "Email Us",
+    icon: faEnvelope,
+    value: "admin@inmba.org",
+    href: "mailto:admin@inmba.org",
+    external: false,
+  },
+];
+
+/* =========================================================
+   ORGANIZATION COMPONENT
+========================================================= */
+
+export default function Chamber() {
+  /* AOS */
+
   useEffect(() => {
-    AOS.init({ duration: 800, once: true, offset: 70 });
+    AOS.init({
+      duration: 800,
+      once: true,
+      easing: "ease-in-out",
+      offset: 80,
+    });
+
     AOS.refresh();
   }, []);
 
+  /* JOIN */
+
+  const handleJoinNow = () => {
+    window.location.href = "/membership-type";
+  };
+
   return (
-    <div className="chamber-page">
-      <Navbar />
-      <main>{children}</main>
-    </div>
-  );
-}
+    <><Navbar /><main className="organization-page inmba-chamber-merged">
+      {/* ===================================================
+          HERO SECTION
+      =================================================== */}
 
-function Hero({ badge, title, highlight, text, actions = [], panel }) {
-  return (
-    <section className="chamber-hero">
-      <div className="chamber-hero-grid"></div>
-      <span className="chamber-glow chamber-glow-one"></span>
-      <span className="chamber-glow chamber-glow-two"></span>
-      <span className="chamber-float chamber-float-one"></span>
-      <span className="chamber-float chamber-float-two"></span>
+      <section className="organization-hero">
+        <div className="organization-hero-background" />
 
-      <div className="chamber-wrap chamber-hero-layout">
-        <div className="chamber-hero-text" data-aos="fade-right">
-          <span className="chamber-badge">
-            <i className="chamber-dot"></i>
-            {badge}
-          </span>
+        <div className="organization-hero-overlay">
+          <div className="organization-container">
+            <div className="organization-hero-layout">
+              {/* HERO LEFT */}
 
-          <h1>
-            {title}
-            <span className="chamber-hl">{highlight}</span>
-          </h1>
+              <div
+                className="organization-hero-content"
+                data-aos="fade-right"
+              >
+                <span className="organization-hero-badge">
+                  INMBA Chamber
+                </span>
 
-          <p>{text}</p>
+                <h1 className="organization-hero-title">
+                  Expand Your Network,
+                  <br />
 
-          {actions.length > 0 && (
-            <div className="chamber-actions">
-              {actions.map((a) => (
-                <Link key={a.label} to={a.to} className={`chamber-btn ${a.ghost ? "ghost" : ""}`}>
-                  {a.label} <i className="bi bi-arrow-right"></i>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
+                  <span className="organization-gradient-text">
+                    Expand Your Networth
+                  </span>
+                </h1>
 
-        {panel && (
-          <aside className="chamber-panel" data-aos="fade-left" data-aos-delay="150">
-            <div className="chamber-panel-top">
-              <div className="chamber-panel-icon">
-                <i className={`bi ${panel.icon}`}></i>
+                <p className="organization-hero-description">
+                  Connect with leaders.
+                  Expand opportunities.
+                  Build success together.
+                </p>
+
+                <div className="organization-hero-actions">
+                  <button
+                    type="button"
+                    className="organization-primary-button"
+                    onClick={handleJoinNow}
+                  >
+                    <span>Join Now</span>
+
+                    <FontAwesomeIcon icon={faLink} />
+                  </button>
+                </div>
               </div>
-              <div>
-                <span>{panel.label}</span>
-                <h2>{panel.title}</h2>
-              </div>
-            </div>
 
-            <div className="chamber-panel-list">
-              {panel.items.map((it) => (
-                <div className="chamber-panel-item" key={it.title}>
-                  <div className="chamber-panel-item-icon">
-                    <i className={`bi ${it.icon}`}></i>
+              {/* HERO RIGHT */}
+
+              <div className="ic-hero-side">
+              <div
+                className="organization-hero-feature"
+                data-aos="fade-left"
+                data-aos-delay="150"
+              >
+                <div className="organization-hero-feature-glow" />
+
+                <div className="organization-hero-feature-icon">
+                  <FontAwesomeIcon icon={faGlobe} />
+                </div>
+
+                <p>Our Chamber Membership</p>
+
+                <div className="organization-hero-feature-points">
+                  {membershipTypes.map((type) => (
+                    <div key={type}>
+                      <span />
+                      {type}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* CHAMBER AT A GLANCE */}
+
+              <aside
+                className="ic-glance"
+                data-aos="fade-left"
+                data-aos-delay="300"
+              >
+                <div className="ic-glance-top">
+                  <div className="ic-glance-icon">
+                    <i className="bi bi-bank2" />
                   </div>
+
                   <div>
-                    <strong>{it.title}</strong>
-                    <span>{it.text}</span>
+                    <span>The Sabai</span>
+                    <h2>Chamber at a glance</h2>
                   </div>
                 </div>
-              ))}
-            </div>
 
-            <div className="chamber-panel-footer">
-              <i className="chamber-dot"></i>
-              {panel.footer}
-            </div>
-          </aside>
-        )}
-      </div>
-    </section>
-  );
-}
+                <div className="ic-glance-list">
+                  {chamberGlance.map((item) => (
+                    <div className="ic-glance-item" key={item.title}>
+                      <div className="ic-glance-item-icon">
+                        <i className={`bi ${item.icon}`} />
+                      </div>
 
-function Section({ badge, title, text, tone = "", children, note }) {
-  return (
-    <section className={`chamber-sec ${tone}`}>
-      <div className="chamber-wrap">
-        <div className="chamber-head" data-aos="fade-up">
-          {badge && <span className="chamber-badge">{badge}</span>}
-          <h2>{title}</h2>
-          {text && <p>{text}</p>}
+                      <div>
+                        <strong>{item.title}</strong>
+                        <span>{item.text}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="ic-glance-footer">
+                  <i className="ic-glance-dot" />
+                  Listed in the INMBA Chamber Directory
+                </div>
+              </aside>
+              </div>
+            </div>
+          </div>
         </div>
-        <div data-aos="fade-up" data-aos-delay="100">{children}</div>
-        {note && <p className="chamber-note">{note}</p>}
-      </div>
-    </section>
-  );
-}
 
-function Cards({ items }) {
-  return (
-    <div className="chamber-grid">
-      {items.map((c, i) => (
-        <article className="chamber-card" key={c.title}>
-          <span className="chamber-card-deco"></span>
-          <span className="chamber-card-num">{String(i + 1).padStart(2, "0")}</span>
-          <div className="chamber-ico"><i className={`bi ${c.icon}`}></i></div>
-          <h3>{c.title}</h3>
-          <p>{c.text}</p>
-        </article>
-      ))}
-    </div>
-  );
-}
+        <div className="organization-hero-decoration organization-decoration-one" />
 
-function Steps({ items }) {
-  return (
-    <div className="chamber-steps">
-      {items.map((s) => (
-        <article className="chamber-step" key={s.title}>
-          <h3>{s.title}</h3>
-          <p>{s.text}</p>
-        </article>
-      ))}
-    </div>
-  );
-}
+        <div className="organization-hero-decoration organization-decoration-two" />
+      </section>
 
-function DataTable({ head, rows }) {
-  return (
-    <div className="chamber-table-wrap">
-      <table className="chamber-table">
-        <thead>
-          <tr>{head.map((h) => <th key={h}>{h}</th>)}</tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r[0]}>
-              {r.map((c, i) => <td key={i}>{i === 0 ? <strong>{c}</strong> : c}</td>)}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+      {/* ===================================================
+          NETWORK LOGO SECTION
+      =================================================== */}
 
-function CTA({ title, text, to, label }) {
-  return (
-    <section className="chamber-cta">
-      <span className="chamber-cta-glow chamber-cta-glow-one"></span>
-      <span className="chamber-cta-glow chamber-cta-glow-two"></span>
-      <div className="chamber-wrap" data-aos="zoom-in">
-        <h2>{title}</h2>
-        <p>{text}</p>
-        <Link to={to} className="chamber-btn">
-          {label} <i className="bi bi-arrow-right"></i>
-        </Link>
-      </div>
-    </section>
-  );
-}
+      <section className="organization-network-section">
+        <div className="organization-container">
+          <div
+            className="organization-section-heading"
+            data-aos="fade-up"
+          >
+            <span className="organization-section-badge">
+              Our Network
+            </span>
 
-/* =========================================================
-   PAGE DATA + COMPONENT
-========================================================= */
+            <h2>Connected Through Business and Innovation</h2>
 
-const steps = [
-  { title: "Initiate as a Civilian Member", text: "Any Civilian Network Member can begin founding a Chamber." },
-  { title: "Build your direct network", text: "Connect your own direct contacts within the INMBA platform." },
-  { title: "Reach minimum strength", text: "At least 30 directly connected members plus the founder: 31 in total." },
-  { title: "Recognition as Patron", text: "You become the Patron and the Chamber enters the INMBA Chamber Directory." },
-];
+            <p>
+              Discover the growing INMBA community and its
+              professional network.
+            </p>
+          </div>
 
-const roles = [
-  ["Patron", "Atchi Mandra Thalaivar", "Founding Civilian Network Member"],
-  ["President", "-", "Civilian Royalty Network Member"],
-  ["Vice President - Growth & Development", "-", "Civilian Royalty Network Member"],
-  ["Vice President - Community", "-", "Civilian Royalty Network Member"],
-  ["Secretary", "-", "Civilian Royalty Network Member"],
-  ["Treasurer", "-", "Civilian Royalty Network Member"],
-];
+          <div
+            className="organization-logo-marquee"
+            data-aos="fade-up"
+          >
+            <div className="organization-logo-track">
+              {[...networkLogos, ...networkLogos].map(
+                (logo, index) => (
+                  <div
+                    className="organization-logo-item"
+                    key={`logo-${index}`}
+                  >
+                    <img
+                      src={logo}
+                      alt={`INMBA network ${
+                        (index % networkLogos.length) + 1
+                      }`}
+                      loading="eager"
+                      decoding="async"
+                      draggable="false"
+                    />
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
 
-const policy = [
-  { icon: "bi-people-fill", title: "Minimum Strength: 31", text: "A Chamber is Active only with the Patron plus 30 directly connected members. Below that, it stays in formation." },
-  { icon: "bi-cash-coin", title: "One-time Membership Fees", text: "Civilian Royalty Network Member ₹1,500. Civilian Network Member ₹300." },
-  { icon: "bi-pie-chart-fill", title: "Fund Allocation", text: "Chamber Patron 10%, Chamber Development Fund 20%, INMBA General Fund gets the remaining balance." },
-  { icon: "bi-shield-check", title: "Ongoing Compliance", text: "Keep minimum strength and all governing positions filled, or the Chamber returns to formation status." },
-];
 
-export default function Chamber() {
-  return (
-    <PageShell>
-      <Hero
-        panel={{
-          icon: "bi-bank2",
-          label: "The Sabai",
-          title: "Chamber at a glance",
-          items: [
-            { icon: "bi-people-fill", title: "31 members minimum", text: "The Patron plus 30 directly connected members" },
-            { icon: "bi-person-badge-fill", title: "10% to the Patron", text: "Share of subscriptions collected through the Chamber" },
-            { icon: "bi-pie-chart-fill", title: "20% Development Fund", text: "Allocated back to the Chamber" },
-          ],
-          footer: "Listed in the INMBA Chamber Directory",
-        }}
-        badge="The Sabai"
-        title="Our"
-        highlight="Chambers"
-        text="A self-governing civic assembly where INMBA members come together to lead, serve and grow their communities."
-        actions={[{ label: "Start a Chamber", to: "/membership-type" }]}
-      />
+      {/* ESSENTIAL CHAMBER INFORMATION — combined from the original Chamber */}
+      <section className="ic-about" id="about-chamber">
+        <div className="ic-container">
+          <div className="ic-heading" data-aos="fade-up"><span className="ic-eyebrow">ABOUT THE SABAI</span><h2>What Is an INMBA Chamber?</h2><p>An independent, member-led civic assembly within the INMBA network, built to connect, lead and serve communities.</p></div>
+          <div className="ic-features">
+            {[
+              {icon:"bi-people-fill",title:"Member-led Community",description:"Chambers are formed by INMBA Civilian Network Members and grow through direct connections."},
+              {icon:"bi-person-badge",title:"Founded by a Patron",description:"The founding member becomes the Patron (Atchi Mandra Thalaivar)."},
+              {icon:"bi-award",title:"Recognized Chamber",description:"A Chamber is recognized and listed in the directory when it reaches its required membership strength."},
+            ].map((item,i)=><div className="ic-aos" data-aos="fade-up" data-aos-delay={i*110} key={item.title}><article className="ic-feature"><span className="ic-feature-icon"><i className={`bi ${item.icon}`}/></span><h3>{item.title}</h3><p>{item.description}</p></article></div>)}
+          </div>
+        </div>
+      </section>
+      <section className="ic-process" id="start-chamber">
+        <div className="ic-container">
+          <div className="ic-heading" data-aos="fade-up"><span className="ic-eyebrow">GET STARTED</span><h2>How to Form a Chamber</h2><p>Four steps to establishing your own INMBA Chamber.</p></div>
+          <div className="ic-steps">
+            {[
+              ["Become a Civilian Member","Start with INMBA Civilian Network Membership."],
+              ["Build Your Network","Invite and connect your direct contacts within INMBA."],
+              ["Reach 31 Members","A Patron and at least 30 directly connected members are required."],
+              ["Receive Recognition","The Chamber becomes active and is entered into the directory once requirements are met."],
+            ].map(([title,detail],i)=><div className="ic-aos" data-aos="fade-up" data-aos-delay={i*90} key={title}><article className="ic-step"><span className="ic-step-number">{String(i+1).padStart(2,"0")}</span><h3>{title}</h3><p>{detail}</p></article></div>)}
+          </div>
+          <div className="ic-join" data-aos="zoom-in"><div><h3>Ready to build your Chamber?</h3><p>Join INMBA and begin connecting your community.</p></div><Link to="/membership-type" className="ic-join-btn">Join Now <i className="bi bi-arrow-up-right"/></Link></div>
+        </div>
+      </section>
+      <section className="ic-policy" id="chamber-policy">
+        <div className="ic-container">
+          <div className="ic-heading" data-aos="fade-up"><span className="ic-eyebrow">CHAMBER ESSENTIALS</span><h2>Leadership & Membership</h2><p>Key guidelines to understand before forming a Chamber.</p></div>
+          <div className="ic-policy-grid">
+            <div className="ic-aos" data-aos="fade-right"><article className="ic-policy-card"><i className="bi bi-diagram-3"/><h3>Leadership Roles</h3><p>Patron, President, Vice Presidents, Secretary and Treasurer form the Chamber governance structure. Elected positions require Civilian Royalty status.</p></article></div>
+            <div className="ic-aos" data-aos="fade-up" data-aos-delay="100"><article className="ic-policy-card"><i className="bi bi-person-check"/><h3>Membership Requirements</h3><p>31 members minimum for active status: the Patron plus 30 directly connected members. Governing positions must remain filled.</p></article></div>
+            <div className="ic-aos" data-aos="fade-left" data-aos-delay="200"><article className="ic-policy-card"><i className="bi bi-pie-chart"/><h3>Membership & Allocation</h3><p>One-time fees: Civilian Royalty ₹1,500 and Civilian Network ₹300. Chamber Patron 10%, Development Fund 20%, with the balance to the INMBA General Fund.</p></article></div>
+          </div>
+        </div>
+      </section>
 
-      <Section badge="About" title="What Is an INMBA Chamber?" text="Each Chamber is an independent civic body inside the INMBA network, run by its own elected leaders and accountable to its members.">
-        <Cards items={[
-          { icon: "bi-bank2", title: "A Sabai", text: "A self-organized civic assembly formed by members of the INMBA community." },
-          { icon: "bi-person-badge-fill", title: "Led by a Patron", text: "The founder is the Patron, the Atchi Mandra Thalaivar or Administrative Council Head." },
-          { icon: "bi-journal-check", title: "Listed in the Directory", text: "Once minimum strength is reached, the Chamber is recognized and entered in the Chamber Directory." },
-        ]} />
-      </Section>
+      {/* ===================================================
+          CONTACT
+      =================================================== */}
 
-      <Section tone="alt" badge="4 Steps" title="Forming a Chamber" text="Starting a Chamber is a straightforward process.">
-        <Steps items={steps} />
-      </Section>
+      <section className="organization-contact-section">
+        <div className="organization-contact-decoration organization-contact-decoration-one" />
 
-      <Section badge="Leadership" title="Chamber Governance" text="Every Chamber is governed by a team elected from among its own members." note="All members must be at least Civilian Network Members. Every elected position needs Civilian Royalty status.">
-        <DataTable head={["Role", "Also Known As", "Eligibility"]} rows={roles} />
-      </Section>
+        <div className="organization-contact-decoration organization-contact-decoration-two" />
 
-      <Section tone="dark" badge="Policy" title="INMBA Chamber Policy">
-        <Cards items={policy} />
-      </Section>
+        <div className="organization-container">
+          <div
+            className="organization-section-heading"
+            data-aos="fade-up"
+          >
+            <span className="organization-section-badge">
+              Contact INMBA
+            </span>
 
-      <CTA title="Ready to lead your own Chamber?" text="Join INMBA as a Civilian Network Member and begin building your Sabai." to="/membership-type" label="Join Now" />
-    </PageShell>
+            <h2>Get in Touch</h2>
+
+            <p>Reach our team through WhatsApp, website or email.</p>
+          </div>
+
+          <div className="organization-contact-grid">
+            {contactDetails.map((contact, index) => (
+              <a
+                key={contact.id}
+                className={`organization-contact-card organization-contact-${contact.type}`}
+                href={contact.href}
+                target={contact.external ? "_blank" : undefined}
+                rel={
+                  contact.external
+                    ? "noopener noreferrer"
+                    : undefined
+                }
+                data-aos="fade-up"
+                data-aos-delay={index * 120}
+              >
+                <div className="organization-contact-icon">
+                  <FontAwesomeIcon icon={contact.icon} />
+                </div>
+
+                <div className="organization-contact-content">
+                  <span>{contact.label}</span>
+
+                  <h3>{contact.value}</h3>
+                </div>
+
+                <div className="organization-contact-arrow">→</div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main></>
   );
 }

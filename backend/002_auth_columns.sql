@@ -1,0 +1,5 @@
+ALTER TABLE kyc_members
+ADD COLUMN password TEXT;
+
+ALTER TABLE kyc_members
+ADD COLUMN is_deleted INTEGER NOT NULL DEFAULT 0;

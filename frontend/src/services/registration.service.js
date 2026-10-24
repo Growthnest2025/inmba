@@ -1,4 +1,5 @@
 import api from "../api/api";
+import { toText, asObject } from "../utils/commonHelpers";
 
 /* ========================================
    REGISTRATION RESULT STORAGE
@@ -10,28 +11,6 @@ export const REGISTRATION_RESULT_KEY =
 /* ========================================
    COMMON HELPERS
 ======================================== */
-
-const asObject = (value) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalizedValue =
-    String(value ?? "").trim();
-
-  return normalizedValue || fallback;
-};
 
 const normalizeEmail = (value) => {
   return toText(value)

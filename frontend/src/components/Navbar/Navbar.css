@@ -622,3 +622,44 @@
     transform: translateY(0);
   }
 }
+
+/* White, rounded INMBA PNG logo — no changes to navigation */
+.navbar-custom .navbar-brand .inmba-navbar-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 54px;
+  height: 54px;
+  padding: 5px;
+  background: #fff;
+  border: 1px solid rgba(255,255,255,.8);
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.17);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.navbar-custom .navbar-brand .inmba-navbar-logo-wrapper img,
+.navbar-custom.scrolled .navbar-brand .inmba-navbar-logo-wrapper img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  box-shadow: none;
+}
+.navbar-custom .navbar-brand:hover .inmba-navbar-logo-wrapper {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 10px 23px rgba(0,0,0,.23);
+}
+@media (max-width: 600px) {
+  .navbar-custom .navbar-brand .inmba-navbar-logo-wrapper {
+    width: 46px;
+    height: 46px;
+    border-radius: 13px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .navbar-custom .navbar-brand .inmba-navbar-logo-wrapper { transition: none; }
+}

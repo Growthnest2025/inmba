@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 
 import "./ChatBot.css";
+import { toText } from "../../utils/commonHelpers";
 
 /* ========================================
    INITIAL CHAT MESSAGE
@@ -149,21 +150,6 @@ const CHATBOT_FEATURES = [
 /* ========================================
    COMMON HELPER
 ======================================== */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalizedValue =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalizedValue ||
-    fallback
-  );
-};
 
 /* ========================================
    BOT RESPONSE

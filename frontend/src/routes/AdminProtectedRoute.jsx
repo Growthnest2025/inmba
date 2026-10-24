@@ -13,24 +13,11 @@ import {
 import {
   getAdminSession,
 } from "../services/adminAuth.service";
+import { asObject } from "../utils/commonHelpers";
 
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
 
 /* =========================================================
    EXTRACT ADMIN

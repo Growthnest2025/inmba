@@ -12,18 +12,11 @@ import {
 } from "react-router-dom";
 
 import "./CommercialQrCard.css";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value
-) => {
-  return String(
-    value ?? ""
-  ).trim();
-};
 
 /* =========================================================
    PUBLIC ORIGIN

@@ -29,6 +29,7 @@ import {
 } from "../../../utils/apiError";
 
 import "./EditProfile.css";
+import { asObject } from "../../../utils/commonHelpers";
 
 /* =========================
    EDITABLE PROFILE FIELDS
@@ -121,23 +122,6 @@ const INITIAL_FORM_DATA =
 /* =========================
    OBJECT HELPER
 ========================= */
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
-};
 
 /* =========================
    STRING HELPER

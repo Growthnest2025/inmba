@@ -1,0 +1,15 @@
+{
+  "name": "inmba-auth-staging",
+  "main": "inmba_auth_staging_worker.js",
+  "compatibility_date": "2026-10-21",
+  "d1_databases": [
+    {
+      "binding": "inmba_db",
+      "database_name": "inmba-staging",
+      "database_id": "32c92575-4887-4ad2-94bf-3b481926d5e6"
+    }
+  ],
+  "vars": {
+    "FRONTEND_ORIGIN": "https://inmba.org,http://localhost:5173"
+  }
+}

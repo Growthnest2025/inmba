@@ -39,65 +39,19 @@ import {
 } from "../../utils/apiError";
 
 import "./ProfessionalDashboard.css";
+import { toText, asObject, toNumber } from "../../utils/commonHelpers";
 
 /* =========================================================
    COMMON HELPERS
 ========================================================= */
 
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
 /* =========================================================
    NUMBER
 ========================================================= */
 
-const toNumber = (
-  value
-) => {
-  const parsedValue =
-    Number(
-      value
-    );
-
-  return Number.isFinite(
-    parsedValue
-  )
-    ? parsedValue
-    : 0;
-};
-
 /* =========================================================
    TEXT
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalizedValue =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalizedValue ||
-    fallback
-  );
-};
 
 /* =========================================================
    MEMBERSHIP TYPE

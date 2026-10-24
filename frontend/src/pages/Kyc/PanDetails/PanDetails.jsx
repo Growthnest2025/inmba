@@ -28,6 +28,7 @@ import {
 } from "../../../utils/apiError";
 
 import "./PanDetails.css";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    INITIAL FORM
@@ -42,14 +43,6 @@ const INITIAL_FORM = {
 /* =========================================================
    TEXT
 ========================================================= */
-
-const toText = (
-  value
-) => {
-  return String(
-    value ?? ""
-  ).trim();
-};
 
 /* =========================================================
    CREATE FORM

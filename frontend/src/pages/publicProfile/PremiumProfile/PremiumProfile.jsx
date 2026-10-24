@@ -59,18 +59,11 @@ import {
 } from "../../../services/publicProfile.service";
 
 import ProfessionalPublicProfile from "../ProfessionalPublicProfile/ProfessionalPublicProfile";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    TEXT NORMALIZER
 ========================================================= */
-
-const toText = (
-  value
-) => {
-  return String(
-    value ?? ""
-  ).trim();
-};
 
 /* =========================================================
    MEMBERSHIP TYPE NORMALIZER

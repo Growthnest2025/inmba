@@ -19,18 +19,11 @@ import {
 } from "../../../services/commercialDashboard.service";
 
 import "./CommercialQrPage.css";
+import { toText } from "../../../utils/commonHelpers";
 
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value
-) => {
-  return String(
-    value ?? ""
-  ).trim();
-};
 
 const normalizeLoginId =
   (

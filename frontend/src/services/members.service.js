@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toText, asObject } from "../utils/commonHelpers";
 
 /* =========================================================
    MEMBERS API
@@ -26,38 +27,6 @@ const membersApi =
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    text ||
-    fallback
-  );
-};
 
 /* =========================================================
    EXTRACT MEMBERS

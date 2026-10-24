@@ -2,6 +2,7 @@ import {
   createPublicAssetUrl,
   getPublicProfile,
 } from "./publicProfile.service";
+import { toText, asObject } from "../utils/commonHelpers";
 
 /* =========================================================
    COMMERCIAL PUBLIC PROFILE SERVICE
@@ -33,30 +34,6 @@ import {
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const asObject = (value) => {
-  if (
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return text || fallback;
-};
 
 const toBoolean = (value) => {
   if (

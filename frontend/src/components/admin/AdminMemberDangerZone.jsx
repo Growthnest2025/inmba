@@ -20,25 +20,11 @@ import {
 } from "../../utils/apiError";
 
 import "./AdminMemberDangerZone.css";
+import { toText } from "../../utils/commonHelpers";
 
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalized =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    normalized ||
-    fallback
-  );
-};
 
 /* =========================================================
    ADMIN MEMBER DANGER ZONE

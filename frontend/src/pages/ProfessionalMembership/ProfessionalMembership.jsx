@@ -18,6 +18,7 @@ import {
 } from "../../services/professionalKyc.service";
 
 import "./ProfessionalMembership.css";
+import { toText, asObject } from "../../utils/commonHelpers";
 
 /* =========================================================
    PROFESSIONAL MEMBERSHIP PLANS
@@ -113,38 +114,6 @@ const MEMBERSHIP_STORAGE_KEY =
 /* =========================================================
    HELPERS
 ========================================================= */
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
-};
-
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const text =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    text ||
-    fallback
-  );
-};
 
 /* =========================================================
    GET STORED MEMBERSHIP

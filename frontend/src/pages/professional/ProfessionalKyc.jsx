@@ -24,6 +24,7 @@ import {
 } from "../../services/professionalKyc.service";
 
 import "./ProfessionalKyc.css";
+import { asObject } from "../../utils/commonHelpers";
 
 /* =========================================================
    FALLBACK SECTIONS
@@ -1610,23 +1611,6 @@ const toText = (
   return String(
     value
   );
-};
-
-const asObject = (
-  value
-) => {
-  if (
-    value &&
-    typeof value ===
-      "object" &&
-    !Array.isArray(
-      value
-    )
-  ) {
-    return value;
-  }
-
-  return {};
 };
 
 const formatDateForInput = (

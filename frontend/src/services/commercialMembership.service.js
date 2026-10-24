@@ -1,4 +1,5 @@
 import api from "../api/api";
+import { toText } from "../utils/commonHelpers";
 
 /* =========================================================
    COMMERCIAL MEMBERSHIP SERVICE
@@ -82,14 +83,6 @@ export const COMMERCIAL_PLAN_FALLBACK =
 /* =========================================================
    TEXT
 ========================================================= */
-
-const toText = (
-  value
-) => {
-  return String(
-    value ?? ""
-  ).trim();
-};
 
 
 /* =========================================================
