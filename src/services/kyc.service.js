@@ -1,4 +1,5 @@
 import axios from "axios";
+import { BACKEND_URL } from "../api/api";
 import { toText, asObject } from "../utils/commonHelpers";
 
 /* =========================================================
@@ -24,7 +25,7 @@ import { toText, asObject } from "../utils/commonHelpers";
 
 const kycApi =
   axios.create({
-    baseURL: "/",
+    baseURL: BACKEND_URL,
 
     withCredentials:
       true,

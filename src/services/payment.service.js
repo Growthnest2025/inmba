@@ -1,7 +1,6 @@
 import axios from "axios";
 
-import api from "../api/api";
-import { toText, asObject } from "../utils/commonHelpers";
+import api, { BACKEND_URL } from "../api/api";
 
 /* =========================================================
    ROOT PAYMENT API
@@ -14,7 +13,7 @@ import { toText, asObject } from "../utils/commonHelpers";
 
 const paymentApi =
   axios.create({
-    baseURL: "/",
+    baseURL: BACKEND_URL,
 
     withCredentials:
       true,
@@ -36,6 +35,16 @@ paymentApi.interceptors.request.use(
   (config) => {
     config.withCredentials =
       true;
+
+    try {
+      const token =
+        window?.localStorage?.getItem?.("inmba_session_token") ||
+        window?.sessionStorage?.getItem?.("inmba_session_token");
+
+      if (token && !config.headers.Authorization) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch {}
 
     const isFormData =
       typeof FormData !==
@@ -75,9 +84,41 @@ paymentApi.interceptors.request.use(
    HELPERS
 ========================================================= */
 
+const asObject = (
+  value
+) => {
+  if (
+    value &&
+    typeof value ===
+      "object" &&
+    !Array.isArray(
+      value
+    )
+  ) {
+    return value;
+  }
+
+  return {};
+};
+
 /* =========================================================
    TEXT
 ========================================================= */
+
+const toText = (
+  value,
+  fallback = ""
+) => {
+  const text =
+    String(
+      value ?? ""
+    ).trim();
+
+  return (
+    text ||
+    fallback
+  );
+};
 
 /* =========================================================
    HTML CHECK
