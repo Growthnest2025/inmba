@@ -2096,18 +2096,40 @@ async function getProfessionalKycRecord(memberId, db) {
   const member = (await db.prepare("SELECT * FROM kyc_members WHERE id = ?").bind(memberId).first()) || {};
   const ext = (await db.prepare("SELECT * FROM kyc_members_ext_1 WHERE member_id = ?").bind(memberId).first()) || {};
 
-  const sections = {
-    A: { completed: true },
-    B: { completed: true },
-    C: { completed: true },
-    D: { completed: true },
-    E: { completed: true },
-    F: { completed: true },
-    G: { completed: true },
-    H: { completed: true },
-    I: { completed: true },
-    J: { completed: true },
-  };
+  try {
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS professional_kyc_progress (
+        member_id INTEGER PRIMARY KEY,
+        completed_sections TEXT,
+        completed_count INTEGER DEFAULT 0,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run();
+  } catch {}
+
+  let completedList = [];
+  try {
+    const row = await db.prepare("SELECT completed_sections FROM professional_kyc_progress WHERE member_id = ?").bind(memberId).first();
+    if (row && row.completed_sections) {
+      completedList = JSON.parse(row.completed_sections);
+    }
+  } catch {}
+
+  const allSections = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+  const isAlreadySubmitted = ext.professional_kyc_status === "submitted" || ext.professional_kyc_status === "approved";
+
+  const sections = {};
+  const progressSections = {};
+  let completedCount = 0;
+
+  allSections.forEach(sec => {
+    const isDone = isAlreadySubmitted || completedList.includes(sec);
+    sections[sec] = { completed: isDone };
+    progressSections[sec] = isDone;
+    if (isDone) completedCount++;
+  });
+
+  const percentage = completedCount * 10; // Exactly 10% per section (10, 20, 30... 100)
 
   const values = {
     ...member,
@@ -2127,15 +2149,12 @@ async function getProfessionalKycRecord(memberId, db) {
       F: values, G: values, H: values, I: values, J: values,
     },
     currentStep: ext.professional_kyc_current_step || "A",
-    status: ext.professional_kyc_status || "submitted",
+    status: ext.professional_kyc_status || (completedCount >= 10 ? "completed" : "draft"),
     progress: {
-      completed: 10,
+      completed: completedCount,
       total: 10,
-      percentage: 100,
-      sections: {
-        A: true, B: true, C: true, D: true, E: true,
-        F: true, G: true, H: true, I: true, J: true,
-      },
+      percentage: percentage,
+      sections: progressSections,
     },
   };
 }
@@ -2208,21 +2227,53 @@ async function handleSaveProfessionalSection(request, db, cors, section) {
   }
 
   const input = await parseRequestBody(request);
-  const values = input.values || input;
+  const normalizedSec = String(section || "A").trim().toUpperCase();
 
   try {
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS professional_kyc_progress (
+        member_id INTEGER PRIMARY KEY,
+        completed_sections TEXT,
+        completed_count INTEGER DEFAULT 0,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run();
+
+    const existing = await db.prepare("SELECT completed_sections FROM professional_kyc_progress WHERE member_id = ?").bind(member.id).first();
+    let set = new Set();
+    if (existing && existing.completed_sections) {
+      try {
+        JSON.parse(existing.completed_sections).forEach(s => set.add(s));
+      } catch {
+        String(existing.completed_sections).split(",").forEach(s => set.add(s.trim().toUpperCase()));
+      }
+    }
+    set.add(normalizedSec);
+    const completedArr = Array.from(set);
+
+    await db.prepare(`
+      INSERT INTO professional_kyc_progress (member_id, completed_sections, completed_count, updated_at)
+      VALUES (?, ?, ?, datetime('now'))
+      ON CONFLICT(member_id) DO UPDATE SET
+        completed_sections = excluded.completed_sections,
+        completed_count = excluded.completed_count,
+        updated_at = excluded.updated_at
+    `).bind(member.id, JSON.stringify(completedArr), completedArr.length).run();
+
     await db.prepare(`
       UPDATE kyc_members_ext_1
       SET professional_kyc_current_step = ?
       WHERE member_id = ?
-    `).bind(section, member.id).run();
-  } catch {}
+    `).bind(normalizedSec, member.id).run();
+  } catch (err) {
+    console.error("Error updating professional_kyc_progress:", err);
+  }
 
   const updatedRecord = await getProfessionalKycRecord(member.id, db);
   return json({
     success: true,
     statusCode: 200,
-    message: `Professional KYC Section ${section} saved successfully.`,
+    message: `Professional KYC Section ${normalizedSec} saved successfully.`,
     data: updatedRecord,
     ...updatedRecord,
   }, 200, cors);
@@ -2235,6 +2286,25 @@ async function handleSubmitProfessionalKyc(request, db, cors) {
   }
 
   try {
+    const all10 = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS professional_kyc_progress (
+        member_id INTEGER PRIMARY KEY,
+        completed_sections TEXT,
+        completed_count INTEGER DEFAULT 0,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run();
+
+    await db.prepare(`
+      INSERT INTO professional_kyc_progress (member_id, completed_sections, completed_count, updated_at)
+      VALUES (?, ?, 10, datetime('now'))
+      ON CONFLICT(member_id) DO UPDATE SET
+        completed_sections = excluded.completed_sections,
+        completed_count = 10,
+        updated_at = excluded.updated_at
+    `).bind(member.id, JSON.stringify(all10)).run();
+
     await db.prepare(`
       UPDATE kyc_members_ext_1
       SET professional_kyc_status = 'submitted'
