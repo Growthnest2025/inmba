@@ -89,8 +89,15 @@ api.interceptors.request.use(
       cookie send செய்யப்படுகிறது.
     */
 
-    config.withCredentials =
-      true;
+    config.withCredentials = true;
+    try {
+      if (typeof localStorage !== "undefined") {
+        const token = localStorage.getItem("inmba_session_token");
+        if (token && !config.headers.Authorization) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      }
+    } catch {}
 
     /*
       FormData upload request என்றால்
@@ -129,6 +136,11 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
+    try {
+      if (typeof localStorage !== "undefined" && response?.data?.token) {
+        localStorage.setItem("inmba_session_token", response.data.token);
+      }
+    } catch {}
     return response;
   },
 
