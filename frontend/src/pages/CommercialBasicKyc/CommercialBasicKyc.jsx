@@ -573,7 +573,7 @@ const handleContinueMembership = () => {
   );
 
   navigate(
-    "/commercial/membership-plan",
+    "/login/commercial",
     {
       replace: true,
       state: {
@@ -581,6 +581,8 @@ const handleContinueMembership = () => {
         prefillId: loginId,
         fromNewRegistration: true,
         registrationSuccess: true,
+        nextPath: "/commercial/membership-plan",
+        message: `Commercial account registered successfully! Your Login ID is ${loginId}. Please login to select your membership plan.`,
       },
     }
   );
@@ -688,7 +690,7 @@ const handleContinueMembership = () => {
               }
             >
               <span>
-                Continue to Membership Plan & Payment
+                Continue to Commercial Login
               </span>
 
               <i className="fas fa-arrow-right" />

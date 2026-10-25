@@ -1849,7 +1849,7 @@ async function handleGetCommercialMembership(request, db, cors) {
     {
       id: "profile_upgrade",
       name: "Profile Upgrade",
-      amount: 1000,
+      amount: 1500,
       currency: "INR",
       requiresFullKyc: true,
       requires_full_kyc: true,
@@ -1870,7 +1870,7 @@ async function handleSelectCommercialMembership(request, db, cors) {
   const member = await getCurrentMember(request, db);
   const input = await parseRequestBody(request);
   const planId = String(input.plan_id || input.planId || "basic").trim();
-  const amount = planId === "profile_upgrade" ? 1000 : 300;
+  const amount = planId === "profile_upgrade" ? 1500 : 300;
   const planName = planId === "profile_upgrade" ? "Profile Upgrade" : "Basic Membership";
 
   if (member) {
@@ -2009,7 +2009,7 @@ async function handleSubmitCommercialPayment(request, db, cors) {
 
   const planId = String(input.plan_id || input.planId || "basic").trim();
   const planName = String(input.plan_name || input.planName || (planId === "profile_upgrade" ? "Profile Upgrade" : "Basic Membership")).trim();
-  const amount = Number(input.amount || (planId === "profile_upgrade" ? 1000 : 300));
+  const amount = Number(input.amount || (planId === "profile_upgrade" ? 1500 : 300));
   const paymentMethod = String(input.payment_method || input.paymentMethod || "UPI").trim();
   const transactionId = String(input.transaction_id || input.transactionId || "").trim();
   const paymentProof = typeof input.payment_proof === "string" ? input.payment_proof : "";
