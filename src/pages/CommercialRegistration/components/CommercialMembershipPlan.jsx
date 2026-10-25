@@ -32,10 +32,10 @@ import "./CommercialMembershipPlan.css";
 
 const COMMERCIAL_FRONTEND_ROUTES = {
   basic:
-    "/commercial/payment",
+    "/commercial/profile-upgrade?plan=basic&amount=300",
 
   profile_upgrade:
-    "/commercial/profile-upgrade",
+    "/commercial/profile-upgrade?plan=profile_upgrade&amount=1500",
 };
 
 /* =========================================================
@@ -50,47 +50,46 @@ const COMMERCIAL_FRONTEND_ROUTES = {
 const PLAN_UI = {
   basic: {
     icon:
-      "fa-solid fa-store",
+      "fa-solid fa-qrcode",
 
     badge:
-      "Starter",
+      "Starter Plan",
 
     subtitle:
-      "Start your Commercial Membership",
+      "QR Code & Business Public Profile",
 
     description:
-      "A simple membership option for businesses that want to join INMBA and activate their Commercial account.",
+      "Join INMBA Commercial Network with QR Code scanner access, business public profile and complete KYC verification.",
 
     features: [
-      "Commercial Membership access",
-      "Business account activation",
-      "Membership dashboard access",
-      "Referral network eligibility",
-      "Secure payment verification",
+      "QR Code & Scanner Access",
+      "Verified Business Public Profile",
+      "Full Commercial KYC Verification (A–G)",
+      "Commercial Business Directory Listing",
+      "Commercial Dashboard Access",
     ],
   },
 
   profile_upgrade: {
     icon:
-      "fa-solid fa-building-shield",
+      "fa-solid fa-award",
 
     badge:
-      "Recommended",
+      "Royalty & Rewards",
 
     subtitle:
-      "Build your verified business profile",
+      "Network Rewards, Royalty & Priority Directory",
 
     description:
-      "Complete the advanced Commercial KYC and unlock your verified business profile, QR access and public directory presence.",
+      "Complete Commercial KYC to unlock network rewards, royalty benefits, priority directory placement and verified badges.",
 
     features: [
-      "Everything in Basic Membership",
-      "Full Commercial KYC A–G",
-      "Verified Commercial Profile",
-      "Business Public Profile",
-      "QR Profile access",
-      "Verification badges",
-      "Business directory readiness",
+      "Network Rewards & Royalty Earnings",
+      "QR Code & Scanner Access",
+      "Verified Business Public Profile",
+      "Full Commercial KYC Verification (A–G)",
+      "Priority Commercial Directory Placement",
+      "Direct Referral Incentives & Badges",
     ],
   },
 };
@@ -354,11 +353,18 @@ export default function CommercialMembershipPlan() {
           window.sessionStorage.setItem("commercialPlanAmount", String(selectedPlan.amount || 300));
         }
 
-        const frontendPath =
-          COMMERCIAL_FRONTEND_ROUTES[selectedPlan?.id] ||
-          (selectedPlan?.id === "profile_upgrade" ? "/commercial/profile-upgrade" : "/commercial/payment");
+        const targetAmount = selectedPlan?.id === "profile_upgrade" ? 1500 : 300;
+        const frontendPath = `/commercial/profile-upgrade?plan=${selectedPlan?.id || "basic"}&amount=${targetAmount}`;
 
-        navigate(frontendPath);
+        navigate(frontendPath, {
+          state: {
+            selectedPlanId: selectedPlan?.id || "basic",
+            selected_plan_id: selectedPlan?.id || "basic",
+            selectedPlanAmount: targetAmount,
+            selected_plan_amount: targetAmount,
+            plan: { ...selectedPlan, amount: targetAmount },
+          },
+        });
       } catch (
         requestError
       ) {
