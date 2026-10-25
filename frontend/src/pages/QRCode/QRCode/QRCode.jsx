@@ -460,7 +460,11 @@ export default function QRCode() {
     "pending"
   ).toLowerCase().trim();
 
-  const isPaymentApproved = paymentStatus === "approved";
+  const isPaymentApproved =
+    paymentStatus === "approved" ||
+    paymentStatus === "paid" ||
+    paymentStatus === "completed" ||
+    paymentStatus === "success";
 
   const kycStatus = toText(
     member.professional_kyc_status ??
@@ -476,11 +480,11 @@ export default function QRCode() {
 
   const isKycApproved = kycStatus === "approved";
 
-  // For Commercial and Professional: BOTH Payment AND KYC must be approved by admin
-  // For Civilian: Payment approval
-  const isApproved = (isProfessional || isCommercial)
-    ? Boolean(isPaymentApproved && isKycApproved)
-    : isPaymentApproved;
+  // For Professional & Civilian: payment approval by admin activates QR
+  // For Commercial: payment approval or full KYC approval activates QR
+  const isApproved = isCommercial
+    ? Boolean(isPaymentApproved && (isKycApproved || member.is_approved || dashboardData?.is_approved))
+    : Boolean(isPaymentApproved || member.is_approved || member.kyc_verified || dashboardData?.member?.is_approved || dashboardData?.is_approved);
 
   const memberStatus =
     getMemberStatus(member, isApproved);

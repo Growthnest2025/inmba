@@ -436,19 +436,25 @@ if (!newLoginId) {
             "inmba_commercial_login_id",
             newLoginId
           );
-console.log(
-  "COMMERCIAL LOGIN SAVED:",
-  newLoginId
-);
           sessionStorage.setItem(
             "commercial_login_id",
             newLoginId
           );
-
           localStorage.setItem(
             "commercial_login_id",
             newLoginId
           );
+          localStorage.setItem(
+            "inmba_commercial_login_id",
+            newLoginId
+          );
+        }
+
+        if (result?.token) {
+          localStorage.setItem("inmba_auth_token", result.token);
+          sessionStorage.setItem("inmba_auth_token", result.token);
+          localStorage.setItem("inmba_session_token", result.token);
+          sessionStorage.setItem("inmba_session_token", result.token);
         }
 
         /* =================================================
@@ -567,7 +573,7 @@ const handleContinueMembership = () => {
   );
 
   navigate(
-    "/login/commercial",
+    "/commercial/membership-plan",
     {
       replace: true,
       state: {
@@ -575,10 +581,6 @@ const handleContinueMembership = () => {
         prefillId: loginId,
         fromNewRegistration: true,
         registrationSuccess: true,
-        nextPath:
-          "/commercial/membership-plan",
-        message:
-          "Commercial registration completed successfully. Please login to continue to Membership Plan selection.",
       },
     }
   );
@@ -686,7 +688,7 @@ const handleContinueMembership = () => {
               }
             >
               <span>
-                Continue to Commercial Login
+                Continue to Membership Plan & Payment
               </span>
 
               <i className="fas fa-arrow-right" />

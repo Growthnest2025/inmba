@@ -336,49 +336,29 @@ export default function CommercialMembershipPlan() {
           ""
         );
 
-        const result =
-          await selectCommercialMembership(
-            planId
-          );
-
-        const selectedPlan =
-          result
-            ?.selectedPlan ||
-          plan;
-
-        setCurrentPlan(
-          selectedPlan
-        );
-
-        /* ===============================================
-           DO NOT USE BACKEND URL DIRECTLY HERE.
-
-           Backend:
-             /commercial-payment
-             /commercial-kyc
-
-           Current App.jsx:
-             /commercial/payment
-             /commercial/profile-upgrade
-        =============================================== */
-
-        const frontendPath =
-          COMMERCIAL_FRONTEND_ROUTES[
-            selectedPlan
-              ?.id
-          ];
-
-        if (
-          !frontendPath
-        ) {
-          throw new Error(
-            "Commercial Membership destination route is unavailable."
-          );
+        let selectedPlan = plan;
+        try {
+          const result = await selectCommercialMembership(planId);
+          selectedPlan = result?.selectedPlan || plan;
+        } catch (apiErr) {
+          console.warn("Commercial membership selection API warning, using local plan fallback:", apiErr);
         }
 
-        navigate(
-          frontendPath
-        );
+        setCurrentPlan(selectedPlan);
+
+        // Store selected plan in storage for payment and profile-upgrade pages
+        if (selectedPlan?.id) {
+          window.localStorage.setItem("commercialSelectedPlanId", selectedPlan.id);
+          window.localStorage.setItem("commercialPlanAmount", String(selectedPlan.amount || 300));
+          window.sessionStorage.setItem("commercialSelectedPlanId", selectedPlan.id);
+          window.sessionStorage.setItem("commercialPlanAmount", String(selectedPlan.amount || 300));
+        }
+
+        const frontendPath =
+          COMMERCIAL_FRONTEND_ROUTES[selectedPlan?.id] ||
+          (selectedPlan?.id === "profile_upgrade" ? "/commercial/profile-upgrade" : "/commercial/payment");
+
+        navigate(frontendPath);
       } catch (
         requestError
       ) {

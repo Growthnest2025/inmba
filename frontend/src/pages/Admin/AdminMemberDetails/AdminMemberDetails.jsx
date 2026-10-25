@@ -20,6 +20,7 @@ import {
   getAdminUserById,
   requestAdminUserOtp,
   verifyAdminUserOtp,
+  verifyAdminMember,
 } from "../../../services/admin.service";
 
 import {
@@ -472,6 +473,28 @@ export default function AdminMemberDetails() {
     setSecondsLeft,
   ] =
     useState(0);
+
+  const [
+    approving,
+    setApproving,
+  ] =
+    useState(false);
+
+  const handleApproveMember = async () => {
+    if (!window.confirm("Are you sure you want to approve this member?")) {
+      return;
+    }
+    setApproving(true);
+    try {
+      await verifyAdminMember(id, { status: "approved" });
+      toast.success("Member approved successfully!");
+      await loadMember();
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, "Failed to approve member."));
+    } finally {
+      setApproving(false);
+    }
+  };
 
   /* =======================================================
      LOAD MEMBER
@@ -1350,6 +1373,31 @@ export default function AdminMemberDetails() {
         </div>
 
         <div className="inmba-admin-member-header-actions">
+          {/* APPROVE */}
+          {member?.payment_status !== "approved" && (
+            <button
+              type="button"
+              onClick={handleApproveMember}
+              disabled={approving}
+              className="inmba-admin-member-approve-button"
+              style={{
+                backgroundColor: "#16a34a",
+                color: "#fff",
+                border: "none",
+                padding: "8px 16px",
+                borderRadius: "6px",
+                fontWeight: 600,
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <i className="fas fa-check-circle" aria-hidden="true" />
+              {approving ? "Approving..." : "Approve Member"}
+            </button>
+          )}
+
           {/* EDIT */}
 
           <Link

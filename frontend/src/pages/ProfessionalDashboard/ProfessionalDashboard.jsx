@@ -919,9 +919,14 @@ export default function ProfessionalDashboard() {
   const isKycApproved =
     kycStatusRaw === "approved";
 
-  // QR and network access require BOTH payment AND KYC to be approved by admin
-  const isFullyApproved =
-    Boolean(isPaymentApproved && isKycApproved);
+  // Professional QR & network access require payment approval by admin
+  const isFullyApproved = Boolean(
+    isPaymentApproved ||
+    member.is_approved ||
+    member.kyc_verified ||
+    dashboardData?.member?.is_approved ||
+    dashboardData?.is_approved
+  );
 
   const isApproved =
     isFullyApproved;
@@ -1582,6 +1587,20 @@ export default function ProfessionalDashboard() {
 
     My Profile
   </Link>
+
+{isApproved && (
+  <Link
+    to="/qr-code?theme=professional"
+    className="member-dashboard-secondary-button"
+  >
+    <i
+      className="fas fa-qrcode"
+      aria-hidden="true"
+    ></i>
+
+    View QR Code
+  </Link>
+)}
 
 {hasProfessionalNetworkAccess && (
   <Link
