@@ -58,12 +58,19 @@ const isCommercialMember =
       )
         .toLowerCase();
 
-    return [
-      "commercial",
-      "commercial member",
-      "commercial membership",
-    ].includes(
-      membershipType
+    const loginId =
+      toText(
+        member?.login_id ||
+        member?.loginId
+      ).toUpperCase();
+
+    return (
+      loginId.startsWith("COM") ||
+      [
+        "commercial",
+        "commercial member",
+        "commercial membership",
+      ].includes(membershipType)
     );
   };
 
@@ -356,6 +363,13 @@ export default function CommercialLogin() {
           localStorage.setItem("inmba_member_login_id", commLoginId);
           sessionStorage.setItem("inmba_login_id", commLoginId);
           localStorage.setItem("inmba_login_id", commLoginId);
+        }
+
+        if (response?.data?.token) {
+          localStorage.setItem("inmba_auth_token", response.data.token);
+          sessionStorage.setItem("inmba_auth_token", response.data.token);
+          localStorage.setItem("inmba_session_token", response.data.token);
+          sessionStorage.setItem("inmba_session_token", response.data.token);
         }
 
         window.dispatchEvent(

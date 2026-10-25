@@ -43,7 +43,7 @@ export default function Navbar() {
       ? "/professional-dashboard"
       : member?.membership_type?.toLowerCase()?.includes("commercial") ||
         sessionStorage.getItem("inmba_commercial_login_id")
-      ? "/commercial-dashboard"
+      ? "/commercial/dashboard"
       : "/dashboard";
 
   const [isScrolled, setIsScrolled] = useState(false);

@@ -464,6 +464,16 @@ export default function AppRoutes() {
           element={<CommercialProfileUpgrade />}
         />
 
+        <Route
+          path="/commercial-kyc"
+          element={<CommercialProfileUpgrade />}
+        />
+
+        <Route
+          path="/commercial/kyc"
+          element={<CommercialProfileUpgrade />}
+        />
+
         {/* 1500 FULL KYC REVIEW */}
 
         <Route
@@ -488,6 +498,11 @@ export default function AppRoutes() {
         <Route
           path="/commercial/dashboard"
           element={<CommercialDashboard />}
+        />
+
+        <Route
+          path="/commercial-dashboard"
+          element={<Navigate to="/commercial/dashboard" replace />}
         />
 
         {/* COMMERCIAL FULL PROFILE */}
