@@ -404,6 +404,18 @@ const generateMemberQrCode =
         connection
       );
 
+    if (
+      String(
+        member.payment_status ||
+          ""
+      ).trim().toLowerCase() !== "approved"
+    ) {
+      throw new ApiError(
+        403,
+        "QR code will be available once your membership is approved by the admin."
+      );
+    }
+
     const qrResult =
       await generateQrCodeFile(
         member
@@ -440,6 +452,18 @@ const generateMemberQrCodeByToken =
         sessionMemberId,
         connection
       );
+
+    if (
+      String(
+        member.payment_status ||
+          ""
+      ).trim().toLowerCase() !== "approved"
+    ) {
+      throw new ApiError(
+        403,
+        "QR code will be available once your membership is approved by the admin."
+      );
+    }
 
     const qrResult =
       await generateQrCodeFile(

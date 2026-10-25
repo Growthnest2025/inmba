@@ -125,6 +125,10 @@ const MEMBER_FIELDS = `
 function safeMember(member) {
   if (!member) return null;
 
+  const loginIdUpper = String(member.login_id || "").toUpperCase();
+  const isCommercial = /commercial/i.test(member.membership_type) || loginIdUpper.startsWith("COM");
+  const isProfessional = /professional/i.test(member.membership_type) || loginIdUpper.startsWith("PRO");
+
   return {
     id: member.id,
     login_id: member.login_id,
@@ -133,7 +137,7 @@ function safeMember(member) {
     email: member.email,
     phone: member.phone,
     referral_id: member.referral_id,
-    membership_type: member.membership_type,
+    membership_type: isCommercial ? "Commercial Member" : (isProfessional ? "Professional Member" : (member.membership_type || "Civilian Member")),
     payment_status: member.payment_status,
   };
 }
@@ -645,11 +649,26 @@ async function handleRegistration(request, db, cors) {
     }, 400, cors);
   }
 
-  // Check if phone already registered - if so, allow user to continue smoothly without blocking
+  // Check if phone already registered for THIS membership type - if so, allow user to continue smoothly without blocking
   if (phone) {
-    const existingPhone = await db.prepare(
-      "SELECT id, login_id, first_name, last_name, phone, email, membership_type, payment_status, referral_id FROM kyc_members WHERE phone = ? LIMIT 1"
-    ).bind(phone).first();
+    let existingPhone = null;
+    if (/commercial/i.test(membershipType)) {
+      existingPhone = await db.prepare(
+        "SELECT id, login_id, first_name, last_name, phone, email, membership_type, payment_status, referral_id FROM kyc_members WHERE phone = ? AND LOWER(COALESCE(membership_type, '')) LIKE '%commercial%' LIMIT 1"
+      ).bind(phone).first();
+    } else if (/professional/i.test(membershipType)) {
+      existingPhone = await db.prepare(
+        "SELECT id, login_id, first_name, last_name, phone, email, membership_type, payment_status, referral_id FROM kyc_members WHERE phone = ? AND LOWER(COALESCE(membership_type, '')) LIKE '%professional%' LIMIT 1"
+      ).bind(phone).first();
+    } else if (/student/i.test(membershipType)) {
+      existingPhone = await db.prepare(
+        "SELECT id, login_id, first_name, last_name, phone, email, membership_type, payment_status, referral_id FROM kyc_members WHERE phone = ? AND LOWER(COALESCE(membership_type, '')) LIKE '%student%' LIMIT 1"
+      ).bind(phone).first();
+    } else {
+      existingPhone = await db.prepare(
+        "SELECT id, login_id, first_name, last_name, phone, email, membership_type, payment_status, referral_id FROM kyc_members WHERE phone = ? AND (LOWER(COALESCE(membership_type, '')) LIKE '%civilian%' OR LOWER(COALESCE(membership_type, '')) LIKE '%inmba%' OR membership_type IS NULL OR membership_type = '') LIMIT 1"
+      ).bind(phone).first();
+    }
 
     if (existingPhone) {
       // Create session for existing phone so login works seamlessly
@@ -661,17 +680,22 @@ async function handleRegistration(request, db, cors) {
         VALUES (?, ?, ?)
       `).bind(await sha256(token), existingPhone.id, expiresAt).run();
 
+      const isCommercial = /commercial/i.test(existingPhone.membership_type);
+      const isProfessional = /professional/i.test(existingPhone.membership_type);
+
       const existingData = {
         loginId: existingPhone.login_id,
         login_id: existingPhone.login_id,
         alreadyRegistered: true,
         member: existingPhone,
         token,
-        commercialBasicKyc: {
-          login_id: existingPhone.login_id,
-          loginId: existingPhone.login_id,
-        },
-        nextRoute: /commercial/i.test(existingPhone.membership_type) ? "/login/commercial" : (/professional/i.test(existingPhone.membership_type) ? "/professional-login" : "/success"),
+        ...(isCommercial ? {
+          commercialBasicKyc: {
+            login_id: existingPhone.login_id,
+            loginId: existingPhone.login_id,
+          },
+        } : {}),
+        nextRoute: isCommercial ? "/login/commercial" : (isProfessional ? "/professional-login" : "/success"),
       };
 
       return json({
@@ -682,10 +706,12 @@ async function handleRegistration(request, db, cors) {
         token,
         loginId: existingPhone.login_id,
         login_id: existingPhone.login_id,
-        commercialBasicKyc: {
-          login_id: existingPhone.login_id,
-          loginId: existingPhone.login_id,
-        },
+        ...(isCommercial ? {
+          commercialBasicKyc: {
+            login_id: existingPhone.login_id,
+            loginId: existingPhone.login_id,
+          },
+        } : {}),
         data: existingData,
         ...existingData,
       }, 200, {
@@ -851,8 +877,8 @@ async function handleRegistration(request, db, cors) {
     },
     nextAction: {
       type: "NAVIGATE",
-      path: /commercial/i.test(membershipType) ? "/commercial/dashboard" : (/professional/i.test(membershipType) ? "/professional-registration-success" : "/success"),
-      loginPath: "/login",
+      path: /commercial/i.test(membershipType) ? "/login/commercial" : (/professional/i.test(membershipType) ? "/professional-registration-success" : "/success"),
+      loginPath: /commercial/i.test(membershipType) ? "/login/commercial" : (/professional/i.test(membershipType) ? "/professional-login" : "/login"),
     },
   };
 
@@ -1677,6 +1703,9 @@ async function handleGetCommercialDashboard(request, db, cors) {
   const planAmount = paymentRow?.amount || ext.amount || 300;
   const isApproved = String(member.payment_status || "").toLowerCase() === "approved";
   const hasSubmittedPayment = Boolean(paymentRow?.transaction_id || ext.transaction_id || paymentRow?.amount);
+  const commKycStatus = commKyc.kyc_status || ext.commercial_kyc_status || "draft";
+  const isKycApproved = String(commKycStatus).toLowerCase() === "approved";
+  const isFullyApproved = isApproved && isKycApproved;
 
   const dashboardData = {
     member: {
@@ -1688,6 +1717,10 @@ async function handleGetCommercialDashboard(request, db, cors) {
       memberSince: member.created_at,
       member_since: member.created_at,
       fullName: [member.first_name, member.last_name].filter(Boolean).join(" ") || "Commercial Member",
+      payment_status: member.payment_status || "pending",
+      paymentStatus: member.payment_status || "pending",
+      commercial_kyc_status: commKycStatus,
+      kyc_status: commKycStatus,
     },
     business: {
       name: commKyc.business_name || member.occupation || "Commercial Business",
@@ -1730,7 +1763,8 @@ async function handleGetCommercialDashboard(request, db, cors) {
       approved: isApproved,
     },
     kyc: {
-      status: commKyc.kyc_status || "submitted",
+      status: commKycStatus,
+      kyc_status: commKycStatus,
       currentStep: "A",
       current_step: "A",
       progress: kycRecord.progress,
@@ -1758,17 +1792,17 @@ async function handleGetCommercialDashboard(request, db, cors) {
       pending_payout: 0,
     },
     activation: {
-      is_active: isApproved,
-      requires_action: !isApproved,
+      is_active: isFullyApproved,
+      requires_action: !isFullyApproved,
     },
-    nextAction: isApproved ? {
+    nextAction: isFullyApproved ? {
       type: "NONE",
       code: "ACTIVE",
       path: "/commercial/dashboard",
       backendPath: "/commercial-dashboard",
       title: "Commercial Dashboard",
       message: "Your Commercial Membership is active.",
-    } : (hasSubmittedPayment ? {
+    } : (!isApproved ? (hasSubmittedPayment ? {
       type: "PENDING_APPROVAL",
       code: "PENDING_VERIFICATION",
       path: "/commercial/dashboard",
@@ -1782,6 +1816,13 @@ async function handleGetCommercialDashboard(request, db, cors) {
       backendPath: "/commercial-payment",
       title: "Complete Payment",
       message: "Please complete your commercial membership payment.",
+    }) : {
+      type: "PENDING_APPROVAL",
+      code: "PENDING_KYC_VERIFICATION",
+      path: "/commercial/dashboard",
+      backendPath: "/commercial-dashboard",
+      title: "Pending KYC Approval",
+      message: "Your KYC verification has been submitted and is pending admin approval.",
     }),
   };
 
@@ -2784,8 +2825,9 @@ async function handleGetPublicUser(request, db, cors, loginId) {
   const isApproved = String(member.payment_status || "").toLowerCase() === "approved";
   const planAmount = fullKyc?.selectedPlan || ext.amount || "300";
 
-  const isCommercial = /commercial/i.test(member.membership_type);
-  const isProfessional = /professional/i.test(member.membership_type);
+  const loginIdUpper = String(member.login_id || loginId || "").toUpperCase();
+  const isCommercial = /commercial/i.test(member.membership_type) || loginIdUpper.startsWith("COM");
+  const isProfessional = /professional/i.test(member.membership_type) || loginIdUpper.startsWith("PRO");
 
   const business = {
     name: commBasic.business_name || commKyc.business_name || member.occupation || "Commercial Business",
@@ -2816,7 +2858,7 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     name: fullName,
     email: member.email,
     phone: member.phone,
-    membership_type: member.membership_type || (isCommercial ? "Commercial Member" : (isProfessional ? "Professional Member" : "Civilian Member")),
+    membership_type: isCommercial ? "Commercial Member" : (isProfessional ? "Professional Member" : (member.membership_type || "Civilian Member")),
     profile_type: isCommercial ? "commercial" : (isProfessional ? "professional" : "civilian"),
     payment_status: member.payment_status || "pending",
     bio: commKyc.business_bio || fullKyc?.values?.bio || member.bio || "",
@@ -2964,6 +3006,10 @@ async function handleGetDashboard(request, db, cors) {
     phone: member.phone,
     membership_type: member.membership_type || "Civilian Member",
     payment_status: member.payment_status || "pending",
+    paymentStatus: member.payment_status || "pending",
+    professional_kyc_status: ext.professional_kyc_status || "draft",
+    commercial_kyc_status: ext.commercial_kyc_status || "draft",
+    kyc_status: ext.professional_kyc_status || fullKyc?.status || "draft",
     selected_plan: String(planAmount),
     amount: planAmount,
     referral_id: member.referral_id,
@@ -3334,7 +3380,7 @@ export default {
         return await handleLogin(request, db, cors);
       }
 
-      if ((path === "/api/register" || path === "/register" || path === "/api/student" || path === "/api/professional-register" || path === "/api/commercial-register") && method === "POST") {
+      if ((path === "/api/register" || path === "/register" || path === "/api/student" || path === "/api/professional-register" || path === "/professional-register" || path === "/api/commercial-register" || path === "/commercial-register") && method === "POST") {
         return await handleRegistration(request, db, cors);
       }
 

@@ -561,12 +561,19 @@ const handleContinueMembership = () => {
     loginId
   );
 
+  sessionStorage.setItem(
+    "commercial_from_registration",
+    "true"
+  );
+
   navigate(
     "/login/commercial",
     {
       replace: true,
       state: {
         loginId,
+        prefillId: loginId,
+        fromNewRegistration: true,
         registrationSuccess: true,
         nextPath:
           "/commercial/membership-plan",

@@ -5,6 +5,7 @@ import React, {
 import {
   Link,
   useNavigate,
+  useLocation,
 } from "react-router-dom";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -88,6 +89,8 @@ const getLoginErrorMessage =
 export default function CommercialLogin() {
   const navigate =
     useNavigate();
+  const location =
+    useLocation();
 
   const {
     checkMemberSession,
@@ -95,12 +98,24 @@ export default function CommercialLogin() {
   } =
     useAuth();
 
+  const initialLoginId = (() => {
+    const fromState = toText(location?.state?.loginId || location?.state?.prefillId);
+    if (/^COM\d{7}$/i.test(fromState)) return fromState.toUpperCase();
+    const fromStorage = toText(
+      sessionStorage.getItem("commercial_login_id") ||
+      sessionStorage.getItem("inmba_commercial_login_id") ||
+      localStorage.getItem("commercial_login_id")
+    );
+    if (/^COM\d{7}$/i.test(fromStorage)) return fromStorage.toUpperCase();
+    return "COM";
+  })();
+
   const [
     loginId,
     setLoginId,
   ] =
     useState(
-      "COM"
+      initialLoginId
     );
 
   const [
@@ -349,9 +364,38 @@ export default function CommercialLogin() {
           )
         );
 
-navigate(
-  "/commercial/dashboard",
-  {
+const paymentStatus =
+          toText(
+            member?.payment_status ??
+            member?.paymentStatus
+          ).toLowerCase();
+
+        const isPaymentApproved =
+          [
+            "approved",
+            "paid",
+            "completed",
+            "success",
+            "successful",
+          ].includes(
+            paymentStatus
+          );
+
+        const fromNewRegistration =
+          location.state?.registrationSuccess === true ||
+          location.state?.fromNewRegistration === true ||
+          sessionStorage.getItem("commercial_from_registration") === "true";
+
+        sessionStorage.removeItem("commercial_from_registration");
+
+        const targetPath =
+          !isPaymentApproved || fromNewRegistration
+            ? "/commercial/membership-plan"
+            : "/commercial/dashboard";
+
+        navigate(
+          targetPath,
+          {
             replace:
               true,
 

@@ -11,10 +11,6 @@ import {
 } from "react-router-dom";
 
 import {
-  QRCodeCanvas,
-} from "qrcode.react";
-
-import {
   toast,
 } from "react-toastify";
 
@@ -869,33 +865,29 @@ export default function ProfessionalDashboard() {
     loginId ||
     "Not available";
 
-  const membershipType =
-    toText(
-      member.membership_type ??
-      member.membershipType,
-      "INMBA Member"
-    );
+  const isProLogin =
+    String(loginId || "").toUpperCase().startsWith("PRO");
 
-  const professionalMember =
-    isProfessionalMembership(
-      membershipType
-    );
+  const membershipType =
+    isProLogin || isProfessionalMembership(member.membership_type ?? member.membershipType)
+      ? "Professional Member"
+      : toText(
+          member.membership_type ??
+          member.membershipType,
+          "Professional Member"
+        );
+
+  const professionalMember = true;
 
   /* =======================================================
      DASHBOARD ACCOUNT THEME
 
      Professional member always uses blue theme.
-     Other member types fall back to the account theme.
   ======================================================= */
 
-  const isBlueTheme =
-    professionalMember ||
-    accountTheme === "blue";
+  const isBlueTheme = true;
 
-  const dashboardThemeClass =
-    isBlueTheme
-      ? "member-dashboard-theme-blue"
-      : "member-dashboard-theme-green";
+  const dashboardThemeClass = "member-dashboard-theme-blue";
 
   /* =======================================================
      PAYMENT
@@ -912,8 +904,27 @@ export default function ProfessionalDashboard() {
       paymentStatus
     );
 
-  const isApproved =
+  const isPaymentApproved =
     paymentStatus === "approved";
+
+  const kycStatusRaw =
+    toText(
+      member.professional_kyc_status ??
+      member.kyc_status ??
+      ownerProfile?.professional_kyc_status ??
+      dashboardData?.member?.professional_kyc_status,
+      ""
+    ).toLowerCase().trim();
+
+  const isKycApproved =
+    kycStatusRaw === "approved";
+
+  // QR and network access require BOTH payment AND KYC to be approved by admin
+  const isFullyApproved =
+    Boolean(isPaymentApproved && isKycApproved);
+
+  const isApproved =
+    isFullyApproved;
 
   /* =======================================================
      PROFESSIONAL MEMBERSHIP PLAN / LEVEL
@@ -975,13 +986,7 @@ export default function ProfessionalDashboard() {
         : "Not selected";
 
   const hasProfessionalNetworkAccess =
-    isApproved &&
-    [
-      "300",
-      "1500",
-    ].includes(
-      selectedMembershipPlan
-    );
+    Boolean(isApproved);
 
   const hasProfessionalRoyaltyAccess =
     isApproved &&
@@ -1628,7 +1633,7 @@ export default function ProfessionalDashboard() {
             </div>
 
             <div className="member-dashboard-network-grid">
-              <article className="member-dashboard-network-stat member-dashboard-network-green">
+              <article className="member-dashboard-network-stat member-dashboard-network-navy">
                 <span>
                   Direct Paid
                 </span>
@@ -2192,161 +2197,7 @@ export default function ProfessionalDashboard() {
           </section>
         )}
 
-        {/* =================================================
-            QR CODE
 
-            ₹300 / ₹1500 Approved Professional:
-            QR + Public Profile access.
-
-            QR points ONLY to:
-
-            /user-profile/:loginId
-
-            That page uses public whitelist.
-        ================================================= */}
-
-        {hasProfessionalNetworkAccess && (
-          <section className="member-dashboard-card member-dashboard-qr-card">
-            <div className="member-dashboard-qr-content">
-              <div>
-                <p className="member-dashboard-eyebrow">
-                  Digital Identity
-                </p>
-
-                <h2>
-                  Your Public Profile QR Code
-                </h2>
-
-                <p>
-                  Scan or share this QR code to open your public
-                  INMBA profile. Private Professional details are
-                  not included in the QR profile.
-                </p>
-
-<div className="member-dashboard-qr-actions">
-
-  <Link
-    to="/professional-public-profile"
-    className="member-dashboard-primary-button"
-  >
-    <i
-      className="fas fa-address-card"
-      aria-hidden="true"
-    ></i>
-
-    Manage Public Profile
-  </Link>
-
-  {publicProfilePath && (
-    <Link
-      to={publicProfilePath}
-      className="member-dashboard-secondary-button"
-    >
-      <i
-        className="fas fa-eye"
-        aria-hidden="true"
-      ></i>
-
-      Preview Public View
-    </Link>
-  )}
-
-  <Link
-    to="/qr-code?theme=professional"
-    className="member-dashboard-secondary-button"
-  >
-    <i
-      className="fas fa-qrcode"
-      aria-hidden="true"
-    ></i>
-
-    QR Details
-  </Link>
-
-</div>
-              </div>
-
-              <div className="member-dashboard-qr-preview">
-                {publicProfileUrl ? (
-                  <QRCodeCanvas
-                    id="member-dashboard-qr-canvas"
-                    value={
-                      publicProfileUrl
-                    }
-                    size={
-                      180
-                    }
-                    level="H"
-                    includeMargin
-                    bgColor="#ffffff"
-                    fgColor={
-                      isBlueTheme
-                        ? "#0d47a1"
-                        : "#0f4d0f"
-                    }
-                    title={`INMBA public profile QR code for ${fullName}`}
-                  />
-                ) : (
-                  <div className="member-dashboard-qr-placeholder">
-                    <i
-                      className="fas fa-qrcode"
-                      aria-hidden="true"
-                    ></i>
-
-                    <span>
-                      Login ID unavailable
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {!hasProfessionalNetworkAccess && (
-          <section className="member-dashboard-card member-dashboard-qr-card">
-            <div className="member-dashboard-qr-content">
-              <div>
-                <p className="member-dashboard-eyebrow">
-                  Digital Identity
-                </p>
-
-                <h2>
-                  Public Profile QR Code
-                </h2>
-
-                <p>
-                  Your professional public profile QR code is currently locked. It will be generated automatically once your payment has been approved by the administrator.
-                </p>
-
-                <div className="member-dashboard-qr-actions" style={{ marginTop: "12px" }}>
-                  <span className="badge bg-warning text-dark px-3 py-2" style={{ borderRadius: "8px", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                    <i className="fas fa-clock" aria-hidden="true"></i>
-                    Awaiting Admin Approval
-                  </span>
-                </div>
-              </div>
-
-              <div className="member-dashboard-qr-preview">
-                <div className="member-dashboard-qr-placeholder" style={{ textAlign: "center", padding: "24px 16px" }}>
-                  <i
-                    className="fas fa-lock"
-                    aria-hidden="true"
-                    style={{ fontSize: "48px", color: "#f59e0b", marginBottom: "12px" }}
-                  ></i>
-
-                  <strong style={{ display: "block", fontSize: "16px", color: "#1e293b", marginBottom: "4px" }}>
-                    QR Code Locked
-                  </strong>
-
-                  <span style={{ fontSize: "13px", color: "#64748b" }}>
-                    Pending Admin Verification
-                  </span>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
 
         {/* =================================================
             OWNER PRIVACY NOTICE

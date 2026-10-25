@@ -902,10 +902,32 @@ export default function Dashboard() {
       "INMBA Member"
     );
 
+  const isProLogin =
+    String(
+      loginId ||
+      member?.login_id ||
+      member?.loginId ||
+      sessionStorage.getItem("inmba_professional_login_id") ||
+      sessionStorage.getItem("inmba_login_id") ||
+      sessionStorage.getItem("inmba_member_login_id") ||
+      ""
+    ).toUpperCase().startsWith("PRO");
+
   const professionalMember =
+    isProLogin ||
+    isProfessionalMembership(
+      member.membership_type ??
+      member.membershipType
+    ) ||
     isProfessionalMembership(
       membershipType
     );
+
+  useEffect(() => {
+    if (professionalMember) {
+      navigate("/professional-dashboard", { replace: true, state: { loginId } });
+    }
+  }, [professionalMember, navigate, loginId]);
 
   const civilianMember =
     isCivilianMembership(
@@ -1504,6 +1526,10 @@ export default function Dashboard() {
   /* =======================================================
      PAGE
   ======================================================= */
+
+  if (professionalMember) {
+    return null;
+  }
 
   return (
     <main className="member-dashboard-page">
@@ -2792,51 +2818,6 @@ export default function Dashboard() {
                     </span>
                   </div>
                 )}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {!isApproved && (
-          <section className="member-dashboard-card member-dashboard-qr-card">
-            <div className="member-dashboard-qr-content">
-              <div>
-                <p className="member-dashboard-eyebrow">
-                  Digital Identity
-                </p>
-
-                <h2>
-                  Public Profile QR Code
-                </h2>
-
-                <p>
-                  Your public profile QR code is currently locked. It will be generated automatically once your payment has been approved by the administrator.
-                </p>
-
-                <div className="member-dashboard-qr-actions" style={{ marginTop: "12px" }}>
-                  <span className="badge bg-warning text-dark px-3 py-2" style={{ borderRadius: "8px", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                    <i className="fas fa-clock" aria-hidden="true"></i>
-                    Awaiting Admin Approval
-                  </span>
-                </div>
-              </div>
-
-              <div className="member-dashboard-qr-preview">
-                <div className="member-dashboard-qr-placeholder" style={{ textAlign: "center", padding: "24px 16px" }}>
-                  <i
-                    className="fas fa-lock"
-                    aria-hidden="true"
-                    style={{ fontSize: "48px", color: "#f59e0b", marginBottom: "12px" }}
-                  ></i>
-
-                  <strong style={{ display: "block", fontSize: "16px", color: "#1e293b", marginBottom: "4px" }}>
-                    QR Code Locked
-                  </strong>
-
-                  <span style={{ fontSize: "13px", color: "#64748b" }}>
-                    Pending Admin Verification
-                  </span>
-                </div>
               </div>
             </div>
           </section>

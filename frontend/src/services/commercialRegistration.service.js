@@ -380,6 +380,9 @@ export const registerCommercialMember =
         String(
           values.password ?? ""
         ),
+
+      membership_type:
+        "Commercial Member",
     };
 
     const referral =

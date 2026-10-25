@@ -135,6 +135,7 @@ const countAccountsByEmailAndPhone =
           WHERE
             email = ?
             AND phone = ?
+            AND LOWER(TRIM(COALESCE(membership_type, ''))) IN ('commercial member', 'commercial membership', 'commercial')
         `,
         [
           normalizedEmail,

@@ -297,6 +297,14 @@ export default function PremiumProfile() {
     useMemo(
       () => {
         if (
+          safeLoginId
+            .toUpperCase()
+            .startsWith("PRO")
+        ) {
+          return true;
+        }
+
+        if (
           normalizeMembershipType(
             profileType
           ) ===
@@ -311,6 +319,7 @@ export default function PremiumProfile() {
         );
       },
       [
+        safeLoginId,
         profileType,
         profile,
       ]

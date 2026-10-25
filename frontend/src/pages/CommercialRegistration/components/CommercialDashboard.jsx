@@ -924,32 +924,48 @@ const backendAmount =
       ✅ QR / Public Profile
       ✅ Royalty / Rewards
   */
-  const hasQrPublicProfileAccess =
-    validLoginId && (
-      (isAdminApproved && hasPaidPlan) ||
-      paymentStatus === "approved"
-    );
-
-  const hasRoyaltyRewardsAccess =
-    isAdminApproved &&
-    isPremium;
-
-
   /* =======================================================
-     COMMERCIAL KYC
+     COMMERCIAL KYC & APPROVAL STATUS
   ======================================================= */
 
   const kycStatus =
     normalizeStatus(
-      commercialKyc
-        ?.kyc_status,
+      commercialKyc?.kyc_status ||
+      dashboardData?.kyc?.status ||
+      dashboardData?.kyc?.kyc_status ||
+      member?.commercial_kyc_status ||
+      member?.kyc_status,
       "draft"
     );
-
 
   const kycStatusLabel =
     statusLabel(
       kycStatus
+    );
+
+  const isKycApproved =
+    kycStatus === "approved";
+
+  const isPaymentApproved =
+    Boolean(isAdminApproved || paymentStatus === "approved");
+
+  /*
+    QR / Public Profile access unlocks ONLY when:
+    1. Payment is completed & approved by Admin
+    2. KYC verification is completed & approved by Admin
+  */
+  const hasQrPublicProfileAccess =
+    Boolean(
+      validLoginId &&
+      isPaymentApproved &&
+      isKycApproved
+    );
+
+  const hasRoyaltyRewardsAccess =
+    Boolean(
+      isPaymentApproved &&
+      isKycApproved &&
+      isPremium
     );
 
 
@@ -2156,7 +2172,11 @@ const backendAmount =
                 <div style={{ marginTop: "12px" }}>
                   <span className="badge bg-warning text-dark px-3 py-2" style={{ borderRadius: "8px", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "6px" }}>
                     <i className="fas fa-clock" aria-hidden="true"></i>
-                    Awaiting Admin Approval
+                    {!isPaymentApproved && !isKycApproved
+                      ? "Awaiting Payment & KYC Admin Approval"
+                      : !isPaymentApproved
+                        ? "Awaiting Payment Admin Approval"
+                        : "Awaiting KYC Admin Approval"}
                   </span>
                 </div>
               </div>
@@ -2174,7 +2194,11 @@ const backendAmount =
                   </strong>
 
                   <span style={{ fontSize: "13px", color: "#64748b" }}>
-                    Pending Admin Approval
+                    {!isPaymentApproved && !isKycApproved
+                      ? "Pending Payment & KYC Approval"
+                      : !isPaymentApproved
+                        ? "Pending Payment Approval"
+                        : "Pending KYC Approval"}
                   </span>
                 </div>
               </div>

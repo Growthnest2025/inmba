@@ -71,7 +71,7 @@ const getFullName = (member) => {
    MEMBER STATUS
 ========================= */
 
-const getMemberStatus = (member) => {
+const getMemberStatus = (member, isApproved = false) => {
   const paymentStatus =
     toText(
       member?.payment_status ??
@@ -79,8 +79,7 @@ const getMemberStatus = (member) => {
       "pending"
     ).toLowerCase();
 
-  const verified =
-    paymentStatus === "approved";
+  const verified = Boolean(isApproved);
 
   return {
     verified,
@@ -447,8 +446,9 @@ export default function QRCode() {
       ? "/professional-dashboard"
       : "/dashboard";
 
-  const memberStatus =
-    getMemberStatus(member);
+  const isCommercial =
+    themeParam === "commercial" ||
+    /commercial/i.test(membershipType);
 
   const paymentStatus = toText(
     member.payment_status ??
@@ -458,7 +458,30 @@ export default function QRCode() {
     "pending"
   ).toLowerCase().trim();
 
-  const isApproved = paymentStatus === "approved";
+  const isPaymentApproved = paymentStatus === "approved";
+
+  const kycStatus = toText(
+    member.professional_kyc_status ??
+      member.commercial_kyc_status ??
+      member.kyc_status ??
+      member.kycStatus ??
+      dashboardData?.kyc?.status ??
+      dashboardData?.kyc_status ??
+      dashboardData?.member?.professional_kyc_status ??
+      dashboardData?.member?.commercial_kyc_status,
+    ""
+  ).toLowerCase().trim();
+
+  const isKycApproved = kycStatus === "approved";
+
+  // For Commercial and Professional: BOTH Payment AND KYC must be approved by admin
+  // For Civilian: Payment approval
+  const isApproved = (isProfessional || isCommercial)
+    ? Boolean(isPaymentApproved && isKycApproved)
+    : isPaymentApproved;
+
+  const memberStatus =
+    getMemberStatus(member, isApproved);
 
   /* =========================
      PUBLIC PROFILE URL
@@ -561,7 +584,11 @@ export default function QRCode() {
     () => {
       if (downloading || !publicProfileUrl || !isApproved) {
         if (!isApproved) {
-          toast.warning("QR Code downloads unlock after admin payment approval.");
+          toast.warning(
+            (isProfessional || isCommercial)
+              ? "QR Code unlocks after admin KYC and payment approval."
+              : "QR Code downloads unlock after admin payment approval."
+          );
         }
         return;
       }
@@ -789,7 +816,11 @@ export default function QRCode() {
 
                   <span style={{ display: "block", fontSize: "14px", color: "#64748b", lineHeight: "1.5", maxWidth: "260px", margin: "0 auto" }}>
                     {!isApproved
-                      ? "Your payment verification is pending admin approval. The QR code will be generated once approved."
+                      ? (!isPaymentApproved && !isKycApproved
+                          ? "Your payment and KYC verification are pending admin approval. The QR code will be generated once approved."
+                          : !isPaymentApproved
+                            ? "Your payment verification is pending admin approval. The QR code will be generated once approved."
+                            : "Your KYC verification is pending admin approval. The QR code will be generated once approved.")
                       : "Member Login ID is unavailable."}
                   </span>
                 </div>

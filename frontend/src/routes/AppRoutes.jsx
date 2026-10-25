@@ -79,6 +79,8 @@ import CivilianPublicProfileOwner
 
 import PublicProfileAliasRedirect
   from "../components/routes/PublicProfileAliasRedirect";
+import PublicProfileDispatcher
+  from "./PublicProfileDispatcher";
 
 /* =========================
    MEMBER AUTH
@@ -311,12 +313,12 @@ export default function AppRoutes() {
 
       <Route
         path="/public-profile/:loginId"
-        element={<CivilianPublicProfile publicViewOnly={true} />}
+        element={<PublicProfileDispatcher />}
       />
 
       <Route
         path="/profile-view/:loginId"
-        element={<CivilianPublicProfile publicViewOnly={true} />}
+        element={<PublicProfileDispatcher />}
       />
 
       <Route
