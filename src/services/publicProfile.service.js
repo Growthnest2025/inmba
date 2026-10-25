@@ -198,6 +198,10 @@ export const isProfessionalPublicProfile =
         profile
       );
 
+    const loginId = toText(
+      source.login_id || source.loginId || source.member_id || source.memberId
+    ).toUpperCase();
+
     const membershipType =
       normalizeMembershipType(
         source.membership_type
@@ -209,6 +213,7 @@ export const isProfessionalPublicProfile =
       );
 
     return (
+      loginId.startsWith("PRO") ||
       [
         "professional",
         "professional member",

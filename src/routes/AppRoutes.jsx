@@ -79,6 +79,8 @@ import CivilianPublicProfileOwner
 
 import PublicProfileAliasRedirect
   from "../components/routes/PublicProfileAliasRedirect";
+import PublicProfileDispatcher
+  from "./PublicProfileDispatcher";
 
 /* =========================
    MEMBER AUTH
@@ -311,12 +313,12 @@ export default function AppRoutes() {
 
       <Route
         path="/public-profile/:loginId"
-        element={<CivilianPublicProfile publicViewOnly={true} />}
+        element={<PublicProfileDispatcher />}
       />
 
       <Route
         path="/profile-view/:loginId"
-        element={<CivilianPublicProfile publicViewOnly={true} />}
+        element={<PublicProfileDispatcher />}
       />
 
       <Route
@@ -449,6 +451,10 @@ export default function AppRoutes() {
         <Route
           path="/commercial/payment"
           element={<CommercialPayment />}
+        />
+        <Route
+          path="/commercial-payment"
+          element={<Navigate to="/commercial/payment" replace />}
         />
 
         {/* 1500 FULL COMMERCIAL KYC */}
@@ -656,6 +662,10 @@ export default function AppRoutes() {
       <Route
         path="/professional-dashboard"
         element={<ProfessionalDashboard />}
+      />
+      <Route
+        path="/professional/dashboard"
+        element={<Navigate to="/professional-dashboard" replace />}
       />
 
       {/* PROFESSIONAL PROFILE */}

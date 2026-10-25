@@ -31,29 +31,19 @@ import { toText } from "../../../utils/commonHelpers";
    Current domain automatically use pannum.
 ========================================================= */
 
-const getPublicOrigin =
-  () => {
+const getPublicOrigin = () => {
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname || "";
     if (
-      typeof window ===
-      "undefined"
+      !hostname.includes("vercel.app") &&
+      !hostname.includes("localhost") &&
+      !hostname.includes("127.0.0.1")
     ) {
-      return "";
+      return window.location.origin;
     }
-
-    const hostname =
-      window.location.hostname;
-
-    if (
-      hostname ===
-        "localhost" ||
-      hostname ===
-        "127.0.0.1"
-    ) {
-      return "http://192.168.31.155:5173";
-    }
-
-    return window.location.origin;
-  };
+  }
+  return "https://inmba.org";
+};
 
 /* =========================================================
    COMMERCIAL QR CARD
@@ -150,7 +140,7 @@ export default function CommercialQrCard({
           return "";
         }
 
-        return `/user-profile/${encodeURIComponent(
+        return `/commercial/public-profile/${encodeURIComponent(
           safeLoginId
         )}`;
       },
@@ -628,30 +618,36 @@ export default function CommercialQrCard({
 
           <div className="commercial-qr-preview">
 
-            <div className="commercial-qr-code-shell">
+            <div className="commercial-qr-code-shell" style={!verified ? { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "210px", padding: "20px", background: "#f8fafc", borderRadius: "12px", border: "2px dashed #cbd5e1" } : undefined}>
 
-              <QRCodeCanvas
-                id="commercial-public-profile-qr"
-                value={
-                  profileUrl
-                }
-                size={
-                  210
-                }
-                level="H"
-                includeMargin
-                bgColor="#ffffff"
-                fgColor="#E23744"
-                title={`INMBA Commercial QR ${safeLoginId}`}
-              />
+              {verified ? (
+                <>
+                  <QRCodeCanvas
+                    id="commercial-public-profile-qr"
+                    value={
+                      profileUrl
+                    }
+                    size={
+                      210
+                    }
+                    level="H"
+                    includeMargin
+                    bgColor="#ffffff"
+                    fgColor="#E23744"
+                    title={`INMBA Commercial QR ${safeLoginId}`}
+                  />
 
-              {/* =============================================
-                  QR CENTER ICON
-              ============================================= */}
-
-              <span className="commercial-qr-center-logo">
-                <i className="fa-solid fa-store" />
-              </span>
+                  <span className="commercial-qr-center-logo">
+                    <i className="fa-solid fa-store" />
+                  </span>
+                </>
+              ) : (
+                <div style={{ textAlign: "center" }}>
+                  <i className="fa-solid fa-lock" style={{ fontSize: "48px", color: "#f59e0b", marginBottom: "10px", display: "block" }} />
+                  <strong style={{ fontSize: "16px", color: "#1e293b", display: "block", marginBottom: "4px" }}>QR Code Locked</strong>
+                  <span style={{ fontSize: "12px", color: "#64748b", display: "block" }}>Awaiting Admin Approval</span>
+                </div>
+              )}
 
             </div>
 

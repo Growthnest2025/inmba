@@ -716,6 +716,17 @@ api.get(
       "Not available"
     );
 
+  const validLoginId =
+    loginId !== "Not available" && Boolean(loginId.trim());
+
+  const frontendBaseUrl =
+    typeof window !== "undefined" &&
+    !window.location.hostname.includes("vercel.app") &&
+    !window.location.hostname.includes("localhost") &&
+    !window.location.hostname.includes("127.0.0.1")
+      ? window.location.origin
+      : "https://inmba.org";
+
 
   const storedPlan =
     useMemo(
@@ -913,30 +924,48 @@ const backendAmount =
       ✅ QR / Public Profile
       ✅ Royalty / Rewards
   */
-  const hasQrPublicProfileAccess =
-    isAdminApproved &&
-    hasPaidPlan;
-
-  const hasRoyaltyRewardsAccess =
-    isAdminApproved &&
-    isPremium;
-
-
   /* =======================================================
-     COMMERCIAL KYC
+     COMMERCIAL KYC & APPROVAL STATUS
   ======================================================= */
 
   const kycStatus =
     normalizeStatus(
-      commercialKyc
-        ?.kyc_status,
+      commercialKyc?.kyc_status ||
+      dashboardData?.kyc?.status ||
+      dashboardData?.kyc?.kyc_status ||
+      member?.commercial_kyc_status ||
+      member?.kyc_status,
       "draft"
     );
-
 
   const kycStatusLabel =
     statusLabel(
       kycStatus
+    );
+
+  const isKycApproved =
+    kycStatus === "approved";
+
+  const isPaymentApproved =
+    Boolean(isAdminApproved || paymentStatus === "approved");
+
+  /*
+    QR / Public Profile access unlocks ONLY when:
+    1. Payment is completed & approved by Admin
+    2. KYC verification is completed & approved by Admin
+  */
+  const hasQrPublicProfileAccess =
+    Boolean(
+      validLoginId &&
+      isPaymentApproved &&
+      isKycApproved
+    );
+
+  const hasRoyaltyRewardsAccess =
+    Boolean(
+      isPaymentApproved &&
+      isKycApproved &&
+      isPremium
     );
 
 
@@ -968,23 +997,6 @@ const backendAmount =
   /* =======================================================
      PUBLIC PROFILE
   ======================================================= */
-
-  const frontendBaseUrl =
-    String(
-      process.env.REACT_APP_FRONTEND_BASE_URL ||
-      window.location.origin
-    )
-      .trim()
-      .replace(
-        /\/+$/,
-        ""
-      );
-
-
-  const validLoginId =
-    loginId !==
-    "Not available";
-
 
   const publicProfilePath =
     hasQrPublicProfileAccess &&
@@ -2139,6 +2151,59 @@ const backendAmount =
 
           </section>
 
+        )}
+
+        {!hasQrPublicProfileAccess && (
+          <section className="commercial-dashboard-card commercial-dashboard-qr-card">
+            <div className="commercial-dashboard-qr-content">
+              <div>
+                <p className="commercial-dashboard-eyebrow">
+                  Digital Business Identity
+                </p>
+
+                <h2>
+                  Commercial Profile QR Locked
+                </h2>
+
+                <p>
+                  Your Commercial QR code and public profile are currently locked. They will unlock automatically once your KYC and payment are approved by the administrator.
+                </p>
+
+                <div style={{ marginTop: "12px" }}>
+                  <span className="badge bg-warning text-dark px-3 py-2" style={{ borderRadius: "8px", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                    <i className="fas fa-clock" aria-hidden="true"></i>
+                    {!isPaymentApproved && !isKycApproved
+                      ? "Awaiting Payment & KYC Admin Approval"
+                      : !isPaymentApproved
+                        ? "Awaiting Payment Admin Approval"
+                        : "Awaiting KYC Admin Approval"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="commercial-dashboard-qr-preview">
+                <div className="commercial-dashboard-qr-placeholder" style={{ textAlign: "center", padding: "24px 16px" }}>
+                  <i
+                    className="fas fa-lock"
+                    aria-hidden="true"
+                    style={{ fontSize: "48px", color: "#f59e0b", marginBottom: "12px" }}
+                  ></i>
+
+                  <strong style={{ display: "block", fontSize: "16px", color: "#1e293b", marginBottom: "4px" }}>
+                    QR Code Locked
+                  </strong>
+
+                  <span style={{ fontSize: "13px", color: "#64748b" }}>
+                    {!isPaymentApproved && !isKycApproved
+                      ? "Pending Payment & KYC Approval"
+                      : !isPaymentApproved
+                        ? "Pending Payment Approval"
+                        : "Pending KYC Approval"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
         )}
 
 

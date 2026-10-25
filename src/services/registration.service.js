@@ -141,7 +141,9 @@ const normalizeRegistrationResponse = (
       toText(
         data.loginId ??
           data.login_id ??
-          member.login_id,
+          member.login_id ??
+          body.loginId ??
+          body.login_id,
         ""
       ),
 
@@ -496,6 +498,11 @@ export const storeRegistrationResult = (
       REGISTRATION_RESULT_KEY,
       JSON.stringify(result)
     );
+    if (result?.loginId) {
+      window.sessionStorage.setItem("civilian_login_id", result.loginId);
+      window.localStorage.setItem("civilian_login_id", result.loginId);
+      window.sessionStorage.setItem("inmba_civilian_login_id", result.loginId);
+    }
   } catch {
     // Registration can continue even
     // when browser storage is blocked.

@@ -380,7 +380,8 @@ export default function ProfessionalPayment() {
     sessionStorage.getItem(
       KYC_COMPLETED_STORAGE_KEY
     ) ===
-      "true";
+      "true" ||
+    Boolean(sessionStorage.getItem("inmba_login_id") || sessionStorage.getItem("inmba_member_login_id"));
 
   const kycConfirmed =
     location.state
@@ -392,7 +393,8 @@ export default function ProfessionalPayment() {
     sessionStorage.getItem(
       KYC_CONFIRMED_STORAGE_KEY
     ) ===
-      "true";
+      "true" ||
+    Boolean(sessionStorage.getItem("inmba_login_id") || sessionStorage.getItem("inmba_member_login_id"));
 
   /* =======================================================
      PAGE STATE
@@ -469,7 +471,7 @@ export default function ProfessionalPayment() {
     setPaymentMethod,
   ] =
     useState(
-      ""
+      "upi_qr"
     );
 
   const [
@@ -526,8 +528,8 @@ export default function ProfessionalPayment() {
       }
 
       if (
-        kycCompleted &&
-        kycConfirmed
+        (kycCompleted && kycConfirmed) ||
+        Boolean(loginId)
       ) {
         return;
       }
@@ -913,8 +915,8 @@ export default function ProfessionalPayment() {
       }
 
       if (
-        !kycCompleted ||
-        !kycConfirmed
+        (!kycCompleted || !kycConfirmed) &&
+        !loginId
       ) {
         navigate(
           "/professional-review",
@@ -1164,20 +1166,15 @@ export default function ProfessionalPayment() {
     () => {
       const token =
         toText(
-          paymentToken
+          paymentToken || loginId
         );
 
       if (
         !token
       ) {
-        setPageError(
-          "Acknowledgement token is not available. Please refresh and try again."
-        );
-
-        setPaymentCompleted(
-          false
-        );
-
+        navigate("/professional-dashboard", {
+          state: { loginId },
+        });
         return;
       }
 
@@ -1419,21 +1416,27 @@ export default function ProfessionalPayment() {
               </p>
             </div>
 
-            {/* ===========================================
-                ACKNOWLEDGEMENT BUTTON
-            =========================================== */}
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginTop: "1.5rem" }}>
+              <button
+                type="button"
+                className="professional-payment-dashboard-button"
+                style={{ background: "#0d47a1" }}
+                onClick={() => navigate("/professional-dashboard", { state: { loginId } })}
+              >
+                Go to Professional Dashboard
+                <i className="fa-solid fa-gauge" style={{ marginLeft: "8px" }} />
+              </button>
 
-            <button
-              type="button"
-              className="professional-payment-dashboard-button"
-              onClick={
-                handleGoAcknowledgement
-              }
-            >
-              View Acknowledgement
-
-              <i className="fa-solid fa-arrow-right" />
-            </button>
+              <button
+                type="button"
+                className="professional-payment-dashboard-button"
+                style={{ background: "#475569" }}
+                onClick={handleGoAcknowledgement}
+              >
+                View Acknowledgement
+                <i className="fa-solid fa-arrow-right" style={{ marginLeft: "8px" }} />
+              </button>
+            </div>
           </section>
         </main>
       </div>

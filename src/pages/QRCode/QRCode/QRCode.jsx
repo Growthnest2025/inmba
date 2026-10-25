@@ -71,7 +71,7 @@ const getFullName = (member) => {
    MEMBER STATUS
 ========================= */
 
-const getMemberStatus = (member) => {
+const getMemberStatus = (member, isApproved = false) => {
   const paymentStatus =
     toText(
       member?.payment_status ??
@@ -79,9 +79,7 @@ const getMemberStatus = (member) => {
       "pending"
     ).toLowerCase();
 
-  const verified =
-    paymentStatus === "approved" ||
-    paymentStatus === "paid";
+  const verified = Boolean(isApproved);
 
   return {
     verified,
@@ -448,23 +446,54 @@ export default function QRCode() {
       ? "/professional-dashboard"
       : "/dashboard";
 
+  const isCommercial =
+    themeParam === "commercial" ||
+    /commercial/i.test(membershipType);
+
+  const paymentStatus = toText(
+    member.payment_status ??
+      member.paymentStatus ??
+      dashboardData?.member?.payment_status ??
+      dashboardData?.payment_status,
+    "pending"
+  ).toLowerCase().trim();
+
+  const isPaymentApproved = paymentStatus === "approved";
+
+  const kycStatus = toText(
+    member.professional_kyc_status ??
+      member.commercial_kyc_status ??
+      member.kyc_status ??
+      member.kycStatus ??
+      dashboardData?.kyc?.status ??
+      dashboardData?.kyc_status ??
+      dashboardData?.member?.professional_kyc_status ??
+      dashboardData?.member?.commercial_kyc_status,
+    ""
+  ).toLowerCase().trim();
+
+  const isKycApproved = kycStatus === "approved";
+
+  // For Commercial and Professional: BOTH Payment AND KYC must be approved by admin
+  // For Civilian: Payment approval
+  const isApproved = (isProfessional || isCommercial)
+    ? Boolean(isPaymentApproved && isKycApproved)
+    : isPaymentApproved;
+
   const memberStatus =
-    getMemberStatus(member);
+    getMemberStatus(member, isApproved);
 
   /* =========================
      PUBLIC PROFILE URL
   ========================= */
 
   const frontendBaseUrl =
-    String(
-      process.env
-        .REACT_APP_PUBLIC_FRONTEND_URL ||
-        process.env
-          .REACT_APP_FRONTEND_BASE_URL ||
-        window.location.origin
-    )
-      .trim()
-      .replace(/\/+$/, "");
+    typeof window !== "undefined" &&
+    !window.location.hostname.includes("vercel.app") &&
+    !window.location.hostname.includes("localhost") &&
+    !window.location.hostname.includes("127.0.0.1")
+      ? window.location.origin
+      : "https://inmba.org";
 
   const publicProfilePath =
     loginId
@@ -553,10 +582,14 @@ export default function QRCode() {
 
   const handleDownloadQr =
     () => {
-      if (
-        downloading ||
-        !publicProfileUrl
-      ) {
+      if (downloading || !publicProfileUrl || !isApproved) {
+        if (!isApproved) {
+          toast.warning(
+            (isProfessional || isCommercial)
+              ? "QR Code unlocks after admin KYC and payment approval."
+              : "QR Code downloads unlock after admin payment approval."
+          );
+        }
         return;
       }
 
@@ -750,7 +783,7 @@ export default function QRCode() {
             </div>
 
             <div className="inmba-qr-preview-wrapper">
-              {publicProfileUrl ? (
+              {isApproved && publicProfileUrl ? (
                 <div className="inmba-qr-preview">
                   <QRCodeCanvas
                     id={qrCanvasId}
@@ -770,18 +803,25 @@ export default function QRCode() {
                   />
                 </div>
               ) : (
-                <div className="inmba-qr-preview inmba-qr-placeholder">
+                <div className="inmba-qr-preview inmba-qr-placeholder" style={{ textAlign: "center", padding: "30px 20px" }}>
                   <i
-                    className="fas fa-qrcode"
+                    className="fas fa-lock"
                     aria-hidden="true"
+                    style={{ fontSize: "52px", color: "#f59e0b", marginBottom: "16px" }}
                   ></i>
 
-                  <strong>
-                    QR Code
+                  <strong style={{ display: "block", fontSize: "18px", color: "#1e293b", marginBottom: "8px" }}>
+                    QR Code Locked
                   </strong>
 
-                  <span>
-                    Member Login ID is unavailable.
+                  <span style={{ display: "block", fontSize: "14px", color: "#64748b", lineHeight: "1.5", maxWidth: "260px", margin: "0 auto" }}>
+                    {!isApproved
+                      ? (!isPaymentApproved && !isKycApproved
+                          ? "Your payment and KYC verification are pending admin approval. The QR code will be generated once approved."
+                          : !isPaymentApproved
+                            ? "Your payment verification is pending admin approval. The QR code will be generated once approved."
+                            : "Your KYC verification is pending admin approval. The QR code will be generated once approved.")
+                      : "Member Login ID is unavailable."}
                   </span>
                 </div>
               )}
@@ -936,9 +976,7 @@ export default function QRCode() {
                   onClick={
                     handleCopyProfileLink
                   }
-                  disabled={
-                    !publicProfileUrl
-                  }
+                  disabled={!isApproved || !publicProfileUrl}
                   aria-label="Copy public profile link"
                 >
                   <i
@@ -956,10 +994,7 @@ export default function QRCode() {
                 onClick={
                   handleDownloadQr
                 }
-                disabled={
-                  downloading ||
-                  !publicProfileUrl
-                }
+                disabled={downloading || !isApproved || !publicProfileUrl}
               >
                 {downloading ? (
                   <>
@@ -988,9 +1023,7 @@ export default function QRCode() {
                 onClick={
                   handleShareProfile
                 }
-                disabled={
-                  !publicProfileUrl
-                }
+                disabled={!isApproved || !publicProfileUrl}
               >
                 <i
                   className="fas fa-share-nodes"

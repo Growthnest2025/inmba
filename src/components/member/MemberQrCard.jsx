@@ -59,29 +59,16 @@ const buildPublicProfileUrl =
         safeLoginId
       )}`;
 
-    const configuredBase =
-      toText(
-        process.env
-          .REACT_APP_FRONTEND_BASE_URL
-      );
-
-    if (
-      configuredBase
-    ) {
-      return `${configuredBase.replace(
-        /\/+$/,
-        ""
-      )}${profilePath}`;
+    let baseUrl = "";
+    if (typeof window !== "undefined" && window.location?.origin) {
+      if (!window.location.hostname.includes("localhost") && !window.location.hostname.includes("127.0.0.1") && !window.location.hostname.includes("vercel.app")) {
+        baseUrl = window.location.origin;
+      }
     }
-
-    if (
-      typeof window !==
-        "undefined" &&
-      window.location
-        ?.origin
-    ) {
-      return `${window.location.origin}${profilePath}`;
+    if (!baseUrl) {
+      baseUrl = "https://inmba.org";
     }
+    return `${baseUrl.replace(/\/+$/, "")}${profilePath}`;
 
     return profilePath;
   };

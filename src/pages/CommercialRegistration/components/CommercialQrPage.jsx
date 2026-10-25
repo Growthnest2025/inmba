@@ -49,29 +49,19 @@ const normalizeLoginId =
    actual domain
 ========================================================= */
 
-const getPublicOrigin =
-  () => {
+const getPublicOrigin = () => {
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname || "";
     if (
-      typeof window ===
-      "undefined"
+      !hostname.includes("vercel.app") &&
+      !hostname.includes("localhost") &&
+      !hostname.includes("127.0.0.1")
     ) {
-      return "";
+      return window.location.origin;
     }
-
-    const hostname =
-      window.location.hostname;
-
-    if (
-      hostname ===
-        "localhost" ||
-      hostname ===
-        "127.0.0.1"
-    ) {
-      return "http://192.168.31.155:5173";
-    }
-
-    return window.location.origin;
-  };
+  }
+  return "https://inmba.org";
+};
 
 /* =========================================================
    STATUS
@@ -327,19 +317,30 @@ export default function CommercialQrPage() {
      VERIFIED
   ======================================================= */
 
-  const verified =
-    Boolean(
-      publicProfileCard
-        ?.commercial_verified ||
-      activation
-        ?.profileUpgradeActive ||
-      String(
-        kyc?.status ||
-        ""
-      )
-        .toLowerCase() ===
-        "approved"
-    );
+  const paymentStatus = String(
+    dashboard?.payment?.payment_status ||
+    dashboard?.payment?.status ||
+    member?.payment_status ||
+    sessionStorage.getItem("commercial_payment_status") ||
+    ""
+  ).toLowerCase();
+
+  const isPaymentApproved = paymentStatus === "approved" || Boolean(dashboard?.payment?.approved);
+
+  const kycStatus = String(
+    kyc?.status ||
+    kyc?.kyc_status ||
+    dashboard?.kyc?.status ||
+    dashboard?.kyc?.kyc_status ||
+    member?.commercial_kyc_status ||
+    member?.kyc_status ||
+    ""
+  ).toLowerCase().trim();
+
+  const isKycApproved = kycStatus === "approved";
+
+  // QR code displays ONLY after payment is completed AND KYC is approved by admin
+  const verified = Boolean(isPaymentApproved && isKycApproved);
 
   /* =======================================================
      PROFILE PATH
@@ -366,7 +367,7 @@ export default function CommercialQrPage() {
           return "";
         }
 
-        return `/user-profile/${encodeURIComponent(
+        return `/commercial/public-profile/${encodeURIComponent(
           safeLoginId
         )}`;
       },
@@ -742,7 +743,7 @@ export default function CommercialQrPage() {
 
               <div className="cqd-qr-frame">
 
-                {publicProfileUrl ? (
+                {verified && publicProfileUrl ? (
                   <QRCodeCanvas
                     id="commercial-qr-details-canvas"
                     value={
@@ -758,8 +759,16 @@ export default function CommercialQrPage() {
                     title={`Commercial QR for ${businessName}`}
                   />
                 ) : (
-                  <div className="cqd-qr-empty">
-                    QR
+                  <div className="cqd-qr-empty" style={{ textAlign: "center", padding: "40px 16px" }}>
+                    <i className="fa-solid fa-lock" style={{ fontSize: "52px", color: "#f59e0b", marginBottom: "12px", display: "block" }} />
+                    <strong style={{ fontSize: "16px", fontWeight: "700", color: "#1e293b", display: "block", marginBottom: "6px" }}>QR Code Locked</strong>
+                    <span style={{ fontSize: "13px", color: "#64748b", display: "block", maxWidth: "260px", margin: "0 auto", lineHeight: "1.4" }}>
+                      {!isPaymentApproved && !isKycApproved
+                        ? "Your QR code will be generated and visible here once your payment and KYC verification are approved by the administrator."
+                        : !isPaymentApproved
+                          ? "Your QR code will be generated and visible here once your payment is approved by the administrator."
+                          : "Your QR code will be generated and visible here once your KYC verification is approved by the administrator."}
+                    </span>
                   </div>
                 )}
 
@@ -935,6 +944,7 @@ export default function CommercialQrPage() {
               <button
                 type="button"
                 className="primary"
+                disabled={!verified || !publicProfileUrl}
                 onClick={
                   handleDownload
                 }

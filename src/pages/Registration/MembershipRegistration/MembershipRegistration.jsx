@@ -791,17 +791,40 @@ if (
             "Membership registration submitted successfully."
         );
 
+        const newLoginId =
+          toText(
+            result.loginId ||
+              result.login_id ||
+              result.member?.login_id ||
+              result.data?.loginId ||
+              result.data?.login_id ||
+              result.data?.member?.login_id,
+            ""
+          );
+
+        if (newLoginId && typeof window !== "undefined") {
+          try {
+            window.sessionStorage.setItem("civilian_login_id", newLoginId);
+            window.localStorage.setItem("civilian_login_id", newLoginId);
+            window.sessionStorage.setItem("inmba_civilian_login_id", newLoginId);
+            window.sessionStorage.setItem("last_registered_login_id", newLoginId);
+          } catch {
+            // Storage access fallback
+          }
+        }
+
         const nextRoute =
-          getInternalRoute(
-            result.nextRoute
-          ) || "/success";
+          !isCommercialMembership
+            ? `/success${newLoginId ? `?loginId=${encodeURIComponent(newLoginId)}` : ""}`
+            : getInternalRoute(result.nextRoute) || "/success";
 
         navigate(
           nextRoute,
           {
             state: {
-              registration:
-                result,
+              loginId: newLoginId,
+              registration: result,
+              registrationResult: result,
             },
           }
         );

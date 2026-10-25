@@ -34,8 +34,17 @@ const mainLinks = [
 export default function Navbar() {
   const navigate = useNavigate();
 
-  const { initializing, isMemberAuthenticated, memberLogout } =
+  const { initializing, isMemberAuthenticated, member, memberLogout } =
     useAuth();
+
+  const memberDashboardPath =
+    member?.membership_type?.toLowerCase()?.includes("professional") ||
+    sessionStorage.getItem("inmba_professional_login_id")
+      ? "/professional-dashboard"
+      : member?.membership_type?.toLowerCase()?.includes("commercial") ||
+        sessionStorage.getItem("inmba_commercial_login_id")
+      ? "/commercial-dashboard"
+      : "/dashboard";
 
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -184,7 +193,7 @@ export default function Navbar() {
                 <li className="nav-item">
                   <NavLink
                     className={getNavLinkClass}
-                    to="/dashboard"
+                    to={memberDashboardPath}
                     onClick={closeMenu}
                   >
                     Dashboard

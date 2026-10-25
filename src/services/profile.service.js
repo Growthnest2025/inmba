@@ -62,6 +62,28 @@ const profileApi =
     },
   });
 
+profileApi.interceptors.request.use((config) => {
+  config.withCredentials = true;
+  try {
+    if (typeof localStorage !== "undefined") {
+      const token = localStorage.getItem("inmba_session_token");
+      if (token && !config.headers.Authorization) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+  } catch {}
+  return config;
+});
+
+profileApi.interceptors.response.use((response) => {
+  try {
+    if (typeof localStorage !== "undefined" && response?.data?.token) {
+      localStorage.setItem("inmba_session_token", response.data.token);
+    }
+  } catch {}
+  return response;
+});
+
 /* =========================================================
    OBJECT
 ========================================================= */

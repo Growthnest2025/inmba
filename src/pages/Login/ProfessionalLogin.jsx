@@ -366,6 +366,14 @@ if (
             response
           );
 
+        if (member?.login_id) {
+          sessionStorage.setItem("inmba_member_login_id", String(member.login_id));
+          sessionStorage.setItem("inmba_login_id", String(member.login_id));
+          sessionStorage.setItem("inmba_professional_login_id", String(member.login_id));
+        }
+
+        window.dispatchEvent(new Event("auth-change"));
+
         /* ===============================================
            PROFESSIONAL MEMBER ONLY
         =============================================== */

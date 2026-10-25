@@ -3402,7 +3402,7 @@ export default function CivilianPublicProfile({
               </span>
 
               <small>
-                Manage your Civilian public profile
+                Manage your {isPro ? "Professional" : "Civilian"} public profile
               </small>
             </div>
 
@@ -3457,7 +3457,7 @@ export default function CivilianPublicProfile({
                       ),
                       url("${coverPhoto}")`,
                   }
-                : undefined
+                : isPro ? { background: "linear-gradient(130deg, #062759 0%, #0754b8 50%, #247af0 100%)" } : undefined
             }
           >
             <span />
@@ -3513,9 +3513,12 @@ export default function CivilianPublicProfile({
               </div>
 
               <div className="civ-pro-avatar-side">
-                <span className="civ-pro-member-pill">
-                  <span />
-                  Civilian Member
+                <span
+                  className="civ-pro-member-pill"
+                  style={isPro ? { background: "#eff6ff", color: "#1d4ed8", borderColor: "#93c5fd" } : undefined}
+                >
+                  <span style={isPro ? { background: "#2563eb" } : undefined} />
+                  {isPro ? "Professional Member" : "Civilian Member"}
                 </span>
               </div>
             </div>

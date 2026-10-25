@@ -3698,7 +3698,7 @@ export default function ProfessionalKyc() {
            SAVE CURRENT SECTION TO BACKEND
         ================================================= */
 
-        await saveProfessionalKycAndNext(
+        const saveResult = await saveProfessionalKycAndNext(
   section,
   buildPayload(
     section
@@ -3712,6 +3712,14 @@ export default function ProfessionalKyc() {
     token,
   }
 );
+
+        if (saveResult && typeof saveResult === "object") {
+          setProfessionalKyc(saveResult);
+          const updatedMember = getMemberFromResponse(saveResult);
+          if (updatedMember && Object.keys(updatedMember).length > 0) {
+            setMember(updatedMember);
+          }
+        }
 
         const currentIndex =
           KYC_SECTIONS.indexOf(
@@ -4286,7 +4294,9 @@ export default function ProfessionalKyc() {
               </span>
 
               <h3>
-                Complete all A–J sections
+                {progressPercent === 100
+                  ? "100% Completed"
+                  : "Complete all A–J sections"}
               </h3>
             </div>
 

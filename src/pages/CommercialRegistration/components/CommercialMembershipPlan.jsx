@@ -32,7 +32,7 @@ import "./CommercialMembershipPlan.css";
 
 const COMMERCIAL_FRONTEND_ROUTES = {
   basic:
-    "/commercial/profile-upgrade",
+    "/commercial/payment",
 
   profile_upgrade:
     "/commercial/profile-upgrade",

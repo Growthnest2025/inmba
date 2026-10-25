@@ -902,10 +902,32 @@ export default function Dashboard() {
       "INMBA Member"
     );
 
+  const isProLogin =
+    String(
+      loginId ||
+      member?.login_id ||
+      member?.loginId ||
+      sessionStorage.getItem("inmba_professional_login_id") ||
+      sessionStorage.getItem("inmba_login_id") ||
+      sessionStorage.getItem("inmba_member_login_id") ||
+      ""
+    ).toUpperCase().startsWith("PRO");
+
   const professionalMember =
+    isProLogin ||
+    isProfessionalMembership(
+      member.membership_type ??
+      member.membershipType
+    ) ||
     isProfessionalMembership(
       membershipType
     );
+
+  useEffect(() => {
+    if (professionalMember) {
+      navigate("/professional-dashboard", { replace: true, state: { loginId } });
+    }
+  }, [professionalMember, navigate, loginId]);
 
   const civilianMember =
     isCivilianMembership(
@@ -942,8 +964,7 @@ export default function Dashboard() {
      when payment_status becomes "approved".
   */
   const isApproved =
-    paymentStatus ===
-      "approved";
+    paymentStatus === "approved";
 
   /* =======================================================
      MEMBERSHIP LEVEL
@@ -1174,6 +1195,13 @@ export default function Dashboard() {
   ======================================================= */
 
   const frontendBaseUrl =
+    typeof window !== "undefined" &&
+    !window.location.hostname.includes("vercel.app") &&
+    !window.location.hostname.includes("localhost") &&
+    !window.location.hostname.includes("127.0.0.1")
+      ? window.location.origin
+      : "https://inmba.org";
+  const _unusedBase =
     String(
       process.env.REACT_APP_FRONTEND_BASE_URL ||
       window.location.origin
@@ -1499,6 +1527,10 @@ export default function Dashboard() {
      PAGE
   ======================================================= */
 
+  if (professionalMember) {
+    return null;
+  }
+
   return (
     <main className="member-dashboard-page">
       <div className="member-dashboard-container">
@@ -1567,8 +1599,7 @@ export default function Dashboard() {
             PAYMENT / APPROVAL
         ================================================= */}
 
-        {!isApproved &&
-          !civilianMember && (
+        {!isApproved && (
           <section className="member-dashboard-alert">
             <div className="member-dashboard-alert-icon">
               <i
