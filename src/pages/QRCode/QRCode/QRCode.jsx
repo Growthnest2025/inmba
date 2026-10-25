@@ -427,8 +427,10 @@ export default function QRCode() {
       "INMBA Member"
     );
 
+  const themeParam = searchParams.get("theme");
+
   const isProfessional =
-    searchParams.get("theme") ===
+    themeParam ===
       "professional" ||
     [
       "professional",

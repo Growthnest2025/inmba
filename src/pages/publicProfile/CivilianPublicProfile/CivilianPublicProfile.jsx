@@ -3382,6 +3382,11 @@ export default function CivilianPublicProfile({
       )
     );
 
+  const isPro = Boolean(
+    /professional/i.test(p?.membership_type || p?.membershipType || "") ||
+    String(p?.login_id || p?.loginId || previewLoginId || routeLoginId || "").toUpperCase().startsWith("PRO")
+  );
+
   /* =========================================================
      UI
   ========================================================= */
