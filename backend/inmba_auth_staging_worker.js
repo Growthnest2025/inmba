@@ -129,6 +129,9 @@ function safeMember(member) {
   const isCommercial = /commercial/i.test(member.membership_type) || loginIdUpper.startsWith("COM");
   const isProfessional = /professional/i.test(member.membership_type) || loginIdUpper.startsWith("PRO");
 
+  const memberPaymentStatus = String(member.payment_status || "").toLowerCase();
+  const isApproved = ["approved", "paid", "completed", "success", "successful"].includes(memberPaymentStatus);
+
   return {
     id: member.id,
     login_id: member.login_id,
@@ -139,6 +142,9 @@ function safeMember(member) {
     referral_id: member.referral_id,
     membership_type: isCommercial ? "Commercial Member" : (isProfessional ? "Professional Member" : (member.membership_type || "Civilian Member")),
     payment_status: member.payment_status,
+    paymentStatus: member.payment_status,
+    is_approved: isApproved,
+    is_payment_approved: isApproved,
   };
 }
 
@@ -1522,101 +1528,101 @@ async function getCommercialKycRecord(memberId, loginId, db) {
   const isApprovedOrSubmitted = ["approved", "paid", "submitted", "under_review", "under-review"].includes(String(row.kyc_status || ext.commercial_kyc_status || "").toLowerCase());
 
   const secA = {
-    owner_full_legal_name: row.full_legal_name || basic.full_name || member.first_name || "Commercial Member",
-    full_legal_name: row.full_legal_name || basic.full_name || member.first_name || "Commercial Member",
-    father_spouse_name: row.father_spouse_name || "Spouse Name",
-    date_of_birth: row.dob || "1990-01-01",
-    dob: row.dob || "1990-01-01",
-    gender: row.gender || "Male",
-    marital_status: row.marital_status || "Married",
+    owner_full_legal_name: row.full_legal_name || basic.full_name || member.first_name || "",
+    full_legal_name: row.full_legal_name || basic.full_name || member.first_name || "",
+    father_spouse_name: row.father_spouse_name || "",
+    date_of_birth: row.dob || "",
+    dob: row.dob || "",
+    gender: row.gender || "",
+    marital_status: row.marital_status || "",
     nationality: row.nationality || "Indian",
-    aadhaar_number: row.aadhaar_number || "999988887777",
-    pan_number: row.pan_number || "ABCDE1234F",
+    aadhaar_number: row.aadhaar_number || "",
+    pan_number: row.pan_number || "",
     passport_number: row.passport_number || "",
     voter_id: row.voter_id || "",
     driving_license: row.driving_license || "",
-    blood_group: row.blood_group || "O+",
-    completed: completedSet.has("A") || isApprovedOrSubmitted || Boolean(row.full_legal_name || row.aadhaar_number || row.pan_number || basic.full_name),
+    blood_group: row.blood_group || "",
+    completed: completedSet.has("A") || (isApprovedOrSubmitted && Boolean(row.full_legal_name && row.aadhaar_number)),
   };
 
   const secB = {
-    business_company_name: row.business_name || basic.business_name || ext.business_name || "Commercial Business",
-    business_name: row.business_name || basic.business_name || ext.business_name || "Commercial Business",
-    business_type: row.business_type || basic.business_type || ext.business_category_tags || "Commercial",
-    business_registration_number: row.registration_number || "UDYAM-TN-01-0012345",
-    registration_number: row.registration_number || "UDYAM-TN-01-0012345",
-    company_pan_tan: row.company_pan || row.tan_number || "ABCDE1234F",
-    company_pan: row.company_pan || "ABCDE1234F",
+    business_company_name: row.business_name || basic.business_name || ext.business_name || "",
+    business_name: row.business_name || basic.business_name || ext.business_name || "",
+    business_type: row.business_type || basic.business_type || ext.business_category_tags || "",
+    business_registration_number: row.registration_number || "",
+    registration_number: row.registration_number || "",
+    company_pan_tan: row.company_pan || row.tan_number || "",
+    company_pan: row.company_pan || "",
     tan_number: row.tan_number || "",
     gst_applicable: Boolean(row.gst_number),
-    gst_number: row.gst_number || "33ABCDE1234F1Z5",
+    gst_number: row.gst_number || "",
     shop_establishment_license_required: false,
     industry_license_required: false,
-    completed: completedSet.has("B") || isApprovedOrSubmitted || Boolean(row.business_name || basic.business_name || row.registration_number || ext.business_name),
+    completed: completedSet.has("B") || (isApprovedOrSubmitted && Boolean(row.business_name && row.business_type)),
   };
 
   const secC = {
-    registered_business_address: row.business_address || ext.business_address || basic.city || "Commercial Address, Main Road",
-    business_address: row.business_address || ext.business_address || basic.city || "Commercial Address, Main Road",
-    branch_locations: row.branch_locations || "Chennai, Madurai",
-    business_contact_number: row.business_phone || basic.mobile || member.phone || "9876543210",
-    business_phone: row.business_phone || basic.mobile || member.phone || "9876543210",
-    business_email: row.business_email || basic.email || member.email || "commercial@business.com",
-    business_website: row.business_website || "https://inmba.org",
-    google_map_location: row.google_map_pin || "https://maps.google.com",
-    google_map_pin: row.google_map_pin || "https://maps.google.com",
-    completed: completedSet.has("C") || isApprovedOrSubmitted || Boolean(row.business_address || row.business_phone || row.business_email || basic.mobile || basic.email || basic.city),
+    registered_business_address: row.business_address || ext.business_address || basic.address || basic.city || "",
+    business_address: row.business_address || ext.business_address || basic.address || basic.city || "",
+    branch_locations: row.branch_locations || "",
+    business_contact_number: row.business_phone || basic.mobile || member.phone || "",
+    business_phone: row.business_phone || basic.mobile || member.phone || "",
+    business_email: row.business_email || basic.email || member.email || "",
+    business_website: row.business_website || "",
+    google_map_location: row.google_map_pin || "",
+    google_map_pin: row.google_map_pin || "",
+    completed: completedSet.has("C") || (isApprovedOrSubmitted && Boolean(row.business_address && row.business_phone)),
   };
 
   const secD = {
-    bank_account_number: row.bank_account_number || "987654321012",
-    ifsc_code: row.ifsc_code || "HDFC0001234",
-    bank_branch_name: row.bank_branch || "Main Branch",
-    bank_branch: row.bank_branch || "Main Branch",
-    upi_id: row.upi_id || `${loginId.toLowerCase()}@upi`,
+    bank_account_number: row.bank_account_number || "",
+    ifsc_code: row.ifsc_code || "",
+    bank_branch_name: row.bank_branch || "",
+    bank_branch: row.bank_branch || "",
+    upi_id: row.upi_id || "",
     gst_applicable: Boolean(row.gst_number),
-    gst_number: row.gst_number || "33ABCDE1234F1Z5",
-    income_tax_declaration: row.income_tax_slab || "Below 5 Lakhs",
-    income_tax_slab: row.income_tax_slab || "Below 5 Lakhs",
-    nominee_name: row.nominee_name || "Family Nominee",
-    nominee_relationship: row.nominee_relation || "Spouse",
-    nominee_relation: row.nominee_relation || "Spouse",
+    gst_number: row.gst_number || "",
+    income_tax_declaration: row.income_tax_slab || "",
+    income_tax_slab: row.income_tax_slab || "",
+    nominee_name: row.nominee_name || "",
+    nominee_relationship: row.nominee_relation || "",
+    nominee_relation: row.nominee_relation || "",
     nominee_aadhaar_id: "",
-    completed: completedSet.has("D") || isApprovedOrSubmitted || Boolean(row.bank_account_number || row.ifsc_code || row.upi_id),
+    completed: completedSet.has("D") || (isApprovedOrSubmitted && Boolean(row.bank_account_number && row.ifsc_code)),
   };
 
   const secE = {
-    year_established: row.year_established || "2020",
-    number_of_employees: row.employee_count || "10",
-    employee_count: row.employee_count || "10",
-    annual_turnover_slab: row.annual_turnover || "10 Lakhs - 50 Lakhs",
-    annual_turnover: row.annual_turnover || "10 Lakhs - 50 Lakhs",
-    products_services_offered: row.products_services || "Wholesale & Retail Trading",
-    products_services: row.products_services || "Wholesale & Retail Trading",
-    business_category_tags: row.business_category_tags || basic.business_type || "Trading, Retail",
-    awards_certifications: row.awards_certifications || "ISO Certified",
-    client_testimonials: row.client_testimonials || "Trusted partner for quality products",
-    business_bio: row.business_bio || "Leading commercial business delivering quality services.",
-    social_media_links: row.social_links || "https://linkedin.com",
-    social_links: row.social_links || "https://linkedin.com",
-    completed: completedSet.has("E") || isApprovedOrSubmitted || Boolean(row.year_established || row.business_bio || row.products_services || row.business_category_tags || basic.business_name),
+    year_established: row.year_established || "",
+    number_of_employees: row.employee_count || "",
+    employee_count: row.employee_count || "",
+    annual_turnover_slab: row.annual_turnover || "",
+    annual_turnover: row.annual_turnover || "",
+    products_services_offered: row.products_services || "",
+    products_services: row.products_services || "",
+    business_category_tags: row.business_category_tags || basic.business_type || "",
+    awards_certifications: row.awards_certifications || "",
+    client_testimonials: row.client_testimonials || "",
+    business_bio: row.business_bio || "",
+    social_media_links: row.social_links || "",
+    social_links: row.social_links || "",
+    completed: completedSet.has("E") || (isApprovedOrSubmitted && Boolean(row.year_established || row.business_bio)),
   };
 
   const secF = {
-    preferred_payout_cycle: row.preferred_payout_cycle || "Monthly",
+    preferred_payout_cycle: row.preferred_payout_cycle || "",
     referral_id: row.referral_id || member.referral_id || "",
     network_level_rank: member.network_level || "Commercial Member",
     team_size: member.direct_network || "0",
     royalty_slab_category: member.royalty_slab_category || "Standard",
-    completed: completedSet.has("F") || isApprovedOrSubmitted || Boolean(row.preferred_payout_cycle || row.referral_id || true),
+    completed: completedSet.has("F") || (isApprovedOrSubmitted && Boolean(row.preferred_payout_cycle)),
   };
 
   const secG = {
-    emergency_contact_name: row.emergency_contact_name || "Manager Contact",
-    emergency_contact_number: row.emergency_contact_number || member.phone || "9876543210",
-    relationship: row.emergency_relationship || "Associate",
-    emergency_relationship: row.emergency_relationship || "Associate",
-    completed: completedSet.has("G") || isApprovedOrSubmitted || Boolean(row.emergency_contact_name || row.emergency_contact_number || row.emergency_relationship),
+    emergency_contact_name: row.emergency_contact_name || "",
+    emergency_contact_number: row.emergency_contact_number || "",
+    relationship: row.emergency_relationship || "",
+    emergency_relationship: row.emergency_relationship || "",
+    completed: completedSet.has("G") || (isApprovedOrSubmitted && Boolean(row.emergency_contact_name)),
   };
 
   const sections = {
@@ -2656,19 +2662,25 @@ async function handleGetProfessionalProfile(request, db, cors) {
     SELECT * FROM kyc_members WHERE id = ?
   `).bind(member.id).first()) || member;
 
+  const memberPaymentStatus = String(fullMember.payment_status || member.payment_status || "pending").toLowerCase().trim();
+  const isApproved = ["approved", "paid", "completed", "success", "successful"].includes(memberPaymentStatus);
+
   const profile = {
     ...fullMember,
     ...ext1,
     id: member.id,
     login_id: member.login_id,
-    first_name: member.first_name,
-    last_name: member.last_name,
-    full_name: [member.first_name, member.last_name].filter(Boolean).join(" ") || "Professional Member",
-    name: [member.first_name, member.last_name].filter(Boolean).join(" ") || "Professional Member",
-    email: member.email,
-    phone: member.phone,
-    membership_type: member.membership_type || "Professional Member",
-    payment_status: member.payment_status || "pending",
+    first_name: fullMember.first_name || member.first_name,
+    last_name: fullMember.last_name || member.last_name,
+    full_name: [fullMember.first_name || member.first_name, fullMember.last_name || member.last_name].filter(Boolean).join(" ") || "Professional Member",
+    name: [fullMember.first_name || member.first_name, fullMember.last_name || member.last_name].filter(Boolean).join(" ") || "Professional Member",
+    email: fullMember.email || member.email,
+    phone: fullMember.phone || member.phone,
+    membership_type: fullMember.membership_type || member.membership_type || "Professional Member",
+    payment_status: memberPaymentStatus,
+    paymentStatus: memberPaymentStatus,
+    is_approved: isApproved,
+    is_payment_approved: isApproved,
   };
 
   return json({
@@ -2992,28 +3004,32 @@ async function handleGetDashboard(request, db, cors) {
 
   const planAmount = fullKyc?.selectedPlan || ext.amount || "300";
   const fullName = [fullMember.first_name, fullMember.last_name].filter(Boolean).join(" ") || "Member";
+  const memberPaymentStatus = String(fullMember.payment_status || member.payment_status || "pending").toLowerCase().trim();
+  const isApproved = ["approved", "paid", "completed", "success", "successful"].includes(memberPaymentStatus);
 
   const memberObj = {
     ...fullMember,
     ...ext,
     id: member.id,
     login_id: member.login_id,
-    first_name: member.first_name,
-    last_name: member.last_name,
+    first_name: fullMember.first_name || member.first_name,
+    last_name: fullMember.last_name || member.last_name,
     full_name: fullName,
     name: fullName,
-    email: member.email,
-    phone: member.phone,
-    membership_type: member.membership_type || "Civilian Member",
-    payment_status: member.payment_status || "pending",
-    paymentStatus: member.payment_status || "pending",
+    email: fullMember.email || member.email,
+    phone: fullMember.phone || member.phone,
+    membership_type: fullMember.membership_type || member.membership_type || "Civilian Member",
+    payment_status: memberPaymentStatus,
+    paymentStatus: memberPaymentStatus,
+    is_approved: isApproved,
+    is_payment_approved: isApproved,
     professional_kyc_status: ext.professional_kyc_status || "draft",
     commercial_kyc_status: ext.commercial_kyc_status || "draft",
     kyc_status: ext.professional_kyc_status || fullKyc?.status || "draft",
     selected_plan: String(planAmount),
     amount: planAmount,
-    referral_id: member.referral_id,
-    referred_by: member.referred_by,
+    referral_id: fullMember.referral_id || member.referral_id,
+    referred_by: fullMember.referred_by || member.referred_by,
   };
 
   const dashboard = {

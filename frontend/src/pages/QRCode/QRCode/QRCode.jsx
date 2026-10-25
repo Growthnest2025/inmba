@@ -416,7 +416,12 @@ export default function QRCode() {
   const loginId =
     toText(
       member.login_id ??
-        member.loginId,
+        member.loginId ??
+        dashboardData?.member?.login_id ??
+        dashboardData?.login_id ??
+        sessionMember?.login_id ??
+        (typeof sessionStorage !== "undefined" ? sessionStorage.getItem("inmba_login_id") : "") ??
+        (typeof localStorage !== "undefined" ? localStorage.getItem("inmba_login_id") : ""),
       ""
     );
 
@@ -456,7 +461,8 @@ export default function QRCode() {
     member.payment_status ??
       member.paymentStatus ??
       dashboardData?.member?.payment_status ??
-      dashboardData?.payment_status,
+      dashboardData?.payment_status ??
+      sessionMember?.payment_status,
     "pending"
   ).toLowerCase().trim();
 
@@ -483,8 +489,8 @@ export default function QRCode() {
   // For Professional & Civilian: payment approval by admin activates QR
   // For Commercial: payment approval or full KYC approval activates QR
   const isApproved = isCommercial
-    ? Boolean(isPaymentApproved && (isKycApproved || member.is_approved || dashboardData?.is_approved))
-    : Boolean(isPaymentApproved || member.is_approved || member.kyc_verified || dashboardData?.member?.is_approved || dashboardData?.is_approved);
+    ? Boolean(isPaymentApproved && (isKycApproved || member.is_approved || member.is_payment_approved || dashboardData?.is_approved))
+    : Boolean(isPaymentApproved || member.is_approved || member.is_payment_approved || member.kyc_verified || dashboardData?.member?.is_approved || dashboardData?.is_approved);
 
   const memberStatus =
     getMemberStatus(member, isApproved);

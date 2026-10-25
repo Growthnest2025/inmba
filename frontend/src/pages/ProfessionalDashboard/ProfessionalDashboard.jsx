@@ -15,6 +15,10 @@ import {
 } from "react-toastify";
 
 import {
+  QRCodeCanvas,
+} from "qrcode.react";
+
+import {
   BACKEND_URL,
 } from "../../api/api";
 
@@ -896,7 +900,9 @@ export default function ProfessionalDashboard() {
   const paymentStatus =
     normalizePaymentStatus(
       member.payment_status ??
-      member.paymentStatus
+      member.paymentStatus ??
+      dashboardData?.member?.payment_status ??
+      dashboardData?.payment_status
     );
 
   const paymentStatusLabel =
@@ -905,7 +911,10 @@ export default function ProfessionalDashboard() {
     );
 
   const isPaymentApproved =
-    paymentStatus === "approved";
+    paymentStatus === "approved" ||
+    paymentStatus === "paid" ||
+    paymentStatus === "completed" ||
+    paymentStatus === "success";
 
   const kycStatusRaw =
     toText(
@@ -923,6 +932,7 @@ export default function ProfessionalDashboard() {
   const isFullyApproved = Boolean(
     isPaymentApproved ||
     member.is_approved ||
+    member.is_payment_approved ||
     member.kyc_verified ||
     dashboardData?.member?.is_approved ||
     dashboardData?.is_approved
@@ -2216,7 +2226,83 @@ export default function ProfessionalDashboard() {
           </section>
         )}
 
+        {/* =================================================
+            PROFESSIONAL MEMBER QR CODE (UNLOCKED WHEN APPROVED)
+        ================================================= */}
+        {isApproved && publicProfileUrl && (
+          <section className="member-dashboard-card member-dashboard-qr-card">
+            <div className="member-dashboard-card-header">
+              <div>
+                <span className="member-dashboard-card-icon" style={{ color: "#0d47a1" }}>
+                  <i className="fas fa-qrcode" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <p>Digital Member Identity</p>
+                  <h2>My QR Code</h2>
+                </div>
+              </div>
+              <Link to="/qr-code?theme=professional" className="member-dashboard-secondary-button">
+                <i className="fas fa-expand" aria-hidden="true"></i> View Full QR
+              </Link>
+            </div>
 
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "20px 0" }}>
+              <div style={{ background: "#ffffff", padding: "16px", borderRadius: "12px", boxShadow: "0 4px 12px rgba(13, 71, 161, 0.12)", border: "2px solid #e2e8f0", marginBottom: "16px" }}>
+                <QRCodeCanvas
+                  id="professional-dashboard-qr-canvas"
+                  value={publicProfileUrl}
+                  size={200}
+                  level="H"
+                  includeMargin
+                  bgColor="#ffffff"
+                  fgColor="#0d47a1"
+                />
+              </div>
+              <p style={{ fontSize: "14px", color: "#64748b", margin: "0 0 16px 0", textAlign: "center" }}>
+                Scan this QR code to open your verified INMBA public profile
+              </p>
+              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
+                <button
+                  type="button"
+                  className="member-dashboard-primary-button"
+                  style={{ background: "#0d47a1", borderColor: "#0d47a1" }}
+                  onClick={() => {
+                    try {
+                      const canvas = document.getElementById("professional-dashboard-qr-canvas");
+                      if (!canvas) throw new Error("QR canvas unavailable");
+                      const pngUrl = canvas.toDataURL("image/png");
+                      const dl = document.createElement("a");
+                      dl.href = pngUrl;
+                      dl.download = `INMBA-${loginId || "Professional"}-QR.png`;
+                      dl.click();
+                      toast.success("QR code downloaded successfully.");
+                    } catch {
+                      toast.error("Unable to download QR code.");
+                    }
+                  }}
+                >
+                  <i className="fas fa-download" aria-hidden="true"></i> Download QR
+                </button>
+                <button
+                  type="button"
+                  className="member-dashboard-secondary-button"
+                  onClick={async () => {
+                    try {
+                      if (navigator.clipboard) {
+                        await navigator.clipboard.writeText(publicProfileUrl);
+                        toast.success("Public profile link copied.");
+                      }
+                    } catch {
+                      toast.error("Unable to copy profile link.");
+                    }
+                  }}
+                >
+                  <i className="fas fa-link" aria-hidden="true"></i> Copy Link
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* =================================================
             OWNER PRIVACY NOTICE
