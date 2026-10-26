@@ -567,6 +567,16 @@ async function handleAdminLogin(request, db, cors) {
 }
 
 
+function arrayBufferToBase64(buffer) {
+  let binary = "";
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i += 8192) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, Math.min(i + 8192, len)));
+  }
+  return btoa(binary);
+}
+
 async function parseRequestBody(request) {
   const contentType = (request.headers.get("Content-Type") || "").toLowerCase();
   if (contentType.includes("application/json")) {
@@ -583,6 +593,16 @@ async function parseRequestBody(request) {
       for (const [key, value] of form.entries()) {
         if (typeof value === "string") {
           result[key] = value;
+        } else if (value && typeof value.arrayBuffer === "function") {
+          const buffer = await value.arrayBuffer();
+          if (buffer && buffer.byteLength > 0) {
+            const base64 = arrayBufferToBase64(buffer);
+            const mime = value.type || "image/jpeg";
+            result[key] = `data:${mime};base64,${base64}`;
+            result[key + "_name"] = value.name || "";
+          } else {
+            result[key] = value.name || "";
+          }
         } else if (value && value.name) {
           result[key] = value.name;
         }
@@ -2618,6 +2638,8 @@ async function handleGetCivilianProfile(request, db, cors) {
     SELECT * FROM kyc_members WHERE id = ?
   `).bind(member.id).first()) || member;
 
+  const activePhoto = fullMember.profile_pic || fullKyc?.files?.profile_photo || "";
+
   const profile = {
     ...fullMember,
     ...fullKyc.values,
@@ -2631,6 +2653,11 @@ async function handleGetCivilianProfile(request, db, cors) {
     name: [member.first_name, member.last_name].filter(Boolean).join(" ") || "Civilian Member",
     email: member.email,
     phone: member.phone,
+    profile_pic: activePhoto,
+    profile_photo: activePhoto,
+    profile_photo_url: activePhoto,
+    profile_image_url: activePhoto,
+    photo_url: activePhoto,
     membership_type: member.membership_type || "Civilian Member",
     payment_status: member.payment_status || "pending",
     selected_plan: fullKyc.selectedPlan || ext.amount || "300",
@@ -2742,7 +2769,7 @@ async function handleProfileUpdate(request, db, cors) {
   const district = input.district;
   const pincode = input.pincode;
   const address = input.address || input.current_address;
-  const photoUrl = input.photo_url || input.profile_pic || input.profile_image_url;
+  const photoUrl = input.photo || input.photo_data || input.photo_url || input.photoUrl || input.profile_photo || input.profile_pic || input.profile_image_url || "";
   const instagram = input.social_instagram || input.instagram_url;
   const linkedin = input.social_linkedin || input.linkedin_url;
   const facebook = input.social_facebook || input.facebook_url;
@@ -2785,7 +2812,8 @@ async function handleProfileUpdate(request, db, cors) {
   try {
     await db.prepare(`
       UPDATE civilian_full_kyc
-      SET bio = COALESCE(NULLIF(?, ''), bio),
+      SET profile_photo = COALESCE(NULLIF(?, ''), profile_photo),
+          bio = COALESCE(NULLIF(?, ''), bio),
           current_address = COALESCE(NULLIF(?, ''), current_address),
           district = COALESCE(NULLIF(?, ''), district),
           state = COALESCE(NULLIF(?, ''), state),
@@ -2798,7 +2826,7 @@ async function handleProfileUpdate(request, db, cors) {
           updated_at = datetime('now')
       WHERE member_id = ?
     `).bind(
-      bio || "", address || "", district || "", state || "", pincode || "",
+      photoUrl || "", bio || "", address || "", district || "", state || "", pincode || "",
       instagram || "", linkedin || "", facebook || "", youtube || "", website || "",
       member.id
     ).run();
@@ -2886,6 +2914,9 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     profile_bio: commKyc.business_bio || fullKyc?.values?.bio || member.bio || "",
     profile_pic: member.profile_pic || fullKyc?.files?.profile_photo || "",
     profile_image_url: member.profile_pic || fullKyc?.files?.profile_photo || "",
+    profile_photo: member.profile_pic || fullKyc?.files?.profile_photo || "",
+    profile_photo_url: member.profile_pic || fullKyc?.files?.profile_photo || "",
+    photo_url: member.profile_pic || fullKyc?.files?.profile_photo || "",
     city: commBasic.city || member.city || fullKyc?.values?.city || "",
     state: member.state || fullKyc?.values?.state || "",
     district: member.district || fullKyc?.values?.district || "",
@@ -2948,7 +2979,7 @@ async function handleProfilePhotoUpload(request, db, cors) {
   }
 
   const input = await parseRequestBody(request);
-  const photoUrl = String(input.photo_url || input.profile_photo || input.photo || "").trim();
+  const photoUrl = String(input.photo || input.photo_data || input.photo_url || input.photoUrl || input.profile_photo || input.profile_pic || input.profile_image_url || "").trim();
 
   if (photoUrl) {
     await db.prepare(`
@@ -2957,6 +2988,17 @@ async function handleProfilePhotoUpload(request, db, cors) {
           updated_at = datetime('now')
       WHERE id = ?
     `).bind(photoUrl, member.id).run();
+
+    try {
+      await db.prepare(`
+        UPDATE civilian_full_kyc
+        SET profile_photo = ?,
+            updated_at = datetime('now')
+        WHERE member_id = ?
+      `).bind(photoUrl, member.id).run();
+    } catch (e) {
+      // ignore if table doesn't have row
+    }
   }
 
   return json({
@@ -2965,8 +3007,56 @@ async function handleProfilePhotoUpload(request, db, cors) {
     message: "Profile photo uploaded successfully.",
     data: {
       photo_url: photoUrl,
+      photoUrl: photoUrl,
+      profile_pic: photoUrl,
+      profile_pic_url: photoUrl,
+      profile_photo: photoUrl,
+      profile_photo_url: photoUrl,
+      profile_image_url: photoUrl,
     },
+    photo_url: photoUrl,
+    photoUrl: photoUrl,
+    profile_pic: photoUrl,
+    profile_photo: photoUrl,
   }, 200, cors);
+}
+
+async function handleServeUpload(request, db, cors, path) {
+  const cleanPath = path.replace(/^\/api/, "");
+  const parts = cleanPath.split("/").filter(Boolean);
+  const filename = parts[parts.length - 1] || "";
+
+  if (!filename) {
+    return new Response("Not found", { status: 404, headers: cors });
+  }
+
+  const member = await db.prepare(`
+    SELECT profile_pic FROM kyc_members
+    WHERE profile_pic LIKE '%' || ? OR profile_pic = ?
+    LIMIT 1
+  `).bind(filename, cleanPath).first();
+
+  if (member && member.profile_pic && member.profile_pic.startsWith("data:")) {
+    const match = member.profile_pic.match(/^data:([^;]+);base64,(.+)$/);
+    if (match) {
+      const mimeType = match[1];
+      const base64Data = match[2];
+      const binary = atob(base64Data);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new Response(bytes, {
+        headers: {
+          ...cors,
+          "Content-Type": mimeType,
+          "Cache-Control": "public, max-age=86400",
+        },
+      });
+    }
+  }
+
+  return new Response("Not found", { status: 404, headers: cors });
 }
 
 async function handleGetDashboard(request, db, cors) {
@@ -3032,6 +3122,11 @@ async function handleGetDashboard(request, db, cors) {
     paymentStatus: memberPaymentStatus,
     is_approved: isApproved,
     is_payment_approved: isApproved,
+    profile_pic: fullMember.profile_pic || fullKyc?.files?.profile_photo || "",
+    profile_photo: fullMember.profile_pic || fullKyc?.files?.profile_photo || "",
+    profile_photo_url: fullMember.profile_pic || fullKyc?.files?.profile_photo || "",
+    profile_image_url: fullMember.profile_pic || fullKyc?.files?.profile_photo || "",
+    photo_url: fullMember.profile_pic || fullKyc?.files?.profile_photo || "",
     professional_kyc_status: ext.professional_kyc_status || "draft",
     commercial_kyc_status: ext.commercial_kyc_status || "draft",
     kyc_status: ext.professional_kyc_status || fullKyc?.status || "draft",
@@ -3634,6 +3729,10 @@ export default {
 
       if ((path === "/profile/upload-photo" || path === "/api/profile/upload-photo") && method === "POST") {
         return await handleProfilePhotoUpload(request, db, cors);
+      }
+
+      if ((path.startsWith("/uploads/") || path.startsWith("/api/uploads/")) && method === "GET") {
+        return await handleServeUpload(request, db, cors, path);
       }
 
       // =========================================================

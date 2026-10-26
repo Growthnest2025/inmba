@@ -1269,6 +1269,61 @@ export const updateMyProfile =
    photo
 ========================================================= */
 
+const compressImageFile = async (file, maxWidth = 800, maxHeight = 800, quality = 0.82) => {
+  if (typeof window === "undefined" || !file || !file.type || !file.type.startsWith("image/")) {
+    return { file, dataUrl: "" };
+  }
+
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth || height > maxHeight) {
+          if (width / height > maxWidth / maxHeight) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const dataUrl = canvas.toDataURL("image/jpeg", quality);
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const resizedFile = new File([blob], (file.name || "profile.jpg").replace(/\.[^.]+$/, ".jpg"), {
+                type: "image/jpeg",
+                lastModified: Date.now(),
+              });
+              resolve({ file: resizedFile, dataUrl });
+            } else {
+              resolve({ file, dataUrl });
+            }
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+      img.onerror = () => resolve({ file, dataUrl: "" });
+      img.src = e.target.result;
+    };
+    reader.onerror = () => resolve({ file, dataUrl: "" });
+    reader.readAsDataURL(file);
+  });
+};
+
 export const uploadMyProfilePhoto =
   async (
     file
@@ -1325,13 +1380,34 @@ export const uploadMyProfilePhoto =
       throw error;
     }
 
+    let uploadFile = file;
+    let dataUrl = "";
+    try {
+      const compressed = await compressImageFile(file);
+      uploadFile = compressed.file || file;
+      dataUrl = compressed.dataUrl || "";
+    } catch {
+      // fallback to original
+    }
+
     const formData =
       new FormData();
 
     formData.append(
       "photo",
-      file
+      uploadFile
     );
+
+    if (dataUrl) {
+      formData.append(
+        "photo_data",
+        dataUrl
+      );
+      formData.append(
+        "profile_photo",
+        dataUrl
+      );
+    }
 
     try {
       const response =
@@ -1393,32 +1469,43 @@ export const uploadMyProfilePhoto =
             data.photoUrl ??
             data.profile_pic ??
             data.profile_image_url ??
+            data.profile_photo ??
             responseProfile.profile_pic ??
-            responseProfile.profile_image_url
+            responseProfile.profile_image_url ??
+            dataUrl
         );
 
       const photoUrl =
         createPublicProfilePhotoUrl(
-          photoValue
+          photoValue || dataUrl
         );
+
+      const resolvedPhoto = photoUrl || dataUrl;
 
       return {
         success:
           true,
 
-        photoUrl,
+        photoUrl:
+          resolvedPhoto,
 
         photo_url:
-          photoUrl,
+          resolvedPhoto,
 
         profile_pic:
-          photoUrl,
+          resolvedPhoto,
 
         profile_pic_url:
-          photoUrl,
+          resolvedPhoto,
 
         profile_image_url:
-          photoUrl,
+          resolvedPhoto,
+
+        profile_photo:
+          resolvedPhoto,
+
+        profile_photo_url:
+          resolvedPhoto,
 
         profile:
           responseProfile,

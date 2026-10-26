@@ -1130,6 +1130,17 @@ export default function Profile() {
             file
           );
 
+        if (result?.photoUrl) {
+          setProfile((current) => ({
+            ...current,
+            profile_pic: result.photoUrl,
+            profile_photo: result.photoUrl,
+            profile_photo_url: result.photoUrl,
+            profile_image_url: result.photoUrl,
+            photo_url: result.photoUrl,
+          }));
+        }
+
         toast.success(
           result?.message ||
             "Profile photo updated successfully."

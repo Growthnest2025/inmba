@@ -2990,6 +2990,12 @@ export default function CivilianPublicProfile({
               profile_pic_url:
                 returnedPhoto,
 
+              profile_photo:
+                returnedPhoto,
+
+              profile_photo_url:
+                returnedPhoto,
+
               profile_image_url:
                 returnedPhoto,
             })
@@ -3006,6 +3012,12 @@ export default function CivilianPublicProfile({
               returnedPhoto,
 
             profile_pic_url:
+              returnedPhoto,
+
+            profile_photo:
+              returnedPhoto,
+
+            profile_photo_url:
               returnedPhoto,
 
             profile_image_url:
