@@ -3273,6 +3273,8 @@ async function handleGetAdminUser(request, db, cors, id) {
   const hasPayment = Boolean(
     (commPayment?.transaction_id && String(commPayment.transaction_id).trim()) ||
     (ext?.transaction_id && String(ext.transaction_id).trim()) ||
+    (commPayment?.payment_method && String(commPayment.payment_method).trim()) ||
+    (ext?.payment_method && String(ext.payment_method).trim()) ||
     ["approved", "paid", "success", "successful", "completed"].includes(String(member.payment_status || "").toLowerCase()) ||
     ["approved", "paid", "success", "successful", "completed"].includes(String(commPayment?.payment_status || "").toLowerCase())
   );
@@ -3968,13 +3970,15 @@ export default {
             LOWER(COALESCE(k.payment_status, '')) IN ('approved', 'paid', 'success', 'successful', 'completed')
             OR LOWER(COALESCE(cp.payment_status, '')) IN ('approved', 'paid', 'success', 'successful', 'completed')
             OR (
-              (ext.transaction_id IS NOT NULL AND TRIM(ext.transaction_id) != '')
+              (ext.payment_method IS NOT NULL AND TRIM(ext.payment_method) != '')
               AND (ext.amount IS NOT NULL AND ext.amount > 0)
             )
             OR (
-              (cp.transaction_id IS NOT NULL AND TRIM(cp.transaction_id) != '')
+              (cp.payment_method IS NOT NULL AND TRIM(cp.payment_method) != '')
               AND (cp.amount IS NOT NULL AND cp.amount > 0)
             )
+            OR (ext.transaction_id IS NOT NULL AND TRIM(ext.transaction_id) != '')
+            OR (cp.transaction_id IS NOT NULL AND TRIM(cp.transaction_id) != '')
           )
           ORDER BY k.id DESC
         `).all();
