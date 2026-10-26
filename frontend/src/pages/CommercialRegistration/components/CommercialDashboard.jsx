@@ -792,35 +792,30 @@ api.get(
      PAYMENT
   ======================================================= */
 
-  const paymentStatus =
-    normalizeStatus(
-      commercialPayment
-        ?.payment_status ||
-      member.payment_status ||
-      sessionStorage.getItem(
-        "commercial_payment_status"
-      ),
-      "pending"
-    );
+  const rawPaymentStatus = toText(
+    commercialPayment?.payment_status ||
+    commercialPayment?.status ||
+    member?.payment_status ||
+    member?.paymentStatus ||
+    dashboardData?.member?.payment_status ||
+    dashboardData?.payment_status ||
+    sessionMember?.payment_status,
+    "pending"
+  ).toLowerCase().trim();
 
+  const isPaymentApproved =
+    ["approved", "paid", "completed", "success", "successful"].includes(rawPaymentStatus) ||
+    Boolean(commercialPayment?.approved) ||
+    Boolean(member?.is_approved || member?.is_payment_approved || dashboardData?.is_approved || dashboardData?.member?.is_approved);
+
+  const paymentStatus =
+    isPaymentApproved ? "approved" : normalizeStatus(rawPaymentStatus, "pending");
 
   const paymentStatusLabel =
-    statusLabel(
-      paymentStatus
-    );
+    isPaymentApproved ? "Approved" : statusLabel(paymentStatus);
 
-
-  /*
-    IMPORTANT:
-    Benefits unlock only after ADMIN APPROVAL.
-
-    "paid" / "success" means payment may have been submitted or processed,
-    but Referral / QR / Public Profile must not unlock until the stored
-    Commercial payment status is exactly "approved".
-  */
   const isAdminApproved =
-    paymentStatus ===
-    "approved";
+    isPaymentApproved;
 
 
   /*
@@ -881,16 +876,12 @@ const backendAmount =
     Do not accept aliases such as premium / upgrade / full.
   */
   const isPremium =
-    backendPlanId ===
-      "profile_upgrade" &&
-    backendAmount ===
-      1500;
+    backendPlanId === "profile_upgrade" ||
+    backendAmount === 1500 ||
+    selectedPlanId === "profile_upgrade" ||
+    selectedAmount === 1500;
 
-  const isBasic =
-    backendPlanId ===
-      "basic" &&
-    backendAmount ===
-      300;
+  const isBasic = !isPremium;
 
   const hasPaidPlan =
     isBasic ||
@@ -946,19 +937,16 @@ const backendAmount =
   const isKycApproved =
     kycStatus === "approved";
 
-  const isPaymentApproved =
-    Boolean(isAdminApproved || paymentStatus === "approved");
-
   /*
-    QR / Public Profile access unlocks ONLY when:
-    1. Payment is completed & approved by Admin
-    2. KYC verification is completed & approved by Admin
+    QR / Public Profile access unlocks:
+    - Basic (₹300): Unlocks as soon as Payment is approved by Admin!
+    - Premium (₹1500): Unlocks when both Payment & KYC are approved by Admin.
   */
   const hasQrPublicProfileAccess =
     Boolean(
       validLoginId &&
       isPaymentApproved &&
-      isKycApproved
+      (isBasic || isKycApproved)
     );
 
   const hasRoyaltyRewardsAccess =
@@ -2172,11 +2160,13 @@ const backendAmount =
                 <div style={{ marginTop: "12px" }}>
                   <span className="badge bg-warning text-dark px-3 py-2" style={{ borderRadius: "8px", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "6px" }}>
                     <i className="fas fa-clock" aria-hidden="true"></i>
-                    {!isPaymentApproved && !isKycApproved
-                      ? "Awaiting Payment & KYC Admin Approval"
-                      : !isPaymentApproved
-                        ? "Awaiting Payment Admin Approval"
-                        : "Awaiting KYC Admin Approval"}
+                    {isBasic
+                      ? "Awaiting Payment Admin Approval"
+                      : !isPaymentApproved && !isKycApproved
+                        ? "Awaiting Payment & KYC Admin Approval"
+                        : !isPaymentApproved
+                          ? "Awaiting Payment Admin Approval"
+                          : "Awaiting KYC Admin Approval"}
                   </span>
                 </div>
               </div>
@@ -2194,11 +2184,13 @@ const backendAmount =
                   </strong>
 
                   <span style={{ fontSize: "13px", color: "#64748b" }}>
-                    {!isPaymentApproved && !isKycApproved
-                      ? "Pending Payment & KYC Approval"
-                      : !isPaymentApproved
-                        ? "Pending Payment Approval"
-                        : "Pending KYC Approval"}
+                    {isBasic
+                      ? "Pending Payment Approval"
+                      : !isPaymentApproved && !isKycApproved
+                        ? "Pending Payment & KYC Approval"
+                        : !isPaymentApproved
+                          ? "Pending Payment Approval"
+                          : "Pending KYC Approval"}
                   </span>
                 </div>
               </div>

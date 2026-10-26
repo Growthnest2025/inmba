@@ -907,9 +907,6 @@ export default function Dashboard() {
       loginId ||
       member?.login_id ||
       member?.loginId ||
-      sessionStorage.getItem("inmba_professional_login_id") ||
-      sessionStorage.getItem("inmba_login_id") ||
-      sessionStorage.getItem("inmba_member_login_id") ||
       ""
     ).toUpperCase().startsWith("PRO");
 
@@ -1243,7 +1240,7 @@ export default function Dashboard() {
   */
   const publicProfilePath =
     loginId
-      ? `/user-profile/${encodeURIComponent(
+      ? `/public-profile/${encodeURIComponent(
           loginId
         )}`
       : "";
@@ -1459,7 +1456,7 @@ export default function Dashboard() {
     loading
   ) {
     return (
-      <main className="member-dashboard-page">
+      <main className="member-dashboard-page member-dashboard-theme-green">
         <div className="member-dashboard-state">
           <div
             className="spinner-border"
@@ -1487,7 +1484,7 @@ export default function Dashboard() {
     error
   ) {
     return (
-      <main className="member-dashboard-page">
+      <main className="member-dashboard-page member-dashboard-theme-green">
         <div className="member-dashboard-state member-dashboard-error-state">
           <div className="member-dashboard-state-icon">
             <i
@@ -1532,7 +1529,7 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="member-dashboard-page">
+    <main className="member-dashboard-page member-dashboard-theme-green">
       <div className="member-dashboard-container">
         {/* =================================================
             HERO

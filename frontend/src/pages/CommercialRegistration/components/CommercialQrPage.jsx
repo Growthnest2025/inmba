@@ -317,15 +317,19 @@ export default function CommercialQrPage() {
      VERIFIED
   ======================================================= */
 
-  const paymentStatus = String(
+  const rawPaymentStatus = String(
     dashboard?.payment?.payment_status ||
     dashboard?.payment?.status ||
     member?.payment_status ||
+    member?.paymentStatus ||
     sessionStorage.getItem("commercial_payment_status") ||
     ""
-  ).toLowerCase();
+  ).toLowerCase().trim();
 
-  const isPaymentApproved = paymentStatus === "approved" || Boolean(dashboard?.payment?.approved);
+  const isPaymentApproved =
+    ["approved", "paid", "completed", "success", "successful"].includes(rawPaymentStatus) ||
+    Boolean(dashboard?.payment?.approved) ||
+    Boolean(member?.is_approved || member?.is_payment_approved);
 
   const kycStatus = String(
     kyc?.status ||
@@ -339,8 +343,22 @@ export default function CommercialQrPage() {
 
   const isKycApproved = kycStatus === "approved";
 
-  // QR code displays ONLY after payment is completed AND KYC is approved by admin
-  const verified = Boolean(isPaymentApproved && isKycApproved);
+  const planId = String(
+    dashboard?.payment?.plan_id ||
+    dashboard?.payment?.planId ||
+    member?.plan_id ||
+    ""
+  ).toLowerCase();
+
+  const amount = Number(dashboard?.payment?.amount || member?.amount || 0);
+
+  const isPremium = planId === "profile_upgrade" || amount === 1500;
+  const isBasic = !isPremium;
+
+  // QR code displays for Basic once payment is approved; for Premium once payment and KYC are approved
+  const verified = isBasic
+    ? Boolean(isPaymentApproved)
+    : Boolean(isPaymentApproved && isKycApproved);
 
   /* =======================================================
      PROFILE PATH
@@ -763,11 +781,13 @@ export default function CommercialQrPage() {
                     <i className="fa-solid fa-lock" style={{ fontSize: "52px", color: "#f59e0b", marginBottom: "12px", display: "block" }} />
                     <strong style={{ fontSize: "16px", fontWeight: "700", color: "#1e293b", display: "block", marginBottom: "6px" }}>QR Code Locked</strong>
                     <span style={{ fontSize: "13px", color: "#64748b", display: "block", maxWidth: "260px", margin: "0 auto", lineHeight: "1.4" }}>
-                      {!isPaymentApproved && !isKycApproved
-                        ? "Your QR code will be generated and visible here once your payment and KYC verification are approved by the administrator."
-                        : !isPaymentApproved
-                          ? "Your QR code will be generated and visible here once your payment is approved by the administrator."
-                          : "Your QR code will be generated and visible here once your KYC verification is approved by the administrator."}
+                      {isBasic
+                        ? "Your QR code will be generated and visible here once your payment is approved by the administrator."
+                        : !isPaymentApproved && !isKycApproved
+                          ? "Your QR code will be generated and visible here once your payment and KYC verification are approved by the administrator."
+                          : !isPaymentApproved
+                            ? "Your QR code will be generated and visible here once your payment is approved by the administrator."
+                            : "Your QR code will be generated and visible here once your KYC verification is approved by the administrator."}
                     </span>
                   </div>
                 )}

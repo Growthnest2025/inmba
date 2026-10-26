@@ -1947,7 +1947,16 @@ export const updatePublicProfileSettings =
    DEFAULT EXPORT
 ========================================================= */
 
+export const getPublicProfilePath = (loginId) => {
+  const safeLoginId = toText(loginId).trim();
+  if (!safeLoginId) {
+    return "";
+  }
+  return `/public-profile/${encodeURIComponent(safeLoginId)}`;
+};
+
 const publicProfileService = {
+  getPublicProfilePath,
   getPublicProfile,
 
   fetchPublicProfile,

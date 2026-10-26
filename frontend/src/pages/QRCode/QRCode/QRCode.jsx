@@ -509,7 +509,7 @@ export default function QRCode() {
 
   const publicProfilePath =
     loginId
-      ? `/user-profile/${encodeURIComponent(
+      ? `/public-profile/${encodeURIComponent(
           loginId
         )}`
       : "";

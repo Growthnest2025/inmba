@@ -401,6 +401,7 @@ const paymentStatus =
           sessionStorage.getItem("commercial_from_registration") === "true";
 
         sessionStorage.removeItem("commercial_from_registration");
+        sessionStorage.removeItem("commercial_payment_status");
 
         const targetPath =
           !isPaymentApproved || fromNewRegistration

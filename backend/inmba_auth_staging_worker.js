@@ -1954,12 +1954,16 @@ async function handleGetCommercialPayment(request, db, cors) {
   const ext = (await db.prepare("SELECT * FROM kyc_members_ext_1 WHERE member_id = ?").bind(member.id).first()) || {};
 
   const amount = paymentRow?.amount || ext.amount || 300;
-  const isApproved = String(member.payment_status || "").toLowerCase() === "approved";
+  const isApproved = ["approved", "paid", "completed", "success", "successful"].includes(String(member.payment_status || "").toLowerCase()) ||
+                     ["approved", "paid", "completed", "success", "successful"].includes(String(paymentRow?.payment_status || "").toLowerCase()) ||
+                     Boolean(member.is_approved || member.is_payment_approved);
+
+  const paymentStatus = isApproved ? "approved" : (paymentRow?.payment_status || member.payment_status || "pending");
 
   const paymentObj = {
-    status: member.payment_status || "pending",
-    payment_status: member.payment_status || "pending",
-    paymentStatus: member.payment_status || "pending",
+    status: paymentStatus,
+    payment_status: paymentStatus,
+    paymentStatus: paymentStatus,
     plan_id: paymentRow?.plan_id || "basic",
     planId: paymentRow?.plan_id || "basic",
     plan_name: paymentRow?.plan_name || "Basic Membership",
@@ -2075,14 +2079,19 @@ async function handleGetCommercialPaymentStatus(request, db, cors) {
     return json({ success: false, message: "Member session not found." }, 401, cors);
   }
 
-  const isApproved = String(member.payment_status || "").toLowerCase() === "approved";
+  const paymentRow = await db.prepare("SELECT * FROM commercial_payments WHERE login_id = ? ORDER BY id DESC LIMIT 1").bind(member.login_id).first();
+  const isApproved = ["approved", "paid", "completed", "success", "successful"].includes(String(member.payment_status || "").toLowerCase()) ||
+                     ["approved", "paid", "completed", "success", "successful"].includes(String(paymentRow?.payment_status || "").toLowerCase()) ||
+                     Boolean(member.is_approved || member.is_payment_approved);
+  const paymentStatus = isApproved ? "approved" : (paymentRow?.payment_status || member.payment_status || "pending");
+
   return json({
     success: true,
     statusCode: 200,
     data: {
-      status: member.payment_status || "pending",
-      payment_status: member.payment_status || "pending",
-      paymentStatus: member.payment_status || "pending",
+      status: paymentStatus,
+      payment_status: paymentStatus,
+      paymentStatus: paymentStatus,
       approved: isApproved,
     },
   }, 200, cors);
@@ -3198,22 +3207,35 @@ async function handleAdminVerifyMember(request, db, cors, id) {
     status = "approved";
   }
 
+  const member = await db.prepare("SELECT id, login_id FROM kyc_members WHERE id = ? OR login_id = ?").bind(id, id).first();
+  const memberId = member ? member.id : id;
+  const loginId = member ? member.login_id : id;
+
   await db.prepare(`
     UPDATE kyc_members
     SET payment_status = ?,
+        commercial_kyc_status = ?,
         updated_at = datetime('now')
-    WHERE id = ?
-  `).bind(status, id).run();
+    WHERE id = ? OR login_id = ?
+  `).bind(status, status, memberId, loginId).run();
 
-  const member = await db.prepare("SELECT login_id FROM kyc_members WHERE id = ?").bind(id).first();
-  if (member) {
+  if (loginId) {
     try {
       await db.prepare(`
         UPDATE commercial_payments
         SET payment_status = ?,
             updated_at = datetime('now')
         WHERE login_id = ?
-      `).bind(status, member.login_id).run();
+      `).bind(status, loginId).run();
+    } catch {}
+
+    try {
+      await db.prepare(`
+        UPDATE commercial_basic_kyc
+        SET kyc_status = ?,
+            updated_at = datetime('now')
+        WHERE login_id = ?
+      `).bind(status, loginId).run();
     } catch {}
 
     try {
@@ -3222,26 +3244,26 @@ async function handleAdminVerifyMember(request, db, cors, id) {
         SET kyc_status = ?,
             updated_at = datetime('now')
         WHERE member_id = ? OR login_id = ?
-      `).bind(status, id, member.login_id).run();
-    } catch {}
-
-    try {
-      await db.prepare(`
-        UPDATE kyc_members_ext_1
-        SET professional_kyc_status = ?,
-            commercial_kyc_status = ?
-        WHERE member_id = ?
-      `).bind(status, status, id).run();
-    } catch {}
-
-    try {
-      await db.prepare(`
-        UPDATE civilian_full_kyc
-        SET status = ?
-        WHERE member_id = ?
-      `).bind(status, id).run();
+      `).bind(status, memberId, loginId).run();
     } catch {}
   }
+
+  try {
+    await db.prepare(`
+      UPDATE kyc_members_ext_1
+      SET professional_kyc_status = ?,
+          commercial_kyc_status = ?
+      WHERE member_id = ?
+    `).bind(status, status, memberId).run();
+  } catch {}
+
+  try {
+    await db.prepare(`
+      UPDATE civilian_full_kyc
+      SET status = ?
+      WHERE member_id = ?
+    `).bind(status, memberId).run();
+  } catch {}
 
   return json({
     success: true,
@@ -3250,7 +3272,7 @@ async function handleAdminVerifyMember(request, db, cors, id) {
     status,
     data: {
       member: {
-        id: Number(id),
+        id: Number(memberId),
         payment_status: status,
       },
     },
@@ -3633,13 +3655,15 @@ export default {
       // ADMIN MEMBER ROUTES
       // =========================================================
 
-      const adminUserMatch = path.match(/^\/(?:api\/)?admin\/user\/(\d+)$/) || path.match(/^\/(?:api\/)?admin\/member\/(\d+)$/);
+      const adminUserMatch = path.match(/^\/(?:api\/)?admin\/user\/([a-zA-Z0-9_-]+)$/) || path.match(/^\/(?:api\/)?admin\/member\/([a-zA-Z0-9_-]+)$/);
       if (adminUserMatch && method === "GET") {
         return await handleGetAdminUser(request, db, cors, adminUserMatch[1]);
       }
 
-      const adminVerifyMatch = path.match(/^\/(?:api\/)?admin_verify\/(\d+)$/) || path.match(/^\/(?:api\/)?admin\/verify(?:\/user)?\/(\d+)$/);
-      if (adminVerifyMatch && method === "POST") {
+      const adminVerifyMatch = path.match(/^\/(?:api\/)?admin_verify\/([a-zA-Z0-9_-]+)$/) ||
+                               path.match(/^\/(?:api\/)?admin\/verify(?:\/user)?\/([a-zA-Z0-9_-]+)$/) ||
+                               path.match(/^\/(?:api\/)?commercial-payment\/admin\/members\/([a-zA-Z0-9_-]+)\/(?:approve|verify)$/);
+      if (adminVerifyMatch && (method === "POST" || method === "PATCH")) {
         return await handleAdminVerifyMember(request, db, cors, adminVerifyMatch[1]);
       }
 

@@ -323,12 +323,12 @@ export default function AppRoutes() {
 
       <Route
         path="/user-profile/:loginId"
-        element={<PremiumProfile />}
+        element={<PublicProfileDispatcher />}
       />
 
       <Route
         path="/PremiumProfile/:loginId"
-        element={<PublicProfileAliasRedirect />}
+        element={<PublicProfileDispatcher />}
       />
 
       <Route

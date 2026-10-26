@@ -55,7 +55,7 @@ const buildPublicProfileUrl =
     }
 
     const profilePath =
-      `/user-profile/${encodeURIComponent(
+      `/public-profile/${encodeURIComponent(
         safeLoginId
       )}`;
 
