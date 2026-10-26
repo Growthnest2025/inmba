@@ -852,8 +852,8 @@ async function handleRegistration(request, db, cors) {
     try {
       await db.prepare(`
         INSERT INTO kyc_members_ext_1 (
-          member_id, business_name, business_category_tags, business_address, business_city, commercial_kyc_status, amount, subscription_year
-        ) VALUES (?, ?, ?, ?, ?, 'draft', 300, '2026')
+          member_id, business_name, business_category_tags, business_address, business_city, subscription_year
+        ) VALUES (?, ?, ?, ?, ?, '2026')
       `).bind(
         memberId,
         input.business_name || occupation || "Commercial Business",
@@ -864,15 +864,45 @@ async function handleRegistration(request, db, cors) {
     } catch (e) {
       console.error("Error inserting kyc_members_ext_1 for commercial:", e);
     }
+
+    try {
+      await db.prepare(`
+        INSERT INTO kyc_members_ext_2 (
+          member_id, commercial_kyc_status
+        ) VALUES (?, 'draft')
+      `).bind(memberId).run();
+    } catch (e) {
+      console.error("Error inserting kyc_members_ext_2 for commercial:", e);
+    }
   } else if (/professional/i.test(membershipType)) {
     try {
       await db.prepare(`
         INSERT INTO kyc_members_ext_1 (
-          member_id, professional_kyc_status, professional_kyc_current_step, amount, subscription_year
-        ) VALUES (?, 'draft', 'A', 300, '2026')
+          member_id, professional_kyc_status, professional_kyc_current_step, subscription_year
+        ) VALUES (?, 'draft', 'A', '2026')
       `).bind(memberId).run();
     } catch (e) {
       console.error("Error inserting kyc_members_ext_1 for professional:", e);
+    }
+  } else if (/student/i.test(membershipType)) {
+    try {
+      await db.prepare(`
+        INSERT INTO kyc_members_ext_1 (
+          member_id, education_level, school_name, subscription_year
+        ) VALUES (?, ?, ?, '2026')
+      `).bind(memberId, input.education_level || "Student", input.school_name || "Institution").run();
+    } catch (e) {
+      console.error("Error inserting kyc_members_ext_1 for student:", e);
+    }
+  } else {
+    try {
+      await db.prepare(`
+        INSERT INTO kyc_members_ext_1 (
+          member_id, subscription_year
+        ) VALUES (?, '2026')
+      `).bind(memberId).run();
+    } catch (e) {
+      console.error("Error inserting kyc_members_ext_1 for civilian:", e);
     }
   }
 
@@ -1351,9 +1381,18 @@ async function handleSubmitPayment(request, db, cors) {
   const input = await parseRequestBody(request);
   const transactionId = String(input.transaction_id || input.transactionId || input.utr || "").trim();
   const paymentMethod = String(input.payment_method || input.paymentMethod || "UPI").trim();
-  const amount = String(input.amount || "").trim();
+  let amount = String(input.amount || "").trim();
   const subscriptionYear = String(input.subscription_year || input.subscriptionYear || new Date().getFullYear()).trim();
   const paymentProof = String(input.payment_proof || input.paymentProof || "").trim();
+
+  if (!amount) {
+    const civRow = await db.prepare("SELECT selected_plan FROM civilian_full_kyc WHERE member_id = ?").bind(member.id).first();
+    if (civRow && civRow.selected_plan) {
+      amount = String(civRow.selected_plan);
+    } else {
+      amount = "300";
+    }
+  }
 
   // 1. Update kyc_members: only payment_status and updated_at exist in kyc_members
   await db.prepare(`
@@ -1373,7 +1412,7 @@ async function handleSubmitPayment(request, db, cors) {
       subscription_year = COALESCE(NULLIF(excluded.subscription_year, ''), kyc_members_ext_1.subscription_year),
       amount = COALESCE(NULLIF(excluded.amount, ''), kyc_members_ext_1.amount),
       payment_proof = COALESCE(NULLIF(excluded.payment_proof, ''), kyc_members_ext_1.payment_proof)
-  `).bind(member.id, paymentMethod, transactionId, subscriptionYear, amount, paymentProof).run();
+  `).bind(member.id, paymentMethod, transactionId, subscriptionYear, Number(amount) || 300, paymentProof).run();
 
   // 3. Get member's token for civilian acknowledgement
   const fullMember = (await db.prepare(`
@@ -2061,11 +2100,17 @@ async function handleSubmitCommercialPayment(request, db, cors) {
   // Update kyc_members_ext_1
   try {
     await db.prepare(`
-      UPDATE kyc_members_ext_1
-      SET amount = ?, payment_method = ?, transaction_id = ?, payment_proof = ?
-      WHERE member_id = ?
-    `).bind(amount, paymentMethod, transactionId, paymentProof, member.id).run();
-  } catch {}
+      INSERT INTO kyc_members_ext_1 (member_id, amount, payment_method, transaction_id, payment_proof)
+      VALUES (?, ?, ?, ?, ?)
+      ON CONFLICT(member_id) DO UPDATE SET
+        amount = excluded.amount,
+        payment_method = excluded.payment_method,
+        transaction_id = excluded.transaction_id,
+        payment_proof = excluded.payment_proof
+    `).bind(member.id, amount, paymentMethod, transactionId, paymentProof).run();
+  } catch (e) {
+    console.error("Error upserting kyc_members_ext_1 for commercial payment:", e);
+  }
 
   const responsePayment = {
     status: "pending",
@@ -2300,7 +2345,7 @@ async function handleSubmitCommercialKyc(request, db, cors) {
 
   try {
     await db.prepare(`
-      UPDATE kyc_members_ext_1
+      UPDATE kyc_members_ext_2
       SET commercial_kyc_status = 'approved'
       WHERE member_id = ?
     `).bind(member.id).run();
@@ -3225,21 +3270,27 @@ async function handleGetAdminUser(request, db, cors, id) {
   `).bind(member.referral_id || "").first();
   const directCount = directCountRow ? directCountRow.count : 0;
 
-  const planAmount = commPayment?.amount || civilianKyc?.selectedPlan || ext.amount || 300;
+  const hasPayment = Boolean(
+    (commPayment?.transaction_id && String(commPayment.transaction_id).trim()) ||
+    (ext?.transaction_id && String(ext.transaction_id).trim()) ||
+    ["approved", "paid", "success", "successful", "completed"].includes(String(member.payment_status || "").toLowerCase()) ||
+    ["approved", "paid", "success", "successful", "completed"].includes(String(commPayment?.payment_status || "").toLowerCase())
+  );
+  const planAmount = commPayment?.amount || civilianKyc?.selectedPlan || ext.amount || (member.selected_plan ? Number(member.selected_plan) : (hasPayment ? 300 : null));
   const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "Member";
 
   const payment = {
-    amount: Number(commPayment?.amount || ext.amount || planAmount || 300),
-    payment_method: commPayment?.payment_method || ext.payment_method || "UPI",
+    amount: hasPayment ? Number(commPayment?.amount || ext.amount || planAmount || 300) : (commPayment?.amount || ext.amount || null),
+    payment_method: commPayment?.payment_method || ext.payment_method || (hasPayment ? "UPI" : ""),
     transaction_id: commPayment?.transaction_id || ext.transaction_id || "",
-    payment_status: member.payment_status || "pending",
+    payment_status: member.payment_status || commPayment?.payment_status || "pending",
     subscription_year: ext.subscription_year || "2026",
     payment_proof: ext.payment_proof || "",
     account_holder: ext.account_holder || fullName,
     bank_name: ext.bank_name || "",
     account_number: ext.account_number || "",
     ifsc: ext.ifsc || "",
-    paid_at: member.created_at,
+    paid_at: hasPayment ? (commPayment?.created_at || member.updated_at || member.created_at) : null,
   };
 
   const rawMember = {
@@ -3296,82 +3347,123 @@ async function handleGetAdminUser(request, db, cors, id) {
 }
 
 async function handleAdminVerifyMember(request, db, cors, id) {
-  const input = await parseRequestBody(request);
-  let status = String(input.status || "approved").trim().toLowerCase();
-  if (!["approved", "rejected", "pending"].includes(status)) {
-    status = "approved";
-  }
+  try {
+    const input = await parseRequestBody(request);
+    let status = String(input.status || "approved").trim().toLowerCase();
+    if (!["approved", "rejected", "pending"].includes(status)) {
+      status = "approved";
+    }
 
-  const member = await db.prepare("SELECT id, login_id FROM kyc_members WHERE id = ? OR login_id = ?").bind(id, id).first();
-  const memberId = member ? member.id : id;
-  const loginId = member ? member.login_id : id;
+    const member = await db.prepare("SELECT id, login_id, referral_id FROM kyc_members WHERE id = ? OR login_id = ?").bind(id, id).first();
+    const memberId = member ? member.id : id;
+    const loginId = member ? member.login_id : id;
 
-  await db.prepare(`
-    UPDATE kyc_members
-    SET payment_status = ?,
-        commercial_kyc_status = ?,
-        updated_at = datetime('now')
-    WHERE id = ? OR login_id = ?
-  `).bind(status, status, memberId, loginId).run();
-
-  if (loginId) {
-    try {
+    const referralId = String(input.referral_id || "").trim();
+    if (referralId) {
       await db.prepare(`
-        UPDATE commercial_payments
+        UPDATE kyc_members
+        SET payment_status = ?,
+            referral_id = ?,
+            updated_at = datetime('now')
+        WHERE id = ? OR login_id = ?
+      `).bind(status, referralId, memberId, loginId).run();
+    } else {
+      await db.prepare(`
+        UPDATE kyc_members
         SET payment_status = ?,
             updated_at = datetime('now')
-        WHERE login_id = ?
-      `).bind(status, loginId).run();
-    } catch {}
-
-    try {
-      await db.prepare(`
-        UPDATE commercial_basic_kyc
-        SET kyc_status = ?,
-            updated_at = datetime('now')
-        WHERE login_id = ?
-      `).bind(status, loginId).run();
-    } catch {}
-
-    try {
-      await db.prepare(`
-        UPDATE commercial_kyc
-        SET kyc_status = ?,
-            updated_at = datetime('now')
-        WHERE member_id = ? OR login_id = ?
+        WHERE id = ? OR login_id = ?
       `).bind(status, memberId, loginId).run();
-    } catch {}
-  }
+    }
 
-  try {
-    await db.prepare(`
-      UPDATE kyc_members_ext_1
-      SET professional_kyc_status = ?,
-          commercial_kyc_status = ?
-      WHERE member_id = ?
-    `).bind(status, status, memberId).run();
-  } catch {}
+    if (loginId) {
+      try {
+        await db.prepare(`
+          UPDATE commercial_payments
+          SET payment_status = ?,
+              updated_at = datetime('now')
+          WHERE login_id = ?
+        `).bind(status, loginId).run();
+      } catch (e) {
+        console.error("commercial_payments verify update error:", e);
+      }
 
-  try {
-    await db.prepare(`
-      UPDATE civilian_full_kyc
-      SET status = ?
-      WHERE member_id = ?
-    `).bind(status, memberId).run();
-  } catch {}
+      try {
+        await db.prepare(`
+          UPDATE commercial_basic_kyc
+          SET kyc_status = ?,
+              updated_at = datetime('now')
+          WHERE login_id = ?
+        `).bind(status, loginId).run();
+      } catch (e) {
+        console.error("commercial_basic_kyc verify update error:", e);
+      }
 
-  return json({
-    success: true,
-    statusCode: 200,
-    message: `Member status updated to ${status}.`,
-    status,
-    data: {
-      member: {
-        id: Number(memberId),
-        payment_status: status,
+      try {
+        await db.prepare(`
+          UPDATE commercial_kyc
+          SET kyc_status = ?,
+              updated_at = datetime('now')
+          WHERE member_id = ? OR login_id = ?
+        `).bind(status, memberId, loginId).run();
+      } catch (e) {
+        console.error("commercial_kyc verify update error:", e);
+      }
+    }
+
+    try {
+      await db.prepare(`
+        UPDATE kyc_members_ext_1
+        SET professional_kyc_status = ?
+        WHERE member_id = ?
+      `).bind(status, memberId).run();
+    } catch (e) {
+      console.error("kyc_members_ext_1 verify update error:", e);
+    }
+
+    try {
+      await db.prepare(`
+        UPDATE kyc_members_ext_2
+        SET commercial_kyc_status = ?
+        WHERE member_id = ?
+      `).bind(status, memberId).run();
+    } catch (e) {
+      console.error("kyc_members_ext_2 verify update error:", e);
+    }
+
+    try {
+      await db.prepare(`
+        UPDATE civilian_full_kyc
+        SET status = ?
+        WHERE member_id = ?
+      `).bind(status, memberId).run();
+    } catch (e) {
+      console.error("civilian_full_kyc verify update error:", e);
+    }
+
+    return json({
+      success: true,
+      statusCode: 200,
+      message: `Member status updated to ${status}.`,
+      status,
+      referral_id: referralId || member?.referral_id || "",
+      data: {
+        member: {
+          id: Number(memberId),
+          login_id: loginId,
+          payment_status: status,
+          referral_id: referralId || member?.referral_id || "",
+        },
       },
-    },
-  }, 200, cors);
+    }, 200, cors);
+  } catch (err) {
+    console.error("handleAdminVerifyMember fatal error:", err);
+    return json({
+      success: false,
+      statusCode: 500,
+      message: err?.message || "Internal server error during admin verification.",
+    }, 500, cors);
+  }
 }
 
 async function handleAdminSoftDelete(request, db, cors, id) {
@@ -3825,16 +3917,21 @@ export default {
             k.id, k.login_id, k.first_name, k.last_name, k.email, k.phone, 
             k.membership_type, k.payment_status, k.created_at, k.is_deleted,
             k.referral_id, k.referred_by,
-            COALESCE(civ.selected_plan, ext.amount, '300') AS selected_plan,
-            COALESCE(ext.amount, civ.selected_plan, 300) AS amount,
-            COALESCE(ext.payment_method, '') AS payment_method,
-            COALESCE(ext.transaction_id, '') AS transaction_id,
+            COALESCE(cp.plan_name, civ.selected_plan, CASE WHEN ext.amount IS NOT NULL THEN CAST(ext.amount AS TEXT) ELSE NULL END, NULL) AS selected_plan,
+            COALESCE(cp.amount, ext.amount, CASE WHEN civ.selected_plan IS NOT NULL THEN CAST(civ.selected_plan AS NUMERIC) ELSE NULL END, NULL) AS amount,
+            COALESCE(cp.payment_method, ext.payment_method, '') AS payment_method,
+            COALESCE(cp.transaction_id, ext.transaction_id, '') AS transaction_id,
             COALESCE(ext.payment_proof, '') AS payment_proof,
             (SELECT COUNT(1) FROM kyc_members d WHERE d.referred_by = k.referral_id AND COALESCE(d.is_deleted, 0) = 0) AS direct_members_count,
             0 AS indirect_members_count
           FROM kyc_members k
           LEFT JOIN kyc_members_ext_1 ext ON k.id = ext.member_id
           LEFT JOIN civilian_full_kyc civ ON k.id = civ.member_id
+          LEFT JOIN (
+            SELECT login_id, plan_name, amount, payment_method, transaction_id, payment_status, MAX(id) as max_id 
+            FROM commercial_payments 
+            GROUP BY login_id
+          ) cp ON (k.login_id = cp.login_id)
           ORDER BY k.id DESC
         `).all();
 
@@ -3851,26 +3948,34 @@ export default {
 
       if ((path === "/api/admin/paid_users" || path === "/admin/paid_users") && method === "GET") {
         const paidUsers = await db.prepare(`
-          SELECT DISTINCT
+          SELECT 
             k.id, k.login_id, k.first_name, k.last_name, k.email, k.phone, 
             k.membership_type, k.payment_status, k.created_at, k.is_deleted,
             k.referral_id, k.referred_by,
-            COALESCE(cp.plan_name, civ.selected_plan, ext.amount, '300') AS selected_plan,
-            COALESCE(cp.amount, ext.amount, civ.selected_plan, 300) AS amount,
+            COALESCE(cp.plan_name, civ.selected_plan, CASE WHEN ext.amount IS NOT NULL THEN CAST(ext.amount AS TEXT) ELSE NULL END, NULL) AS selected_plan,
+            COALESCE(cp.amount, ext.amount, CASE WHEN civ.selected_plan IS NOT NULL THEN CAST(civ.selected_plan AS NUMERIC) ELSE NULL END, NULL) AS amount,
             COALESCE(cp.payment_method, ext.payment_method, 'UPI') AS payment_method,
             COALESCE(cp.transaction_id, ext.transaction_id, '') AS transaction_id
           FROM kyc_members k
           LEFT JOIN kyc_members_ext_1 ext ON k.id = ext.member_id
           LEFT JOIN civilian_full_kyc civ ON k.id = civ.member_id
-          LEFT JOIN commercial_payments cp ON k.login_id = cp.login_id
-          WHERE LOWER(COALESCE(k.payment_status, '')) IN ('approved', 'paid', 'success', 'successful', 'completed')
-             OR (ext.amount IS NOT NULL AND ext.amount > 0)
-             OR (cp.amount IS NOT NULL AND cp.amount > 0)
-             OR (ext.payment_method IS NOT NULL AND TRIM(ext.payment_method) != '')
-             OR (cp.payment_method IS NOT NULL AND TRIM(cp.payment_method) != '')
-             OR (ext.transaction_id IS NOT NULL AND TRIM(ext.transaction_id) != '')
-             OR (cp.transaction_id IS NOT NULL AND TRIM(cp.transaction_id) != '')
-             OR (civ.selected_plan IS NOT NULL AND TRIM(civ.selected_plan) != '')
+          LEFT JOIN (
+            SELECT login_id, plan_name, amount, payment_method, transaction_id, payment_status, MAX(id) as max_id 
+            FROM commercial_payments 
+            GROUP BY login_id
+          ) cp ON (k.login_id = cp.login_id)
+          WHERE (
+            LOWER(COALESCE(k.payment_status, '')) IN ('approved', 'paid', 'success', 'successful', 'completed')
+            OR LOWER(COALESCE(cp.payment_status, '')) IN ('approved', 'paid', 'success', 'successful', 'completed')
+            OR (
+              (ext.transaction_id IS NOT NULL AND TRIM(ext.transaction_id) != '')
+              AND (ext.amount IS NOT NULL AND ext.amount > 0)
+            )
+            OR (
+              (cp.transaction_id IS NOT NULL AND TRIM(cp.transaction_id) != '')
+              AND (cp.amount IS NOT NULL AND cp.amount > 0)
+            )
+          )
           ORDER BY k.id DESC
         `).all();
 
