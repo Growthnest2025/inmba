@@ -11,6 +11,7 @@ import {
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import api from "../../../api/api";
+import inmbaLogo from "../../../assets/images/inmba_logo.png";
 
 import "./Login.css";
 import { toText, asObject } from "../../../utils/commonHelpers";
@@ -433,7 +434,7 @@ export default function Login() {
               className="inmba-member-login-logo"
             >
               <div className="inmba-member-login-logo-icon">
-                <i className="fas fa-leaf" />
+                <img src={inmbaLogo} alt="INMBA Logo" className="inmba-member-login-logo-img" />
               </div>
 
               <div>
@@ -528,7 +529,7 @@ export default function Login() {
             <div className="inmba-member-login-mobile-brand">
 
               <div className="inmba-member-login-mobile-brand-icon">
-                <i className="fas fa-users" />
+                <img src={inmbaLogo} alt="INMBA Logo" className="inmba-member-login-mobile-logo-img" />
               </div>
 
               <div>

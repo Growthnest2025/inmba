@@ -11,6 +11,7 @@ import {
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import api from "../../api/api";
+import inmbaLogo from "../../assets/images/inmba_logo.png";
 
 import {
   useAuth,
@@ -481,7 +482,7 @@ const paymentStatus =
               className="commercial-login-logo"
             >
               <div className="commercial-login-logo-icon">
-                <i className="fa-solid fa-building" />
+                <img src={inmbaLogo} alt="INMBA Logo" className="commercial-login-logo-img" />
               </div>
 
               <div>
@@ -566,7 +567,7 @@ const paymentStatus =
           <div className="commercial-login-card">
             <div className="commercial-login-mobile-brand">
               <div className="commercial-login-mobile-brand-icon">
-                <i className="fa-solid fa-building" />
+                <img src={inmbaLogo} alt="INMBA Logo" className="commercial-login-mobile-logo-img" />
               </div>
 
               <div>

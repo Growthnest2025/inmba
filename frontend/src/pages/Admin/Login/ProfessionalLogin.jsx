@@ -11,7 +11,8 @@ import {
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-import api from "../../api/api";
+import api from "../../../api/api";
+import inmbaLogo from "../../../assets/images/inmba_logo.png";
 
 import {
   useAuth,
@@ -474,7 +475,7 @@ export default function ProfessionalLogin() {
               className="professional-login-logo"
             >
               <div className="professional-login-logo-icon">
-                <i className="fa-solid fa-shield-halved" />
+                <img src={inmbaLogo} alt="INMBA Logo" className="professional-login-logo-img" />
               </div>
 
               <div>
