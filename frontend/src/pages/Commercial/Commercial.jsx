@@ -19,6 +19,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Navbar from "../../components/Navbar/Navbar";
+import CurvedVideoCarousel from "../../components/CurvedVideoCarousel/CurvedVideoCarousel";
 
 import "./Commercial.css";
 
@@ -214,18 +215,13 @@ export default function Commercial() {
               </button>
             </div>
           </div>
-
-          <button
-            type="button"
-            className="commercial-scroll-indicator"
-            onClick={handleExploreSectors}
-            aria-label="Scroll to commercial sectors"
-          >
-            <span>Scroll to explore</span>
-
-            <i aria-hidden="true" />
-          </button>
         </section>
+
+        {/* ===================================================
+            CURVED VIDEO CAROUSEL SECTION
+        ==================================================== */}
+
+        <CurvedVideoCarousel title="INMBA Commercial Video Showcase" />
 
         {/* ===================================================
             COMMERCIAL SECTORS SECTION
@@ -263,12 +259,6 @@ export default function Commercial() {
                   data-aos="fade-up"
                   data-aos-delay={sector.aosDelay}
                 >
-                  <span
-                    className="commercial-sector-number"
-                    aria-hidden="true"
-                  >
-                    {String(sector.id).padStart(2, "0")}
-                  </span>
 
                   <div className="commercial-sector-icon">
                     <FontAwesomeIcon icon={sector.icon} />
@@ -338,12 +328,6 @@ export default function Commercial() {
                   key={card.id}
                   className="commercial-innovation-card"
                 >
-                  <span
-                    className="commercial-innovation-card-number"
-                    aria-hidden="true"
-                  >
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
 
                   <div className="commercial-innovation-icon">
                     <FontAwesomeIcon icon={card.icon} />

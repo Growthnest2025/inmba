@@ -106,7 +106,7 @@
   align-items: stretch;
   overflow: hidden;
   isolation: isolate;
-  background: #061a0d;
+  background: var(--primary-dark, #082f0b);
 }
 
 /* =========================================================

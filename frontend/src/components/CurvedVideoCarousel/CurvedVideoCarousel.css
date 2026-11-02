@@ -1,0 +1,150 @@
+/* =========================================================
+   CURVED VIDEO CAROUSEL COMPONENT
+   Soft mint studio aesthetic with cylindrical curvature
+========================================================= */
+
+.curved-carousel-section {
+  position: relative;
+  width: 100%;
+  padding: 60px 0 80px;
+  background: #f5f8ef;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.curved-carousel-header {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 36px;
+  padding: 0 20px;
+}
+
+.curved-carousel-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 18px;
+  background-color: #dae7c7;
+  color: #08482d;
+  font-family: "Inter", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 999px;
+  margin-bottom: 14px;
+  letter-spacing: 0.02em;
+}
+
+.curved-carousel-title {
+  font-family: "Inter Tight", "Inter", sans-serif;
+  font-size: clamp(2rem, 3.8vw, 2.9rem);
+  font-weight: 800;
+  color: #101410;
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
+}
+
+.curved-carousel-sub {
+  font-family: "Inter", sans-serif;
+  font-size: 1.02rem;
+  color: #5e5e61;
+  line-height: 1.6;
+}
+
+.curved-carousel-stage {
+  position: relative;
+  width: 100%;
+  max-width: 1440px;
+  height: 420px;
+  margin: 0 auto;
+  cursor: grab;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.curved-carousel-stage.is-dragging {
+  cursor: grabbing;
+}
+
+.curved-carousel-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.curved-video-card {
+  position: absolute;
+  transform-origin: center center;
+  will-change: clip-path, left, top, width, height;
+  background: #dce8d8;
+  overflow: hidden;
+  pointer-events: auto;
+  box-shadow: none;
+}
+
+.curved-card-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.curved-card-poster,
+.curved-card-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  object-fit: cover;
+  transition: opacity 0.35s ease;
+}
+
+.curved-card-poster {
+  z-index: 1;
+  opacity: 1;
+}
+
+.curved-card-video {
+  z-index: 2;
+  opacity: 0;
+}
+
+.curved-card-video.is-playing {
+  opacity: 1;
+}
+
+.curved-card-play-icon {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.curved-card-play-icon svg {
+  width: 12px;
+  height: 12px;
+  fill: #ffffff;
+  margin-left: 2px;
+}
+
+@media (max-width: 820px) {
+  .curved-carousel-section {
+    padding: 40px 0 60px;
+  }
+  .curved-carousel-stage {
+    height: 320px;
+  }
+}

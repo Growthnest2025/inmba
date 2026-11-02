@@ -301,48 +301,33 @@ export default function Home() {
 
               <div className="hero-actions">
                 <Link
-                  to="/about"
-                  className="btn-outline-premium"
+                  to="/membership-type"
+                  className="btn-light-premium"
                 >
-                  About INMBA
+                  Join Now
 
-                  <i className="fas fa-compass"></i>
+                  <i className="fas fa-arrow-right"></i>
                 </Link>
               </div>
 
               <div className="hero-mini-stats">
-                <div className="hero-mini-stat">
+                <Link to="/chamber" className="hero-mini-stat">
                   <strong>INMBA Chamber</strong>
+                  <span>Develop real-world capability</span>
+                </Link>
 
-                  <span>
-                    Develop real-world capability
-                  </span>
-                </div>
-
-                <div className="hero-mini-stat">
+                <Link to="/commercial" className="hero-mini-stat">
                   <strong>INMBA Commercial</strong>
+                  <span>Build trusted connections</span>
+                </Link>
 
-                  <span>
-                    Build trusted connections
-                  </span>
-                </div>
-
-                <div className="hero-mini-stat">
+                <Link to="/foundation" className="hero-mini-stat">
                   <strong>INMBA Foundation</strong>
-
-                  <span>
-                    Create meaningful impact
-                  </span>
-                </div>
+                  <span>Create meaningful impact</span>
+                </Link>
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="scroll-indicator">
-          Scroll
-
-          <span></span>
         </div>
       </section>
 
