@@ -11,6 +11,42 @@ const PITCH = 196;
 const TOTAL_WIDTH = TOTAL_CARDS * PITCH; // 1960 units
 const AUTO_SCROLL_SPEED = 50; // units per second drift to left
 
+function createRoundedQuadPath(pTL, pTR, pBR, pBL, r) {
+  const dxTop = pTR.x - pTL.x;
+  const dyTop = pTR.y - pTL.y;
+  const lenTop = Math.hypot(dxTop, dyTop) || 1;
+  const uxTop = dxTop / lenTop;
+  const uyTop = dyTop / lenTop;
+
+  const dxBot = pBL.x - pBR.x;
+  const dyBot = pBL.y - pBR.y;
+  const lenBot = Math.hypot(dxBot, dyBot) || 1;
+  const uxBot = dxBot / lenBot;
+  const uyBot = dyBot / lenBot;
+
+  const minEdge = Math.min(lenTop, lenBot, Math.abs(pBL.y - pTL.y), Math.abs(pBR.y - pTR.y));
+  const safeR = Math.min(r, minEdge * 0.45);
+
+  const t0 = { x: pTL.x + uxTop * safeR, y: pTL.y + uyTop * safeR };
+  const t1 = { x: pTR.x - uxTop * safeR, y: pTR.y - uyTop * safeR };
+  const r0 = { x: pTR.x, y: pTR.y + safeR };
+  const r1 = { x: pBR.x, y: pBR.y - safeR };
+  const b0 = { x: pBR.x + uxBot * safeR, y: pBR.y + uyBot * safeR };
+  const b1 = { x: pBL.x - uxBot * safeR, y: pBL.y - uyBot * safeR };
+  const l0 = { x: pBL.x, y: pBL.y - safeR };
+  const l1 = { x: pTL.x, y: pTL.y + safeR };
+
+  return `path('M ${t0.x.toFixed(1)} ${t0.y.toFixed(1)} ` +
+    `L ${t1.x.toFixed(1)} ${t1.y.toFixed(1)} ` +
+    `Q ${pTR.x.toFixed(1)} ${pTR.y.toFixed(1)} ${r0.x.toFixed(1)} ${r0.y.toFixed(1)} ` +
+    `L ${r1.x.toFixed(1)} ${r1.y.toFixed(1)} ` +
+    `Q ${pBR.x.toFixed(1)} ${pBR.y.toFixed(1)} ${b0.x.toFixed(1)} ${b0.y.toFixed(1)} ` +
+    `L ${b1.x.toFixed(1)} ${b1.y.toFixed(1)} ` +
+    `Q ${pBL.x.toFixed(1)} ${pBL.y.toFixed(1)} ${l0.x.toFixed(1)} ${l0.y.toFixed(1)} ` +
+    `L ${l1.x.toFixed(1)} ${l1.y.toFixed(1)} ` +
+    `Q ${pTL.x.toFixed(1)} ${pTL.y.toFixed(1)} ${t0.x.toFixed(1)} ${t0.y.toFixed(1)} Z')`;
+}
+
 export default function CurvedVideoCarousel({ title = "Commercial Video Showcase" }) {
   const stageRef = useRef(null);
   const cardRefs = useRef([]);
@@ -152,18 +188,8 @@ export default function CurvedVideoCarousel({ title = "Commercial Video Showcase
         const pBR = { x: boxWidth * u, y: (yBR - minY) * u };
         const pBL = { x: 0, y: (yBL - minY) * u };
 
-        const r = Math.min(15 * u, boxWidth * u * 0.25, boxHeight * u * 0.25);
-
-        const pathString = `path('` +
-          `M ${pTL.x + r} ${pTL.y} ` +
-          `L ${pTR.x - r} ${pTR.y} ` +
-          `Q ${pTR.x} ${pTR.y} ${pTR.x} ${pTR.y + r} ` +
-          `L ${pBR.x} ${pBR.y - r} ` +
-          `Q ${pBR.x} ${pBR.y} ${pBR.x - r} ${pBR.y} ` +
-          `L ${pBL.x + r} ${pBL.y} ` +
-          `Q ${pBL.x} ${pBL.y} ${pBL.x} ${pBL.y - r} ` +
-          `L ${pTL.x} ${pTL.y + r} ` +
-          `Q ${pTL.x} ${pTL.y} ${pTL.x + r} ${pTL.y} Z')`;
+        const r = 15 * u;
+        const pathString = createRoundedQuadPath(pTL, pTR, pBR, pBL, r);
 
         cardEl.style.clipPath = pathString;
         cardEl.style.webkitClipPath = pathString;

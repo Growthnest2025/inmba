@@ -36,6 +36,8 @@
       justify-content: center;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       color: var(--headline-ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* 1440x1080 contained and centred frame */
@@ -46,47 +48,6 @@
       background-color: var(--bg-page);
       overflow: hidden;
       isolation: isolate;
-    }
-
-    /* Typography */
-    .headline-line1 {
-      font-family: 'Inter Tight', sans-serif;
-      font-weight: 700;
-      font-size: calc(88 * var(--u));
-      line-height: calc(92 * var(--u));
-      letter-spacing: -0.035em;
-      color: var(--headline-ink);
-      text-align: center;
-      white-space: nowrap;
-    }
-
-    .headline-line2 {
-      font-family: 'Inter Tight', sans-serif;
-      font-weight: 700;
-      font-size: calc(88 * var(--u));
-      line-height: calc(92 * var(--u));
-      letter-spacing: -0.022em;
-      color: var(--headline-ink);
-      text-align: center;
-      white-space: nowrap;
-    }
-
-    .subline-text {
-      font-family: 'Inter', sans-serif;
-      font-weight: 400;
-      font-size: calc(20.8 * var(--u));
-      line-height: calc(32 * var(--u));
-      color: var(--subline-gray);
-      text-align: center;
-    }
-
-    .handwritten-note {
-      font-family: 'Caveat', cursive;
-      font-weight: 600;
-      color: var(--forest-green);
-      line-height: 1.1;
-      position: absolute;
-      pointer-events: none;
     }
 
     /* Top Bar */
@@ -106,15 +67,15 @@
       top: calc(36 * var(--u));
       display: inline-flex;
       align-items: center;
-      gap: calc(9 * var(--u));
+      gap: calc(10 * var(--u));
       text-decoration: none;
       color: var(--forest-green);
     }
 
     .brand-logo svg {
-      width: calc(26 * var(--u));
-      height: calc(26 * var(--u));
-      fill: var(--forest-green);
+      width: calc(28 * var(--u));
+      height: calc(28 * var(--u));
+      display: block;
     }
 
     .brand-logo span {
@@ -123,12 +84,13 @@
       font-size: calc(22 * var(--u));
       letter-spacing: -0.03em;
       color: var(--forest-green);
+      line-height: 1;
     }
 
     .nav-links {
       position: absolute;
       left: calc(505 * var(--u));
-      top: calc(41 * var(--u));
+      top: calc(39 * var(--u));
       display: flex;
       align-items: center;
       gap: calc(31 * var(--u));
@@ -141,17 +103,11 @@
       color: #383B38;
       text-decoration: none;
       transition: color 0.2s ease;
+      line-height: 1;
     }
 
     .nav-link:hover {
       color: var(--forest-green);
-    }
-
-    .nav-buttons {
-      position: absolute;
-      top: calc(29 * var(--u));
-      display: flex;
-      gap: calc(10 * var(--u));
     }
 
     .btn-login {
@@ -163,17 +119,17 @@
       border-radius: 999px;
       background: var(--white);
       color: var(--forest-green);
-      border: 1px solid rgba(8, 72, 45, 0.15);
+      border: 1px solid rgba(8, 72, 45, 0.16);
       font-family: 'Inter', sans-serif;
       font-size: calc(15 * var(--u));
-      font-weight: 600;
+      font-weight: 500;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       text-decoration: none;
       transition: all 0.2s ease;
-      box-shadow: 0 2px 6px rgba(8, 72, 45, 0.05);
+      box-shadow: 0 1px 3px rgba(8, 72, 45, 0.05);
     }
 
     .btn-login:hover {
@@ -193,7 +149,7 @@
       border: none;
       font-family: 'Inter', sans-serif;
       font-size: calc(15 * var(--u));
-      font-weight: 600;
+      font-weight: 500;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -207,7 +163,7 @@
       transform: translateY(-1px);
     }
 
-    /* Badge */
+    /* Mint Badge */
     .trust-badge {
       position: absolute;
       left: calc(575 * var(--u));
@@ -240,6 +196,30 @@
       pointer-events: none;
     }
 
+    .headline-line1 {
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 700;
+      font-size: calc(88 * var(--u));
+      line-height: calc(92 * var(--u));
+      letter-spacing: -0.035em;
+      color: var(--headline-ink);
+      text-align: center;
+      white-space: nowrap;
+      margin: 0;
+    }
+
+    .headline-line2 {
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 700;
+      font-size: calc(88 * var(--u));
+      line-height: calc(92 * var(--u));
+      letter-spacing: -0.022em;
+      color: var(--headline-ink);
+      text-align: center;
+      white-space: nowrap;
+      margin: 0;
+    }
+
     /* Subline */
     .hero-subline {
       position: absolute;
@@ -252,15 +232,25 @@
       pointer-events: none;
     }
 
-    /* Doodles & Notes */
-    .doodle-slash {
+    .subline-text {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: calc(20.8 * var(--u));
+      line-height: calc(32 * var(--u));
+      color: var(--subline-gray);
+      text-align: center;
+      margin: 0;
+    }
+
+    /* Hand-drawn Notes */
+    .handwritten-note {
+      font-family: 'Caveat', cursive;
+      font-weight: 600;
+      color: var(--forest-green);
+      line-height: 1.1;
       position: absolute;
-      left: calc(263 * var(--u));
-      top: calc(377 * var(--u));
-      width: calc(38 * var(--u));
-      height: calc(32 * var(--u));
-      z-index: 25;
       pointer-events: none;
+      transform-origin: 0 0;
     }
 
     .note-be-seen {
@@ -281,6 +271,7 @@
       z-index: 25;
     }
 
+    /* SVG Doodles */
     .svg-annotations {
       position: absolute;
       inset: 0;
@@ -298,61 +289,7 @@
       fill: none;
     }
 
-    /* Bottom Button */
-    .cta-button-wrap {
-      position: absolute;
-      left: calc(626 * var(--u));
-      top: calc(901 * var(--u));
-      z-index: 30;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .cta-ring {
-      position: absolute;
-      width: calc(190 * var(--u));
-      height: calc(74 * var(--u));
-      border: 1.8px dashed #2B7A4B;
-      border-radius: 999px;
-      pointer-events: none;
-      animation: ringSpin 24s linear infinite;
-    }
-
-    @keyframes ringSpin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .cta-button {
-      width: calc(172 * var(--u));
-      height: calc(58 * var(--u));
-      border-radius: 999px;
-      background-color: var(--forest-green);
-      color: var(--white);
-      border: none;
-      font-family: 'Inter', sans-serif;
-      font-size: calc(17 * var(--u));
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      text-decoration: none;
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
-      box-shadow: 0 calc(8 * var(--u)) calc(20 * var(--u)) rgba(8, 72, 45, 0.2);
-    }
-
-    .cta-button:hover {
-      transform: scale(1.04);
-      box-shadow: 0 calc(12 * var(--u)) calc(26 * var(--u)) rgba(8, 72, 45, 0.28);
-    }
-
-    .cta-button:active {
-      transform: scale(0.98);
-    }
-
-    /* Curved Video Carousel */
+    /* Curved Video Carousel Stage */
     .carousel-stage {
       position: absolute;
       top: 0;
@@ -380,7 +317,6 @@
 
     .video-card {
       position: absolute;
-      transform-origin: center center;
       will-change: clip-path, transform, width, height, left, top;
       background: #DCE8D8;
       overflow: hidden;
@@ -398,8 +334,6 @@
     .card-video,
     .card-poster {
       position: absolute;
-      top: 0;
-      left: 0;
       pointer-events: none;
       object-fit: cover;
       transition: opacity 0.4s ease;
@@ -419,11 +353,9 @@
       opacity: 1;
     }
 
-    /* Frosted play icon */
+    /* Frosted play icon at bottom-left */
     .card-play-icon {
       position: absolute;
-      left: calc(14 * var(--u));
-      bottom: calc(14 * var(--u));
       width: calc(30 * var(--u));
       height: calc(30 * var(--u));
       border-radius: 50%;
@@ -445,13 +377,71 @@
       margin-left: calc(2 * var(--u));
     }
 
+    /* Bottom Button with Dashed Ring at (626, 901) */
+    .cta-button-wrap {
+      position: absolute;
+      left: calc(626 * var(--u));
+      top: calc(901 * var(--u));
+      width: calc(190 * var(--u));
+      height: calc(74 * var(--u));
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cta-ring {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 1.8px dashed #2B7A4B;
+      border-radius: 999px;
+      pointer-events: none;
+      animation: ringSpin 24s linear infinite;
+    }
+
+    @keyframes ringSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .cta-button {
+      position: relative;
+      width: calc(172 * var(--u));
+      height: calc(58 * var(--u));
+      border-radius: 999px;
+      background-color: var(--forest-green);
+      color: var(--white);
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: calc(17 * var(--u));
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+      box-shadow: 0 calc(6 * var(--u)) calc(16 * var(--u)) rgba(8, 72, 45, 0.2);
+    }
+
+    .cta-button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 calc(10 * var(--u)) calc(22 * var(--u)) rgba(8, 72, 45, 0.28);
+    }
+
+    .cta-button:active {
+      transform: scale(0.98);
+    }
+
     /* Entrance sequence initial states */
     .anim-nav { opacity: 0; transform: translateY(calc(-20 * var(--u))); }
     .anim-badge { opacity: 0; transform: scale(0.85); }
     .anim-head1 { opacity: 0; filter: blur(calc(8 * var(--u))); transform: translateY(calc(30 * var(--u))); }
     .anim-head2 { opacity: 0; filter: blur(calc(8 * var(--u))); transform: translateY(calc(30 * var(--u))); }
     .anim-subline { opacity: 0; transform: translateY(calc(20 * var(--u))); }
-    .anim-carousel { opacity: 0; transform: translateY(calc(60 * var(--u))); }
+    .anim-carousel { opacity: 0; transform: translateY(calc(50 * var(--u))); }
     .anim-button { opacity: 0; transform: scale(0.8); }
     .anim-note { opacity: 0; }
 
@@ -474,7 +464,7 @@
       }
     }
 
-    /* Mobile (phones <= 820px) */
+    /* Mobile Responsive (Phones <= 820px) */
     @media (max-width: 820px) {
       :root {
         --u: calc(100vw / 640);
@@ -484,23 +474,30 @@
         overflow-y: auto;
         overflow-x: hidden;
         height: auto;
+        min-height: 100vh;
+        display: block;
       }
 
       .viewport-frame {
         width: 100vw;
         height: auto;
         min-height: 100vh;
-        padding-bottom: 50px;
-      }
-
-      .nav-links, .btn-login {
-        display: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-bottom: 48px;
+        position: relative;
+        overflow-x: hidden;
+        overflow-y: visible;
       }
 
       .top-bar {
         position: relative;
-        height: 70px;
-        padding: 0 20px;
+        top: auto;
+        left: auto;
+        width: 100%;
+        height: 72px;
+        padding: 0 24px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -510,33 +507,49 @@
         position: static;
       }
 
+      .brand-logo svg {
+        width: 26px;
+        height: 26px;
+      }
+
+      .brand-logo span {
+        font-size: 20px;
+      }
+
+      .nav-links, .btn-login {
+        display: none !important;
+      }
+
       .btn-signup {
         position: static;
-        width: 90px;
-        height: 38px;
-        font-size: 14px;
+        width: 96px;
+        height: 40px;
+        font-size: 15px;
       }
 
       .trust-badge {
         position: relative;
-        left: auto;
         top: auto;
-        margin: 25px auto 18px;
+        left: auto;
         width: auto;
-        padding: 8px 18px;
-        font-size: 14px;
-        height: 34px;
+        max-width: 90%;
+        height: 36px;
+        padding: 0 18px;
+        margin: 22px auto 16px;
+        font-size: 14.5px;
       }
 
       .hero-headline {
         position: relative;
         top: auto;
         left: auto;
-        padding: 0 16px;
+        width: 100%;
+        padding: 0 20px;
+        text-align: center;
       }
 
       .headline-line1, .headline-line2 {
-        font-size: clamp(34px, 8vw, 54px);
+        font-size: clamp(38px, 9vw, 56px);
         line-height: 1.1;
         white-space: normal;
       }
@@ -545,40 +558,57 @@
         position: relative;
         top: auto;
         left: auto;
+        width: 100%;
         margin-top: 18px;
         padding: 0 24px;
+        max-width: 440px;
       }
 
       .subline-text {
-        font-size: 15px;
+        font-size: 15.5px;
         line-height: 24px;
+        white-space: normal;
       }
 
-      .doodle-slash, .note-be-seen, .svg-annotations {
-        display: none;
+      .svg-annotations, .note-be-seen {
+        display: none !important;
       }
 
+      /* 250px tall curved carousel band */
       .carousel-stage {
         position: relative;
-        height: 260px;
-        margin-top: 30px;
+        top: auto;
+        left: auto;
+        width: 100%;
+        height: 250px;
+        margin: 28px 0 20px;
+        overflow: hidden;
       }
 
       .cta-button-wrap {
         position: relative;
-        left: auto;
         top: auto;
-        margin: 30px auto 10px;
+        left: auto;
+        width: 190px;
+        height: 74px;
+        margin: 10px auto 4px;
+      }
+
+      .cta-button {
+        width: 172px;
+        height: 58px;
+        font-size: 16px;
       }
 
       .note-zero-cost {
         position: relative;
-        left: auto;
         top: auto;
+        left: auto;
         text-align: center;
-        margin-top: 8px;
+        margin-top: 10px;
         transform: rotate(6deg);
-        font-size: 22px;
+        font-size: 24px;
+        display: inline-block;
       }
     }
   </style>
@@ -588,9 +618,12 @@
     <!-- Top Bar -->
     <header class="top-bar anim-nav">
       <a href="#" class="brand-logo" aria-label="Reelmark Homepage">
-        <svg viewBox="0 0 28 28">
-          <path d="M14 2C14 2 26 5 26 14C26 23 14 26 14 26C14 26 2 23 2 14C2 5 14 2 14 2Z" fill="#08482D" opacity="0.16"/>
-          <path d="M14 3C14 3 24.5 5.8 24.5 14C24.5 22.2 14 25 14 25C14 25 3.5 22.2 3.5 14C3.5 5.8 14 3 14 3ZM14 6V22M14 11L20 8M14 17L21 14M14 14L7 11M14 20L8 17" stroke="#08482D" stroke-width="2" stroke-linecap="round"/>
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M28 4C18 4 6 12 6 22C6 26.5 9.5 28 12 28C22 28 28 18 28 4Z" fill="#08482D" fill-opacity="0.12"/>
+          <path d="M28 4C18 4 6 12 6 22C6 26.5 9.5 28 12 28C22 28 28 18 28 4Z" stroke="#08482D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M7 25C13 22 21 16 28 4" stroke="#08482D" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M14 19C17 21 19 23 20 25" stroke="#08482D" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M19 14C22 15 24 17 25 18" stroke="#08482D" stroke-width="1.8" stroke-linecap="round"/>
         </svg>
         <span>Reelmark</span>
       </a>
@@ -607,18 +640,18 @@
       <a href="#signup" class="btn-signup">Sign up</a>
     </header>
 
-    <!-- Mint Badge -->
+    <!-- Mint Badge at (575, 115) -->
     <div class="trust-badge anim-badge">
       Trusted by 120,000+ indie makers
     </div>
 
-    <!-- Centred Headline -->
+    <!-- Centred Headline at top 176 -->
     <div class="hero-headline">
       <h1 class="headline-line1 anim-head1">Captivate Crowds</h1>
       <h1 class="headline-line2 anim-head2">with Snackable Reels</h1>
     </div>
 
-    <!-- Subline -->
+    <!-- Subline at top 394 -->
     <div class="hero-subline anim-subline">
       <p class="subline-text">
         Grow your brand with short, snappy product clips by<br>
@@ -631,24 +664,24 @@
     <svg class="svg-annotations" viewBox="0 0 1440 1080">
       <!-- // doodle at (263, 377) -->
       <g id="doodleSlashes" class="drawn-group">
-        <path class="drawn-stroke doodle-line" d="M 263 397 L 273 377" />
-        <path class="drawn-stroke doodle-line" d="M 276 397 L 286 377" />
+        <path class="drawn-stroke doodle-line" d="M 264 402 C 267 393, 271 384, 275 377" />
+        <path class="drawn-stroke doodle-line" d="M 278 402 C 281 393, 285 384, 289 377" />
       </g>
 
-      <!-- "Be seen with clips" arrow: starts below note at ~(1250, 395) and curls down to cards ~(1070, 520) -->
+      <!-- "Be seen with clips" arrow: starts below the note at (1248, 396) and curls down to the cards -->
       <g id="arrowBeSeen" class="drawn-group">
-        <path class="drawn-stroke arrow-path-1" d="M 1250 395 C 1220 440, 1160 485, 1075 520" />
-        <path class="drawn-stroke arrow-head-1" d="M 1090 505 L 1073 521 L 1095 526" />
+        <path class="drawn-stroke arrow-path-1" d="M 1248 396 C 1222 445, 1162 492, 1072 522" />
+        <path class="drawn-stroke arrow-head-1" d="M 1090 507 L 1070 523 L 1093 529" />
       </g>
 
-      <!-- "Zero cost" small arrow pointing to button ~(625, 930) from ~(595, 945) -->
+      <!-- "Zero cost" small arrow pointing to the button at (623, 935) -->
       <g id="arrowZeroCost" class="drawn-group">
-        <path class="drawn-stroke arrow-path-2" d="M 590 948 C 602 944, 614 938, 624 932" />
-        <path class="drawn-stroke arrow-head-2" d="M 612 931 L 624 932 L 620 943" />
+        <path class="drawn-stroke arrow-path-2" d="M 596 966 C 606 956, 614 946, 622 936" />
+        <path class="drawn-stroke arrow-head-2" d="M 612 938 L 623 935 L 620 947" />
       </g>
     </svg>
 
-    <!-- Hand-written text notes -->
+    <!-- Handwritten text notes -->
     <div class="handwritten-note note-be-seen anim-note">
       Be seen<br>with clips
     </div>
@@ -662,7 +695,7 @@
       <div class="video-card-container" id="cardsTrack"></div>
     </div>
 
-    <!-- CTA Button with Dashed Ring -->
+    <!-- CTA Button with Dashed Ring at (626, 901) -->
     <div class="cta-button-wrap anim-button">
       <div class="cta-ring"></div>
       <a href="#make" class="cta-button">Make a Reel</a>
@@ -671,25 +704,24 @@
 
   <script>
     (function() {
-      // Setup shared media assets
+      // Shared media assets
       const POSTER_SRC = "https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/b7ebb74a-8c8a-4f7e-8f80-55e2d74ecd05.webp";
       const VIDEO_SRC = "https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/04fd3d5f-99d7-476e-98a4-46c08518ffb3.mp4";
 
       const TOTAL_CARDS = 10;
-      const PITCH = 196;
+      const PITCH = 196; // 196u pitch
       const TOTAL_WIDTH = TOTAL_CARDS * PITCH; // 1960u
-      const AUTO_SCROLL_SPEED = 50; // 50u per second right -> left (scrollOffset decreases)
+      const AUTO_SCROLL_SPEED = 50; // 50u per second right -> left
 
-      const cardsTrack = document.getElementById("cardsTrack");
+      const viewportFrame = document.getElementById("viewportFrame");
       const carouselStage = document.getElementById("carouselStage");
+      const cardsTrack = document.getElementById("cardsTrack");
 
-      // Shared video clock
-      let sharedVideoClock = null;
-
-      // Cards elements array
+      // Generate the 10 cards
       const cards = [];
 
       for (let i = 0; i < TOTAL_CARDS; i++) {
+        // 5x2 row-major grid
         const col = i % 5;
         const row = Math.floor(i / 5);
 
@@ -703,18 +735,21 @@
         const posterImg = document.createElement("img");
         posterImg.className = "card-poster";
         posterImg.src = POSTER_SRC;
-        posterImg.alt = "Product clip preview";
+        posterImg.alt = "Product clip preview tile " + (i + 1);
 
         const videoEl = document.createElement("video");
         videoEl.className = "card-video";
         videoEl.src = VIDEO_SRC;
         videoEl.muted = true;
+        videoEl.autoplay = true;
         videoEl.loop = true;
         videoEl.playsInline = true;
-        videoEl.preload = "auto";
+        videoEl.setAttribute("playsinline", "");
         videoEl.setAttribute("webkit-playsinline", "true");
+        videoEl.setAttribute("muted", "");
+        videoEl.preload = "auto";
 
-        // Frosted play icon at bottom-left
+        // Frosted round play icon at bottom-left
         const playIcon = document.createElement("div");
         playIcon.className = "card-play-icon";
         playIcon.innerHTML = '<svg viewBox="0 0 16 16"><path d="M4.5 3.5L13 8L4.5 12.5V3.5Z"/></svg>';
@@ -730,6 +765,7 @@
           viewport: viewportEl,
           poster: posterImg,
           video: videoEl,
+          playIcon: playIcon,
           index: i,
           col: col,
           row: row,
@@ -737,31 +773,37 @@
         });
       }
 
-      // Sync and play all videos together
+      // Synchronize and play videos
       function initVideos() {
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
           return;
         }
 
-        let firstCardVideo = cards[0].video;
-        firstCardVideo.addEventListener("timeupdate", () => {
-          const currentTimestamp = firstCardVideo.currentTime;
-          cards.forEach((card, idx) => {
-            if (idx > 0 && Math.abs(card.video.currentTime - currentTimestamp) > 0.15) {
-              try { card.video.currentTime = currentTimestamp; } catch (e) {}
+        cards.forEach((card) => {
+          function markReady() {
+            if (!card.videoReady) {
+              card.videoReady = true;
+              card.video.classList.add("is-ready");
             }
-          });
+          }
+
+          card.video.addEventListener("loadeddata", markReady);
+          card.video.addEventListener("playing", markReady);
+          card.video.addEventListener("canplay", markReady);
+
+          card.video.play().catch(() => {});
         });
 
-        cards.forEach((card) => {
-          card.video.addEventListener("playing", () => {
-            card.videoReady = true;
-            card.video.classList.add("is-ready");
-          }, { once: true });
-
-          card.video.play().catch(() => {
-            // Autoplay might need interaction, muted handles 99%
-          });
+        // Time synchronization: keep all videos synced to leader
+        const leader = cards[0].video;
+        leader.addEventListener("timeupdate", () => {
+          const leaderTime = leader.currentTime;
+          for (let i = 1; i < cards.length; i++) {
+            const v = cards[i].video;
+            if (Math.abs(v.currentTime - leaderTime) > 0.12) {
+              try { v.currentTime = leaderTime; } catch (e) {}
+            }
+          }
         });
       }
 
@@ -775,30 +817,65 @@
       } catch (e) {}
 
       function getClockTime() {
-        if (clockAnimation && clockAnimation.currentTime) {
+        if (clockAnimation && clockAnimation.currentTime != null) {
           return clockAnimation.currentTime / 1000;
         }
         return performance.now() / 1000;
       }
 
-      // Scroll state
+      // Rounded quad path calculation with exact vector math
+      function createRoundedQuadPath(pTL, pTR, pBR, pBL, r) {
+        const dxTop = pTR.x - pTL.x;
+        const dyTop = pTR.y - pTL.y;
+        const lenTop = Math.hypot(dxTop, dyTop) || 1;
+        const uxTop = dxTop / lenTop;
+        const uyTop = dyTop / lenTop;
+
+        const dxBot = pBL.x - pBR.x;
+        const dyBot = pBL.y - pBR.y;
+        const lenBot = Math.hypot(dxBot, dyBot) || 1;
+        const uxBot = dxBot / lenBot;
+        const uyBot = dyBot / lenBot;
+
+        const minEdge = Math.min(lenTop, lenBot, Math.abs(pBL.y - pTL.y), Math.abs(pBR.y - pTR.y));
+        const safeR = Math.min(r, minEdge * 0.45);
+
+        const t0 = { x: pTL.x + uxTop * safeR, y: pTL.y + uyTop * safeR };
+        const t1 = { x: pTR.x - uxTop * safeR, y: pTR.y - uyTop * safeR };
+        const r0 = { x: pTR.x, y: pTR.y + safeR };
+        const r1 = { x: pBR.x, y: pBR.y - safeR };
+        const b0 = { x: pBR.x + uxBot * safeR, y: pBR.y + uyBot * safeR };
+        const b1 = { x: pBL.x - uxBot * safeR, y: pBL.y - uyBot * safeR };
+        const l0 = { x: pBL.x, y: pBL.y - safeR };
+        const l1 = { x: pTL.x, y: pTL.y + safeR };
+
+        return `path('M ${t0.x.toFixed(1)} ${t0.y.toFixed(1)} ` +
+          `L ${t1.x.toFixed(1)} ${t1.y.toFixed(1)} ` +
+          `Q ${pTR.x.toFixed(1)} ${pTR.y.toFixed(1)} ${r0.x.toFixed(1)} ${r0.y.toFixed(1)} ` +
+          `L ${r1.x.toFixed(1)} ${r1.y.toFixed(1)} ` +
+          `Q ${pBR.x.toFixed(1)} ${pBR.y.toFixed(1)} ${b0.x.toFixed(1)} ${b0.y.toFixed(1)} ` +
+          `L ${b1.x.toFixed(1)} ${b1.y.toFixed(1)} ` +
+          `Q ${pBL.x.toFixed(1)} ${pBL.y.toFixed(1)} ${l0.x.toFixed(1)} ${l0.y.toFixed(1)} ` +
+          `L ${l1.x.toFixed(1)} ${l1.y.toFixed(1)} ` +
+          `Q ${pTL.x.toFixed(1)} ${pTL.y.toFixed(1)} ${t0.x.toFixed(1)} ${t0.y.toFixed(1)} Z')`;
+      }
+
+      // Carousel interaction state
       let scrollOffset = 0;
       let lastTime = getClockTime();
-      let velocity = 0; // units per second
+      let velocity = -AUTO_SCROLL_SPEED; // frame units per second
+      let excessVelocity = 0; // momentum above -50u/s
       let isDragging = false;
-      let startPointerX = 0;
       let lastPointerX = 0;
       let lastPointerTime = 0;
 
-      // Pointer interactions
       carouselStage.addEventListener("pointerdown", (e) => {
         isDragging = true;
         carouselStage.classList.add("is-dragging");
-        carouselStage.setPointerCapture(e.pointerId);
-        startPointerX = e.clientX;
+        try { carouselStage.setPointerCapture(e.pointerId); } catch (err) {}
         lastPointerX = e.clientX;
         lastPointerTime = performance.now();
-        velocity = 0;
+        excessVelocity = 0;
       });
 
       carouselStage.addEventListener("pointermove", (e) => {
@@ -807,16 +884,16 @@
         const dt = (now - lastPointerTime) / 1000;
         const dx = e.clientX - lastPointerX;
 
-        // Frame scale factor
-        const frame = document.getElementById("viewportFrame");
-        const rect = frame.getBoundingClientRect();
-        const unitScale = rect.width / 1440;
+        const isMobile = window.innerWidth <= 820;
+        const u = isMobile ? (window.innerWidth / 640) : (viewportFrame.getBoundingClientRect().width / 1440);
 
-        const deltaUnits = dx / unitScale;
+        const deltaUnits = dx / u;
         scrollOffset += deltaUnits;
 
-        if (dt > 0.005) {
-          velocity = deltaUnits / dt;
+        if (dt > 0.008) {
+          const instantVel = deltaUnits / dt;
+          // Smooth momentum calculation
+          velocity = instantVel;
           lastPointerX = e.clientX;
           lastPointerTime = now;
         }
@@ -826,7 +903,17 @@
         if (!isDragging) return;
         isDragging = false;
         carouselStage.classList.remove("is-dragging");
-        try { carouselStage.releasePointerCapture(e.pointerId); } catch(err) {}
+        try { carouselStage.releasePointerCapture(e.pointerId); } catch (err) {}
+
+        const timeSinceMove = performance.now() - lastPointerTime;
+        if (timeSinceMove > 70) {
+          velocity = -AUTO_SCROLL_SPEED;
+          excessVelocity = 0;
+        } else {
+          // Clamp velocity for stability
+          const clampedVel = Math.max(-2500, Math.min(2500, velocity));
+          excessVelocity = clampedVel - (-AUTO_SCROLL_SPEED);
+        }
       }
 
       carouselStage.addEventListener("pointerup", stopDrag);
@@ -838,39 +925,51 @@
         const dt = Math.min(now - lastTime, 0.1);
         lastTime = now;
 
-        const frame = document.getElementById("viewportFrame");
-        const rect = frame.getBoundingClientRect();
-        const u = rect.width / 1440; // current 1 frame unit in px
+        const isMobile = window.innerWidth <= 820;
+        const frameRect = viewportFrame.getBoundingClientRect();
 
-        if (!isDragging) {
-          // Coasting physics: velocity decays ~95% per second
-          // v(t+dt) = v * (1 - 0.95)^dt = v * (0.05)^dt
-          if (Math.abs(velocity) > 1) {
-            velocity *= Math.pow(0.05, dt);
-            scrollOffset += velocity * dt;
-          } else {
-            velocity = 0;
-            // Constant drift: 50u per second to the left
-            scrollOffset -= AUTO_SCROLL_SPEED * dt;
-          }
+        let u, centerX, scaleX, yCenterOffset;
+
+        if (isMobile) {
+          // 640-unit scale relative to screen width, 250px band
+          u = window.innerWidth / 640;
+          centerX = 320;
+          scaleX = 314;
+          yCenterOffset = (250 / 2) / u; // centered in 250px band
+        } else {
+          // 1440x1080 frame scale
+          u = frameRect.width / 1440;
+          centerX = 720;
+          scaleX = 706;
+          yCenterOffset = 687; // prompt spec
         }
 
-        // Loop seamlessly over TOTAL_WIDTH (1960u)
+        if (!isDragging) {
+          // Coasting physics: momentum velocity decays about 95% per second
+          if (Math.abs(excessVelocity) > 0.5) {
+            excessVelocity *= Math.pow(0.05, dt);
+            velocity = -AUTO_SCROLL_SPEED + excessVelocity;
+          } else {
+            excessVelocity = 0;
+            velocity = -AUTO_SCROLL_SPEED;
+          }
+          scrollOffset += velocity * dt;
+        }
+
+        // Seamless loop
         let normalizedScroll = ((scrollOffset % TOTAL_WIDTH) + TOTAL_WIDTH) % TOTAL_WIDTH;
 
         cards.forEach((card, i) => {
-          // Pitch: 196u, centered around 0 in range [-TOTAL_WIDTH/2, TOTAL_WIDTH/2]
           let rawOffset = (i * PITCH + normalizedScroll) % TOTAL_WIDTH;
-          // Center offset t in range [-980, 980]
           let t = rawOffset;
           if (t > TOTAL_WIDTH / 2) t -= TOTAL_WIDTH;
 
-          // Push center outward: x = 720 + t * (1 + 0.083 * (t / 706)^2)
-          const tNorm = t / 706;
-          const x = 720 + t * (1 + 0.083 * tNorm * tNorm);
+          // Push center outward: x = centerX + t * (1 + 0.083 * (t / scaleX)^2)
+          const tNorm = t / scaleX;
+          const x = centerX + t * (1 + 0.083 * tNorm * tNorm);
 
-          // Normalized distance d = |x - 720| / 706
-          const d = Math.abs(x - 720) / 706;
+          // Normalised distance d = |x - centerX| / scaleX
+          const d = Math.abs(x - centerX) / scaleX;
 
           // Width = (170 + 48 * d^2)u
           const cardWidth = 170 + 48 * (d * d);
@@ -879,16 +978,16 @@
           const xL = x - cardWidth / 2;
           const xR = x + cardWidth / 2;
 
-          // Normalized distance for each vertical edge
-          const qL = Math.abs(xL - 720) / 706;
-          const qR = Math.abs(xR - 720) / 706;
+          // Normalised distance for each vertical edge
+          const qL = Math.abs(xL - centerX) / scaleX;
+          const qR = Math.abs(xR - centerX) / scaleX;
 
           // Vertical edge heights: (280 + 92 * q^2.6)u
           const hL = 280 + 92 * Math.pow(qL, 2.6);
           const hR = 280 + 92 * Math.pow(qR, 2.6);
 
-          // Vertical centre sits at (687 - 12 * d^2)u
-          const yCenter = 687 - 12 * (d * d);
+          // Vertical centre sits at (yCenterOffset - 12 * d^2)u
+          const yCenter = yCenterOffset - 12 * (d * d);
 
           // Top and Bottom coords for quad in frame units
           const yTL = yCenter - hL / 2;
@@ -903,7 +1002,7 @@
           const boxWidth = cardWidth;
           const boxHeight = maxY - minY;
 
-          // Convert to pixels
+          // Apply element position and box size
           card.el.style.left = `${minX * u}px`;
           card.el.style.top = `${minY * u}px`;
           card.el.style.width = `${boxWidth * u}px`;
@@ -915,36 +1014,22 @@
           const pBR = { x: boxWidth * u, y: (yBR - minY) * u };
           const pBL = { x: 0, y: (yBL - minY) * u };
 
-          // Radius 15u in pixels
-          const r = Math.min(15 * u, boxWidth * u * 0.25, boxHeight * u * 0.25);
-
-          // Draw rounded quad path
-          // Vector math for rounded polygon
-          const pathString = `path('` +
-            `M ${pTL.x + r} ${pTL.y} ` +
-            `L ${pTR.x - r} ${pTR.y} ` +
-            `Q ${pTR.x} ${pTR.y} ${pTR.x} ${pTR.y + r} ` +
-            `L ${pBR.x} ${pBR.y - r} ` +
-            `Q ${pBR.x} ${pBR.y} ${pBR.x - r} ${pBR.y} ` +
-            `L ${pBL.x + r} ${pBL.y} ` +
-            `Q ${pBL.x} ${pBL.y} ${pBL.x} ${pBL.y - r} ` +
-            `L ${pTL.x} ${pTL.y + r} ` +
-            `Q ${pTL.x} ${pTL.y} ${pTL.x + r} ${pTL.y} Z')`;
-
+          // 15u corner radius in pixels
+          const r = 15 * u;
+          const pathString = createRoundedQuadPath(pTL, pTR, pBR, pBL, r);
           card.el.style.clipPath = pathString;
           card.el.style.webkitClipPath = pathString;
 
           // Media sizing: 5x2 grid
-          // Tile aspect ratio is 384:540 = 0.7111
+          // Tile aspect ratio is 384:540 = 0.7111111
           const maxCardH = Math.max(hL, hR);
-          const tileH = Math.max(maxCardH, cardWidth / 0.7111);
-          const tileW = tileH * 0.7111;
+          const tileH = Math.max(maxCardH, cardWidth / 0.7111111);
+          const tileW = tileH * 0.7111111;
 
           const totalGridW = 5 * tileW;
           const totalGridH = 2 * tileH;
 
-          // Offsets for tile (card.col, card.row)
-          // Center the tile within the card width and height
+          // Cover-fit offset to tile (col, row)
           const offsetX = -card.col * tileW + (cardWidth - tileW) / 2;
           const offsetY = -card.row * tileH + (boxHeight - tileH) / 2;
 
@@ -965,8 +1050,17 @@
           card.video.style.left = mediaCss.left;
           card.video.style.top = mediaCss.top;
 
-          // Fade out cards completely out of viewport bounds for performance
-          if (xR < -100 || xL > 1540) {
+          // Position frosted play icon inside the bottom-left of card
+          const playIconSize = 30 * u;
+          const playPad = 14 * u;
+          card.playIcon.style.left = `${playPad}px`;
+          card.playIcon.style.top = `${pBL.y - playPad - playIconSize}px`;
+          card.playIcon.style.width = `${playIconSize}px`;
+          card.playIcon.style.height = `${playIconSize}px`;
+
+          // Visibility optimization for cards completely outside view bounds
+          const cutoff = isMobile ? (640 + 100) : (1440 + 120);
+          if (xR < -100 || xL > cutoff) {
             card.el.style.visibility = "hidden";
           } else {
             card.el.style.visibility = "visible";
@@ -994,7 +1088,7 @@
         const notes = document.querySelectorAll(".anim-note");
         const doodlePaths = document.querySelectorAll(".drawn-stroke");
 
-        // Prepare doodle strokes for drawing animation
+        // Prepare doodle strokes for self-drawing
         doodlePaths.forEach((path) => {
           const len = path.getTotalLength ? path.getTotalLength() : 120;
           path.style.strokeDasharray = len;
@@ -1039,7 +1133,7 @@
 
         setTimeout(() => {
           carousel.animate([
-            { opacity: 0, transform: "translateY(60px)" },
+            { opacity: 0, transform: "translateY(50px)" },
             { opacity: 1, transform: "translateY(0)" }
           ], { duration: 900, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "forwards" });
         }, 900);
@@ -1054,8 +1148,8 @@
         setTimeout(() => {
           notes.forEach((note) => {
             note.animate([
-              { opacity: 0, transform: note.style.transform + " scale(0.9)" },
-              { opacity: 1, transform: note.style.transform + " scale(1)" }
+              { opacity: 0 },
+              { opacity: 1 }
             ], { duration: 600, easing: "ease-out", fill: "forwards" });
           });
 
