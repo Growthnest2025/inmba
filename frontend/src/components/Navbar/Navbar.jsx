@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import { toast } from "react-toastify";
 
@@ -13,26 +13,55 @@ import { getApiErrorMessage } from "../../utils/apiError";
 import "./Navbar.css";
 
 /* =========================================================
-   MAIN MENU LINKS
+   MENU STRUCTURE
+
+   - Item with "to"       -> normal single link
+   - Item with "children" -> dropdown group (sub headings)
 
    IMPORTANT: change the "to" paths below so they match
    the routes you have in your App.js / router file.
 ========================================================= */
 
-const mainLinks = [
+const navItems = [
   { label: "Home", to: "/", end: true },
-  { label: "Our Chamber", to: "/chamber" },
-  { label: "Our Commercial", to: "/commercial" },
-  { label: "Our Professional", to: "/our-professional" },
+
+  {
+    label: "Our Network",
+    children: [
+      { label: "Our Chamber", to: "/chamber" },
+      { label: "Our Commercial", to: "/commercial" },
+      { label: "Our Professional", to: "/our-professional" },
+    ],
+  },
+
   { label: "INMBA Shopping", to: "/shopping" },
-  { label: "Gallery & Downloads", to: "/gallery-downloads" },
-  { label: "Our Brands", to: "/our-branches" },
-  { label: "Contact", to: "/contact" },
-  { label: "About", to: "/about" },
+
+  {
+    label: "Explore",
+    children: [
+      { label: "Gallery & Downloads", to: "/gallery-downloads" },
+      { label: "Our Brands", to: "/our-branches" },
+    ],
+  },
+
+  {
+    label: "About Us",
+    children: [
+      { label: "About", to: "/about" },
+      { label: "Contact", to: "/contact" },
+    ],
+  },
 ];
+
+/* desktop breakpoint (matches Navbar.css) */
+const isDesktop = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(min-width: 1200px)").matches;
 
 export default function Navbar() {
   const navigate = useNavigate();
+
+  const location = useLocation();
 
   const { initializing, isMemberAuthenticated, member, memberLogout } =
     useAuth();
@@ -51,6 +80,11 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  /* which dropdown is open (label) or null */
+  const [openDropdown, setOpenDropdown] = useState(null);
+
+  const navListRef = useRef(null);
 
   /* =========================
      NAVBAR SCROLL STATE
@@ -71,11 +105,50 @@ export default function Navbar() {
   }, []);
 
   /* =========================
+     CLOSE MENUS ON ROUTE CHANGE
+  ========================= */
+
+  useEffect(() => {
+    setOpenDropdown(null);
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
+  /* =========================
+     CLOSE DROPDOWN: OUTSIDE CLICK / ESC
+  ========================= */
+
+  useEffect(() => {
+    const handleOutside = (event) => {
+      if (
+        navListRef.current &&
+        !navListRef.current.contains(event.target)
+      ) {
+        setOpenDropdown(null);
+      }
+    };
+
+    const handleKey = (event) => {
+      if (event.key === "Escape") {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutside);
+    document.addEventListener("keydown", handleKey);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, []);
+
+  /* =========================
      CLOSE MOBILE MENU
   ========================= */
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+    setOpenDropdown(null);
   };
 
   /* =========================
@@ -115,6 +188,16 @@ export default function Navbar() {
 
   const getNavLinkClass = ({ isActive }) =>
     isActive ? "nav-link active" : "nav-link";
+
+  const isGroupActive = (children) =>
+    children.some((child) =>
+      location.pathname === child.to ||
+      location.pathname.startsWith(`${child.to}/`)
+    );
+
+  const toggleDropdown = (label) => {
+    setOpenDropdown((current) => (current === label ? null : label));
+  };
 
   return (
     <nav
@@ -160,19 +243,83 @@ export default function Navbar() {
           }`}
           id="navbarNav"
         >
-          <ul className="navbar-nav align-items-xl-center">
-            {mainLinks.map((link) => (
-              <li className="nav-item" key={link.to}>
-                <NavLink
-                  className={getNavLinkClass}
-                  to={link.to}
-                  end={link.end}
-                  onClick={closeMenu}
+          <ul
+            className="navbar-nav align-items-xl-center"
+            ref={navListRef}
+          >
+            {navItems.map((item) => {
+              /* ---------- single link ---------- */
+
+              if (!item.children) {
+                return (
+                  <li className="nav-item" key={item.to}>
+                    <NavLink
+                      className={getNavLinkClass}
+                      to={item.to}
+                      end={item.end}
+                      onClick={closeMenu}
+                    >
+                      {item.label}
+                    </NavLink>
+                  </li>
+                );
+              }
+
+              /* ---------- dropdown group ---------- */
+
+              const isOpen = openDropdown === item.label;
+              const groupActive = isGroupActive(item.children);
+
+              return (
+                <li
+                  className={`nav-item has-dropdown ${
+                    isOpen ? "is-open" : ""
+                  }`}
+                  key={item.label}
+                  onMouseEnter={() => {
+                    if (isDesktop()) setOpenDropdown(item.label);
+                  }}
+                  onMouseLeave={() => {
+                    if (isDesktop()) setOpenDropdown(null);
+                  }}
                 >
-                  {link.label}
-                </NavLink>
-              </li>
-            ))}
+                  <button
+                    type="button"
+                    className={`nav-link nav-dropdown-toggle ${
+                      groupActive ? "active" : ""
+                    }`}
+                    aria-haspopup="true"
+                    aria-expanded={isOpen}
+                    onClick={() => toggleDropdown(item.label)}
+                  >
+                    {item.label}
+
+                    <i
+                      className="fas fa-chevron-down nav-caret"
+                      aria-hidden="true"
+                    ></i>
+                  </button>
+
+                  <ul className="nav-dropdown-menu">
+                    {item.children.map((child) => (
+                      <li key={child.to}>
+                        <NavLink
+                          className={({ isActive }) =>
+                            isActive
+                              ? "nav-dropdown-link active"
+                              : "nav-dropdown-link"
+                          }
+                          to={child.to}
+                          onClick={closeMenu}
+                        >
+                          {child.label}
+                        </NavLink>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              );
+            })}
 
             {/* =================
                 SESSION CHECKING

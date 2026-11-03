@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -106,6 +106,257 @@ const contactDetails = [
     external: false,
   },
 ];
+
+/* =========================================================
+   CHAMBER RAIL (What is a Chamber + How to Form a Chamber)
+========================================================= */
+
+/* "What is a Chamber" cards + "How to Form a Chamber" step cards, merged into one list */
+const railItems = [
+  {
+    icon: "bi-people-fill",
+    tag: "About",
+    title: "Member-led Community",
+    text: "Chambers are formed by INMBA Civilian Network Members and grow through direct connections.",
+  },
+  {
+    icon: "bi-person-badge",
+    tag: "About",
+    title: "Founded by a Patron",
+    text: "The founding member becomes the Patron (Atchi Mandra Thalaivar).",
+  },
+  {
+    icon: "bi-award",
+    tag: "About",
+    title: "Recognized Chamber",
+    text: "A Chamber is recognized and listed in the directory when it reaches its required membership strength.",
+  },
+  {
+    icon: "bi-person-plus",
+    tag: "Get Started",
+    title: "Become a Civilian Member",
+    text: "Start with INMBA Civilian Network Membership.",
+  },
+  {
+    icon: "bi-diagram-3",
+    tag: "Get Started",
+    title: "Build Your Network",
+    text: "Invite and connect your direct contacts within INMBA.",
+  },
+  {
+    icon: "bi-people",
+    tag: "Get Started",
+    title: "Reach 31 Members",
+    text: "A Patron and at least 30 directly connected members are required.",
+  },
+  {
+    icon: "bi-patch-check",
+    tag: "Get Started",
+    title: "Receive Recognition",
+    text: "The Chamber becomes active and is entered into the directory once requirements are met.",
+  },
+];
+
+const N = railItems.length;
+const AUTO_SPEED = 0.0004; // cards per millisecond
+const SIDE_W = 280; // card width on phones
+const wrap = (x, n) => ((x % n) + n) % n;
+
+function ChamberRail() {
+  const railRef = useRef(null);
+  const cardRefs = useRef([]);
+  const api = useRef({ target: 0 });
+
+  useEffect(() => {
+    const rail = railRef.current;
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let p = 0;
+    let cardS = 0;
+    let side = false;
+    let dirty = true;
+    let last = 0;
+    let raf;
+    let down = false;
+    let start = 0;
+    let startT = 0;
+    let moved = 0;
+    let hover = false;
+
+    const size = () => {
+      side = window.innerWidth <= 820;
+      cardS = side ? SIDE_W : rail.clientHeight / 3;
+      cardRefs.current.forEach((c) => {
+        if (c) c.style.height = side ? "100%" : `${cardS}px`;
+      });
+      dirty = true;
+    };
+
+    const paint = () => {
+      const all = cardS * N;
+      cardRefs.current.forEach((c, i) => {
+        if (!c) return;
+        let y = wrap(i * cardS - p * cardS, all);
+        if (y > all - cardS) y -= all;
+        c.style.transform = side
+          ? `translate3d(${y.toFixed(1)}px,0,0)`
+          : `translate3d(0,${y.toFixed(1)}px,0)`;
+      });
+    };
+
+    const frame = (now) => {
+      const dt = Math.min(50, now - last) || 16;
+      last = now;
+      const was = p;
+      // auto scroll (pauses on hover / drag)
+      if (!down && !hover && !calm) api.current.target += dt * AUTO_SPEED;
+      const target = api.current.target;
+      if (calm) p = target;
+      else p += (target - p) * (1 - Math.exp(-dt * 0.0072));
+      if (Math.abs(target - p) < 0.0004) p = target;
+      if (p !== was || dirty) {
+        dirty = false;
+        paint();
+      }
+      raf = requestAnimationFrame(frame);
+    };
+
+    const pos = (e) => (side ? e.clientX : e.clientY);
+
+    const onDown = (e) => {
+      down = true;
+      start = pos(e);
+      startT = api.current.target;
+      moved = 0;
+    };
+    const onMove = (e) => {
+      if (!down) return;
+      const d = pos(e) - start;
+      moved = Math.max(moved, Math.abs(d));
+      if (moved > 6) {
+        rail.setPointerCapture?.(e.pointerId);
+        rail.classList.add("is-drag");
+      }
+      api.current.target = startT - d / cardS;
+    };
+    const onUp = () => {
+      if (!down) return;
+      down = false;
+      rail.classList.remove("is-drag");
+      if (moved >= 6) api.current.target = Math.round(api.current.target);
+    };
+    const onEnter = () => {
+      hover = true;
+    };
+    const onLeave = () => {
+      hover = false;
+    };
+    const onKey = (e) => {
+      if (["ArrowDown", "ArrowRight"].includes(e.key)) {
+        e.preventDefault();
+        api.current.target = Math.round(api.current.target) + 1;
+      }
+      if (["ArrowUp", "ArrowLeft"].includes(e.key)) {
+        e.preventDefault();
+        api.current.target = Math.round(api.current.target) - 1;
+      }
+    };
+
+    size();
+    raf = requestAnimationFrame(frame);
+    window.addEventListener("resize", size);
+    rail.addEventListener("pointerdown", onDown);
+    rail.addEventListener("pointermove", onMove);
+    rail.addEventListener("pointerup", onUp);
+    rail.addEventListener("pointercancel", onUp);
+    rail.addEventListener("pointerenter", onEnter);
+    rail.addEventListener("pointerleave", onLeave);
+    rail.addEventListener("keydown", onKey);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", size);
+      rail.removeEventListener("pointerdown", onDown);
+      rail.removeEventListener("pointermove", onMove);
+      rail.removeEventListener("pointerup", onUp);
+      rail.removeEventListener("pointercancel", onUp);
+      rail.removeEventListener("pointerenter", onEnter);
+      rail.removeEventListener("pointerleave", onLeave);
+      rail.removeEventListener("keydown", onKey);
+    };
+  }, []);
+
+  const step = (n) => {
+    api.current.target = Math.round(api.current.target) + n;
+  };
+
+  return (
+    <section className="cr-section" id="about-chamber">
+
+      <div className="ic-container">
+        <div className="cr-layout">
+          <div className="cr-intro" data-aos="fade-right">
+            <span className="ic-eyebrow">ABOUT &amp; GET STARTED</span>
+            <h2 className="cr-heading">What Is an INMBA Chamber &amp; How to Form One</h2>
+            <p className="cr-text">
+              An independent, member-led civic assembly within the INMBA
+              network, built to connect, lead and serve communities. Learn what a
+              Chamber is, then follow four simple steps to establish your own.
+            </p>
+            <p className="cr-hint">Auto-scrolls. Hover to pause, drag to browse.</p>
+          </div>
+
+          <div className="cr-wrap" data-aos="fade-left">
+            <aside
+              className="cr-rail"
+              ref={railRef}
+              tabIndex={0}
+              aria-label="About the INMBA Chamber, leadership and membership. Drag or use arrow keys."
+            >
+              {railItems.map((item, i) => (
+                <article
+                  key={item.title}
+                  className={`cr-card${i % 2 ? " cr-alt" : ""}`}
+                  ref={(el) => (cardRefs.current[i] = el)}
+                >
+                  <div className="cr-card-top">
+                    <span className="cr-icon">
+                      <i className={`bi ${item.icon}`} />
+                    </span>
+                    <div>
+                      <span className="cr-tag">{item.tag}</span>
+                      <h3>{item.title}</h3>
+                    </div>
+                  </div>
+                  <p>{item.text}</p>
+                </article>
+              ))}
+            </aside>
+
+            <div className="cr-nav">
+              <button type="button" onClick={() => step(-1)} aria-label="Previous">
+                <i className="bi bi-chevron-up" />
+              </button>
+              <button type="button" onClick={() => step(1)} aria-label="Next">
+                <i className="bi bi-chevron-down" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="ic-join cr-join" data-aos="zoom-in">
+          <div>
+            <h3>Ready to build your Chamber?</h3>
+            <p>Join INMBA and begin connecting your community.</p>
+          </div>
+          <Link to="/membership-type" className="ic-join-btn">
+            Join Now <i className="bi bi-arrow-up-right" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 /* =========================================================
    ORGANIZATION COMPONENT
@@ -306,33 +557,18 @@ export default function Chamber() {
       </section>
 
 
-      {/* ESSENTIAL CHAMBER INFORMATION — combined from the original Chamber */}
-      <section className="ic-about" id="about-chamber">
-        <div className="ic-container">
-          <div className="ic-heading" data-aos="fade-up"><span className="ic-eyebrow">ABOUT THE SABAI</span><h2>What Is an INMBA Chamber?</h2><p>An independent, member-led civic assembly within the INMBA network, built to connect, lead and serve communities.</p></div>
-          <div className="ic-features">
-            {[
-              {icon:"bi-people-fill",title:"Member-led Community",description:"Chambers are formed by INMBA Civilian Network Members and grow through direct connections."},
-              {icon:"bi-person-badge",title:"Founded by a Patron",description:"The founding member becomes the Patron (Atchi Mandra Thalaivar)."},
-              {icon:"bi-award",title:"Recognized Chamber",description:"A Chamber is recognized and listed in the directory when it reaches its required membership strength."},
-            ].map((item,i)=><div className="ic-aos" data-aos="fade-up" data-aos-delay={i*110} key={item.title}><article className="ic-feature"><span className="ic-feature-icon"><i className={`bi ${item.icon}`}/></span><h3>{item.title}</h3><p>{item.description}</p></article></div>)}
-          </div>
-        </div>
-      </section>
-      <section className="ic-process" id="start-chamber">
-        <div className="ic-container">
-          <div className="ic-heading" data-aos="fade-up"><span className="ic-eyebrow">GET STARTED</span><h2>How to Form a Chamber</h2><p>Four steps to establishing your own INMBA Chamber.</p></div>
-          <div className="ic-steps">
-            {[
-              ["Become a Civilian Member","Start with INMBA Civilian Network Membership."],
-              ["Build Your Network","Invite and connect your direct contacts within INMBA."],
-              ["Reach 31 Members","A Patron and at least 30 directly connected members are required."],
-              ["Receive Recognition","The Chamber becomes active and is entered into the directory once requirements are met."],
-            ].map(([title,detail],i)=><div className="ic-aos" data-aos="fade-up" data-aos-delay={i*90} key={title}><article className="ic-step"><span className="ic-step-number">{String(i+1).padStart(2,"0")}</span><h3>{title}</h3><p>{detail}</p></article></div>)}
-          </div>
-          <div className="ic-join" data-aos="zoom-in"><div><h3>Ready to build your Chamber?</h3><p>Join INMBA and begin connecting your community.</p></div><Link to="/membership-type" className="ic-join-btn">Join Now <i className="bi bi-arrow-up-right"/></Link></div>
-        </div>
-      </section>
+      {/* ===================================================
+          WHAT IS A CHAMBER + HOW TO FORM A CHAMBER
+          (cards and steps merged into one auto-scrolling rail,
+           with the Join banner underneath)
+      =================================================== */}
+
+      <ChamberRail />
+
+      {/* ===================================================
+          LEADERSHIP & MEMBERSHIP
+      =================================================== */}
+
       <section className="ic-policy" id="chamber-policy">
         <div className="ic-container">
           <div className="ic-heading" data-aos="fade-up"><span className="ic-eyebrow">CHAMBER ESSENTIALS</span><h2>Leadership & Membership</h2><p>Key guidelines to understand before forming a Chamber.</p></div>

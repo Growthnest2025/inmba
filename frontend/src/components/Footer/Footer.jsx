@@ -1,6 +1,41 @@
 import { Link, useLocation } from "react-router-dom";
 import inmbaLogo from "../../assets/images/inmba_logo.png";
 
+/* =========================================================
+   FOOTER LINK GROUPS
+   (same headings as the Navbar, grouped the same way)
+========================================================= */
+
+const footerGroups = [
+  {
+    title: "Our Network",
+    links: [
+      { label: "Our Chamber", to: "/chamber" },
+      { label: "Our Commercial", to: "/commercial" },
+      { label: "Our Professional", to: "/our-professional" },
+      { label: "INMBA Shopping", to: "/shopping" },
+    ],
+  },
+  {
+    title: "Explore",
+    links: [
+      { label: "Gallery & Downloads", to: "/gallery-downloads" },
+      { label: "Our Brands", to: "/our-branches" },
+      { label: "Programs", to: "/programs" },
+      { label: "Events", to: "/events" },
+    ],
+  },
+  {
+    title: "Quick Links",
+    links: [
+      { label: "Home", to: "/" },
+      { label: "About Us", to: "/about" },
+      { label: "Contact", to: "/contact" },
+      { label: "Membership", to: "/membership-type" },
+    ],
+  },
+];
+
 export default function Footer() {
   const location = useLocation();
 
@@ -33,7 +68,7 @@ export default function Footer() {
 
           <div className="footer-divider" />
 
-          {/* TOP ROW */}
+          {/* LINK COLUMNS */}
           <div className="footer-columns">
 
             {/* CONTACT */}
@@ -79,113 +114,89 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* QUICK LINKS */}
-            <div className="footer-col">
-              <h4>Quick Links</h4>
+            {/* NAV GROUPS */}
+            {footerGroups.map((group) => (
+              <div className="footer-col" key={group.title}>
+                <h4>{group.title}</h4>
 
-              <ul>
-                <li>
-                  <Link to="/about">
-                    <i className="fas fa-chevron-right" />
-                    <span>About Us</span>
-                  </Link>
-                </li>
-
-                <li>
-                  <Link to="/membership">
-                    <i className="fas fa-chevron-right" />
-                    <span>Membership</span>
-                  </Link>
-                </li>
-
-                <li>
-                  <Link to="/programs">
-                    <i className="fas fa-chevron-right" />
-                    <span>Programs</span>
-                  </Link>
-                </li>
-
-                <li>
-                  <Link to="/events">
-                    <i className="fas fa-chevron-right" />
-                    <span>Events</span>
-                  </Link>
-                </li>
-
-                <li>
-                  <Link to="/contact">
-                    <i className="fas fa-chevron-right" />
-                    <span>Contact</span>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* SOCIAL */}
-            <div className="footer-col">
-              <h4>Connect With Us</h4>
-
-              <div className="social-icons">
-                <a
-                  href="https://www.instagram.com/inmba_org/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="instagram"
-                  aria-label="Instagram"
-                >
-                  <i className="fab fa-instagram" />
-                </a>
-
-                <a
-                  href="https://www.facebook.com/Robertson%20Rajah"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="facebook"
-                  aria-label="Facebook"
-                >
-                  <i className="fab fa-facebook-f" />
-                </a>
-
-                <a
-                  href="https://www.threads.com/@INMBA.org"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="threads"
-                  aria-label="Threads"
-                >
-                  <span>T</span>
-                </a>
-
-                <a
-                  href="https://www.youtube.com/@inmba-org"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="youtube"
-                  aria-label="YouTube"
-                >
-                  <i className="fab fa-youtube" />
-                </a>
-
-                <a
-                  href="https://x.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="x-social"
-                  aria-label="X"
-                >
-                  <span className="x-social-mark">X</span>
-                </a>
-
-                <a
-                  href="https://wa.me/918940369361"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="whatsapp"
-                  aria-label="WhatsApp"
-                >
-                  <i className="fab fa-whatsapp" />
-                </a>
+                <ul>
+                  {group.links.map((link) => (
+                    <li key={link.to}>
+                      <Link to={link.to}>
+                        <i className="fas fa-chevron-right" />
+                        <span>{link.label}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
+            ))}
+          </div>
+
+          {/* SOCIAL */}
+          <div className="footer-social-row">
+            <h4>Connect With Us</h4>
+
+            <div className="social-icons">
+              <a
+                href="https://www.instagram.com/inmba_org/"
+                target="_blank"
+                rel="noreferrer"
+                className="instagram"
+                aria-label="Instagram"
+              >
+                <i className="fab fa-instagram" />
+              </a>
+
+              <a
+                href="https://www.facebook.com/Robertson%20Rajah"
+                target="_blank"
+                rel="noreferrer"
+                className="facebook"
+                aria-label="Facebook"
+              >
+                <i className="fab fa-facebook-f" />
+              </a>
+
+              <a
+                href="https://www.threads.com/@INMBA.org"
+                target="_blank"
+                rel="noreferrer"
+                className="threads"
+                aria-label="Threads"
+              >
+                <span>T</span>
+              </a>
+
+              <a
+                href="https://www.youtube.com/@inmba-org"
+                target="_blank"
+                rel="noreferrer"
+                className="youtube"
+                aria-label="YouTube"
+              >
+                <i className="fab fa-youtube" />
+              </a>
+
+              <a
+                href="https://x.com"
+                target="_blank"
+                rel="noreferrer"
+                className="x-social"
+                aria-label="X"
+              >
+                <span className="x-social-mark">X</span>
+              </a>
+
+              <a
+                href="https://wa.me/918940369361"
+                target="_blank"
+                rel="noreferrer"
+                className="whatsapp"
+                aria-label="WhatsApp"
+              >
+                <i className="fab fa-whatsapp" />
+              </a>
             </div>
           </div>
 
@@ -345,8 +356,8 @@ export default function Footer() {
 
         .footer-columns {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 70px;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 40px;
           align-items: start;
         }
 
@@ -389,9 +400,29 @@ export default function Footer() {
           transform: translateX(3px);
         }
 
+        .footer-social-row {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-top: 34px;
+          padding-top: 27px;
+          border-top: 1px solid rgba(255,255,255,0.12);
+          text-align: center;
+        }
+
+        .footer-social-row h4 {
+          margin: 0 0 16px;
+          color: #fff;
+          font-size: 0.92rem;
+          font-weight: 800;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+        }
+
         .social-icons {
           display: flex;
           align-items: center;
+          justify-content: center;
           flex-wrap: wrap;
           gap: 11px;
         }
@@ -405,6 +436,7 @@ export default function Footer() {
           border-radius: 50%;
           color: #fff;
           font-size: 1rem;
+          text-decoration: none;
           transition: 0.25s ease;
         }
 
@@ -546,12 +578,14 @@ export default function Footer() {
           margin: 0;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
           .footer-columns {
             grid-template-columns: repeat(2, 1fr);
             gap: 36px;
           }
+        }
 
+        @media (max-width: 900px) {
           .footer-location-grid {
             grid-template-columns: 1fr;
           }

@@ -36,7 +36,7 @@ import BranchDetail from "../pages/BranchDetail/BranchDetail";
 /* NEW PAGES (Our Chamber / Our Professional / INMBA Shopping) */
 
 import Chamber from "../pages/Chamber/Chamber";
-import OurProfessional from "../pages/Inmba_Professional/Professional";
+import OurProfessional from "../pages/Inmba_Professional/Professional.jsx";
 import Shopping from "../pages/Shopping/Shopping";
 
 /* =========================
@@ -288,6 +288,15 @@ import CommercialQrPage
 /* =========================================================
    APPLICATION ROUTES
 ========================================================= */
+const _check = {
+  Home, About, Programs, Events, Contact, Organization, Commercial,
+  Foundation, OurBranches, BranchDetail, Chamber, OurProfessional, Shopping,
+  MembershipType, PublicProfileDispatcher, CommercialPublicProfile,
+};
+Object.entries(_check).forEach(([name, v]) => {
+  if (typeof v !== "function") console.error("BAD IMPORT:", name, v);
+});
+
 
 export default function AppRoutes() {
   return (

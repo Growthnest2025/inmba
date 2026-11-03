@@ -1,11 +1,10 @@
 /* =========================================================
    NAVBAR
 
-   Menu has many links, so:
-   - below 1200px  -> hamburger menu
-   - 1200px & up   -> full horizontal menu (extra compact, logo only)
-   - 1400px & up   -> brand name "INMBA.org" shown too
-   - 1700px & up   -> bigger sizing + "Join Now" button shown
+   Menu is grouped into dropdowns, so:
+   - below 1200px  -> hamburger menu (dropdowns become accordions)
+   - 1200px & up   -> full horizontal menu with hover dropdowns
+   - 1700px & up   -> bigger sizing
 ========================================================= */
 
 .navbar-custom {
@@ -337,6 +336,63 @@
   transform: translateX(4px);
 }
 
+/* =========================================================
+   DROPDOWN GROUPS (sub headings)
+========================================================= */
+
+.navbar-custom .nav-item.has-dropdown {
+  position: relative;
+}
+
+.navbar-custom .nav-dropdown-toggle {
+  gap: 7px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.navbar-custom .nav-caret {
+  font-size: 0.62rem;
+  transition: transform 0.3s ease;
+}
+
+.navbar-custom .has-dropdown.is-open > .nav-dropdown-toggle {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.navbar-custom .has-dropdown.is-open .nav-caret {
+  transform: rotate(180deg);
+}
+
+.navbar-custom .nav-dropdown-menu {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+}
+
+.navbar-custom .nav-dropdown-link {
+  display: block;
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.25s ease, color 0.25s ease, padding 0.25s ease;
+}
+
+.navbar-custom .nav-dropdown-link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  padding-left: 19px;
+}
+
+.navbar-custom .nav-dropdown-link.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.16);
+}
+
 /* =========================
    FULL DESKTOP MENU (1200px+)
 ========================= */
@@ -354,29 +410,72 @@
     flex-grow: 1;
   }
 
-  /* spread the links evenly across all free space,
-     so the gap between links grows with screen width */
   .navbar-nav {
     flex: 1 1 auto;
     flex-wrap: nowrap;
-    justify-content: space-evenly;
+    justify-content: flex-end;
     gap: 6px;
     margin-left: 12px;
   }
 
-  /* logo only on narrower desktops so every menu name fits */
-  .brand-name {
-    display: none;
-  }
-
+  /* fewer top-level links now, so there is room for the
+     brand name, bigger text and the Join Now button */
   .navbar-brand {
     margin-right: 12px;
   }
 
-  /* Membership link already exists, so hide Join Now on
-     narrower desktops to save space */
-  .btn-join-nav {
-    display: none;
+  .navbar-custom .nav-link {
+    padding-right: 12px !important;
+    padding-left: 12px !important;
+
+    font-size: 0.86rem;
+  }
+
+  /* dropdown panel */
+  .navbar-custom .nav-dropdown-menu {
+    min-width: 230px;
+
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    z-index: 1000;
+
+    margin-top: 6px;
+
+    background: linear-gradient(145deg, #0f4d0f, #0b4211 60%, #06290b);
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.3);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: translate(-50%, 8px);
+
+    transition: opacity 0.25s ease, transform 0.25s ease,
+      visibility 0.25s ease;
+  }
+
+  /* invisible bridge so the menu doesn't close while the
+     mouse moves from the button down to the panel */
+  .navbar-custom .nav-dropdown-menu::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -10px;
+    height: 10px;
+  }
+
+  .navbar-custom .has-dropdown.is-open > .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+
+    transform: translate(-50%, 0);
   }
 }
 
@@ -390,19 +489,15 @@
     padding-left: 28px;
   }
 
-  .brand-name {
-    display: inline;
-  }
-
   .navbar-brand {
     margin-right: 18px;
   }
 
   .navbar-custom .nav-link {
-    padding-right: 9px !important;
-    padding-left: 9px !important;
+    padding-right: 15px !important;
+    padding-left: 15px !important;
 
-    font-size: 0.82rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -412,14 +507,10 @@
 
 @media (min-width: 1700px) {
   .navbar-custom .nav-link {
-    padding-right: 13px !important;
-    padding-left: 13px !important;
+    padding-right: 18px !important;
+    padding-left: 18px !important;
 
-    font-size: 0.9rem;
-  }
-
-  .btn-join-nav {
-    display: inline-flex;
+    font-size: 0.95rem;
   }
 }
 
@@ -551,6 +642,35 @@
 
     margin: 10px 0 0;
   }
+
+  /* dropdown becomes an accordion */
+  .navbar-custom .nav-item.has-dropdown {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .navbar-custom .nav-dropdown-toggle {
+    justify-content: space-between;
+  }
+
+  .navbar-custom .nav-dropdown-menu {
+    display: none;
+
+    margin: 4px 0 4px 12px;
+    padding: 4px 0 4px 10px;
+
+    border-left: 2px solid rgba(255, 255, 255, 0.16);
+  }
+
+  .navbar-custom .has-dropdown.is-open > .nav-dropdown-menu {
+    display: block;
+    animation: navbarMenuOpen 0.25s ease;
+  }
+
+  .navbar-custom .nav-dropdown-link {
+    padding: 11px 12px;
+    font-size: 0.9rem;
+  }
 }
 
 /* =========================
@@ -662,4 +782,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .navbar-custom .navbar-brand .inmba-navbar-logo-wrapper { transition: none; }
-}
+  .navbar-custom .nav-dropdown-menu,
+  .navbar-custom .nav-caret,
+  .navbar-custom .nav-dropdown-link { transition: none; }
+}  
