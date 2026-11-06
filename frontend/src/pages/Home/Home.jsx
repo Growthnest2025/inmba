@@ -55,10 +55,18 @@ function MembershipRail() {
     let startT = 0;
     let moved = 0;
     let hover = false;
+    let speed = 1; // 0..1, ramps so pause / resume is smooth
 
     const size = () => {
       side = window.innerWidth <= 820;
-      cardS = side ? 160 : rail.clientHeight / 3;
+
+      if (side) {
+        // use the real card width from CSS so cards never overlap
+        cardS = cardRefs.current[0]?.offsetWidth || 170;
+      } else {
+        cardS = rail.clientHeight / 3;
+      }
+
       cardRefs.current.forEach((c) => {
         if (c) c.style.height = side ? "100%" : `${cardS}px`;
       });
@@ -72,8 +80,8 @@ function MembershipRail() {
         let y = wrap(i * cardS - p * cardS, all);
         if (y > all - cardS) y -= all;
         c.style.transform = side
-          ? `translate3d(${y.toFixed(1)}px,0,0)`
-          : `translate3d(0,${y.toFixed(1)}px,0)`;
+          ? `translate3d(${y.toFixed(2)}px,0,0)`
+          : `translate3d(0,${y.toFixed(2)}px,0)`;
       });
     };
 
@@ -81,8 +89,14 @@ function MembershipRail() {
       const dt = Math.min(50, now - last) || 16;
       last = now;
       const was = p;
-      // auto scroll (pauses on hover / drag)
-      if (!down && !hover && !calm) api.current.target += dt * AUTO_SPEED;
+      // auto scroll: eases to a stop while hovering / dragging,
+      // and eases back up to full speed afterwards
+      const wanted = down || hover || calm ? 0 : 1;
+      speed += (wanted - speed) * (1 - Math.exp(-dt * 0.006));
+      if (Math.abs(wanted - speed) < 0.001) speed = wanted;
+
+      api.current.target += dt * AUTO_SPEED * speed;
+
       const target = api.current.target;
       if (calm) p = target;
       else p += (target - p) * (1 - Math.exp(-dt * 0.0072));
@@ -120,8 +134,9 @@ function MembershipRail() {
       rail.classList.remove("is-drag");
       if (moved >= 6) api.current.target = Math.round(api.current.target);
     };
-    const onEnter = () => {
-      hover = true;
+    const onEnter = (e) => {
+      // touch screens: a finger is not "hovering"
+      if (e.pointerType === "mouse") hover = true;
     };
     const onLeave = () => {
       hover = false;

@@ -357,7 +357,7 @@ function CardRail({ items, reverse = false, tone = "alt", badge, heading, text, 
             <h2 className="prm-heading">{heading}</h2>
             <p className="prm-text">{text}</p>
             {note && <p className="prm-note">{note}</p>}
-            <p className="prm-hint">Auto-scrolls. Hover to pause, drag to browse.</p>
+          
           </div>
         </div>
       </div>

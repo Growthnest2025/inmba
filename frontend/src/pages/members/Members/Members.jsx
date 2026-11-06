@@ -114,7 +114,7 @@ export default function Members() {
               "ERR_CANCELED" ||
             requestError?.name ===
               "CanceledError" ||
-            signal?.aborted;
+            signal?.aborted;   
 
           if (
             cancelled

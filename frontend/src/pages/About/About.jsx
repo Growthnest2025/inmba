@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import "./About.css";
@@ -81,7 +81,18 @@ const foundationActivities = [
   },
 ];
 
+/* Core Pillars rail settings */
+const RAIL_SPEED = 38; // px per second
+const RAIL_RESUME_DELAY = 1500; // ms after a drag ends
+
 export default function About() {
+  const railRef = useRef(null);
+  const cardRefs = useRef([]);
+  const stepRef = useRef(() => {});
+
+  /* ---------------------------------------------------------
+     Scroll reveal
+  --------------------------------------------------------- */
   useEffect(() => {
     const revealElements = document.querySelectorAll(".about-reveal");
 
@@ -105,6 +116,185 @@ export default function About() {
 
     return () => {
       revealObserver.disconnect();
+    };
+  }, []);
+
+  /* ---------------------------------------------------------
+     Core Pillars rail
+     Desktop: vertical looping track. Phones (<= 820px): horizontal.
+     Auto-scroll, pause on hover, drag / swipe, buttons, arrow keys.
+  --------------------------------------------------------- */
+  useEffect(() => {
+    const rail = railRef.current;
+    const cards = cardRefs.current.filter(Boolean);
+
+    if (!rail || !cards.length) return undefined;
+
+    const n = cards.length;
+    const mq = window.matchMedia("(max-width: 820px)");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let horiz = mq.matches;
+    let size = 1;
+    let offset = 0;
+    let hovering = false;
+    let dragging = false;
+    let visible = true;
+    let resumeAt = 0;
+    let tween = null;
+    let last = 0;
+    let raf = 0;
+    let startPos = 0;
+    let startOffset = 0;
+
+    const measure = () => {
+      horiz = mq.matches;
+      size = (horiz ? cards[0].offsetWidth : cards[0].offsetHeight) || 1;
+    };
+
+    const render = () => {
+      const total = size * n;
+
+      cards.forEach((card, i) => {
+        let p = (((i * size - offset) % total) + total) % total;
+
+        if (p > total - size) p -= total; // wrap smoothly in from the start
+
+        card.style.transform = horiz
+          ? `translate3d(${p}px,0,0)`
+          : `translate3d(0,${p}px,0)`;
+      });
+    };
+
+    const tick = (t) => {
+      const dt = Math.min((t - last) / 1000, 0.05);
+      last = t;
+
+      if (tween) {
+        const k = Math.min((t - tween.t0) / tween.dur, 1);
+        const eased = 1 - Math.pow(1 - k, 3);
+
+        offset = tween.from + (tween.to - tween.from) * eased;
+
+        if (k >= 1) tween = null;
+      } else {
+        if (!reduce && visible && !hovering && !dragging && t >= resumeAt) {
+          offset += RAIL_SPEED * dt;
+        }
+
+        const total = size * n;
+
+        offset = ((offset % total) + total) % total;
+      }
+
+      render();
+      raf = requestAnimationFrame(tick);
+    };
+
+    /* ---------- drag / swipe ---------- */
+    const axisPos = (e) => (horiz ? e.clientX : e.clientY);
+
+    const onDown = (e) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+
+      dragging = true;
+      tween = null;
+      startPos = axisPos(e);
+      startOffset = offset;
+
+      if (rail.setPointerCapture) rail.setPointerCapture(e.pointerId);
+
+      rail.classList.add("is-drag");
+    };
+
+    const onMove = (e) => {
+      if (!dragging) return;
+
+      offset = startOffset - (axisPos(e) - startPos);
+    };
+
+    const onUp = () => {
+      if (!dragging) return;
+
+      dragging = false;
+      resumeAt = performance.now() + RAIL_RESUME_DELAY;
+      rail.classList.remove("is-drag");
+    };
+
+    const onEnter = (e) => {
+      if (e.pointerType === "mouse") hovering = true;
+    };
+
+    const onLeave = (e) => {
+      if (e.pointerType === "mouse") hovering = false;
+    };
+
+    /* ---------- one-card step (buttons + arrow keys) ---------- */
+    const step = (dir) => {
+      const now = performance.now();
+      const base = tween ? tween.to : offset;
+
+      tween = { from: offset, to: base + dir * size, t0: now, dur: 450 };
+      resumeAt = now + 2500;
+    };
+
+    stepRef.current = step;
+
+    const onKey = (e) => {
+      if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+        e.preventDefault();
+        step(1);
+      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        step(-1);
+      }
+    };
+
+    /* ---------- housekeeping ---------- */
+    const onResize = () => {
+      measure();
+      render();
+    };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+      },
+      { threshold: 0.1 }
+    );
+
+    io.observe(rail);
+
+    const ro = new ResizeObserver(onResize);
+
+    ro.observe(rail);
+
+    rail.addEventListener("pointerdown", onDown);
+    rail.addEventListener("pointermove", onMove);
+    rail.addEventListener("pointerup", onUp);
+    rail.addEventListener("pointercancel", onUp);
+    rail.addEventListener("pointerenter", onEnter);
+    rail.addEventListener("pointerleave", onLeave);
+    rail.addEventListener("keydown", onKey);
+    mq.addEventListener("change", onResize);
+
+    measure();
+    render();
+    last = performance.now();
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      io.disconnect();
+      ro.disconnect();
+      rail.removeEventListener("pointerdown", onDown);
+      rail.removeEventListener("pointermove", onMove);
+      rail.removeEventListener("pointerup", onUp);
+      rail.removeEventListener("pointercancel", onUp);
+      rail.removeEventListener("pointerenter", onEnter);
+      rail.removeEventListener("pointerleave", onLeave);
+      rail.removeEventListener("keydown", onKey);
+      mq.removeEventListener("change", onResize);
     };
   }, []);
 
@@ -299,38 +489,85 @@ export default function About() {
       </section>
 
       {/* =====================================================
-          CORE PILLARS SECTION
+          CORE PILLARS SECTION (auto-scroll card rail)
       ====================================================== */}
-      <section className="about-pillars-section about-section-space">
+      <section
+        className="about-pillars-section about-section-space"
+        id="pillars"
+      >
         <div className="container">
-          <div className="text-center about-reveal">
-            <span className="about-section-label">
-              What Guides Us
-            </span>
+          <div className="ap-layout">
+            {/* ---------- left intro ---------- */}
+            <div className="ap-intro about-reveal">
+              <span className="about-section-label">
+                What Guides Us
+              </span>
 
-            <h2 className="about-section-title">
-              Core Pillars
-            </h2>
+              <h2 className="ap-heading">
+                Core Pillars
+              </h2>
 
-            <p className="about-section-description">
-              The principles that shape our work, partnerships, and long-term
-              impact.
-            </p>
-          </div>
+              <p className="ap-text">
+                The principles that shape our work, partnerships, and long-term
+                impact.
+              </p>
 
-          <div className="about-pillars-grid">
-            {corePillars.map((pillar) => (
-              <article
-                className="about-pillar-card about-reveal"
-                key={pillar.title}
+              <p className="ap-hint">
+                Auto-scrolls. Hover to pause, drag to browse.
+              </p>
+            </div>
+
+            {/* ---------- rail ---------- */}
+            <div className="ap-wrap about-reveal">
+              <div
+                className="ap-rail"
+                ref={railRef}
+                tabIndex={0}
+                aria-label="Core pillars"
               >
-                <div className="about-pillar-icon">
-                  <i className={pillar.icon}></i>
-                </div>
+                {corePillars.map((pillar, index) => (
+                  <article
+                    className="ap-card"
+                    key={pillar.title}
+                    ref={(el) => {
+                      cardRefs.current[index] = el;
+                    }}
+                  >
+                    <div className="ap-icon">
+                      <i className={pillar.icon}></i>
+                    </div>
 
-                <h5>{pillar.title}</h5>
-              </article>
-            ))}
+                    <div className="ap-card-body">
+                      <span className="ap-tag">
+                        Pillar {String(index + 1).padStart(2, "0")}
+                      </span>
+
+                      <h3>{pillar.title}</h3>
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              <div className="ap-nav">
+                <button
+                  type="button"
+                  aria-label="Previous pillar"
+                  onClick={() => stepRef.current(-1)}
+                >
+                  <i className="fas fa-chevron-up ap-nav-v"></i>
+                  <i className="fas fa-chevron-left ap-nav-h"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Next pillar"
+                  onClick={() => stepRef.current(1)}
+                >
+                  <i className="fas fa-chevron-down ap-nav-v"></i>
+                  <i className="fas fa-chevron-right ap-nav-h"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>

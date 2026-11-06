@@ -91,24 +91,24 @@
 .commercial-section-heading {
   width: 100%;
   max-width: 760px;
-  margin: 0 auto 56px;
+  margin: 0 auto 36px;
   text-align: center;
 }
 
 .commercial-section-heading h2 {
   margin: 0;
   color: var(--commercial-text-dark);
-  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-size: clamp(2.2rem, 4.4vw, 3.5rem);
   font-weight: 800;
   line-height: 1.14;
   letter-spacing: -1.2px;
 }
 
 .commercial-section-heading p {
-  max-width: 700px;
-  margin: 18px auto 0;
+  max-width: 780px;
+  margin: 14px auto 0;
   color: var(--commercial-text-medium);
-  font-size: 1.04rem;
+  font-size: 1.22rem;
   font-weight: 400;
   line-height: 1.8;
 }
@@ -129,7 +129,7 @@
   border-radius: 999px;
   background: rgba(19, 63, 27, 0.1);
   color: var(--commercial-primary-dark);
-  font-size: 0.78rem;
+  font-size: 0.95rem;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 1px;
@@ -141,7 +141,7 @@
 }
 
 .commercial-section-badge svg {
-  font-size: 0.88rem;
+  font-size: 1rem;
 }
 
 /* =========================================================
@@ -223,8 +223,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 120px;
-  padding-bottom: 100px;
+  padding-top: 110px;
+  padding-bottom: 70px;
 }
 
 .commercial-hero-content {
@@ -251,7 +251,7 @@
 
 .commercial-hero-badge svg {
   color: #57c477;
-  font-size: 0.92rem;
+  font-size: 1.05rem;
 }
 
 .commercial-hero-content h1 {
@@ -267,10 +267,10 @@
 }
 
 .commercial-hero-content p {
-  max-width: 720px;
+  max-width: 820px;
   margin: 26px auto 0;
   color: rgba(255, 255, 255, 0.82);
-  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
   font-weight: 400;
   line-height: 1.75;
   letter-spacing: 0.1px;
@@ -279,20 +279,20 @@
 /* ---------- Hero button ---------- */
 
 .commercial-primary-button {
-  min-height: 58px;
+  min-height: 62px;
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 13px;
   overflow: hidden;
-  margin-top: 38px;
-  padding: 16px 30px;
+  margin-top: 30px;
+  padding: 17px 34px;
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
   background: linear-gradient(135deg, #1f7a35 0%, #133f1b 100%);
   color: var(--commercial-white);
-  font-size: 0.98rem;
+  font-size: 1.12rem;
   font-weight: 700;
   letter-spacing: 0.2px;
   cursor: pointer;
@@ -398,7 +398,7 @@
 
 @media (max-width: 992px) {
   .commercial-container { width: min(100% - 34px, 920px); }
-  .commercial-hero-container { padding-top: 110px; padding-bottom: 95px; }
+  .commercial-hero-container { padding-top: 105px; padding-bottom: 75px; }
   .commercial-hero-content h1 {
     font-size: clamp(3rem, 8vw, 5.3rem);
     letter-spacing: -2.8px;
@@ -410,26 +410,26 @@
 @media (max-width: 768px) {
   .commercial-container { width: calc(100% - 28px); }
 
-  .commercial-section-heading { margin-bottom: 42px; }
+  .commercial-section-heading { margin-bottom: 30px; }
   .commercial-section-heading h2 {
-    font-size: clamp(1.9rem, 8vw, 2.7rem);
+    font-size: clamp(2.1rem, 8vw, 3rem);
     letter-spacing: -0.8px;
   }
   .commercial-section-heading p {
-    margin-top: 14px;
-    font-size: 0.94rem;
+    margin-top: 12px;
+    font-size: 1.1rem;
     line-height: 1.7;
   }
 
   .commercial-hero-section { min-height: 92vh; }
   .commercial-hero-container {
     min-height: 92vh;
-    padding-top: 105px;
-    padding-bottom: 95px;
+    padding-top: 100px;
+    padding-bottom: 70px;
   }
   .commercial-hero-badge {
     padding: 10px 15px;
-    font-size: 0.69rem;
+    font-size: 0.8rem;
     letter-spacing: 0.8px;
   }
   .commercial-hero-content h1 {
@@ -439,16 +439,16 @@
     letter-spacing: -2px;
   }
   .commercial-hero-content p {
-    max-width: 560px;
-    margin-top: 20px;
-    font-size: 1rem;
+    max-width: 600px;
+    margin-top: 18px;
+    font-size: 1.12rem;
     line-height: 1.65;
   }
   .commercial-primary-button {
     min-height: 54px;
     margin-top: 30px;
     padding: 14px 25px;
-    font-size: 0.91rem;
+    font-size: 1rem;
   }
   .commercial-hero-decoration-one { width: 125px; height: 125px; left: -60px; }
   .commercial-hero-decoration-two { width: 95px; height: 95px; right: -15px; bottom: 17%; }
@@ -456,13 +456,13 @@
 
 @media (max-width: 480px) {
   .commercial-container { width: calc(100% - 22px); }
-  .commercial-hero-container { padding-top: 95px; padding-bottom: 85px; }
+  .commercial-hero-container { padding-top: 95px; padding-bottom: 65px; }
   .commercial-hero-badge { max-width: 100%; white-space: normal; text-align: center; }
   .commercial-hero-content h1 {
     font-size: clamp(2.35rem, 13vw, 3.4rem);
     letter-spacing: -1.5px;
   }
-  .commercial-hero-content p { font-size: 0.9rem; }
+  .commercial-hero-content p { font-size: 1rem; }
   .commercial-primary-button { width: 100%; max-width: 245px; }
   .commercial-hero-decoration-two { display: none; }
 }
@@ -470,8 +470,8 @@
 @media (max-width: 360px) {
   .commercial-container { width: calc(100% - 18px); }
   .commercial-hero-content h1 { font-size: 2.2rem; letter-spacing: -1px; }
-  .commercial-hero-content p { font-size: 0.84rem; }
-  .commercial-primary-button { min-height: 50px; padding: 12px 20px; font-size: 0.84rem; }
+  .commercial-hero-content p { font-size: 0.95rem; }
+  .commercial-primary-button { min-height: 50px; padding: 12px 20px; font-size: 0.92rem; }
 }
 
 @media (max-height: 620px) and (orientation: landscape) {
@@ -490,7 +490,7 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  padding: 100px 0;
+  padding: 70px 0;
   background: linear-gradient(155deg, #ffffff 0%, #eaf7ed 60%, #eaf7ed 100%);
   scroll-margin-top: 90px;
 }
@@ -526,19 +526,19 @@
 
 .cmr-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 460px;
+  grid-template-columns: minmax(0, 1fr) 480px;
   align-items: center;
-  gap: 70px;
+  gap: 50px;
 }
 
 /* ---------- Left intro ---------- */
 
-.cmr-intro { max-width: 520px; }
+.cmr-intro { max-width: 580px; }
 
 .cmr-heading {
   margin: 8px 0 18px;
   color: #05230b;
-  font-size: clamp(2rem, 3.6vw, 3.2rem);
+  font-size: clamp(2.4rem, 4.2vw, 3.7rem);
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: -0.03em;
@@ -555,14 +555,14 @@
 .cmr-text {
   margin: 0;
   color: #1f7a35;
-  font-size: 1.02rem;
+  font-size: 1.24rem;
   line-height: 1.8;
 }
 
 .cmr-hint {
-  margin: 22px 0 0;
+  margin: 20px 0 0;
   color: #718075;
-  font-size: 0.82rem;
+  font-size: 0.96rem;
 }
 
 /* ---------- Rail ---------- */
@@ -570,13 +570,13 @@
 .cmr-wrap {
   position: relative;
   width: 100%;
-  max-width: 460px;
+  max-width: 480px;
   margin: 0 auto;
 }
 
 .cmr-rail {
   position: relative;
-  height: 600px; /* 3 cards x 200px */
+  height: 660px; /* 3 cards x 220px */
   overflow: hidden;
   background: #eaf7ed;
   border-radius: 22px;
@@ -603,7 +603,7 @@
   flex-direction: column;
   justify-content: center;
   gap: 14px;
-  padding: 22px 28px;
+  padding: 22px 30px;
   overflow: hidden;
   background: #eaf7ed;
   will-change: transform;
@@ -619,15 +619,15 @@
 
 .cmr-icon {
   flex: 0 0 auto;
-  width: 52px;
-  height: 52px;
+  width: 58px;
+  height: 58px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
   background: linear-gradient(145deg, #1f7a35 0%, #133f1b 100%);
   border-radius: 50%;
-  font-size: 1.25rem;
+  font-size: 1.45rem;
   box-shadow: 0 10px 22px rgba(19, 63, 27, 0.25);
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -638,7 +638,7 @@
   display: block;
   margin-bottom: 3px;
   color: #1f7a35;
-  font-size: 0.72rem;
+  font-size: 0.86rem;
   font-weight: 800;
   letter-spacing: 1.2px;
   text-transform: uppercase;
@@ -647,7 +647,7 @@
 .cmr-card h3 {
   margin: 0;
   color: #05230b;
-  font-size: 1.12rem;
+  font-size: 1.36rem;
   font-weight: 800;
   line-height: 1.3;
 }
@@ -655,8 +655,8 @@
 .cmr-card p {
   margin: 0;
   color: #1f7a35;
-  font-size: 0.9rem;
-  line-height: 1.65;
+  font-size: 1.08rem;
+  line-height: 1.6;
 }
 
 /* ---------- Up / down ---------- */
@@ -669,8 +669,8 @@
 }
 
 .cmr-nav button {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   color: #05230b;
   background: #ffffff;
   border: 1px solid rgba(19, 63, 27, 0.18);
@@ -687,20 +687,20 @@
 /* ---------- Rail responsive ---------- */
 
 @media (max-width: 992px) {
-  .cmr-layout { grid-template-columns: 1fr; gap: 40px; }
+  .cmr-layout { grid-template-columns: 1fr; gap: 32px; }
   .cmr-intro { max-width: 100%; margin: 0 auto; text-align: center; }
   .cmr-intro .commercial-section-badge { margin-inline: auto; }
 }
 
 /* Phones: horizontal track */
 @media (max-width: 820px) {
-  .cmr-section { padding: 70px 0; }
+  .cmr-section { padding: 52px 0; }
   .cmr-wrap { max-width: 100%; }
-  .cmr-rail { height: 250px; touch-action: pan-y; }
-  .cmr-card { width: 280px; padding: 18px 20px; gap: 10px; }
-  .cmr-icon { width: 44px; height: 44px; font-size: 1.1rem; }
-  .cmr-card h3 { font-size: 1rem; }
-  .cmr-card p { font-size: 0.84rem; line-height: 1.55; }
+  .cmr-rail { height: 275px; touch-action: pan-y; }
+  .cmr-card { width: 300px; padding: 18px 20px; gap: 10px; }
+  .cmr-icon { width: 48px; height: 48px; font-size: 1.25rem; }
+  .cmr-card h3 { font-size: 1.15rem; }
+  .cmr-card p { font-size: 0.98rem; line-height: 1.55; }
   .cmr-nav { display: none; }
 }
 
@@ -713,7 +713,7 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  padding: 108px 0 118px;
+  padding: 70px 0 80px;
   background: #eaf7ed;
 }
 
@@ -753,14 +753,14 @@
 }
 
 .commercial-service-card {
-  min-height: 290px;
+  min-height: 250px;
   position: relative;
   isolation: isolate;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 34px 24px 30px;
+  padding: 30px 22px 26px;
   border: 1px solid rgba(19, 63, 27, 0.17);
   border-radius: 28px;
   background: linear-gradient(150deg, rgba(255, 255, 255, 0.98) 0%, rgba(234, 247, 237, 0.98) 100%);
@@ -801,19 +801,19 @@
 }
 
 .commercial-service-icon {
-  width: 78px;
-  height: 78px;
+  width: 84px;
+  height: 84px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   border: 1px solid rgba(19, 63, 27, 0.2);
   border-radius: 24px;
   background: #eaf7ed;
   color: var(--commercial-primary);
-  font-size: 1.95rem;
+  font-size: 2.15rem;
   box-shadow:
     0 14px 30px rgba(19, 63, 27, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.88);
@@ -850,16 +850,16 @@
 .commercial-service-card h3 {
   margin: 0;
   color: #05230b;
-  font-size: 1.3rem;
+  font-size: 1.55rem;
   font-weight: 700;
-  line-height: 1.35;
+  line-height: 1.3;
   letter-spacing: -0.3px;
 }
 
 .commercial-service-card p {
-  margin: 14px 0 0;
+  margin: 12px 0 0;
   color: var(--commercial-text-medium);
-  font-size: 0.91rem;
+  font-size: 1.1rem;
   font-weight: 400;
   line-height: 1.72;
 }
@@ -914,18 +914,18 @@
 
 @media (max-width: 1100px) {
   .commercial-services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .commercial-service-card { min-height: 275px; }
+  .commercial-service-card { min-height: 250px; }
 }
 
 @media (max-width: 992px) {
-  .commercial-services-section { padding: 92px 0 100px; }
+  .commercial-services-section { padding: 64px 0 72px; }
   .commercial-services-grid { gap: 22px; }
 }
 
 @media (max-width: 768px) {
-  .commercial-services-section { padding: 76px 0 82px; }
+  .commercial-services-section { padding: 52px 0 60px; }
   .commercial-services-grid { grid-template-columns: 1fr; gap: 20px; }
-  .commercial-service-card { min-height: 260px; padding: 30px 24px 26px; }
+  .commercial-service-card { min-height: 240px; padding: 26px 22px 24px; }
   .commercial-service-icon {
     width: 70px;
     height: 70px;
@@ -934,13 +934,13 @@
     font-size: 1.75rem;
   }
   .commercial-service-icon::before { width: 88px; height: 88px; border-radius: 27px; }
-  .commercial-service-card h3 { font-size: 1.2rem; }
-  .commercial-service-card p { font-size: 0.88rem; }
+  .commercial-service-card h3 { font-size: 1.4rem; }
+  .commercial-service-card p { font-size: 1.05rem; }
 }
 
 @media (max-width: 480px) {
-  .commercial-services-section { padding: 64px 0 70px; }
-  .commercial-service-card { min-height: 245px; padding: 27px 20px 23px; border-radius: 24px; }
+  .commercial-services-section { padding: 48px 0 54px; }
+  .commercial-service-card { min-height: 230px; padding: 24px 18px 22px; border-radius: 24px; }
   .commercial-service-icon {
     width: 64px;
     height: 64px;
@@ -949,8 +949,8 @@
     font-size: 1.55rem;
   }
   .commercial-service-icon::before { width: 80px; height: 80px; border-radius: 24px; }
-  .commercial-service-card h3 { font-size: 1.12rem; }
-  .commercial-service-card p { margin-top: 11px; font-size: 0.84rem; line-height: 1.66; }
+  .commercial-service-card h3 { font-size: 1.32rem; }
+  .commercial-service-card p { margin-top: 10px; font-size: 1rem; line-height: 1.6; }
 }
 
 /* =========================================================

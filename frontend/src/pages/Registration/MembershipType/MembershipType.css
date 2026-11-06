@@ -4,24 +4,32 @@
 
 .inmba-membership-type-page {
   min-height: 100vh;
-  padding: 32px 22px 70px;
+  /* space for the fixed navbar (fixed values, so it does not depend
+     on any global --navbar-height). navbar height + ~36px gap */
+  padding: 172px 22px 70px;
   background:
-    radial-gradient(
-      circle at 8% 12%,
-      rgba(15, 77, 15, 0.12),
-      transparent 31%
-    ),
-    radial-gradient(
-      circle at 92% 85%,
-      rgba(54, 143, 54, 0.08),
-      transparent 34%
-    ),
-    linear-gradient(
-      145deg,
-      #edf6ea 0%,
-      #f9fcf8 52%,
-      #eaf3e6 100%
-    );
+    radial-gradient(circle at 8% 12%, rgba(15, 77, 15, 0.12), transparent 31%),
+    radial-gradient(circle at 92% 85%, rgba(54, 143, 54, 0.08), transparent 34%),
+    linear-gradient(145deg, #edf6ea 0%, #f9fcf8 52%, #eaf3e6 100%);
+}
+
+/* navbar gets shorter on smaller screens, so the top space follows it */
+@media (max-width: 1699px) {
+  .inmba-membership-type-page {
+    padding-top: 160px;
+  }
+}
+
+@media (max-width: 1399px) {
+  .inmba-membership-type-page {
+    padding-top: 148px;
+  }
+}
+
+@media (max-width: 1199px) {
+  .inmba-membership-type-page {
+    padding-top: 140px;
+  }
 }
 
 .inmba-membership-type-container {
@@ -56,16 +64,10 @@
   place-items: center;
   border-radius: 15px;
   color: #ffffff;
-  background:
-    linear-gradient(
-      135deg,
-      #0f4d0f,
-      #2b892b
-    );
+  background: linear-gradient(135deg, #0f4d0f, #2b892b);
   font-size: 1.25rem;
   font-weight: 900;
-  box-shadow:
-    0 9px 20px rgba(15, 77, 15, 0.18);
+  box-shadow: 0 9px 20px rgba(15, 77, 15, 0.18);
 }
 
 .inmba-membership-type-brand strong,
@@ -119,9 +121,7 @@
 
 .inmba-membership-type-hero {
   display: grid;
-  grid-template-columns:
-    minmax(0, 1.25fr)
-    minmax(300px, 0.75fr);
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
   align-items: center;
   gap: 35px;
   margin-bottom: 20px;
@@ -130,19 +130,9 @@
   border-radius: 29px;
   color: #ffffff;
   background:
-    radial-gradient(
-      circle at 87% 14%,
-      rgba(255, 255, 255, 0.16),
-      transparent 29%
-    ),
-    linear-gradient(
-      135deg,
-      #093709,
-      #0f4d0f 54%,
-      #278327
-    );
-  box-shadow:
-    0 24px 55px rgba(15, 77, 15, 0.21);
+    radial-gradient(circle at 87% 14%, rgba(255, 255, 255, 0.16), transparent 29%),
+    linear-gradient(135deg, #093709, #0f4d0f 54%, #278327);
+  box-shadow: 0 24px 55px rgba(15, 77, 15, 0.21);
 }
 
 .inmba-membership-type-hero-content > p {
@@ -241,8 +231,7 @@
   color: #0f4d0f;
   background: #ffffff;
   font-size: 2rem;
-  box-shadow:
-    0 15px 30px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.16);
 }
 
 .inmba-membership-type-orbit-item {
@@ -305,12 +294,7 @@
   place-items: center;
   border-radius: 13px;
   color: #ffffff;
-  background:
-    linear-gradient(
-      135deg,
-      #0f4d0f,
-      #2d8c2d
-    );
+  background: linear-gradient(135deg, #0f4d0f, #2d8c2d);
 }
 
 .inmba-membership-type-referral strong {
@@ -387,8 +371,7 @@
 
 .inmba-membership-type-grid {
   display: grid;
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 17px;
   margin-bottom: 24px;
 }
@@ -403,8 +386,7 @@
   border: 1px solid rgba(15, 77, 15, 0.11);
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.98);
-  box-shadow:
-    0 14px 34px rgba(34, 68, 34, 0.08);
+  box-shadow: 0 14px 34px rgba(34, 68, 34, 0.08);
   transition:
     transform 0.22s ease,
     box-shadow 0.22s ease,
@@ -414,18 +396,7 @@
 .inmba-membership-type-card:hover {
   transform: translateY(-5px);
   border-color: rgba(15, 77, 15, 0.25);
-  box-shadow:
-    0 21px 45px rgba(34, 68, 34, 0.13);
-}
-
-.inmba-membership-type-card-number {
-  position: absolute;
-  top: 13px;
-  right: 17px;
-  color: rgba(35, 72, 35, 0.07);
-  font-size: 3.2rem;
-  font-weight: 900;
-  line-height: 1;
+  box-shadow: 0 21px 45px rgba(34, 68, 34, 0.13);
 }
 
 .inmba-membership-type-card > header {
@@ -445,15 +416,9 @@
   place-items: center;
   border-radius: 17px;
   color: #ffffff;
-  background:
-    linear-gradient(
-      135deg,
-      #0f4d0f,
-      #2b892b
-    );
+  background: linear-gradient(135deg, #0f4d0f, #2b892b);
   font-size: 1.2rem;
-  box-shadow:
-    0 9px 20px rgba(15, 77, 15, 0.17);
+  box-shadow: 0 9px 20px rgba(15, 77, 15, 0.17);
 }
 
 .inmba-membership-type-card > header > small {
@@ -537,74 +502,33 @@
    CARD THEMES
 ======================================== */
 
-.inmba-membership-type-card-blue
-  > header
-  > span {
-  background:
-    linear-gradient(
-      135deg,
-      #1d5d94,
-      #3d89c8
-    );
+.inmba-membership-type-card-blue > header > span {
+  background: linear-gradient(135deg, #1d5d94, #3d89c8);
 }
 
-.inmba-membership-type-card-purple
-  > header
-  > span {
-  background:
-    linear-gradient(
-      135deg,
-      #67408d,
-      #9564bf
-    );
+.inmba-membership-type-card-purple > header > span {
+  background: linear-gradient(135deg, #67408d, #9564bf);
 }
 
-.inmba-membership-type-card-orange
-  > header
-  > span {
-  background:
-    linear-gradient(
-      135deg,
-      #b76516,
-      #e19539
-    );
+.inmba-membership-type-card-orange > header > span {
+  background: linear-gradient(135deg, #b76516, #e19539);
 }
 
-.inmba-membership-type-card-gold
-  > header
-  > span {
-  background:
-    linear-gradient(
-      135deg,
-      #91700e,
-      #c79d25
-    );
+.inmba-membership-type-card-gold > header > span {
+  background: linear-gradient(135deg, #91700e, #c79d25);
 }
 
-.inmba-membership-type-card-red
-  > header
-  > span {
-  background:
-    linear-gradient(
-      135deg,
-      #9b3540,
-      #cf5b66
-    );
+.inmba-membership-type-card-red > header > span {
+  background: linear-gradient(135deg, #9b3540, #cf5b66);
 }
 
-.inmba-membership-type-card-teal
-  > header
-  > span {
-  background:
-    linear-gradient(
-      135deg,
-      #14736d,
-      #31a49b
-    );
+.inmba-membership-type-card-teal > header > span {
+  background: linear-gradient(135deg, #14736d, #31a49b);
 }
 
 /* ========================================
-   PROCESS
+   PROCESS SECTION CONTAINER
+   (content is the auto-scroll rail further below)
 ======================================== */
 
 .inmba-membership-type-process {
@@ -613,98 +537,7 @@
   border: 1px solid rgba(15, 77, 15, 0.11);
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.98);
-  box-shadow:
-    0 15px 38px rgba(34, 68, 34, 0.08);
-}
-
-.inmba-membership-type-process > header {
-  margin-bottom: 24px;
-  text-align: center;
-}
-
-.inmba-membership-type-process > header p {
-  margin: 0 0 5px;
-  color: #3f7b3f;
-  font-size: 0.66rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.inmba-membership-type-process > header h2 {
-  margin: 0 0 6px;
-  color: #1d3c1d;
-  font-size: 1.45rem;
-  font-weight: 900;
-}
-
-.inmba-membership-type-process > header span {
-  color: #748274;
-  font-size: 0.72rem;
-}
-
-.inmba-membership-type-process-grid {
-  display: grid;
-  grid-template-columns:
-    1fr auto
-    1fr auto
-    1fr auto
-    1fr;
-  align-items: center;
-  gap: 10px;
-}
-
-.inmba-membership-type-process-grid article {
-  position: relative;
-  min-height: 170px;
-  padding: 19px;
-  border: 1px solid #dce8da;
-  border-radius: 16px;
-  background: #f7faf6;
-  text-align: center;
-}
-
-.inmba-membership-type-process-grid
-  article
-  > span {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  color: rgba(26, 68, 26, 0.15);
-  font-size: 1.4rem;
-  font-weight: 900;
-}
-
-.inmba-membership-type-process-grid
-  article
-  i {
-  margin-bottom: 12px;
-  color: #257225;
-  font-size: 1.25rem;
-}
-
-.inmba-membership-type-process-grid
-  article
-  h3 {
-  margin: 0 0 7px;
-  color: #294629;
-  font-size: 0.82rem;
-  font-weight: 900;
-}
-
-.inmba-membership-type-process-grid
-  article
-  p {
-  margin: 0;
-  color: #758375;
-  font-size: 0.66rem;
-  line-height: 1.55;
-}
-
-.inmba-membership-type-process-grid
-  > div {
-  width: 22px;
-  height: 2px;
-  background: #b6ceb4;
+  box-shadow: 0 15px 38px rgba(34, 68, 34, 0.08);
 }
 
 /* ========================================
@@ -769,18 +602,7 @@
 
 @media (max-width: 1000px) {
   .inmba-membership-type-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-  }
-
-  .inmba-membership-type-process-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-  }
-
-  .inmba-membership-type-process-grid
-    > div {
-    display: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -801,7 +623,7 @@
 
 @media (max-width: 650px) {
   .inmba-membership-type-page {
-    padding: 22px 12px 50px;
+    padding: 128px 12px 50px;
   }
 
   .inmba-membership-type-topbar {
@@ -844,14 +666,6 @@
     grid-template-columns: 1fr;
   }
 
-  .inmba-membership-type-process {
-    padding: 21px;
-  }
-
-  .inmba-membership-type-process-grid {
-    grid-template-columns: 1fr;
-  }
-
   .inmba-membership-type-help {
     grid-template-columns: auto 1fr;
   }
@@ -862,7 +676,6 @@
   }
 }
 
-
 /* ========================================
    MEMBERSHIP AVAILABILITY THEMES
    Civilian = Green
@@ -872,11 +685,7 @@
 ======================================== */
 
 .inmba-membership-type-card-green > header > span {
-  background: linear-gradient(
-    135deg,
-    #0f6b36,
-    #2aa85f
-  );
+  background: linear-gradient(135deg, #0f6b36, #2aa85f);
 }
 
 .inmba-membership-type-card-green > header > small {
@@ -896,11 +705,7 @@
 }
 
 .inmba-membership-type-card-red > header > span {
-  background: linear-gradient(
-    135deg,
-    #b3132b,
-    #e43f55
-  );
+  background: linear-gradient(135deg, #b3132b, #e43f55);
 }
 
 .inmba-membership-type-card-red > header > small {
@@ -920,11 +725,7 @@
 }
 
 .inmba-membership-type-card-blue > header > span {
-  background: linear-gradient(
-    135deg,
-    #174f9b,
-    #2f7bd8
-  );
+  background: linear-gradient(135deg, #174f9b, #2f7bd8);
 }
 
 .inmba-membership-type-card-blue > header > small {
@@ -947,40 +748,23 @@
 .inmba-membership-type-card-locked {
   cursor: not-allowed;
   border-color: #d8dde3;
-  background:
-    linear-gradient(
-      145deg,
-      #f8f9fa,
-      #eef1f4
-    );
-  box-shadow:
-    0 10px 28px rgba(40, 50, 60, 0.07);
+  background: linear-gradient(145deg, #f8f9fa, #eef1f4);
+  box-shadow: 0 10px 28px rgba(40, 50, 60, 0.07);
 }
 
 .inmba-membership-type-card-locked:hover {
   transform: none;
   border-color: #d8dde3;
-  box-shadow:
-    0 10px 28px rgba(40, 50, 60, 0.07);
+  box-shadow: 0 10px 28px rgba(40, 50, 60, 0.07);
 }
 
-.inmba-membership-type-card-locked
-  > header
-  > span {
+.inmba-membership-type-card-locked > header > span {
   color: #ffffff;
-  background:
-    linear-gradient(
-      135deg,
-      #7c8793,
-      #a5adb6
-    );
-  box-shadow:
-    0 8px 18px rgba(60, 70, 80, 0.14);
+  background: linear-gradient(135deg, #7c8793, #a5adb6);
+  box-shadow: 0 8px 18px rgba(60, 70, 80, 0.14);
 }
 
-.inmba-membership-type-card-locked
-  > header
-  > small {
+.inmba-membership-type-card-locked > header > small {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -988,15 +772,9 @@
   background: #e3e7eb;
 }
 
-.inmba-membership-type-card-locked
-  .inmba-membership-type-card-content
-  p,
-.inmba-membership-type-card-locked
-  .inmba-membership-type-card-content
-  h3,
-.inmba-membership-type-card-locked
-  .inmba-membership-type-card-content
-  > span {
+.inmba-membership-type-card-locked .inmba-membership-type-card-content p,
+.inmba-membership-type-card-locked .inmba-membership-type-card-content h3,
+.inmba-membership-type-card-locked .inmba-membership-type-card-content > span {
   color: #8b949e;
 }
 
@@ -1038,12 +816,6 @@
   font-size: 1.45rem;
   pointer-events: none;
 }
-
-.inmba-membership-type-card-locked
-  .inmba-membership-type-card-number {
-  color: rgba(80, 90, 100, 0.07);
-}
-
 
 /* ===== MEMBERSHIP COMING SOON / ADMIN SUPPORT - OLD UI REFINEMENT ===== */
 .inmba-membership-type-page { min-height:100vh; }
@@ -1116,7 +888,7 @@
 @keyframes inmbaRegistrationAppear {from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes inmbaRegistrationFloat {0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 @media(max-width:650px) {
- .inmba-membership-type-page {padding:20px 14px 45px;}
+ .inmba-membership-type-page {padding:128px 14px 45px;}
  .inmba-registration-unavailable {margin:20px auto;padding:30px 18px 28px;border-radius:22px;}
  .inmba-registration-admin-contact {padding:23px 16px;border-radius:18px;}
  .inmba-registration-admin-actions {flex-direction:column;}
@@ -1125,4 +897,250 @@
 @media(prefers-reduced-motion:reduce){
  .inmba-registration-unavailable,.inmba-registration-unavailable-icon{animation:none;}
  .inmba-registration-admin-contact:hover,.inmba-registration-admin-call:hover,.inmba-registration-admin-whatsapp:hover{transform:none;}
+}
+
+/* Small phones: navbar is a bit shorter here */
+@media (max-width: 575px) {
+  .inmba-membership-type-page {
+    padding-top: 116px;
+  }
+}
+
+/* =========================================================
+   REGISTRATION PROCESS - AUTO-SCROLL CARD RAIL
+   Text LEFT, rail RIGHT. Same engine as the Chamber rail.
+========================================================= */
+
+.mtr-section {
+  padding: 40px 38px;
+  overflow: hidden;
+}
+
+.mtr-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 440px;
+  align-items: center;
+  gap: 60px;
+}
+
+/* ---------- Left text ---------- */
+.mtr-intro {
+  max-width: 480px;
+}
+
+.mtr-intro > p {
+  margin: 0 0 8px;
+  color: #3f7b3f;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.mtr-intro > h2 {
+  margin: 0 0 14px;
+  color: #1d3c1d;
+  font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.mtr-intro > span {
+  display: block;
+  color: #748274;
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+
+.mtr-hint {
+  display: block;
+  margin-top: 22px;
+  color: #a4adb8;
+  font-size: 0.78rem;
+  font-style: normal;
+}
+
+/* ---------- Rail ---------- */
+.mtr-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.mtr-rail {
+  position: relative;
+  height: 540px; /* 3 cards x 180px */
+  overflow: hidden;
+  background: #f7faf6;
+  border-radius: 20px;
+  cursor: grab;
+  touch-action: pan-x;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 16px 40px rgba(34, 68, 34, 0.14);
+}
+
+.mtr-rail.is-drag {
+  cursor: grabbing;
+}
+
+.mtr-rail:focus-visible {
+  outline: 2px solid rgba(34, 197, 94, 0.5);
+  outline-offset: 3px;
+}
+
+.mtr-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 26px;
+  overflow: hidden;
+  background: #f7faf6;
+  will-change: transform;
+}
+
+.mtr-alt {
+  background: #ffffff;
+}
+
+.mtr-card-top {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.mtr-icon {
+  flex: 0 0 auto;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f4d0f, #2b892b);
+  border-radius: 50%;
+  font-size: 1.1rem;
+  box-shadow: 0 9px 20px rgba(15, 77, 15, 0.2);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.mtr-card:hover .mtr-icon {
+  transform: scale(1.08) rotate(-6deg);
+}
+
+.mtr-tag {
+  display: block;
+  margin-bottom: 3px;
+  color: #3f7b3f;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.mtr-card h3 {
+  margin: 0;
+  color: #1c3c1c;
+  font-size: 1.05rem;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.mtr-card p {
+  margin: 0;
+  color: #748274;
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+/* ---------- Up / down ---------- */
+.mtr-nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.mtr-nav button {
+  width: 38px;
+  height: 38px;
+  color: #1c3c1c;
+  background: #ffffff;
+  border: 1px solid #cbdcca;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.mtr-nav button:hover {
+  color: #ffffff;
+  background: #0f4d0f;
+}
+
+/* ---------- Rail responsive ---------- */
+@media (max-width: 992px) {
+  .mtr-layout {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .mtr-intro {
+    max-width: 100%;
+    margin: 0 auto;
+    text-align: center;
+  }
+}
+
+/* Phones: horizontal track */
+@media (max-width: 820px) {
+  .mtr-section {
+    padding: 28px 18px;
+  }
+
+  .mtr-wrap {
+    max-width: 100%;
+  }
+
+  .mtr-rail {
+    height: 230px;
+    touch-action: pan-y;
+  }
+
+  .mtr-card {
+    width: 270px;
+    padding: 16px 18px;
+    gap: 9px;
+  }
+
+  .mtr-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 0.95rem;
+  }
+
+  .mtr-card h3 {
+    font-size: 0.95rem;
+  }
+
+  .mtr-card p {
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+
+  .mtr-nav {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mtr-icon {
+    transition: none;
+  }
 }

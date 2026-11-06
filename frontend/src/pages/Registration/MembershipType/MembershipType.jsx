@@ -1,11 +1,9 @@
-import React, {
-  useMemo,
-} from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 
-import {
-  Link,
-  useSearchParams,
-} from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./MembershipType.css";
@@ -64,8 +62,7 @@ const MEMBERSHIP_TYPES = [
     id: "student",
     title: "Student Member",
     subtitle: "Academic Membership",
-    description:
-      "Student membership registration will be available soon.",
+    description: "Student membership registration will be available soon.",
     icon: "fas fa-graduation-cap",
     route: "",
     status: "locked",
@@ -73,14 +70,11 @@ const MEMBERSHIP_TYPES = [
     theme: "locked",
   },
 
-
-
   {
     id: "honor",
     title: "Honor Member",
     subtitle: "Recognition Membership",
-    description:
-      "Honor membership registration will be available soon.",
+    description: "Honor membership registration will be available soon.",
     icon: "fas fa-award",
     route: "",
     status: "locked",
@@ -103,17 +97,42 @@ const MEMBERSHIP_TYPES = [
 ];
 
 /* ========================================
+   REGISTRATION PROCESS STEPS (auto-scroll rail)
+======================================== */
+
+const PROCESS_STEPS = [
+  {
+    icon: "fas fa-list-check",
+    tag: "Step 1",
+    title: "Select Category",
+    text: "Choose the membership type matching your application.",
+  },
+  {
+    icon: "fas fa-file-pen",
+    tag: "Step 2",
+    title: "Complete Form",
+    text: "Enter the required personal, educational or organization details.",
+  },
+  {
+    icon: "fas fa-user-shield",
+    tag: "Step 3",
+    title: "Verification",
+    text: "Submitted information is reviewed through the relevant membership workflow.",
+  },
+  {
+    icon: "fas fa-circle-check",
+    tag: "Step 4",
+    title: "Membership Access",
+    text: "Continue using the generated member credentials after completion.",
+  },
+];
+
+/* ========================================
    COMMON HELPER
 ======================================== */
 
-const toText = (
-  value,
-  fallback = ""
-) => {
-  const normalizedValue =
-    String(
-      value ?? ""
-    ).trim();
+const toText = (value, fallback = "") => {
+  const normalizedValue = String(value ?? "").trim();
 
   return normalizedValue || fallback;
 };
@@ -132,30 +151,16 @@ const toText = (
    /student?ref=ABC123
 ======================================== */
 
-const buildMembershipRoute = (
-  route,
-  referralId
-) => {
-  const normalizedRoute =
-    toText(
-      route,
-      "/"
-    );
+const buildMembershipRoute = (route, referralId) => {
+  const normalizedRoute = toText(route, "/");
 
-  const normalizedReferral =
-    toText(
-      referralId,
-      ""
-    );
+  const normalizedReferral = toText(referralId, "");
 
   if (!normalizedReferral) {
     return normalizedRoute;
   }
 
-  const separator =
-    normalizedRoute.includes("?")
-      ? "&"
-      : "?";
+  const separator = normalizedRoute.includes("?") ? "&" : "?";
 
   return `${normalizedRoute}${separator}ref=${encodeURIComponent(
     normalizedReferral
@@ -163,41 +168,240 @@ const buildMembershipRoute = (
 };
 
 /* ========================================
+   AUTO-SCROLLING CARD RAIL
+   (same engine as the Chamber page)
+   Text on the LEFT, rail on the RIGHT.
+======================================== */
+
+const RAIL_N = PROCESS_STEPS.length;
+const AUTO_SPEED = 0.0004; // cards per millisecond
+const SIDE_W = 270; // card width on phones
+const wrap = (x, n) => ((x % n) + n) % n;
+
+function ProcessRail() {
+  const railRef = useRef(null);
+  const cardRefs = useRef([]);
+  const api = useRef({ target: 0 });
+
+  useEffect(() => {
+    const rail = railRef.current;
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let p = 0;
+    let cardS = 0;
+    let side = false;
+    let dirty = true;
+    let last = 0;
+    let raf;
+    let down = false;
+    let start = 0;
+    let startT = 0;
+    let moved = 0;
+    let hover = false;
+
+    const size = () => {
+      side = window.innerWidth <= 820;
+      cardS = side ? SIDE_W : rail.clientHeight / 3;
+      cardRefs.current.forEach((c) => {
+        if (c) c.style.height = side ? "100%" : `${cardS}px`;
+      });
+      dirty = true;
+    };
+
+    const paint = () => {
+      const all = cardS * RAIL_N;
+      cardRefs.current.forEach((c, i) => {
+        if (!c) return;
+        let y = wrap(i * cardS - p * cardS, all);
+        if (y > all - cardS) y -= all;
+        c.style.transform = side
+          ? `translate3d(${y.toFixed(1)}px,0,0)`
+          : `translate3d(0,${y.toFixed(1)}px,0)`;
+      });
+    };
+
+    const frame = (now) => {
+      const dt = Math.min(50, now - last) || 16;
+      last = now;
+      const was = p;
+
+      if (!down && !hover && !calm) api.current.target += dt * AUTO_SPEED;
+
+      const target = api.current.target;
+      if (calm) p = target;
+      else p += (target - p) * (1 - Math.exp(-dt * 0.0072));
+      if (Math.abs(target - p) < 0.0004) p = target;
+
+      if (p !== was || dirty) {
+        dirty = false;
+        paint();
+      }
+      raf = requestAnimationFrame(frame);
+    };
+
+    const pos = (e) => (side ? e.clientX : e.clientY);
+
+    const onDown = (e) => {
+      down = true;
+      start = pos(e);
+      startT = api.current.target;
+      moved = 0;
+    };
+    const onMove = (e) => {
+      if (!down) return;
+      const d = pos(e) - start;
+      moved = Math.max(moved, Math.abs(d));
+      if (moved > 6) {
+        rail.setPointerCapture?.(e.pointerId);
+        rail.classList.add("is-drag");
+      }
+      api.current.target = startT - d / cardS;
+    };
+    const onUp = () => {
+      if (!down) return;
+      down = false;
+      rail.classList.remove("is-drag");
+      if (moved >= 6) api.current.target = Math.round(api.current.target);
+    };
+    const onEnter = () => {
+      hover = true;
+    };
+    const onLeave = () => {
+      hover = false;
+    };
+    const onKey = (e) => {
+      if (["ArrowDown", "ArrowRight"].includes(e.key)) {
+        e.preventDefault();
+        api.current.target = Math.round(api.current.target) + 1;
+      }
+      if (["ArrowUp", "ArrowLeft"].includes(e.key)) {
+        e.preventDefault();
+        api.current.target = Math.round(api.current.target) - 1;
+      }
+    };
+
+    size();
+    raf = requestAnimationFrame(frame);
+    window.addEventListener("resize", size);
+    rail.addEventListener("pointerdown", onDown);
+    rail.addEventListener("pointermove", onMove);
+    rail.addEventListener("pointerup", onUp);
+    rail.addEventListener("pointercancel", onUp);
+    rail.addEventListener("pointerenter", onEnter);
+    rail.addEventListener("pointerleave", onLeave);
+    rail.addEventListener("keydown", onKey);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", size);
+      rail.removeEventListener("pointerdown", onDown);
+      rail.removeEventListener("pointermove", onMove);
+      rail.removeEventListener("pointerup", onUp);
+      rail.removeEventListener("pointercancel", onUp);
+      rail.removeEventListener("pointerenter", onEnter);
+      rail.removeEventListener("pointerleave", onLeave);
+      rail.removeEventListener("keydown", onKey);
+    };
+  }, []);
+
+  const step = (n) => {
+    api.current.target = Math.round(api.current.target) + n;
+  };
+
+  return (
+    <section className="inmba-membership-type-process mtr-section">
+      <div className="mtr-layout">
+        {/* LEFT: TEXT */}
+        <div className="mtr-intro" data-aos="fade-right">
+          <p>Registration Process</p>
+
+          <h2>Complete Your Membership</h2>
+
+          <span>
+            Follow the registration and verification workflow for your
+            selected membership category.
+          </span>
+
+          <em className="mtr-hint">
+            Auto-scrolls. Hover to pause, drag to browse.
+          </em>
+        </div>
+
+        {/* RIGHT: RAIL */}
+        <div className="mtr-wrap" data-aos="fade-left">
+          <aside
+            className="mtr-rail"
+            ref={railRef}
+            tabIndex={0}
+            aria-label="Membership registration process. Drag or use arrow keys."
+          >
+            {PROCESS_STEPS.map((item, i) => (
+              <article
+                key={item.title}
+                className={`mtr-card${i % 2 ? " mtr-alt" : ""}`}
+                ref={(el) => (cardRefs.current[i] = el)}
+              >
+                <div className="mtr-card-top">
+                  <span className="mtr-icon">
+                    <i className={item.icon} aria-hidden="true" />
+                  </span>
+
+                  <div>
+                    <span className="mtr-tag">{item.tag}</span>
+                    <h3>{item.title}</h3>
+                  </div>
+                </div>
+
+                <p>{item.text}</p>
+              </article>
+            ))}
+          </aside>
+
+          <div className="mtr-nav">
+            <button type="button" onClick={() => step(-1)} aria-label="Previous">
+              <i className="fas fa-chevron-up" aria-hidden="true" />
+            </button>
+
+            <button type="button" onClick={() => step(1)} aria-label="Next">
+              <i className="fas fa-chevron-down" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ========================================
    MEMBERSHIP TYPE PAGE
 ======================================== */
 
 export default function MembershipType() {
-  const [
-    searchParams,
-  ] =
-    useSearchParams();
+  const [searchParams] = useSearchParams();
 
-  const referralId =
-    useMemo(
-      () =>
-        toText(
-          searchParams.get("ref"),
-          ""
-        ),
-      [
-        searchParams,
-      ]
-    );
+  const referralId = useMemo(
+    () => toText(searchParams.get("ref"), ""),
+    [searchParams]
+  );
+
+  /* scroll-reveal animation for the process section */
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+      easing: "ease-in-out",
+      offset: 80,
+    });
+
+    AOS.refresh();
+  }, []);
+
   const registrationAvailable = true;
 
   if (!registrationAvailable) {
     return (
       <main className="inmba-membership-type-page">
         <div className="inmba-membership-type-container">
-          <header className="inmba-membership-type-topbar">
-            <Link to="/" className="inmba-membership-type-brand">
-              <span>I</span>
-              <div>
-                <strong>INMBA</strong>
-                <small>Membership Registration</small>
-              </div>
-            </Link>
-          </header>
 
           <section className="inmba-registration-unavailable">
             <div className="inmba-registration-unavailable-icon">
@@ -262,49 +466,9 @@ export default function MembershipType() {
     );
   }
 
-
   return (
     <main className="inmba-membership-type-page">
       <div className="inmba-membership-type-container">
-        {/* =================================
-            TOP BAR
-        ================================= */}
-
-        <header className="inmba-membership-type-topbar">
-          <Link
-            to="/"
-            className="inmba-membership-type-brand"
-          >
-            <span>
-              I
-            </span>
-
-            <div>
-              <strong>
-                INMBA
-              </strong>
-
-              <small>
-                Membership Registration
-              </small>
-            </div>
-          </Link>
-
-          <div className="inmba-membership-type-login">
-            <span>
-              Already a member?
-            </span>
-
-            <Link to="/login">
-              <i
-                className="fas fa-right-to-bracket"
-                aria-hidden="true"
-              ></i>
-
-              Member Login
-            </Link>
-          </div>
-        </header>
 
         {/* =================================
             HERO
@@ -312,13 +476,9 @@ export default function MembershipType() {
 
         <section className="inmba-membership-type-hero">
           <div className="inmba-membership-type-hero-content">
-            <p>
-              INMBA Global Membership
-            </p>
+            <p>INMBA Global Membership</p>
 
-            <h1>
-              Choose Your Membership Type
-            </h1>
+            <h1>Choose Your Membership Type</h1>
 
             <span>
               Select the membership category that matches your
@@ -329,20 +489,12 @@ export default function MembershipType() {
             <div className="inmba-membership-type-hero-actions">
               <a href="#membership-options">
                 View Membership Options
-
-                <i
-                  className="fas fa-arrow-down"
-                  aria-hidden="true"
-                ></i>
+                <i className="fas fa-arrow-down" aria-hidden="true"></i>
               </a>
 
               <Link to="/contact">
                 Contact INMBA
-
-                <i
-                  className="fas fa-headset"
-                  aria-hidden="true"
-                ></i>
+                <i className="fas fa-headset" aria-hidden="true"></i>
               </Link>
             </div>
           </div>
@@ -350,38 +502,23 @@ export default function MembershipType() {
           <div className="inmba-membership-type-hero-visual">
             <div className="inmba-membership-type-orbit">
               <span className="inmba-membership-type-orbit-center">
-                <i
-                  className="fas fa-globe"
-                  aria-hidden="true"
-                ></i>
+                <i className="fas fa-globe" aria-hidden="true"></i>
               </span>
 
               <span className="inmba-membership-type-orbit-item inmba-membership-type-orbit-one">
-                <i
-                  className="fas fa-user-tie"
-                  aria-hidden="true"
-                ></i>
+                <i className="fas fa-user-tie" aria-hidden="true"></i>
               </span>
 
               <span className="inmba-membership-type-orbit-item inmba-membership-type-orbit-two">
-                <i
-                  className="fas fa-graduation-cap"
-                  aria-hidden="true"
-                ></i>
+                <i className="fas fa-graduation-cap" aria-hidden="true"></i>
               </span>
 
               <span className="inmba-membership-type-orbit-item inmba-membership-type-orbit-three">
-                <i
-                  className="fas fa-building"
-                  aria-hidden="true"
-                ></i>
+                <i className="fas fa-building" aria-hidden="true"></i>
               </span>
 
               <span className="inmba-membership-type-orbit-item inmba-membership-type-orbit-four">
-                <i
-                  className="fas fa-briefcase"
-                  aria-hidden="true"
-                ></i>
+                <i className="fas fa-briefcase" aria-hidden="true"></i>
               </span>
             </div>
           </div>
@@ -394,29 +531,19 @@ export default function MembershipType() {
         {referralId && (
           <section className="inmba-membership-type-referral">
             <span>
-              <i
-                className="fas fa-user-plus"
-                aria-hidden="true"
-              ></i>
+              <i className="fas fa-user-plus" aria-hidden="true"></i>
             </span>
 
             <div>
-              <strong>
-                Referral ID Applied
-              </strong>
+              <strong>Referral ID Applied</strong>
 
               <p>
-                Referral ID{" "}
-                <b>
-                  {referralId}
-                </b>{" "}
-                will be forwarded to the selected registration page.
+                Referral ID <b>{referralId}</b> will be forwarded to the
+                selected registration page.
               </p>
             </div>
 
-            <code>
-              {referralId}
-            </code>
+            <code>{referralId}</code>
           </section>
         )}
 
@@ -429,13 +556,9 @@ export default function MembershipType() {
           className="inmba-membership-type-intro"
         >
           <div>
-            <p>
-              Membership Categories
-            </p>
+            <p>Membership Categories</p>
 
-            <h2>
-              Select an Application
-            </h2>
+            <h2>Select an Application</h2>
 
             <span>
               Each option opens its matching registration page. Your
@@ -443,9 +566,7 @@ export default function MembershipType() {
             </span>
           </div>
 
-          <strong>
-            {MEMBERSHIP_TYPES.length} Options
-          </strong>
+          <strong>{MEMBERSHIP_TYPES.length} Options</strong>
         </section>
 
         {/* =================================
@@ -453,257 +574,96 @@ export default function MembershipType() {
         ================================= */}
 
         <section className="inmba-membership-type-grid">
-          {MEMBERSHIP_TYPES.map(
-            (
-              membership,
-              index
-            ) => {
-              const isLocked =
-                membership.status ===
-                "locked";
+          {MEMBERSHIP_TYPES.map((membership) => {
+            const isLocked = membership.status === "locked";
 
-              const membershipRoute =
-                !isLocked
-                  ? buildMembershipRoute(
-                      membership.route,
-                      referralId
-                    )
-                  : "";
+            const membershipRoute = !isLocked
+              ? buildMembershipRoute(membership.route, referralId)
+              : "";
 
-              return (
-                <article
-                  key={membership.id}
-                  className={[
-                    "inmba-membership-type-card",
-                    `inmba-membership-type-card-${membership.theme}`,
-                    isLocked
-                      ? "inmba-membership-type-card-locked"
-                      : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  aria-disabled={
-                    isLocked
-                      ? "true"
-                      : undefined
-                  }
-                >
-                  <div className="inmba-membership-type-card-number">
-                    {String(
-                      index + 1
-                    ).padStart(
-                      2,
-                      "0"
-                    )}
-                  </div>
-
-                  <header>
-                    <span>
-                      <i
-                        className={
-                          isLocked
-                            ? "fas fa-lock"
-                            : membership.icon
-                        }
-                        aria-hidden="true"
-                      ></i>
-                    </span>
-
-                    <small>
-                      <i
-                        className={
-                          isLocked
-                            ? "fas fa-lock"
-                            : "fas fa-circle-check"
-                        }
-                        aria-hidden="true"
-                      ></i>
-
-                      {membership.badge}
-                    </small>
-                  </header>
-
-                  <div className="inmba-membership-type-card-content">
-                    <p>
-                      {membership.subtitle}
-                    </p>
-
-                    <h3>
-                      {membership.title}
-                    </h3>
-
-                    <span>
-                      {membership.description}
-                    </span>
-                  </div>
-
-                  <footer>
-                    {isLocked ? (
-                      <button
-                        type="button"
-                        className="inmba-membership-type-locked-button"
-                        disabled
-                      >
-                        <span>
-                          <i
-                            className="fas fa-lock"
-                            aria-hidden="true"
-                          ></i>
-
-                          Coming Soon
-                        </span>
-                      </button>
-                    ) : (
-                      <Link
-                        to={
-                          membershipRoute
-                        }
-                      >
-                        Select Membership
-
-                        <i
-                          className="fas fa-arrow-right"
-                          aria-hidden="true"
-                        ></i>
-                      </Link>
-                    )}
-                  </footer>
-
-                  {isLocked && (
-                    <div
-                      className="inmba-membership-type-lock-overlay"
+            return (
+              <article
+                key={membership.id}
+                className={[
+                  "inmba-membership-type-card",
+                  `inmba-membership-type-card-${membership.theme}`,
+                  isLocked ? "inmba-membership-type-card-locked" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                aria-disabled={isLocked ? "true" : undefined}
+              >
+                <header>
+                  <span>
+                    <i
+                      className={isLocked ? "fas fa-lock" : membership.icon}
                       aria-hidden="true"
-                    >
-                      <i className="fas fa-lock"></i>
-                    </div>
-                  )}
+                    ></i>
+                  </span>
 
+                  <small>
+                    <i
+                      className={
+                        isLocked ? "fas fa-lock" : "fas fa-circle-check"
+                      }
+                      aria-hidden="true"
+                    ></i>
+
+                    {membership.badge}
+                  </small>
+                </header>
+
+                <div className="inmba-membership-type-card-content">
+                  <p>{membership.subtitle}</p>
+
+                  <h3>{membership.title}</h3>
+
+                  <span>{membership.description}</span>
+                </div>
+
+                <footer>
+                  {isLocked ? (
+                    <button
+                      type="button"
+                      className="inmba-membership-type-locked-button"
+                      disabled
+                    >
+                      <span>
+                        <i className="fas fa-lock" aria-hidden="true"></i>
+                        Coming Soon
+                      </span>
+                    </button>
+                  ) : (
+                    <Link to={membershipRoute}>
+                      Select Membership
+                      <i className="fas fa-arrow-right" aria-hidden="true"></i>
+                    </Link>
+                  )}
+                </footer>
+
+                {isLocked && (
                   <div
-                    className="inmba-membership-type-card-decoration"
+                    className="inmba-membership-type-lock-overlay"
                     aria-hidden="true"
-                  ></div>
-                </article>
-              );
-            }
-          )}
+                  >
+                    <i className="fas fa-lock"></i>
+                  </div>
+                )}
+
+                <div
+                  className="inmba-membership-type-card-decoration"
+                  aria-hidden="true"
+                ></div>
+              </article>
+            );
+          })}
         </section>
 
         {/* =================================
-            REGISTRATION PROCESS
+            REGISTRATION PROCESS (auto-scroll rail)
         ================================= */}
 
-        <section className="inmba-membership-type-process">
-          <header>
-            <p>
-              Registration Process
-            </p>
-
-            <h2>
-              Complete Your Membership
-            </h2>
-
-            <span>
-              Follow the registration and verification workflow for
-              your selected membership category.
-            </span>
-          </header>
-
-          <div className="inmba-membership-type-process-grid">
-            <article>
-              <span>
-                1
-              </span>
-
-              <div>
-                <i
-                  className="fas fa-list-check"
-                  aria-hidden="true"
-                ></i>
-
-                <h3>
-                  Select Category
-                </h3>
-
-                <p>
-                  Choose the membership type matching your
-                  application.
-                </p>
-              </div>
-            </article>
-
-            <div></div>
-
-            <article>
-              <span>
-                2
-              </span>
-
-              <div>
-                <i
-                  className="fas fa-file-pen"
-                  aria-hidden="true"
-                ></i>
-
-                <h3>
-                  Complete Form
-                </h3>
-
-                <p>
-                  Enter the required personal, educational or
-                  organization details.
-                </p>
-              </div>
-            </article>
-
-            <div></div>
-
-            <article>
-              <span>
-                3
-              </span>
-
-              <div>
-                <i
-                  className="fas fa-user-shield"
-                  aria-hidden="true"
-                ></i>
-
-                <h3>
-                  Verification
-                </h3>
-
-                <p>
-                  Submitted information is reviewed through the
-                  relevant membership workflow.
-                </p>
-              </div>
-            </article>
-
-            <div></div>
-
-            <article>
-              <span>
-                4
-              </span>
-
-              <div>
-                <i
-                  className="fas fa-circle-check"
-                  aria-hidden="true"
-                ></i>
-
-                <h3>
-                  Membership Access
-                </h3>
-
-                <p>
-                  Continue using the generated member credentials
-                  after completion.
-                </p>
-              </div>
-            </article>
-          </div>
-        </section>
+        <ProcessRail />
 
         {/* =================================
             HELP CARD
@@ -711,16 +671,11 @@ export default function MembershipType() {
 
         <section className="inmba-membership-type-help">
           <span>
-            <i
-              className="fas fa-circle-question"
-              aria-hidden="true"
-            ></i>
+            <i className="fas fa-circle-question" aria-hidden="true"></i>
           </span>
 
           <div>
-            <h3>
-              Need Help Choosing?
-            </h3>
+            <h3>Need Help Choosing?</h3>
 
             <p>
               Contact the INMBA support team before submitting a
@@ -730,11 +685,7 @@ export default function MembershipType() {
 
           <Link to="/contact">
             Contact Support
-
-            <i
-              className="fas fa-arrow-right"
-              aria-hidden="true"
-            ></i>
+            <i className="fas fa-arrow-right" aria-hidden="true"></i>
           </Link>
         </section>
       </div>
