@@ -31,6 +31,19 @@ const railItems = [
   { id: 10, title: "Level 1 → Level 16", label: "Growth Path", to: "/membership-type", icon: "bi bi-bar-chart-steps" },
 ];
 
+const membershipStats = [
+  { value: "6", label: "Membership types" },
+  { value: "3", label: "Connected divisions" },
+  { value: "16", label: "Growth levels" },
+];
+
+const membershipPoints = [
+  "Pick the type that fits you: business, professional, citizen, student or honored contributor.",
+  "Grow step by step, from Level 1 Member to Level 16 Patron Senate.",
+  "Get access to the Chamber, Commercial and Foundation divisions.",
+  "Register online and continue with your generated member credentials.",
+];
+
 const RAIL_N = railItems.length;
 const AUTO_SPEED = 0.0004; // cards per millisecond (auto scroll)
 const wrap = (x, n) => ((x % n) + n) % n;
@@ -347,23 +360,6 @@ export default function Home() {
                   <i className="fas fa-arrow-right"></i>
                 </Link>
               </div>
-
-              <div className="hero-mini-stats">
-                <Link to="/chamber" className="hero-mini-stat">
-                  <strong>INMBA Chamber</strong>
-                  <span>Develop real-world capability</span>
-                </Link>
-
-                <Link to="/commercial" className="hero-mini-stat">
-                  <strong>INMBA Commercial</strong>
-                  <span>Build trusted connections</span>
-                </Link>
-
-                <Link to="/foundation" className="hero-mini-stat">
-                  <strong>INMBA Foundation</strong>
-                  <span>Create meaningful impact</span>
-                </Link>
-              </div>
             </div>
           </div>
         </div>
@@ -454,9 +450,34 @@ export default function Home() {
                   three divisions and a structured growth path from Level 1 to
                   Level 16.
                 </p>
-                <Link to="/membership-type" className="vc-link">
-                  View all memberships
-                </Link>
+
+                <div className="vc-stats">
+                  {membershipStats.map((stat) => (
+                    <div className="vc-stat" key={stat.label}>
+                      <strong>{stat.value}</strong>
+                      <span>{stat.label}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <ul className="vc-points">
+                  {membershipPoints.map((point) => (
+                    <li key={point}>
+                      <i className="bi bi-check-circle-fill"></i>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="vc-actions">
+                  <Link to="/membership-type" className="vc-link">
+                    View all memberships
+                  </Link>
+                  <Link to="/login" className="vc-login">
+                    Already a member? Login
+                  </Link>
+                </div>
+
                 <p className="vc-hint">Auto-scrolls. Hover to pause, drag to browse.</p>
               </div>
             </div>
@@ -536,7 +557,7 @@ export default function Home() {
                     opportunities, and create positive impact in your community.
                   </p>
 
-                  <Link to="/membership" className="btn-light-premium">
+                  <Link to="/membership-type" className="btn-light-premium">
                     Become a Member
                     <i className="fas fa-arrow-right"></i>
                   </Link>

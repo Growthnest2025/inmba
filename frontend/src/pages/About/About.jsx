@@ -81,9 +81,38 @@ const foundationActivities = [
   },
 ];
 
+/* Hero right side: three matching info cards */
+const heroCards = [
+  {
+    title: "Meaningful Connections",
+    text: "Build trusted relationships with professionals and leaders.",
+    icon: "fas fa-people-group",
+  },
+  {
+    title: "Global Network",
+    text: "Connect with entrepreneurs, professionals and business leaders worldwide.",
+    icon: "fas fa-globe",
+  },
+  {
+    title: "Social Responsibility",
+    text: "Support healthcare, education, charity and community welfare.",
+    icon: "fas fa-hand-holding-heart",
+  },
+];
+
+/* Core Pillars: extra points under the intro text */
+const pillarPoints = [
+  "Collaboration, innovation and a global network",
+  "Education, healthcare and livelihood support",
+  "Entrepreneurship and sustainable development",
+];
+
 /* Core Pillars rail settings */
 const RAIL_SPEED = 38; // px per second
 const RAIL_RESUME_DELAY = 1500; // ms after a drag ends
+
+/* Must match the max-width of the horizontal rail block in About.css */
+const RAIL_HORIZONTAL_QUERY = "(max-width: 991px)";
 
 export default function About() {
   const railRef = useRef(null);
@@ -121,7 +150,8 @@ export default function About() {
 
   /* ---------------------------------------------------------
      Core Pillars rail
-     Desktop: vertical looping track. Phones (<= 820px): horizontal.
+     Desktop: vertical looping track.
+     Tablets and phones (<= 991px): horizontal.
      Auto-scroll, pause on hover, drag / swipe, buttons, arrow keys.
   --------------------------------------------------------- */
   useEffect(() => {
@@ -131,7 +161,7 @@ export default function About() {
     if (!rail || !cards.length) return undefined;
 
     const n = cards.length;
-    const mq = window.matchMedia("(max-width: 820px)");
+    const mq = window.matchMedia(RAIL_HORIZONTAL_QUERY);
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let horiz = mq.matches;
@@ -368,24 +398,21 @@ export default function About() {
 
             <div className="col-lg-6">
               <div className="about-hero-visual">
-                
+                <div className="about-hero-cards">
+                  {heroCards.map((card) => (
+                    <div className="about-hero-info-card" key={card.title}>
+                      <div className="about-info-card-icon">
+                        <i className={card.icon}></i>
+                      </div>
 
-                <div className="about-hero-floating-card">
-                  <div className="about-floating-card-icon">
-                    <i className="fas fa-people-group"></i>
-                  </div>
+                      <div className="about-info-card-content">
+                        <strong>{card.title}</strong>
 
-                  <div className="about-floating-card-content">
-                    <strong>Meaningful Connections</strong>
-
-                    <span>
-                      Build trusted relationships with professionals and
-                      leaders.
-                    </span>
-                  </div>
+                        <span>{card.text}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-
-                <div className="about-hero-dots"></div>
               </div>
             </div>
           </div>
@@ -512,13 +539,37 @@ export default function About() {
                 impact.
               </p>
 
+              <ul className="ap-points">
+                {pillarPoints.map((point) => (
+                  <li key={point}>
+                    <i className="fas fa-circle-check"></i>
+
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="ap-actions">
+                <Link to="/membership" className="about-btn-premium">
+                  Join the Chamber
+
+                  <i className="fas fa-arrow-right"></i>
+                </Link>
+              </div>
+
               <p className="ap-hint">
-                Auto-scrolls. Hover to pause, drag to browse.
+                <span className="ap-hint-desktop">
+                  Auto-scrolls. Hover to pause, drag to browse.
+                </span>
+
+                <span className="ap-hint-touch">
+                  Auto-scrolls. Swipe to browse.
+                </span>
               </p>
             </div>
 
-            {/* ---------- rail ---------- */}
-            <div className="ap-wrap about-reveal">
+            {/* ---------- rail (always visible, no reveal delay) ---------- */}
+            <div className="ap-wrap">
               <div
                 className="ap-rail"
                 ref={railRef}

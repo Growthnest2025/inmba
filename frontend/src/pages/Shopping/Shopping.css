@@ -1,6 +1,7 @@
 /* =========================================================
    SHOPPING PAGE (restyled like COMMERCIAL page)
-   Same class names as before - only the look changed.
+   - no card numbers
+   - floating hero shapes + looping background animations removed
    1. Variables / reset
    2. Hero
    3. Sections / headings / cards / steps / table
@@ -86,7 +87,6 @@
   border-radius: 50%;
   background: #57c477;
   box-shadow: 0 0 0 5px rgba(87, 196, 119, 0.16);
-  animation: shopping-pulse 1.8s ease-in-out infinite;
 }
 
 /* ---------- 2. HERO ---------- */
@@ -118,6 +118,7 @@
     radial-gradient(circle at 80% 70%, rgba(34, 157, 76, 0.14), transparent 26%);
 }
 
+/* static grid (no moving animation) */
 .shopping-hero-grid {
   position: absolute;
   inset: 0;
@@ -129,33 +130,17 @@
   background-size: 52px 52px;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 80%, transparent 100%);
   mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 80%, transparent 100%);
-  animation: shopping-grid 18s linear infinite;
 }
 
+/* static soft glows (no breathing animation) */
 .shopping-glow { position: absolute; z-index: -2; border-radius: 50%; pointer-events: none; }
 .shopping-glow-one {
   width: 520px; height: 520px; top: -200px; right: -170px;
   background: radial-gradient(circle, rgba(34, 157, 76, 0.26), rgba(34, 157, 76, 0.08) 42%, transparent 72%);
-  animation: shopping-breathe 7s ease-in-out infinite;
 }
 .shopping-glow-two {
   width: 440px; height: 440px; left: -170px; bottom: -210px;
   background: radial-gradient(circle, rgba(87, 196, 119, 0.16), transparent 72%);
-  animation: shopping-breathe 9s ease-in-out infinite reverse;
-}
-
-.shopping-float { position: absolute; z-index: -1; pointer-events: none; border: 1px solid rgba(255, 255, 255, 0.1); }
-.shopping-float-one {
-  width: 160px; height: 160px; left: 5%; bottom: 10%;
-  border-radius: 36% 64% 54% 46% / 42% 38% 62% 58%;
-  background: linear-gradient(145deg, rgba(34, 157, 76, 0.12), rgba(19, 63, 27, 0.08));
-  animation: shopping-spin 16s linear infinite;
-}
-.shopping-float-two {
-  width: 120px; height: 120px; right: 42%; top: 16%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(34, 157, 76, 0.16), transparent 68%);
-  animation: shopping-bob 7s ease-in-out infinite;
 }
 
 .shopping-hero-layout {
@@ -269,7 +254,7 @@
 .shopping-fact strong { display: block; font-size: 2.12rem; font-weight: 800; }
 .shopping-fact span { font-size: 1rem; color: rgba(255, 255, 255, 0.78); }
 
-/* ---------- Hero panel ---------- */
+/* ---------- Hero panel (static, no floating) ---------- */
 
 .shopping-panel {
   position: relative;
@@ -281,7 +266,6 @@
   box-shadow: 0 30px 70px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  animation: shopping-bob 6s ease-in-out infinite;
 }
 .shopping-panel::before {
   content: "";
@@ -331,13 +315,13 @@
 .shopping-sec.alt { background: var(--soft); }
 .shopping-sec.dark { background: linear-gradient(135deg, #082f0b, #133f1b 60%, #1f7a35); color: #fff; }
 
+/* static soft circles (no breathing animation) */
 .shopping-sec::before {
   content: "";
   width: 430px; height: 430px; position: absolute; top: -200px; right: -180px; z-index: -1;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(19, 63, 27, 0.14) 0%, rgba(19, 63, 27, 0.04) 42%, transparent 72%);
   pointer-events: none;
-  animation: shopping-breathe 8s ease-in-out infinite;
 }
 .shopping-sec::after {
   content: "";
@@ -363,7 +347,7 @@
 .shopping-sec.dark .shopping-head p { color: rgba(255, 255, 255, 0.82); }
 .shopping-sec.dark .shopping-badge { color: #bff7c8; border-color: rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.1); }
 
-/* ---------- Cards ---------- */
+/* ---------- Cards (no numbers) ---------- */
 
 .shopping-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
 
@@ -503,18 +487,8 @@
 .shopping-cta h2 { margin: 0; color: #fff; font-size: clamp(2.48rem, 4.4vw, 4.01rem); font-weight: 800; line-height: 1.14; letter-spacing: -1px; }
 .shopping-cta p { max-width: 680px; margin: 16px auto 30px; color: rgba(255, 255, 255, 0.82); font-size: 1.36rem; line-height: 1.8; }
 .shopping-cta-glow { position: absolute; z-index: -1; border-radius: 50%; pointer-events: none; }
-.shopping-cta-glow-one { width: 420px; height: 420px; top: -200px; right: -120px; background: radial-gradient(circle, rgba(34, 157, 76, 0.3), transparent 70%); animation: shopping-breathe 7s ease-in-out infinite; }
-.shopping-cta-glow-two { width: 320px; height: 320px; bottom: -170px; left: -100px; background: radial-gradient(circle, rgba(87, 196, 119, 0.2), transparent 70%); animation: shopping-breathe 9s ease-in-out infinite reverse; }
-.shopping-cta .shopping-btn { animation: shopping-ring 2.4s ease-out infinite; }
-
-/* ---------- Keyframes ---------- */
-
-@keyframes shopping-pulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 5px rgba(87, 196, 119, 0.16); } 50% { transform: scale(0.88); box-shadow: 0 0 0 9px rgba(87, 196, 119, 0.04); } }
-@keyframes shopping-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-@keyframes shopping-spin { to { transform: rotate(360deg); } }
-@keyframes shopping-breathe { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.12); opacity: 1; } }
-@keyframes shopping-grid { from { background-position: 0 0; } to { background-position: 52px 52px; } }
-@keyframes shopping-ring { 0% { box-shadow: 0 0 0 0 rgba(34, 157, 76, 0.55); } 100% { box-shadow: 0 0 0 22px rgba(34, 157, 76, 0); } }
+.shopping-cta-glow-one { width: 420px; height: 420px; top: -200px; right: -120px; background: radial-gradient(circle, rgba(34, 157, 76, 0.3), transparent 70%); }
+.shopping-cta-glow-two { width: 320px; height: 320px; bottom: -170px; left: -100px; background: radial-gradient(circle, rgba(87, 196, 119, 0.2), transparent 70%); }
 
 /* =========================================================
    5. MERGED CARD RAIL (prm-*) - same look as commercial cmr-*
@@ -574,6 +548,12 @@
 .prm-nav button { width: 40px; height: 40px; color: var(--ink); background: #fff; border: 1px solid rgba(19, 63, 27, 0.18); border-radius: 50%; cursor: pointer; transition: background 0.2s, color 0.2s; }
 .prm-nav button:hover { background: #1f7a35; color: #fff; }
 
+/* Extra content under the section text */
+.prm-points { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.prm-points li { display: flex; align-items: center; gap: 12px; color: var(--ink); font-size: 1.28rem; font-weight: 600; line-height: 1.45; }
+.prm-points i { flex-shrink: 0; color: var(--primary); font-size: 1.35rem; }
+.prm-actions { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 14px; }
+
 /* Reversed layout: text LEFT, rail RIGHT */
 .prm-layout.prm-rev { grid-template-columns: minmax(0, 1fr) 480px; }
 .prm-layout.prm-rev .prm-intro { order: 1; }
@@ -595,21 +575,6 @@
   .shopping-hero p { margin-left: auto; margin-right: auto; }
   .shopping-actions, .shopping-facts { justify-content: center; }
   .shopping-panel { max-width: 640px; width: 100%; margin: 0 auto; text-align: left; }
-
-  .prm-layout, .prm-layout.prm-rev { grid-template-columns: 1fr; gap: 36px; }
-  .prm-intro { order: -1 !important; max-width: 100%; margin: 0 auto; text-align: center; }
-  .prm-intro .shopping-badge { margin-inline: auto; }
-  .prm-layout.prm-rev .prm-wrap { order: 0; }
-}
-
-@media (max-width: 820px) {
-  .prm-wrap { max-width: 100%; }
-  .prm-rail { height: 300px; touch-action: pan-y; }
-  .prm-card { width: 330px; padding: 18px 20px; gap: 10px; }
-  .prm-icon { width: 48px; height: 48px; font-size: 1.47rem; }
-  .prm-card h3 { font-size: 1.36rem; }
-  .prm-card p { font-size: 1.13rem; line-height: 1.55; }
-  .prm-nav { display: none; }
 }
 
 @media (max-width: 768px) {
@@ -631,7 +596,6 @@
   .shopping-panel { padding: 22px; }
   .shopping-hero .shopping-badge { max-width: 100%; white-space: normal; text-align: center; font-size: 0.92rem; }
   .shopping-btn { width: 100%; max-width: 270px; }
-  .shopping-float-two { display: none; }
 }
 
 @media (hover: none) {
@@ -658,7 +622,7 @@
   .shopping-hero, .shopping-cta { min-height: auto; padding: 50px 0; background: #fff; color: #000; }
   .shopping-hero h1, .shopping-hero p, .shopping-cta h2, .shopping-cta p { color: #000; text-shadow: none; }
   .shopping-hl { color: #000; -webkit-text-fill-color: #000; }
-  .shopping-hero-grid, .shopping-glow, .shopping-float, .shopping-cta-glow, .prm-nav { display: none !important; }
+  .shopping-hero-grid, .shopping-glow, .shopping-cta-glow, .prm-nav { display: none !important; }
   .shopping-sec { padding: 40px 0; background: #fff; }
   .shopping-card, .shopping-step { break-inside: avoid; box-shadow: none; }
   .prm-layout { grid-template-columns: 1fr; }
@@ -667,9 +631,7 @@
 }
 
 /* =========================================================
-   7. RESPONSIVE SAFETY (fixes text/rail overlap on phones)
-   .prm-rev was overriding the 1-column rule, so the rail
-   stayed 460px wide and squeezed the text. Fixed here.
+   7. RESPONSIVE SAFETY FOR THE RAIL (phones / tablets)
 ========================================================= */
 
 .prm-layout > * { min-width: 0; }
@@ -677,11 +639,23 @@
 
 @media (max-width: 992px) {
   .prm-layout,
-  .prm-layout.prm-rev { grid-template-columns: minmax(0, 1fr) !important; }
-  .prm-intro { order: -1 !important; width: 100%; }
+  .prm-layout.prm-rev { grid-template-columns: minmax(0, 1fr) !important; gap: 36px; }
+  .prm-intro { order: -1 !important; width: 100%; max-width: 100%; margin: 0 auto; text-align: center; }
+  .prm-intro .shopping-badge { margin-inline: auto; }
   .prm-wrap,
   .prm-layout.prm-rev .prm-wrap { order: 0 !important; width: 100%; max-width: 100%; }
   .prm-heading { font-size: clamp(2rem, 7vw, 3rem); }
+  .prm-points { align-items: center; }
+  .prm-actions { justify-content: center; }
+}
+
+@media (max-width: 820px) {
+  .prm-rail { height: 300px; touch-action: pan-y; }
+  .prm-card { width: 330px; padding: 18px 20px; gap: 10px; }
+  .prm-icon { width: 48px; height: 48px; font-size: 1.47rem; }
+  .prm-card h3 { font-size: 1.36rem; }
+  .prm-card p { font-size: 1.13rem; line-height: 1.55; }
+  .prm-nav { display: none; }
 }
 
 @media (max-width: 480px) {
@@ -691,41 +665,12 @@
 }
 
 /* =========================================================
-   8. CARD NUMBERS (used by the "Built on Trust" cards)
+   8. NO GAP BETWEEN THE HERO AND THE FIRST SECTION
 ========================================================= */
 
-.shopping-card-num {
-  position: absolute;
-  top: 18px;
-  right: 22px;
-  z-index: 1;
-  font-size: 2.8rem;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -2px;
-  color: rgba(19, 63, 27, 0.12);
-  transition: color 0.35s, transform 0.35s;
-}
-.shopping-card:hover .shopping-card-num { color: rgba(19, 63, 27, 0.26); transform: translateY(-4px); }
-.shopping-sec.dark .shopping-card-num { color: rgba(255, 255, 255, 0.12); }
-@media (max-width: 560px) { .shopping-card-num { font-size: 2.3rem; } }
-
-/* =========================================================
-   9. REMOVE THE GAP BETWEEN THE HERO AND THE FIRST SECTION
-========================================================= */
-
-/* the section right after the hero: almost no top padding */
-.shopping-hero + .shopping-sec {
-  padding-top: 24px;
-}
-
-/* the decorative circle at the top of that section also made it look empty */
-.shopping-hero + .shopping-sec::before {
-  top: -260px;
-}
+.shopping-hero + .shopping-sec { padding-top: 24px; }
+.shopping-hero + .shopping-sec::before { top: -260px; }
 
 @media (max-width: 768px) {
-  .shopping-hero + .shopping-sec {
-    padding-top: 16px;
-  }
+  .shopping-hero + .shopping-sec { padding-top: 16px; }
 }

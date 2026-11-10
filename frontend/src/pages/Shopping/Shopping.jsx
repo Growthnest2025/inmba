@@ -31,8 +31,6 @@ function Hero({ badge, title, highlight, text, actions = [], panel }) {
       <div className="shopping-hero-grid"></div>
       <span className="shopping-glow shopping-glow-one"></span>
       <span className="shopping-glow shopping-glow-two"></span>
-      <span className="shopping-float shopping-float-one"></span>
-      <span className="shopping-float shopping-float-two"></span>
 
       <div className="shopping-wrap shopping-hero-layout">
         <div className="shopping-hero-text" data-aos="fade-right">
@@ -112,14 +110,13 @@ function Section({ badge, title, text, tone = "", children, note }) {
   );
 }
 
-/* Cards (numbers removed) */
+/* Cards (no numbers) */
 function Cards({ items }) {
   return (
     <div className="shopping-grid">
-      {items.map((c, i) => (
+      {items.map((c) => (
         <article className="shopping-card" key={c.title}>
           <span className="shopping-card-deco"></span>
-          <span className="shopping-card-num">{String(i + 1).padStart(2, "0")}</span>
           <div className="shopping-ico"><i className={`bi ${c.icon}`}></i></div>
           <h3>{c.title}</h3>
           <p>{c.text}</p>
@@ -174,7 +171,7 @@ const AUTO_SPEED = 0.0004; // cards per millisecond
 const SIDE_W = 280; // card width on phones
 const wrap = (x, n) => ((x % n) + n) % n;
 
-function CardRail({ items, reverse = false, tone = "alt", badge, heading, text, note, label }) {
+function CardRail({ items, reverse = false, tone = "alt", badge, heading, text, note, label, points, actions }) {
   const N = items.length;
   const railRef = useRef(null);
   const cardRefs = useRef([]);
@@ -348,6 +345,25 @@ function CardRail({ items, reverse = false, tone = "alt", badge, heading, text, 
             <span className="shopping-badge">{badge}</span>
             <h2 className="prm-heading">{heading}</h2>
             <p className="prm-text">{text}</p>
+            {points && (
+              <ul className="prm-points">
+                {points.map((pt) => (
+                  <li key={pt}>
+                    <i className="bi bi-check-circle-fill" />
+                    <span>{pt}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {actions && (
+              <div className="prm-actions">
+                {actions.map((a) => (
+                  <Link key={a.label} to={a.to} className="shopping-btn">
+                    {a.label} <i className="bi bi-arrow-right"></i>
+                  </Link>
+                ))}
+              </div>
+            )}
             {note && <p className="prm-note">{note}</p>}
             <p className="prm-hint">Auto-scrolls. Hover to pause, drag to browse.</p>
           </div>
@@ -395,6 +411,12 @@ export default function Shopping() {
         heading="Trending Categories"
         text="From handmade crafts to professional services, all from verified members."
         label="Trending shopping categories. Drag or use arrow keys."
+        points={[
+          "Every Store is tied to a verified member",
+          "Secure payments and a clear dispute process",
+          "Return and cancellation terms stated upfront",
+        ]}
+        actions={[{ label: "Open a Seller Store", to: "/membership-type" }]}
       />
 
       <Section tone="dark" badge="Why Shop Here" title="Built on Trust, Not Strangers" text="Every Store is tied to a verified member identity.">

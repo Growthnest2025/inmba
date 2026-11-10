@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -9,7 +9,11 @@ import {
   faBriefcase,
   faBuildingColumns,
   faChartLine,
-  faCheck,
+  faChevronDown,
+  faChevronLeft,
+  faChevronRight,
+  faChevronUp,
+  faCircleCheck,
   faGraduationCap,
   faHandHoldingHeart,
   faHandsHelping,
@@ -184,10 +188,44 @@ const foundationHighlights = [
 ];
 
 /* =========================================================
+   ACTIVITIES INTRO DATA (left side of the rail)
+========================================================= */
+
+const totalInitiatives = foundationActivities.reduce(
+  (sum, activity) => sum + activity.items.length,
+  0
+);
+
+const activityStats = [
+  { id: 1, value: foundationActivities.length, label: "Focus areas" },
+  { id: 2, value: totalInitiatives, label: "Initiatives" },
+  { id: 3, value: impactAreas.length, label: "Impact areas" },
+];
+
+const activityPoints = [
+  "Basic needs, financial security and a modern lifestyle.",
+  "Social values, economic development and employment growth.",
+];
+
+/* =========================================================
+   ACTIVITIES RAIL SETTINGS
+   Keep the query in sync with the horizontal rail block
+   in Foundation.css (max-width: 991px)
+========================================================= */
+
+const RAIL_SPEED = 38; // px per second
+const RAIL_RESUME_DELAY = 1500; // ms after a drag ends
+const RAIL_HORIZONTAL_QUERY = "(max-width: 991px)";
+
+/* =========================================================
    FOUNDATION COMPONENT
 ========================================================= */
 
 export default function Foundation() {
+  const railRef = useRef(null);
+  const cardRefs = useRef([]);
+  const stepRef = useRef(() => {});
+
   /* AOS INITIALIZATION */
 
   useEffect(() => {
@@ -199,6 +237,186 @@ export default function Foundation() {
     });
 
     AOS.refresh();
+  }, []);
+
+  /* ---------------------------------------------------------
+     Activities rail
+     Desktop: vertical looping track.
+     Tablets and phones (<= 991px): horizontal.
+     Auto-scroll, pause on hover, drag / swipe, buttons, arrow keys.
+  --------------------------------------------------------- */
+  useEffect(() => {
+    const rail = railRef.current;
+    const cards = cardRefs.current.filter(Boolean);
+
+    if (!rail || !cards.length) return undefined;
+
+    const n = cards.length;
+    const mq = window.matchMedia(RAIL_HORIZONTAL_QUERY);
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let horiz = mq.matches;
+    let size = 1;
+    let offset = 0;
+    let hovering = false;
+    let dragging = false;
+    let visible = true;
+    let resumeAt = 0;
+    let tween = null;
+    let last = 0;
+    let raf = 0;
+    let startPos = 0;
+    let startOffset = 0;
+
+    const measure = () => {
+      horiz = mq.matches;
+      size = (horiz ? cards[0].offsetWidth : cards[0].offsetHeight) || 1;
+    };
+
+    const render = () => {
+      const total = size * n;
+
+      cards.forEach((card, i) => {
+        let p = (((i * size - offset) % total) + total) % total;
+
+        if (p > total - size) p -= total;
+
+        card.style.transform = horiz
+          ? `translate3d(${p}px,0,0)`
+          : `translate3d(0,${p}px,0)`;
+      });
+    };
+
+    const tick = (t) => {
+      const dt = Math.min((t - last) / 1000, 0.05);
+      last = t;
+
+      if (tween) {
+        const k = Math.min((t - tween.t0) / tween.dur, 1);
+        const eased = 1 - Math.pow(1 - k, 3);
+
+        offset = tween.from + (tween.to - tween.from) * eased;
+
+        if (k >= 1) tween = null;
+      } else {
+        if (!reduce && visible && !hovering && !dragging && t >= resumeAt) {
+          offset += RAIL_SPEED * dt;
+        }
+
+        const total = size * n;
+
+        offset = ((offset % total) + total) % total;
+      }
+
+      render();
+      raf = requestAnimationFrame(tick);
+    };
+
+    /* ---------- drag / swipe ---------- */
+    const axisPos = (e) => (horiz ? e.clientX : e.clientY);
+
+    const onDown = (e) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+
+      dragging = true;
+      tween = null;
+      startPos = axisPos(e);
+      startOffset = offset;
+
+      if (rail.setPointerCapture) rail.setPointerCapture(e.pointerId);
+
+      rail.classList.add("is-drag");
+    };
+
+    const onMove = (e) => {
+      if (!dragging) return;
+
+      offset = startOffset - (axisPos(e) - startPos);
+    };
+
+    const onUp = () => {
+      if (!dragging) return;
+
+      dragging = false;
+      resumeAt = performance.now() + RAIL_RESUME_DELAY;
+      rail.classList.remove("is-drag");
+    };
+
+    const onEnter = (e) => {
+      if (e.pointerType === "mouse") hovering = true;
+    };
+
+    const onLeave = (e) => {
+      if (e.pointerType === "mouse") hovering = false;
+    };
+
+    /* ---------- one-card step (buttons + arrow keys) ---------- */
+    const step = (dir) => {
+      const now = performance.now();
+      const base = tween ? tween.to : offset;
+
+      tween = { from: offset, to: base + dir * size, t0: now, dur: 450 };
+      resumeAt = now + 2500;
+    };
+
+    stepRef.current = step;
+
+    const onKey = (e) => {
+      if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+        e.preventDefault();
+        step(1);
+      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        step(-1);
+      }
+    };
+
+    /* ---------- housekeeping ---------- */
+    const onResize = () => {
+      measure();
+      render();
+    };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+      },
+      { threshold: 0.1 }
+    );
+
+    io.observe(rail);
+
+    const ro = new ResizeObserver(onResize);
+
+    ro.observe(rail);
+
+    rail.addEventListener("pointerdown", onDown);
+    rail.addEventListener("pointermove", onMove);
+    rail.addEventListener("pointerup", onUp);
+    rail.addEventListener("pointercancel", onUp);
+    rail.addEventListener("pointerenter", onEnter);
+    rail.addEventListener("pointerleave", onLeave);
+    rail.addEventListener("keydown", onKey);
+    mq.addEventListener("change", onResize);
+
+    measure();
+    render();
+    last = performance.now();
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      io.disconnect();
+      ro.disconnect();
+      rail.removeEventListener("pointerdown", onDown);
+      rail.removeEventListener("pointermove", onMove);
+      rail.removeEventListener("pointerup", onUp);
+      rail.removeEventListener("pointercancel", onUp);
+      rail.removeEventListener("pointerenter", onEnter);
+      rail.removeEventListener("pointerleave", onLeave);
+      rail.removeEventListener("keydown", onKey);
+      mq.removeEventListener("change", onResize);
+    };
   }, []);
 
   /* SMOOTH SCROLL FUNCTION */
@@ -229,15 +447,9 @@ export default function Foundation() {
           className="foundation-hero"
           aria-labelledby="foundation-hero-title"
         >
-          <div className="foundation-hero-background">
-            <span className="foundation-hero-shape foundation-hero-shape-one" />
-            <span className="foundation-hero-shape foundation-hero-shape-two" />
-            <span className="foundation-hero-shape foundation-hero-shape-three" />
-          </div>
-
           <div className="container foundation-hero-container">
             <div className="foundation-hero-grid foundation-hero-grid-single">
-              {/* HERO LEFT CONTENT */}
+              {/* HERO CONTENT */}
 
               <div
                 className="foundation-hero-content"
@@ -294,83 +506,122 @@ export default function Foundation() {
               </div>
             </div>
           </div>
-
         </section>
 
         {/* =================================================
-            CORE FOUNDATION ACTIVITIES SECTION
+            CORE FOUNDATION ACTIVITIES SECTION (scroll rail)
         ================================================= */}
 
         <section
           className="foundation-activities-section"
           aria-labelledby="foundation-activities-title"
         >
-          <div className="foundation-section-decoration foundation-activities-decoration-one" />
-          <div className="foundation-section-decoration foundation-activities-decoration-two" />
-
           <div className="container">
-            <div
-              className="foundation-section-heading"
-              data-aos="fade-up"
-            >
-              <span className="foundation-section-badge">
-                <FontAwesomeIcon icon={faHandsHelping} />
+            <div className="fa-layout">
+              {/* ---------- left intro ---------- */}
+              <div className="fa-intro" data-aos="fade-up">
+                <span className="foundation-section-badge">
+                  <FontAwesomeIcon icon={faHandsHelping} />
 
-                <span>What We Do</span>
-              </span>
-
-              <h2 id="foundation-activities-title">
-                Core Foundation
-                <span className="foundation-heading-highlight">
-                  Activities
+                  <span>What We Do</span>
                 </span>
-              </h2>
 
-              <p>
-                Our foundation supports individuals and communities
-                through essential services, financial awareness,
-                sustainable development, social values, economic
-                progress, and employment opportunities.
-              </p>
-            </div>
+                <h2 id="foundation-activities-title" className="fa-heading">
+                  Core Foundation
+                  <span className="foundation-heading-highlight">
+                    Activities
+                  </span>
+                </h2>
 
-            <div className="foundation-activities-grid">
-              {foundationActivities.map((activity, index) => (
-                <article
-                  className="foundation-activity-card"
-                  key={activity.id}
-                  data-aos="zoom-in"
-                  data-aos-delay={(index % 3) * 100}
-                >
-                  <span className="foundation-activity-number">
-                    {String(index + 1).padStart(2, "0")}
+                <p className="fa-text">
+                  Our foundation supports individuals and communities
+                  through essential services, financial awareness,
+                  sustainable development, social values, economic
+                  progress, and employment opportunities.
+                </p>
+
+                <div className="fa-stats">
+                  {activityStats.map((stat) => (
+                    <div className="fa-stat" key={stat.id}>
+                      <strong>{stat.value}</strong>
+
+                      <span>{stat.label}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <ul className="fa-points">
+                  {activityPoints.map((point) => (
+                    <li key={point}>
+                      <FontAwesomeIcon icon={faCircleCheck} />
+
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <p className="fa-hint">
+                  <span className="fa-hint-desktop">
+                    Auto-scrolls. Hover to pause, drag to browse.
                   </span>
 
-                  <div className="foundation-activity-icon">
-                    <FontAwesomeIcon icon={activity.icon} />
-                  </div>
+                  <span className="fa-hint-touch">
+                    Auto-scrolls. Swipe to browse.
+                  </span>
+                </p>
+              </div>
 
-                  <div className="foundation-activity-content">
-                    <h3>{activity.title}</h3>
+              {/* ---------- rail ---------- */}
+              <div className="fa-wrap">
+                <div
+                  className="fa-rail"
+                  ref={railRef}
+                  tabIndex={0}
+                  aria-label="Core foundation activities"
+                >
+                  {foundationActivities.map((activity, index) => (
+                    <article
+                      className={`fa-card${index % 2 ? "" : " fa-alt"}`}
+                      key={activity.id}
+                      ref={(el) => {
+                        cardRefs.current[index] = el;
+                      }}
+                    >
+                      <div className="fa-shot">
+                        <div className="fa-icon">
+                          <FontAwesomeIcon icon={activity.icon} />
+                        </div>
+                      </div>
 
-                    <p>{activity.description}</p>
+                      <div className="fa-meta">
+                        <h3>{activity.title}</h3>
 
-                    <ul className="foundation-activity-list">
-                      {activity.items.map((item) => (
-                        <li key={item.id}>
-                          <span className="foundation-activity-check">
-                            <FontAwesomeIcon icon={faCheck} />
-                          </span>
+                        <span>{activity.items.length} initiatives</span>
+                      </div>
+                    </article>
+                  ))}
+                </div>
 
-                          <span>{item.text}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                <div className="fa-nav">
+                  <button
+                    type="button"
+                    aria-label="Previous activity"
+                    onClick={() => stepRef.current(-1)}
+                  >
+                    <FontAwesomeIcon icon={faChevronUp} className="fa-nav-v" />
+                    <FontAwesomeIcon icon={faChevronLeft} className="fa-nav-h" />
+                  </button>
 
-                  <span className="foundation-activity-card-line" />
-                </article>
-              ))}
+                  <button
+                    type="button"
+                    aria-label="Next activity"
+                    onClick={() => stepRef.current(1)}
+                  >
+                    <FontAwesomeIcon icon={faChevronDown} className="fa-nav-v" />
+                    <FontAwesomeIcon icon={faChevronRight} className="fa-nav-h" />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -384,11 +635,6 @@ export default function Foundation() {
           className="foundation-impact-section"
           aria-labelledby="foundation-impact-title"
         >
-          <div className="foundation-impact-background">
-            <span className="foundation-impact-shape foundation-impact-shape-one" />
-            <span className="foundation-impact-shape foundation-impact-shape-two" />
-          </div>
-
           <div className="container">
             <div
               className="foundation-section-heading foundation-impact-heading"

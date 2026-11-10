@@ -1380,3 +1380,174 @@
     animation: none;
   }
 }
+
+
+/* =========================================================
+   OUR DIVISIONS - bigger logo inside the same box,
+   white background + green border
+========================================================= */
+
+.divisions-section .division-icon {
+  --logo-zoom: 1.2; /* change this to make the logo bigger / smaller */
+
+  width: 120px;
+  height: 120px;
+  margin-bottom: 22px;
+  padding: 0;
+  overflow: hidden;
+  background: #ffffff;
+  border: 3px solid #1f7a35;
+  border-radius: 26px;
+  box-shadow: 0 14px 30px rgba(15, 77, 15, 0.14);
+}
+
+.divisions-section .division-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(var(--logo-zoom));
+  transition: transform 0.35s ease;
+}
+
+.divisions-section .division-card:hover .division-icon {
+  transform: none;
+  background: #ffffff;
+  border-color: #0f4d0f;
+  box-shadow: 0 18px 38px rgba(15, 77, 15, 0.24);
+}
+
+.divisions-section .division-card:hover .division-icon img {
+  transform: scale(calc(var(--logo-zoom) * 1.06));
+}
+
+@media (max-width: 767px) {
+  .divisions-section .division-icon {
+    width: 104px;
+    height: 104px;
+    margin-bottom: 20px;
+    padding: 0;
+    border-radius: 23px;
+  }
+}
+
+@media (max-width: 400px) {
+  .divisions-section .division-icon {
+    width: 94px;
+    height: 94px;
+    padding: 0;
+  }
+}
+
+
+/* =========================================================
+   MEMBERSHIP INTRO - extra content (stats, points, actions)
+========================================================= */
+
+.vc-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 22px;
+}
+
+.vc-stat {
+  padding: 14px 12px;
+  text-align: center;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.vc-stat:hover {
+  transform: translateY(-4px);
+  border-color: rgba(31, 122, 53, 0.35);
+  box-shadow: var(--shadow-md);
+}
+
+.vc-stat strong {
+  display: block;
+  color: var(--primary);
+  font-size: clamp(1.5rem, 4.5vw, 2rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.vc-stat span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: clamp(0.72rem, 2vw, 0.88rem);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.vc-points {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 0 26px;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.vc-points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: var(--primary-dark);
+  font-size: clamp(0.95rem, 2.3vw, 1.08rem);
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.vc-points li i {
+  flex: 0 0 auto;
+  margin-top: 4px;
+  color: #22a34f;
+  font-size: 1.05rem;
+}
+
+.vc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 22px;
+}
+
+.vc-login {
+  color: var(--muted);
+  font-size: clamp(0.92rem, 2.2vw, 1.02rem);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.vc-login:hover {
+  color: var(--primary);
+}
+
+@media (max-width: 991px) {
+  .vc-actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .vc-stats {
+    gap: 8px;
+  }
+
+  .vc-stat {
+    padding: 12px 6px;
+    border-radius: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vc-stat {
+    transition: none;
+  }
+}

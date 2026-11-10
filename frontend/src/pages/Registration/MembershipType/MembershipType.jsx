@@ -96,6 +96,13 @@ const MEMBERSHIP_TYPES = [
   },
 ];
 
+/* counts used by the extra content (calculated from the list above) */
+const AVAILABLE_COUNT = MEMBERSHIP_TYPES.filter(
+  (membership) => membership.status === "available"
+).length;
+
+const LOCKED_COUNT = MEMBERSHIP_TYPES.length - AVAILABLE_COUNT;
+
 /* ========================================
    REGISTRATION PROCESS STEPS (auto-scroll rail)
 ======================================== */
@@ -125,6 +132,50 @@ const PROCESS_STEPS = [
     title: "Membership Access",
     text: "Continue using the generated member credentials after completion.",
   },
+];
+
+/* ========================================
+   HERO EXTRA CONTENT
+======================================== */
+
+const HERO_STATS = [
+  {
+    icon: "fas fa-layer-group",
+    value: MEMBERSHIP_TYPES.length,
+    label: "Membership categories",
+  },
+  {
+    icon: "fas fa-circle-check",
+    value: AVAILABLE_COUNT,
+    label: "Available now",
+  },
+  {
+    icon: "fas fa-lock",
+    value: LOCKED_COUNT,
+    label: "Coming soon",
+  },
+];
+
+const HERO_POINTS = [
+  "Each option opens its matching registration page",
+  "Your referral information is preserved automatically",
+  "INMBA support is available if you need help choosing",
+];
+
+/* ========================================
+   PROCESS SECTION EXTRA CONTENT
+======================================== */
+
+const PROCESS_STATS = [
+  { value: PROCESS_STEPS.length, label: "Simple steps" },
+  { value: AVAILABLE_COUNT, label: "Open categories" },
+  { value: LOCKED_COUNT, label: "Coming soon" },
+];
+
+const PROCESS_POINTS = [
+  "Choose the category that matches your application",
+  "Submitted details are reviewed before access is given",
+  "Locked categories open as soon as registration is available",
 ];
 
 /* ========================================
@@ -322,6 +373,26 @@ function ProcessRail() {
             selected membership category.
           </span>
 
+          {/* EXTRA CONTENT */}
+
+          <div className="mtr-stats">
+            {PROCESS_STATS.map((item) => (
+              <div className="mtr-stat" key={item.label}>
+                <strong>{item.value}</strong>
+                <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
+
+          <ul className="mtr-points">
+            {PROCESS_POINTS.map((point) => (
+              <li key={point}>
+                <i className="fas fa-circle-check" aria-hidden="true" />
+                {point}
+              </li>
+            ))}
+          </ul>
+
           <em className="mtr-hint">
             Auto-scrolls. Hover to pause, drag to browse.
           </em>
@@ -497,30 +568,32 @@ export default function MembershipType() {
                 <i className="fas fa-headset" aria-hidden="true"></i>
               </Link>
             </div>
+
+            {/* HERO EXTRA CONTENT */}
+
+            <ul className="inmba-membership-type-hero-points">
+              {HERO_POINTS.map((point) => (
+                <li key={point}>
+                  <i className="fas fa-circle-check" aria-hidden="true"></i>
+                  {point}
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div className="inmba-membership-type-hero-visual">
-            <div className="inmba-membership-type-orbit">
-              <span className="inmba-membership-type-orbit-center">
-                <i className="fas fa-globe" aria-hidden="true"></i>
-              </span>
+          <div className="inmba-membership-type-hero-side">
+            {HERO_STATS.map((item) => (
+              <div className="inmba-membership-type-stat" key={item.label}>
+                <span>
+                  <i className={item.icon} aria-hidden="true"></i>
+                </span>
 
-              <span className="inmba-membership-type-orbit-item inmba-membership-type-orbit-one">
-                <i className="fas fa-user-tie" aria-hidden="true"></i>
-              </span>
-
-              <span className="inmba-membership-type-orbit-item inmba-membership-type-orbit-two">
-                <i className="fas fa-graduation-cap" aria-hidden="true"></i>
-              </span>
-
-              <span className="inmba-membership-type-orbit-item inmba-membership-type-orbit-three">
-                <i className="fas fa-building" aria-hidden="true"></i>
-              </span>
-
-              <span className="inmba-membership-type-orbit-item inmba-membership-type-orbit-four">
-                <i className="fas fa-briefcase" aria-hidden="true"></i>
-              </span>
-            </div>
+                <div>
+                  <strong>{item.value}</strong>
+                  <small>{item.label}</small>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 
