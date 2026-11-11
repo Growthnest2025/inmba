@@ -725,22 +725,15 @@ const handleContinueMembership = () => {
         <div className="commercial-registration-left-pattern" />
 
         {/* BRAND */}
-
+        
         <div className="commercial-registration-brand">
-          <div className="commercial-registration-brand-icon">
-            <i className="fas fa-store" />
-          </div>
-
-          <div>
-            <span>
-              INMBA
-            </span>
-
-            <strong>
-              Commercial
-            </strong>
-          </div>
-        </div>
+  <div className="commercial-registration-brand-text">
+    <span>INMBA</span>
+    <strong>Commercial</strong>
+  </div>
+</div>
+       
+        
 
         {/* CONTENT */}
 

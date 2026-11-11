@@ -1029,24 +1029,12 @@ export default function ProfessionalRegistration() {
       <section className="professional-registration-left">
         <div className="professional-registration-left-pattern" />
 
-        <div className="professional-registration-brand">
-          <div className="professional-registration-brand-icon">
-            <i
-              className="fas fa-user-tie"
-              aria-hidden="true"
-            />
-          </div>
-
-          <div>
-            <span>
-              INMBA
-            </span>
-
-            <strong>
-              Professional
-            </strong>
-          </div>
-        </div>
+       <div className="professional-registration-brand">
+  <div className="professional-registration-brand-text">
+    <span>INMBA</span>
+    <strong>Professional</strong>
+  </div>
+</div>
 
         <div className="professional-registration-left-content">
           <span className="professional-registration-eyebrow">
