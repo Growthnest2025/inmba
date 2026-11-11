@@ -1,0 +1,15 @@
+{
+	"name": "inmba-api-test",
+	"main": "worker-db-test.js",
+	"compatibility_date": "2026-10-21",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"d1_databases": [
+		{
+			"binding": "inmba_db",
+			"database_name": "inmba-db",
+			"database_id": "5761cc1e-b2f8-4944-8b13-52464dcc0cd1"
+		}
+	]
+}

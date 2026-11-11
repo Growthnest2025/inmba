@@ -1,0 +1,867 @@
+/* =========================================================
+   NAVBAR  (bigger navbar + bigger logo)
+
+   Menu is grouped into dropdowns, so:
+   - below 1200px  -> hamburger menu (dropdowns become accordions)
+   - 1200px & up   -> full horizontal menu with hover dropdowns
+   - 1400px & up   -> bigger sizing
+   - 1700px & up   -> biggest sizing
+
+   NOTE: pages use var(--navbar-height) for top spacing. If your
+   global CSS also defines --navbar-height, set it to the same
+   value as below so content does not hide under the navbar.
+========================================================= */
+
+:root {
+  --navbar-height: 124px;
+}
+
+.navbar-custom {
+  min-height: var(--navbar-height);
+  padding: 12px 0;
+
+  background: linear-gradient(
+    135deg,
+    #0f4d0f 0%,
+    #0b4211 55%,
+    #06290b 100%
+  );
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  box-shadow: 0 10px 28px rgba(6, 41, 11, 0.18);
+
+  transition: var(--transition);
+
+  z-index: 999;
+}
+
+.navbar-custom.scrolled {
+  min-height: 96px;
+  padding: 8px 0;
+
+  background: linear-gradient(
+    135deg,
+    #0f4d0f 0%,
+    #0b4211 55%,
+    #06290b 100%
+  );
+
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+
+  box-shadow: 0 12px 36px rgba(6, 41, 11, 0.3);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.navbar-custom .container {
+  display: flex;
+  align-items: center;
+}
+
+/* =========================
+   BRAND  (white rounded logo)
+========================= */
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 14px;
+
+  margin: 0 18px 0 0;
+  padding: 0;
+
+  flex-shrink: 0;
+
+  text-decoration: none;
+}
+
+.navbar-custom .navbar-brand .inmba-navbar-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 auto;
+
+  width: 100px;
+  height: 100px;
+
+  padding: 0;
+  overflow: hidden;
+
+  background: #fff;
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
+
+  transition: width 0.3s ease, height 0.3s ease, transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.navbar-custom.scrolled .navbar-brand .inmba-navbar-logo-wrapper {
+  width: 82px;
+  height: 82px;
+  border-radius: 20px;
+}
+
+.navbar-custom .navbar-brand .inmba-navbar-logo-wrapper img,
+.navbar-custom.scrolled .navbar-brand .inmba-navbar-logo-wrapper img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
+
+  box-shadow: none;
+}
+
+.navbar-custom .navbar-brand:hover .inmba-navbar-logo-wrapper {
+  transform: translateY(-2px) scale(1.05);
+
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.26);
+}
+
+.brand-name {
+  color: #ffffff;
+
+  font-size: 1.3rem;
+  font-weight: 800;
+
+  letter-spacing: -0.03em;
+
+  white-space: nowrap;
+
+  transition: font-size 0.3s ease;
+}
+
+.navbar-custom.scrolled .brand-name {
+  font-size: 1.2rem;
+}
+
+/* =========================
+   MOBILE TOGGLER
+========================= */
+
+.navbar-toggler {
+  width: 56px;
+  height: 54px;
+
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.1);
+
+  box-shadow: none;
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+}
+
+.navbar-toggler-icon {
+  width: 24px;
+  height: 18px;
+
+  position: relative;
+
+  display: block;
+
+  opacity: 1;
+  visibility: visible;
+
+  background-image: none;
+
+  border-top: 2px solid #ffffff;
+
+  border-bottom: 2px solid #ffffff;
+}
+
+.navbar-toggler-icon::before {
+  content: "";
+
+  display: block;
+
+  width: 100%;
+  height: 2px;
+
+  position: absolute;
+
+  top: 6px;
+  left: 0;
+
+  background: #ffffff;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.navbar-collapse {
+  flex-grow: 0;
+}
+
+.navbar-nav {
+  gap: 2px;
+}
+
+.navbar-custom .nav-item {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-custom .nav-link {
+  position: relative;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 56px;
+
+  padding: 12px 9px !important;
+
+  color: rgba(255, 255, 255, 0.82);
+
+  background: transparent;
+
+  border: 0;
+  border-radius: 13px;
+
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  transition: var(--transition);
+
+  white-space: nowrap;
+
+  text-decoration: none;
+}
+
+.navbar-custom .nav-link::after {
+  content: "";
+
+  width: 0;
+  height: 2px;
+
+  position: absolute;
+
+  left: 50%;
+  bottom: 5px;
+
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  transform: translateX(-50%);
+
+  transition: width 0.3s ease;
+}
+
+.navbar-custom .nav-link:hover {
+  color: #ffffff;
+
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-custom .nav-link:hover::after {
+  width: 26px;
+}
+
+.navbar-custom .nav-link.active {
+  color: #ffffff;
+
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.navbar-custom .nav-link.active::after {
+  width: 26px;
+}
+
+/* =========================
+   LOGOUT
+========================= */
+
+.navbar-logout-button {
+  font-family: inherit;
+}
+
+.navbar-custom .logout-link {
+  color: #ffd0d0;
+}
+
+.navbar-custom .logout-link:hover {
+  color: #ffffff;
+
+  background: rgba(211, 47, 47, 0.25);
+}
+
+.navbar-custom .logout-link::after {
+  background: #ffb7b7;
+}
+
+/* =========================
+   JOIN NOW
+========================= */
+
+.btn-join-nav {
+  min-height: 60px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  margin-left: 16px;
+
+  padding: 12px 24px;
+
+  color: #0b4211;
+
+  background: #ffffff;
+
+  border: 1px solid rgba(255, 255, 255, 0.92);
+
+  border-radius: 999px;
+
+  font-size: 0.92rem;
+  font-weight: 800;
+
+  text-decoration: none;
+
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+
+  transition: var(--transition);
+
+  white-space: nowrap;
+}
+
+.btn-join-nav i {
+  font-size: 0.9rem;
+
+  transition: transform 0.3s ease;
+}
+
+.btn-join-nav:hover {
+  color: #06290b;
+
+  background: #f3fff4;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.24);
+}
+
+.btn-join-nav:hover i {
+  transform: translateX(4px);
+}
+
+/* =========================================================
+   DROPDOWN GROUPS (sub headings)
+========================================================= */
+
+.navbar-custom .nav-item.has-dropdown {
+  position: relative;
+}
+
+.navbar-custom .nav-dropdown-toggle {
+  gap: 8px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.navbar-custom .nav-caret {
+  font-size: 0.7rem;
+  transition: transform 0.3s ease;
+}
+
+.navbar-custom .has-dropdown.is-open > .nav-dropdown-toggle {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.navbar-custom .has-dropdown.is-open .nav-caret {
+  transform: rotate(180deg);
+}
+
+.navbar-custom .nav-dropdown-menu {
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+}
+
+.navbar-custom .nav-dropdown-link {
+  display: block;
+  padding: 12px 16px;
+  border-radius: 11px;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.25s ease, color 0.25s ease, padding 0.25s ease;
+}
+
+.navbar-custom .nav-dropdown-link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  padding-left: 21px;
+}
+
+.navbar-custom .nav-dropdown-link.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* =========================
+   FULL DESKTOP MENU (1200px+)
+========================= */
+
+@media (min-width: 1200px) {
+  .navbar-custom .container {
+    width: 100%;
+    max-width: 1760px;
+
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .navbar-collapse {
+    flex-grow: 1;
+  }
+
+  .navbar-nav {
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: 4px;
+    margin-left: 10px;
+  }
+
+  .navbar-brand {
+    margin-right: 10px;
+  }
+
+  /* slightly smaller at the narrow end so everything still fits */
+  .navbar-custom .navbar-brand .inmba-navbar-logo-wrapper {
+    width: 88px;
+    height: 88px;
+  }
+
+  .navbar-custom.scrolled .navbar-brand .inmba-navbar-logo-wrapper {
+    width: 72px;
+    height: 72px;
+  }
+
+  .brand-name {
+    font-size: 1.25rem;
+  }
+
+  .navbar-custom.scrolled .brand-name {
+    font-size: 1.15rem;
+  }
+
+  .navbar-custom .nav-link {
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+
+    font-size: 0.88rem;
+  }
+
+  .btn-join-nav {
+    margin-left: 10px;
+    padding: 12px 22px;
+    font-size: 0.9rem;
+  }
+
+  /* dropdown panel */
+  .navbar-custom .nav-dropdown-menu {
+    min-width: 280px;
+
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    z-index: 1000;
+
+    margin-top: 8px;
+
+    background: linear-gradient(145deg, #0f4d0f, #0b4211 60%, #06290b);
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.3);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: translate(-50%, 8px);
+
+    transition: opacity 0.25s ease, transform 0.25s ease,
+      visibility 0.25s ease;
+  }
+
+  /* invisible bridge so the menu doesn't close while the
+     mouse moves from the button down to the panel */
+  .navbar-custom .nav-dropdown-menu::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -12px;
+    height: 12px;
+  }
+
+  .navbar-custom .has-dropdown.is-open > .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+
+    transform: translate(-50%, 0);
+  }
+}
+
+/* =========================
+   WIDE DESKTOP (1400px+)
+========================= */
+
+@media (min-width: 1400px) {
+  .navbar-custom .container {
+    padding-right: 28px;
+    padding-left: 28px;
+  }
+
+  .navbar-brand {
+    margin-right: 18px;
+  }
+
+  .navbar-custom .navbar-brand .inmba-navbar-logo-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+
+  .navbar-custom.scrolled .navbar-brand .inmba-navbar-logo-wrapper {
+    width: 82px;
+    height: 82px;
+  }
+
+  .brand-name {
+    font-size: 1.3rem;
+  }
+
+  .navbar-custom.scrolled .brand-name {
+    font-size: 1.2rem;
+  }
+
+  .navbar-custom .nav-link {
+    padding-right: 16px !important;
+    padding-left: 16px !important;
+
+    font-size: 0.94rem;
+  }
+
+  .btn-join-nav {
+    margin-left: 14px;
+    padding: 12px 26px;
+    font-size: 0.94rem;
+  }
+}
+
+/* =========================
+   LARGE DESKTOP (1700px+)
+========================= */
+
+@media (min-width: 1700px) {
+  .navbar-custom .navbar-brand .inmba-navbar-logo-wrapper {
+    width: 112px;
+    height: 112px;
+    border-radius: 26px;
+  }
+
+  .navbar-custom.scrolled .navbar-brand .inmba-navbar-logo-wrapper {
+    width: 90px;
+    height: 90px;
+  }
+
+  .brand-name {
+    font-size: 1.4rem;
+  }
+
+  .navbar-custom .nav-link {
+    padding-right: 20px !important;
+    padding-left: 20px !important;
+
+    font-size: 1rem;
+  }
+}
+
+/* =========================
+   TABLET / MOBILE NAV (below 1200px)
+========================= */
+
+@media (max-width: 1199px) {
+  .navbar-custom {
+    min-height: 104px;
+
+    padding: 9px 0;
+  }
+
+  .navbar-custom.scrolled {
+    min-height: 90px;
+
+    padding: 7px 0;
+  }
+
+  .navbar-custom .container {
+    flex-wrap: wrap;
+  }
+
+  .navbar-toggler {
+    display: inline-flex;
+
+    margin-left: auto;
+  }
+
+  .navbar-brand {
+    margin-right: 0;
+  }
+
+  .navbar-custom .navbar-brand .inmba-navbar-logo-wrapper {
+    width: 84px;
+    height: 84px;
+  }
+
+  .navbar-custom.scrolled .navbar-brand .inmba-navbar-logo-wrapper {
+    width: 72px;
+    height: 72px;
+  }
+
+  .brand-name,
+  .navbar-custom.scrolled .brand-name {
+    font-size: 1.2rem;
+  }
+
+  .navbar-collapse {
+    width: 100%;
+
+    flex-basis: 100%;
+
+    margin-top: 10px;
+
+    padding: 12px;
+
+    background: linear-gradient(
+      145deg,
+      #0f4d0f,
+      #0b4211 60%,
+      #06290b
+    );
+
+    border: 1px solid rgba(255, 255, 255, 0.11);
+
+    border-radius: 18px;
+
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.24);
+
+    max-height: calc(100vh - 110px);
+
+    overflow-y: auto;
+  }
+
+  .navbar-collapse.collapse:not(.show) {
+    display: none;
+  }
+
+  .navbar-collapse.show {
+    display: block;
+
+    animation: navbarMenuOpen 0.3s ease;
+  }
+
+  .navbar-nav {
+    width: 100%;
+    gap: 5px;
+  }
+
+  .navbar-custom .nav-item {
+    width: 100%;
+  }
+
+  .navbar-custom .nav-link {
+    width: 100%;
+
+    min-height: 54px;
+
+    justify-content: flex-start;
+
+    padding: 13px 14px !important;
+
+    font-size: 0.94rem;
+  }
+
+  .navbar-custom .nav-link::after {
+    width: 3px;
+    height: 0;
+
+    left: 4px;
+    bottom: 50%;
+
+    transform: translateY(50%);
+
+    transition: height 0.3s ease;
+  }
+
+  .navbar-custom .nav-link:hover::after,
+  .navbar-custom .nav-link.active::after {
+    width: 3px;
+    height: 22px;
+  }
+
+  .btn-join-nav {
+    width: 100%;
+
+    min-height: 56px;
+
+    margin: 10px 0 0;
+  }
+
+  /* dropdown becomes an accordion */
+  .navbar-custom .nav-item.has-dropdown {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .navbar-custom .nav-dropdown-toggle {
+    justify-content: space-between;
+  }
+
+  .navbar-custom .nav-dropdown-menu {
+    display: none;
+
+    margin: 4px 0 4px 12px;
+    padding: 4px 0 4px 10px;
+
+    border-left: 2px solid rgba(255, 255, 255, 0.16);
+  }
+
+  .navbar-custom .has-dropdown.is-open > .nav-dropdown-menu {
+    display: block;
+    animation: navbarMenuOpen 0.25s ease;
+  }
+
+  .navbar-custom .nav-dropdown-link {
+    padding: 12px 13px;
+    font-size: 0.9rem;
+  }
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 575px) {
+  .navbar-custom {
+    min-height: 92px;
+  }
+
+  .navbar-custom .container {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .navbar-brand {
+    gap: 10px;
+  }
+
+  .navbar-custom .navbar-brand .inmba-navbar-logo-wrapper {
+    width: 70px;
+    height: 70px;
+    padding: 0;
+    border-radius: 18px;
+  }
+
+  .navbar-custom.scrolled .navbar-brand .inmba-navbar-logo-wrapper {
+    width: 62px;
+    height: 62px;
+  }
+
+  .brand-name,
+  .navbar-custom.scrolled .brand-name {
+    font-size: 1.1rem;
+  }
+
+  .navbar-toggler {
+    width: 50px;
+    height: 49px;
+
+    border-radius: 12px;
+  }
+
+  .navbar-collapse {
+    max-height: calc(100vh - 100px);
+
+    margin-top: 8px;
+
+    padding: 10px;
+
+    border-radius: 15px;
+  }
+
+  .navbar-custom .nav-link {
+    min-height: 50px;
+
+    font-size: 0.92rem;
+  }
+}
+
+/* =========================
+   ANIMATION
+========================= */
+
+@keyframes navbarMenuOpen {
+  from {
+    opacity: 0;
+
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar-custom .navbar-brand .inmba-navbar-logo-wrapper,
+  .brand-name {
+    transition: none;
+  }
+
+  .navbar-custom .nav-dropdown-menu,
+  .navbar-custom .nav-caret,
+  .navbar-custom .nav-dropdown-link {
+    transition: none;
+  }
+}
