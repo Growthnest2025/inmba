@@ -14,6 +14,7 @@ import {
 } from "../../../services/commercialPublicProfile.service";
 
 import "./CommercialPublicProfile.css";
+import { buildDefaultBio } from "../../../utils/defaultBio";
 
 /* =========================================================
    HELPERS
@@ -257,15 +258,19 @@ function CommercialSection({
   icon,
   iconBg,
   opened,
+  hasData = true,
   onToggle,
   children,
 }) {
+  const canOpen = Boolean(hasData);
+  const isOpen = canOpen && Boolean(opened);
+
   return (
     <section
       className={[
         "commercial-pro-section",
 
-        opened
+        isOpen
           ? "opened"
           : "",
       ]
@@ -275,11 +280,17 @@ function CommercialSection({
       <button
         type="button"
         className="commercial-pro-section-header"
-        onClick={
-          onToggle
-        }
-        aria-expanded={
-          opened
+        onClick={() => {
+          if (!canOpen) return;
+          onToggle?.();
+        }}
+        disabled={!canOpen}
+        aria-disabled={!canOpen}
+        aria-expanded={isOpen}
+        style={
+          !canOpen
+            ? { cursor: "default", opacity: 0.72 }
+            : undefined
         }
       >
         <span
@@ -303,24 +314,26 @@ function CommercialSection({
           </strong>
 
           <small>
-            {subtitle}
+            {canOpen ? subtitle : "No details added"}
           </small>
         </span>
 
-        <span
-          className="commercial-pro-section-arrow"
-        >
-          <i
-            className={
-              opened
-                ? "fa-solid fa-chevron-up"
-                : "fa-solid fa-chevron-down"
-            }
-          />
-        </span>
+        {canOpen && (
+          <span
+            className="commercial-pro-section-arrow"
+          >
+            <i
+              className={
+                isOpen
+                  ? "fa-solid fa-chevron-up"
+                  : "fa-solid fa-chevron-down"
+              }
+            />
+          </span>
+        )}
       </button>
 
-      {opened && (
+      {isOpen && (
         <div className="commercial-pro-section-content">
           <div className="commercial-pro-field-grid">
             {children}
@@ -390,6 +403,12 @@ export default function CommercialPublicProfile({
   const [
     openedSection,
     setOpenedSection,
+  ] =
+    useState("");
+
+  const [
+    copiedReferral,
+    setCopiedReferral,
   ] =
     useState("");
 
@@ -679,10 +698,111 @@ export default function CommercialPublicProfile({
             .social_media_links
         );
 
+  const adminRank = toText(
+    profile?.network_level_badge ||
+      profile?.network?.rank_badge ||
+      profile?.network_rank ||
+      profile?.network_level
+  );
+
+  const directMembersCount = Number(
+    profile?.direct_members ??
+      profile?.direct_network ??
+      profile?.network?.direct_members ??
+      0
+  );
+
+  const totalNetworkCount = Number(
+    profile?.total_network ??
+      profile?.network?.total_network ??
+      Number(profile?.direct_network ?? 0) +
+        Number(profile?.indirect_network ?? 0)
+  );
+
+  const referralCode = toText(
+    profile?.referral_id ||
+      profile?.login_id ||
+      safeLoginId
+  );
+
+  const referralLink = referralCode
+    ? `${typeof window !== "undefined" ? window.location.origin : ""}/membership?ref=${encodeURIComponent(referralCode)}`
+    : "";
+
+  const copyReferralText = async (kind, value) => {
+    if (!value) return;
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+      }
+      setCopiedReferral(kind);
+      window.setTimeout(() => setCopiedReferral(""), 2200);
+    } catch {
+      setCopiedReferral("");
+    }
+  };
+
+  const hasSectionA = Boolean(
+    toText(profile.business_name || profile.display_name) ||
+      toText(profile.username || safeLoginId) ||
+      profile.commercial_verified
+  );
+
+  const hasSectionB = Boolean(
+    toText(profile.business_name) ||
+      toText(profile.business_type) ||
+      toText(profile.business_category) ||
+      profile.registration_verified ||
+      profile.gst_verified
+  );
+
+  const hasSectionC = Boolean(
+    locationText ||
+      branches ||
+      toText(profile.business_contact_number) ||
+      toText(profile.business_email) ||
+      toText(profile.business_website) ||
+      toText(profile.google_map_location)
+  );
+
+  const hasSectionD = Boolean(profile.gst_verified);
+
+  const hasSectionE = Boolean(
+    toText(profile.year_established) ||
+      toText(profile.number_of_employees) ||
+      products ||
+      tags ||
+      awards ||
+      testimonials ||
+      toText(profile.business_bio) ||
+      businessLogo ||
+      toText(profile.gallery_photos) ||
+      toText(profile.promo_video) ||
+      socialLinks
+  );
+
+  const hasSectionF = true;
+  const hasSectionG = false;
+
+  const sectionAvailability = {
+    A: hasSectionA,
+    B: hasSectionB,
+    C: hasSectionC,
+    D: hasSectionD,
+    E: hasSectionE,
+    F: hasSectionF,
+    G: hasSectionG,
+    PRIVACY: true,
+  };
+
   const toggleSection =
     (
       sectionId
     ) => {
+      if (sectionAvailability[sectionId] === false) {
+        return;
+      }
+
       setOpenedSection(
         (
           current
@@ -848,6 +968,128 @@ export default function CommercialPublicProfile({
           </div>
         </section>
 
+        {/* QUICK LINKS & CONTACT (Name -> Links -> Contact) */}
+        <section
+          style={{
+            background: "#ffffff",
+            border: "1px solid #e2e8f0",
+            borderRadius: "18px",
+            padding: "18px 22px",
+            marginBottom: "18px",
+            display: "grid",
+            gap: "12px",
+          }}
+        >
+          <div>
+            <strong style={{ display: "block", fontSize: "0.85rem", color: "#64748b", textTransform: "uppercase", marginBottom: "6px" }}>
+              Links
+            </strong>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+              {profile.business_website && (
+                <a href={normalizeUrl(profile.business_website)} target="_blank" rel="noreferrer" style={{ color: "#1d4ed8", fontWeight: 600 }}>
+                  <i className="fa-solid fa-globe" /> Website
+                </a>
+              )}
+              {profile.google_map_location && (
+                <a href={normalizeUrl(profile.google_map_location)} target="_blank" rel="noreferrer" style={{ color: "#1d4ed8", fontWeight: 600 }}>
+                  <i className="fa-solid fa-location-dot" /> Map Location
+                </a>
+              )}
+              {socialLinks && <span><i className="fa-solid fa-share-nodes" /> {socialLinks}</span>}
+              {!profile.business_website && !profile.google_map_location && !socialLinks && (
+                <span style={{ color: "#64748b" }}>No public links added</span>
+              )}
+            </div>
+          </div>
+          <div>
+            <strong style={{ display: "block", fontSize: "0.85rem", color: "#64748b", textTransform: "uppercase", marginBottom: "6px" }}>
+              Contact
+            </strong>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", color: "#0f172a" }}>
+              {(profile.business_email || profile.email) && (
+                <a href={`mailto:${profile.business_email || profile.email}`} style={{ color: "#0f172a", fontWeight: 600 }}>
+                  <i className="fa-solid fa-envelope" /> {profile.business_email || profile.email}
+                </a>
+              )}
+              {profile.business_contact_number && (
+                <a href={`tel:${profile.business_contact_number}`} style={{ color: "#0f172a" }}>
+                  <i className="fa-solid fa-phone" /> {profile.business_contact_number}
+                </a>
+              )}
+              {cityState && (
+                <span><i className="fa-solid fa-location-dot" /> {cityState}</span>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* MY NETWORK PROFILE & REFERRAL PROGRAM */}
+        <section
+          style={{
+            background: "#ffffff",
+            border: "1px solid #e2e8f0",
+            borderRadius: "18px",
+            padding: "18px 22px",
+            marginBottom: "18px",
+            display: "grid",
+            gap: "16px",
+          }}
+        >
+          <div>
+            <strong style={{ display: "block", fontSize: "0.95rem", color: "#0f172a", marginBottom: "10px" }}>
+              <i className="fa-solid fa-diagram-project" /> My Network Profile
+            </strong>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "12px" }}>
+              <div style={{ padding: "10px 12px", borderRadius: "10px", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                <small style={{ display: "block", color: "#64748b", fontWeight: 600 }}>Rank (Admin Controlled)</small>
+                <strong style={{ color: "#0f172a" }}>{adminRank || "Assigned by Admin"}</strong>
+              </div>
+              <div style={{ padding: "10px 12px", borderRadius: "10px", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                <small style={{ display: "block", color: "#64748b", fontWeight: 600 }}>Total Network</small>
+                <strong style={{ color: "#0f172a" }}>{totalNetworkCount}</strong>
+              </div>
+              <div style={{ padding: "10px 12px", borderRadius: "10px", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                <small style={{ display: "block", color: "#64748b", fontWeight: 600 }}>Direct Member</small>
+                <strong style={{ color: "#0f172a" }}>{directMembersCount}</strong>
+              </div>
+            </div>
+          </div>
+
+          {referralCode && (
+            <div style={{ borderTop: "1px solid #e2e8f0", paddingTop: "14px", display: "grid", gap: "10px" }}>
+              <strong style={{ display: "block", fontSize: "0.95rem", color: "#0f172a" }}>
+                <i className="fa-solid fa-share-nodes" /> Referral Program
+              </strong>
+              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "10px", padding: "10px 12px", borderRadius: "10px", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                <div>
+                  <small style={{ display: "block", color: "#64748b", fontWeight: 600 }}>Referral Code</small>
+                  <strong style={{ color: "#0f172a" }}>{referralCode}</strong>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => copyReferralText("code", referralCode)}
+                  style={{ padding: "7px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#fff", fontWeight: 600, cursor: "pointer" }}
+                >
+                  {copiedReferral === "code" ? "Copied" : "Copy Code"}
+                </button>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "10px", padding: "10px 12px", borderRadius: "10px", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <small style={{ display: "block", color: "#64748b", fontWeight: 600 }}>Referral Link</small>
+                  <span style={{ display: "block", fontSize: "0.86rem", color: "#0f172a", overflowWrap: "anywhere" }}>{referralLink}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => copyReferralText("link", referralLink)}
+                  style={{ padding: "7px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#fff", fontWeight: 600, cursor: "pointer" }}
+                >
+                  {copiedReferral === "link" ? "Copied" : "Copy Link"}
+                </button>
+              </div>
+            </div>
+          )}
+        </section>
+
         {/* =================================================
             A
         ================================================= */}
@@ -858,6 +1100,7 @@ export default function CommercialPublicProfile({
           subtitle="Public business identity with protected personal KYC"
           icon="fa-solid fa-id-card"
           iconBg="#dcfce7"
+          hasData={hasSectionA}
           opened={
             openedSection ===
             "A"
@@ -962,6 +1205,7 @@ export default function CommercialPublicProfile({
           subtitle="Public business details with protected legal documents"
           icon="fa-solid fa-scale-balanced"
           iconBg="#dbeafe"
+          hasData={hasSectionB}
           opened={
             openedSection ===
             "B"
@@ -1059,6 +1303,7 @@ export default function CommercialPublicProfile({
           subtitle="Public business contact and area-level location"
           icon="fa-solid fa-location-dot"
           iconBg="#ccfbf1"
+          hasData={hasSectionC}
           opened={
             openedSection ===
             "C"
@@ -1157,6 +1402,7 @@ export default function CommercialPublicProfile({
           subtitle="Financial information is protected and available only to the member"
           icon="fa-solid fa-building-columns"
           iconBg="#fee2e2"
+          hasData={hasSectionD}
           opened={
             openedSection ===
             "D"
@@ -1237,6 +1483,7 @@ export default function CommercialPublicProfile({
           subtitle="Business profile, services and achievements shared publicly"
           icon="fa-solid fa-trophy"
           iconBg="#fef3c7"
+          hasData={hasSectionE}
           opened={
             openedSection ===
             "E"
@@ -1297,10 +1544,14 @@ export default function CommercialPublicProfile({
           />
 
           <PublicField
-            label="Business Bio"
+            label="Bio"
             value={
-              profile
-                .business_bio
+              toText(profile.business_bio) ||
+              buildDefaultBio({
+                name: businessName,
+                plan: profile.selected_plan || "2999",
+                membershipType: "Commercial Member",
+              })
             }
           />
 
@@ -1348,10 +1599,11 @@ export default function CommercialPublicProfile({
 
         <CommercialSection
           sectionId="F"
-          title="Network & Royalty"
-          subtitle="Public rank badge with protected network and payout information"
+          title="My Network Profile"
+          subtitle="Admin-assigned rank, total network and direct members"
           icon="fa-solid fa-tree"
           iconBg="#dbeafe"
+          hasData={hasSectionF}
           opened={
             openedSection ===
             "F"
@@ -1363,37 +1615,29 @@ export default function CommercialPublicProfile({
           }
         >
           <PublicField
-            label="Network Rank / Level"
+            label="Rank (Admin Controlled)"
             value={
-              profile
-                .network_level_badge
+              adminRank ||
+              "Assigned by Admin"
             }
           />
 
           <PublicField
-            label="Referral / Sponsor ID"
-            privateField
+            label="Total Network"
+            value={String(totalNetworkCount)}
           />
 
           <PublicField
-            label="Team Size"
-            privateField
+            label="Direct Member"
+            value={String(directMembersCount)}
           />
 
-          <PublicField
-            label="Royalty Slab"
-            privateField
-          />
-
-          <PublicField
-            label="Preferred Payout Cycle"
-            privateField
-          />
-
-          <PublicField
-            label="Payout Information"
-            privateField
-          />
+          {referralCode && (
+            <PublicField
+              label="Referral Code"
+              value={referralCode}
+            />
+          )}
         </CommercialSection>
 
         {/* =================================================
@@ -1406,6 +1650,7 @@ export default function CommercialPublicProfile({
           subtitle="Emergency contact and nominee information is private"
           icon="fa-solid fa-truck-medical"
           iconBg="#ffedd5"
+          hasData={hasSectionG}
           opened={
             openedSection ===
             "G"

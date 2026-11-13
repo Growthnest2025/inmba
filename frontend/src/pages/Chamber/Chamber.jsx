@@ -64,8 +64,8 @@ const membershipTypes = [
 
 const heroStats = [
   { value: "6", label: "Membership types" },
-  { value: "₹300", label: "Civilian Network" },
-  { value: "₹1,500", label: "Civilian Royalty" },
+  { value: "₹299", label: "Civilian Network" },
+  { value: "₹2,999", label: "Civilian Royalty" },
 ];
 
 const heroPoints = [
@@ -629,8 +629,8 @@ export default function Chamber() {
                 <i className="bi bi-pie-chart" />
                 <h3>Membership &amp; Allocation</h3>
                 <p>
-                  One-time fees: Civilian Royalty ₹1,500 and Civilian Network
-                  ₹300. Chamber Patron 10%, Development Fund 20%, with the
+                  One-time fees: Civilian Royalty ₹2,999 and Civilian Network
+                  ₹299. Chamber Patron 10%, Development Fund 20%, with the
                   balance to the INMBA General Fund.
                 </p>
               </article>

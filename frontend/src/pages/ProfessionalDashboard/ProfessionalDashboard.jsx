@@ -969,13 +969,13 @@ export default function ProfessionalDashboard() {
         Number(
           member.amount ||
           0
-        ) === 1500
-          ? "1500"
+        ) === 2999 || Number(member.amount || 0) === 1500
+          ? "2999"
           : Number(
               member.amount ||
               0
-            ) === 300
-            ? "300"
+            ) === 299 || Number(member.amount || 0) === 300
+            ? "299"
             : ""
       )
     );
@@ -983,30 +983,30 @@ export default function ProfessionalDashboard() {
   const membershipLevel =
     !isApproved
       ? "INMBA Member"
-      : selectedMembershipPlan ===
-          "1500"
+      :
+          ["2999", "1500"].includes(selectedMembershipPlan)
         ? "INMBA Network Royalty Member"
-        : selectedMembershipPlan ===
-            "300"
+        :
+            ["299", "300"].includes(selectedMembershipPlan)
           ? "INMBA Network Member"
           : "INMBA Member";
 
   const membershipPlanLabel =
-    selectedMembershipPlan ===
-      "1500"
-      ? "₹1500"
-      : selectedMembershipPlan ===
-          "300"
-        ? "₹300"
+
+      ["2999", "1500"].includes(selectedMembershipPlan)
+      ? "₹2999"
+      :
+          ["299", "300"].includes(selectedMembershipPlan)
+        ? "₹299"
         : "Not selected";
 
   const hasProfessionalNetworkAccess =
-    Boolean(isApproved);
+    Boolean(isApproved && ["2999", "1500"].includes(selectedMembershipPlan));
 
   const hasProfessionalRoyaltyAccess =
     isApproved &&
-    selectedMembershipPlan ===
-      "1500";
+
+      ["2999", "1500"].includes(selectedMembershipPlan);
 
   /* =======================================================
      CREATED DATE
@@ -1392,7 +1392,7 @@ export default function ProfessionalDashboard() {
               <p>
                 {selectedMembershipPlan
                   ? `Your ₹${selectedMembershipPlan} Professional membership is not active yet. Complete the Full KYC, payment and admin approval process to unlock your membership benefits.`
-                  : "Choose the ₹300 Network Member or ₹1500 Network Royalty Member plan to continue your Professional Full KYC A–J flow."}
+                  : "Choose the ₹299 Network Member or ₹2999 Network Royalty Member plan to continue your Professional Full KYC A–J flow."}
               </p>
             </div>
 
@@ -1612,7 +1612,7 @@ export default function ProfessionalDashboard() {
   </Link>
 )}
 
-{hasProfessionalNetworkAccess && (
+{isApproved && (
   <Link
     to="/professional-public-profile"
     className="member-dashboard-secondary-button"
@@ -1661,6 +1661,8 @@ export default function ProfessionalDashboard() {
               </div>
             </div>
 
+            {hasProfessionalNetworkAccess ? (
+              <>
             <div className="member-dashboard-network-grid">
               <article className="member-dashboard-network-stat member-dashboard-network-navy">
                 <span>
@@ -1738,6 +1740,14 @@ export default function ProfessionalDashboard() {
 
               View Network Members
             </Link>
+              </>
+            ) : (
+              <div className="member-dashboard-locked">
+                <p>
+                  Network &amp; Royalty features are locked on the ?299 plan. Upgrade to the ?2,999 Royalty plan to unlock Network &amp; Royalty access.
+                </p>
+              </div>
+            )}
           </section>
         </div>
 

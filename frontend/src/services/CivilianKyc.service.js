@@ -89,13 +89,13 @@ export async function getCivilianKycSection(
 
    Body:
    {
-     selected_plan: "300"
+     selected_plan: "299"
    }
 
    OR
 
    {
-     selected_plan: "1500"
+     selected_plan: "2999"
    }
 
    IMPORTANT:
@@ -112,14 +112,14 @@ export async function saveCivilianKycPlan(
 
   if (
     ![
-      "300",
-      "1500",
+      "299",
+      "2999",
     ].includes(
       plan
     )
   ) {
     throw new Error(
-      "Invalid Civilian plan. Please select ₹300 or ₹1500."
+      "Invalid Civilian plan. Please select ₹299 or ₹2999."
     );
   }
 

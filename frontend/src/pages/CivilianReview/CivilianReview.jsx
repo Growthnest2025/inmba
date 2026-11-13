@@ -174,8 +174,8 @@ const FIELD_LABELS = {
   testimonials: "Testimonials",
   reference_letters: "Testimonials / References",
 
-  bio: "Bio / About",
-  professional_bio: "Bio / About",
+  bio: "Bio",
+  professional_bio: "Bio",
   interest_categories: "Interest Categories",
   skills: "Skills",
   hobbies: "Hobbies",
@@ -391,11 +391,11 @@ const getPlan = ({
     storagePlan ||
     serverPlan;
 
-  return ["300", "1500"].includes(
+  return ["299", "2999", "300", "1500"].includes(
     candidate
   )
     ? candidate
-    : "300";
+    : "299";
 };
 
 const getFileName = (value) => {
@@ -664,9 +664,9 @@ export default function CivilianReview() {
     );
 
   const membershipLevel =
-    selectedPlan === "1500"
+    selectedPlan === "2999" || selectedPlan === "1500"
       ? "INMBA Network Royalty Member"
-      : selectedPlan === "300"
+      : selectedPlan === "299" || selectedPlan === "300"
       ? "INMBA Network Member"
       : "Civilian Membership";
 
@@ -812,7 +812,7 @@ export default function CivilianReview() {
         return;
       }
 
-      const effectivePlan = selectedPlan || "300";
+      const effectivePlan = selectedPlan || "299";
 
       try {
         setConfirming(true);

@@ -612,7 +612,7 @@ function MemberIdentity({
         </div>
 
         <div className="h-role">
-          {membership.label} Membership
+          {membership.label} · My Network Profile
         </div>
 
         <div className="h-meta">
@@ -682,7 +682,7 @@ function MembershipTypeCard({
       </div>
 
       <div className="mtype-card-label">
-        Membership Type
+        My Network Profile
       </div>
 
       <div
@@ -821,6 +821,20 @@ function StatusCards({
             }
           />
         </div>
+      </div>
+
+      <div
+        className="mtype-card"
+        style={{
+          background: "#f0fdf4",
+          borderColor: "#86efac",
+          color: "#166534",
+        }}
+      >
+        <div className="mtype-card-icon">??</div>
+        <div className="mtype-card-label">Direct Member</div>
+        <div className="mtype-card-count">{directNetwork}</div>
+        <div className="mtype-card-pct">Direct referrals</div>
       </div>
 
       <div

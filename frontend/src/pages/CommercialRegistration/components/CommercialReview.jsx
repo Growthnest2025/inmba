@@ -258,7 +258,7 @@ const COMMERCIAL_PLAN_MAP = {
     plan_id: "basic",
     planId: "basic",
     name: "Commercial Membership",
-    amount: 300,
+    amount: 299,
     requiresFullKyc: true,
     requires_full_kyc: true,
   },
@@ -268,7 +268,7 @@ const COMMERCIAL_PLAN_MAP = {
     plan_id: "profile_upgrade",
     planId: "profile_upgrade",
     name: "Commercial Profile Upgrade",
-    amount: 1500,
+    amount: 2999,
     requiresFullKyc: true,
     requires_full_kyc: true,
   },
@@ -349,8 +349,7 @@ const resolveCommercialSelectedPlan =
     }
 
     if (
-      storedAmount ===
-      300
+      storedAmount === 299 || storedAmount === 300
     ) {
       return {
         ...COMMERCIAL_PLAN_MAP.basic,
@@ -358,8 +357,7 @@ const resolveCommercialSelectedPlan =
     }
 
     if (
-      storedAmount ===
-      1500
+      storedAmount === 2999 || storedAmount === 1500
     ) {
       return {
         ...COMMERCIAL_PLAN_MAP

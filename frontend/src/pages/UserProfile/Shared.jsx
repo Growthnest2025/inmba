@@ -640,9 +640,11 @@ export function Section({
   title,
   sub,
   hideable = true,
+  hasData = true,
   delay = 0,
   children,
 }) {
+  const canOpen = Boolean(hasData);
   const [
     open,
     setOpen,
@@ -650,6 +652,7 @@ export function Section({
     useState(
       false
     );
+  const isOpen = canOpen && open;
 
   const [
     hidden,
@@ -717,11 +720,11 @@ export function Section({
     >
       <div
         className="sec-hdr"
-        onClick={() =>
-          setOpen(
-            !open
-          )
-        }
+        style={!canOpen ? { cursor: "not-allowed", opacity: 0.72 } : undefined}
+        onClick={() => {
+          if (!canOpen) return;
+          setOpen(!open);
+        }}
       >
         <div className="sec-hl">
           <div
@@ -754,7 +757,7 @@ export function Section({
                 </span>
               )}
 
-              {sub}
+              {canOpen ? sub : "No details added"}
             </div>
           </div>
         </div>
@@ -790,12 +793,7 @@ export function Section({
 
           <span
             className={
-              "chev" +
-              (
-                open
-                  ? " open"
-                  : ""
-              )
+              "chev" + (isOpen ? " open" : "")
             }
           >
             ▾
@@ -805,12 +803,7 @@ export function Section({
 
       <div
         className={
-          "sec-body" +
-          (
-            open
-              ? " open"
-              : ""
-          )
+          "sec-body" + (isOpen ? " open" : "")
         }
       >
         <div className="sec-in">

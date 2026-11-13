@@ -865,27 +865,56 @@ function ReferralLinkCard({
       }
     };
 
+  const copyCode = async () => {
+    if (!referralId) return;
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(referralId);
+      }
+      showToast("Referral code copied");
+    } catch {
+      showToast("Unable to copy referral code");
+    }
+  };
+
   return (
     <div className="ref-link-only">
+      <div className="ref-label">
+        Referral Code
+      </div>
+
+      <div className="ref-link-row" style={{ marginBottom: "8px" }}>
+        <span className="ref-link-text" style={{ fontWeight: 700 }}>
+          {referralId || "Not yet assigned"}
+        </span>
+
+        {referralId && (
+          <button
+            type="button"
+            className="ref-copy-btn"
+            onClick={copyCode}
+          >
+            Copy Code
+          </button>
+        )}
+      </div>
+
       <div className="ref-label">
         Referral Link
       </div>
 
       <div className="ref-link-row">
         <span className="ref-link-text">
-          {referralLink ||
-            "Not yet assigned"}
+          {referralLink || "Not yet assigned"}
         </span>
 
         {referralLink && (
           <button
             type="button"
             className="ref-copy-btn"
-            onClick={
-              copyReferral
-            }
+            onClick={copyReferral}
           >
-            📋 Copy
+            Copy Link
           </button>
         )}
       </div>
@@ -1237,6 +1266,10 @@ function ProfessionalPublicHero({
             Public Professional Profile
           </div>
         </div>
+
+        {toText(profile?.referral_id) && (
+          <ReferralLinkCard profile={profile} />
+        )}
       </div>
     </div>
   );
@@ -1433,6 +1466,54 @@ function ProfessionalPublicSections({
         .hourly_project_rate_public
     );
 
+  const hasText = (val) => Boolean(toText(val));
+  const hasList = (val) => toArray(val).length > 0;
+  const adminRank = toText(profile.network_level ?? profile.network_rank ?? profile.rank, "Assigned by Admin");
+  const directMembers = Number(profile.direct_network ?? profile.direct_members ?? profile.direct_members_count ?? 0);
+  const totalNetwork = Number(profile.total_network ?? (directMembers + Number(profile.indirect_network ?? 0)));
+
+  const hasSectionAData = Boolean(hasText(profile.display_name) || hasText(profile.username));
+  const hasSectionBData = Boolean((phonePublic && hasText(profile.phone)) || hasText(profile.district) || hasText(profile.state) || hasText(profile.pincode));
+  const hasSectionCData = Boolean(
+    profile.kyc_verified ||
+      profile.professional_license_badge ||
+      profile.council_registration_badge ||
+      profile.gst_badge
+  );
+  const hasSectionDData = Boolean(
+    (qualificationPublic && hasText(profile.educational_qualification ?? profile.education)) ||
+      hasText(profile.school_college_name) ||
+      hasList(profile.additional_certifications) ||
+      hasList(profile.language_skills)
+  );
+  const hasSectionEData = Boolean(
+    hasList(profile.awards_recognitions) ||
+      hasList(profile.publications) ||
+      hasList(profile.professional_certifications) ||
+      hasList(profile.key_milestones) ||
+      hasList(profile.media_mentions) ||
+      hasList(profile.reference_letters)
+  );
+  const hasSectionFData = Boolean(
+    profile.total_experience_years != null ||
+      hasList(profile.previous_employers_clients) ||
+      hasList(profile.work_samples) ||
+      (ratePublic && hasText(profile.hourly_project_rate)) ||
+      hasText(profile.availability_status)
+  );
+  const hasSectionGData = Boolean(
+    hasText(profile.professional_bio ?? profile.bio) ||
+      hasList(profile.interest_categories) ||
+      hasList(profile.skills) ||
+      hasList(profile.hobbies) ||
+      hasText(profile.preferred_industry) ||
+      hasText(profile.cover_photo) ||
+      toArray(profile.gallery_photos).length > 0 ||
+      hasText(profile.intro_video) ||
+      hasText(profile.portfolio_url) ||
+      social.length > 0
+  );
+
   const badges = [
     profile.kyc_verified
       ? "KYC Verified"
@@ -1467,6 +1548,7 @@ function ProfessionalPublicSections({
         icon="🪪"
         bg="#dcfce7"
         title="A. Identity & KYC"
+        hasData={hasSectionAData}
         sub="Public identity with protected legal KYC"
         delay={
           0.05
@@ -1600,6 +1682,7 @@ function ProfessionalPublicSections({
         icon="📍"
         bg="#ccfbf1"
         title="B. Contact & Address"
+        hasData={hasSectionBData}
         sub="Public area information with private personal contact"
         delay={
           0.1
@@ -1714,6 +1797,7 @@ function ProfessionalPublicSections({
         icon="⚖️"
         bg="#dbeafe"
         title="C. Legal & Professional Compliance"
+        hasData={hasSectionCData}
         sub="Verification badges are public; actual numbers and documents stay private"
         delay={
           0.15
@@ -1818,6 +1902,7 @@ function ProfessionalPublicSections({
         icon="🎓"
         bg="#ecfccb"
         title="D. Education & Qualification"
+        hasData={hasSectionDData}
         sub="Shared education and certifications"
         delay={
           0.2
@@ -1905,6 +1990,7 @@ function ProfessionalPublicSections({
         icon="🏆"
         bg="#fef3c7"
         title="E. Achievements & Certifications"
+        hasData={hasSectionEData}
         sub="Professional accomplishments shared publicly"
         delay={
           0.25
@@ -2003,6 +2089,7 @@ function ProfessionalPublicSections({
         icon="💼"
         bg="#ede9fe"
         title="F. Work Experience & Portfolio"
+        hasData={hasSectionFData}
         sub="Professional experience and public work information"
         delay={
           0.3
@@ -2092,6 +2179,7 @@ function ProfessionalPublicSections({
         icon="👤"
         bg="#dcfce7"
         title="G. Professional Bio & Interests"
+        hasData={hasSectionGData}
         sub="Public professional identity and online presence"
         delay={
           0.35
@@ -2234,6 +2322,7 @@ function ProfessionalPublicSections({
         icon="🏦"
         bg="#fee2e2"
         title="H. Financial & Bank Details"
+        hasData={false}
         sub="Financial information is protected and available only to the member"
         delay={
           0.4
@@ -2334,71 +2423,40 @@ function ProfessionalPublicSections({
       <Section
         icon="🌳"
         bg="#dbeafe"
-        title="I. Network & Royalty"
-        sub="Public rank badge with protected network and payout information"
+        title="I. My Network Profile"
+        sub="Admin-assigned rank, total network and direct members"
         delay={
           0.45
         }
         hideable={
           false
         }
+        hasData={true}
       >
         <ProfessionalPublicGrid
           rows={[
             {
               label:
-                "Network Level / Rank",
+                "Rank",
 
               value:
-                profile.network_level,
+                adminRank,
             },
 
             {
               label:
-                "Sponsor / Referral ID",
+                "Total Network",
 
-              status:
-                "private",
+              value:
+                String(totalNetwork),
             },
 
             {
               label:
-                "Direct Network",
+                "Direct Member",
 
-              status:
-                "private",
-            },
-
-            {
-              label:
-                "Indirect Network",
-
-              status:
-                "private",
-            },
-
-            {
-              label:
-                "Team Size",
-
-              status:
-                "private",
-            },
-
-            {
-              label:
-                "Royalty Slab Category",
-
-              status:
-                "private",
-            },
-
-            {
-              label:
-                "Preferred Payout Cycle",
-
-              status:
-                "private",
+              value:
+                String(directMembers),
             },
           ]}
         />
@@ -2412,6 +2470,7 @@ function ProfessionalPublicSections({
         icon="🚨"
         bg="#ffedd5"
         title="J. Emergency Contact"
+        hasData={false}
         sub="Emergency contact information is private"
         delay={
           0.5
@@ -2523,12 +2582,111 @@ function PublicSections({
       profile
     );
 
+  const hasTextVal = (val) => Boolean(toText(val));
+  const hasContactSec = Boolean(hasTextVal(profile.email) || hasTextVal(profile.phone) || hasTextVal(profile.whatsapp_number) || hasTextVal(profile.contact_number));
+  const hasPersonalSec = Boolean(hasTextVal(profile.first_name) || hasTextVal(profile.last_name) || hasTextVal(profile.father_name) || hasTextVal(profile.dob) || hasTextVal(profile.gender) || hasTextVal(profile.login_id));
+  const hasAddressSec = Boolean(hasTextVal(profile.entity_house_no) || hasTextVal(profile.entity_street) || hasTextVal(profile.entity_area) || hasTextVal(profile.entity_city ?? profile.city) || hasTextVal(profile.entity_district ?? profile.district) || hasTextVal(profile.entity_state ?? profile.state) || hasTextVal(profile.entity_pincode ?? profile.pincode) || hasTextVal(profile.country));
+  const hasEducationSec = Boolean(hasTextVal(profile.education) || hasTextVal(profile.educational_qualification) || hasTextVal(profile.education_level) || hasTextVal(profile.ug_degree) || hasTextVal(profile.ug_department) || hasTextVal(profile.ug_college));
+  const hasProfSec = Boolean(hasTextVal(profile.occupation) || hasTextVal(profile.profession) || hasTextVal(profile.professional_role) || hasTextVal(profile.years_of_experience) || toArray(profile.skills).length > 0 || hasTextVal(profile.nationality) || hasTextVal(profile.marital_status) || hasTextVal(profile.bio ?? profile.profile_bio));
+  const civAdminRank = toText(profile.network_level ?? profile.network_rank ?? profile.rank, "Assigned by Admin");
+  const civDirectMembers = Number(profile.direct_network ?? profile.direct_members ?? profile.direct_members_count ?? 0);
+  const civTotalNetwork = Number(profile.total_network ?? (civDirectMembers + Number(profile.indirect_network ?? 0)));
+
   return (
     <>
+      {!editing &&
+        social.length >
+          0 && (
+          <Section
+            icon="🌐"
+            bg="#ecfccb"
+            title="Social Media"
+            sub="Online presence"
+            delay={
+              0.2
+            }
+          >
+            <SocialGrid
+              items={
+                social
+              }
+            />
+          </Section>
+        )}
+
+      <Section
+        icon="📞"
+        bg="#ccfbf1"
+        title="Contact Details"
+        hasData={hasContactSec}
+        sub="Email · Phone · WhatsApp"
+        delay={
+          0.1
+        }
+      >
+        <EditableGrid
+          editing={
+            editing
+          }
+          draft={
+            draft
+          }
+          onChange={
+            onFieldChange
+          }
+          rows={[
+            {
+              label:
+                "Email",
+
+              field:
+                "email",
+
+              value:
+                profile.email,
+            },
+
+            {
+              label:
+                "Phone",
+
+              field:
+                "phone",
+
+              value:
+                profile.phone,
+            },
+
+            {
+              label:
+                "WhatsApp",
+
+              field:
+                "whatsapp_number",
+
+              value:
+                profile.whatsapp_number,
+            },
+
+            {
+              label:
+                "Contact Number",
+
+              field:
+                "contact_number",
+
+              value:
+                profile.contact_number,
+            },
+          ]}
+        />
+      </Section>
+
       <Section
         icon="👤"
         bg="#dcfce7"
         title="Personal Information"
+        hasData={hasPersonalSec}
         sub="Name · DOB · Gender"
         delay={
           0.05
@@ -2621,76 +2779,10 @@ function PublicSections({
       </Section>
 
       <Section
-        icon="📞"
-        bg="#ccfbf1"
-        title="Contact Details"
-        sub="Email · Phone · WhatsApp"
-        delay={
-          0.1
-        }
-      >
-        <EditableGrid
-          editing={
-            editing
-          }
-          draft={
-            draft
-          }
-          onChange={
-            onFieldChange
-          }
-          rows={[
-            {
-              label:
-                "Email",
-
-              field:
-                "email",
-
-              value:
-                profile.email,
-            },
-
-            {
-              label:
-                "Phone",
-
-              field:
-                "phone",
-
-              value:
-                profile.phone,
-            },
-
-            {
-              label:
-                "WhatsApp",
-
-              field:
-                "whatsapp_number",
-
-              value:
-                profile.whatsapp_number,
-            },
-
-            {
-              label:
-                "Contact Number",
-
-              field:
-                "contact_number",
-
-              value:
-                profile.contact_number,
-            },
-          ]}
-        />
-      </Section>
-
-      <Section
         icon="📍"
         bg="#ecfccb"
         title="Address"
+        hasData={hasAddressSec}
         sub="House · Street · City · State"
         delay={
           0.15
@@ -2802,30 +2894,11 @@ function PublicSections({
         />
       </Section>
 
-      {!editing &&
-        social.length >
-          0 && (
-          <Section
-            icon="🌐"
-            bg="#ecfccb"
-            title="Social Media"
-            sub="Online presence"
-            delay={
-              0.2
-            }
-          >
-            <SocialGrid
-              items={
-                social
-              }
-            />
-          </Section>
-        )}
-
       <Section
         icon="🎓"
         bg="#ecfccb"
         title="Education"
+        hasData={hasEducationSec}
         sub="Academic background"
         delay={
           0.25
@@ -2919,6 +2992,7 @@ function PublicSections({
         icon="💼"
         bg="#dcfce7"
         title="Professional Details"
+        hasData={hasProfSec}
         sub="Occupation · profession · skills"
         delay={
           0.3
@@ -3037,13 +3111,14 @@ function PublicSections({
       </Section>
 
       <Section
-        icon="🌳"
+        icon="??"
         bg="#dbeafe"
-        title="Network Snapshot"
-        sub="Direct & indirect members"
+        title="My Network Profile"
+        sub="Rank ? Total network ? Direct member"
         hideable={
           false
         }
+        hasData={true}
         delay={
           0.35
         }
@@ -3057,26 +3132,35 @@ function PublicSections({
           rows={[
             {
               label:
-                "Direct Network",
+                "Rank",
+
+              field:
+                "network_level",
+
+              value:
+                civAdminRank,
+            },
+
+            {
+              label:
+                "Total Network",
+
+              field:
+                "total_network",
+
+              value:
+                civTotalNetwork,
+            },
+
+            {
+              label:
+                "Direct Member",
 
               field:
                 "direct_network",
 
               value:
-                profile.direct_network ??
-                0,
-            },
-
-            {
-              label:
-                "Indirect Network",
-
-              field:
-                "indirect_network",
-
-              value:
-                profile.indirect_network ??
-                0,
+                civDirectMembers,
             },
           ]}
         />

@@ -659,7 +659,7 @@ const handleContinueMembership = () => {
               Your Commercial Basic KYC has been
               completed successfully. Continue to
               Membership Plan selection and choose
-              Basic ₹300 or Profile Upgrade ₹1500.
+              Basic ₹299 or Profile Upgrade ₹2999.
             </p>
           </div>
 

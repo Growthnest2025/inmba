@@ -22,14 +22,14 @@ import "./CivilianMembershipPlan.css";
 const CIVILIAN_PLANS = [
   {
     id: "network_member",
-    amount: "300",
+    amount: "299",
     name: "INMBA Network Member",
     shortName: "Network Member",
     description:
       "Complete your Civilian Full KYC and payment. QR Code, Public Profile and Referral access will be enabled after admin approval.",
     features: [
       "Civilian Full KYC A-H",
-      "₹300 Membership Payment",
+      "₹299 Membership Payment",
       "Personal QR Code after approval",
       "Public Profile after approval",
       "Referral access after approval",
@@ -38,14 +38,14 @@ const CIVILIAN_PLANS = [
   },
   {
     id: "network_royalty_member",
-    amount: "1500",
+    amount: "2999",
     name: "INMBA Network Royalty Member",
     shortName: "Royalty Member",
     description:
       "Complete your Civilian Full KYC and payment. All Network Member benefits plus Royalty Rewards will be enabled after admin approval.",
     features: [
       "Civilian Full KYC A-H",
-      "₹1500 Membership Payment",
+      "₹2999 Membership Payment",
       "Personal QR Code after approval",
       "Public Profile after approval",
       "Referral access after approval",
@@ -68,8 +68,8 @@ const normalizePlan = (
     ).trim();
 
   return [
-    "300",
-    "1500",
+    "299",
+    "2999",
   ].includes(
     plan
   )
@@ -281,7 +281,7 @@ export default function CivilianMembershipPlan() {
             </h1>
 
             <p className="civilian-membership-description">
-              Choose ₹300 or ₹1500. Your selected
+              Choose ₹299 or ₹2999. Your selected
               membership amount will continue through
               Civilian Full KYC and Payment.
             </p>

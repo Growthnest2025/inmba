@@ -985,11 +985,22 @@ export default function Dashboard() {
   const membershipLevel =
     !isApproved
       ? "INMBA Member"
-      : selectedMembershipPlan === "1500"
+      : ["2999", "1500"].includes(selectedMembershipPlan)
         ? "INMBA Network Royalty Member"
-        : selectedMembershipPlan === "300"
+        : ["299", "300"].includes(selectedMembershipPlan)
           ? "INMBA Network Member"
           : "INMBA Member";
+
+  const memberPaidAmount = toNumber(
+    member.amount ?? member.payment_amount ?? member.paymentAmount
+  );
+
+  const hasNetworkRoyaltyAccess = Boolean(
+    isApproved &&
+      (["2999", "1500"].includes(selectedMembershipPlan) ||
+        memberPaidAmount === 1500 ||
+        memberPaidAmount >= 2999)
+  );
 
   /* =======================================================
      CIVILIAN PLAN - STEP 1
@@ -1081,8 +1092,9 @@ export default function Dashboard() {
   const isCivilianRoyaltyPlan =
     civilianMember &&
     isApproved &&
-    backendCivilianPlan ===
-      "1500";
+    (["2999", "1500"].includes(backendCivilianPlan) ||
+      civilianPaidAmount === 1500 ||
+      civilianPaidAmount >= 2999);
 
   const handleCivilianPlanSelect =
     async (
@@ -1095,8 +1107,8 @@ export default function Dashboard() {
 
       if (
         ![
-          "300",
-          "1500",
+          "299",
+          "2999",
         ].includes(
           selectedPlan
         )
@@ -1707,14 +1719,14 @@ export default function Dashboard() {
             </div>
 
             <p className="member-dashboard-plan-description">
-              Choose ₹300 or ₹1500. Both plans require Civilian
+              Choose ₹299 or ₹2999. Both plans require Civilian
               Full KYC before payment and activation.
             </p>
 
             <div className="member-dashboard-plan-grid">
               <article
                 className={`member-dashboard-plan-option ${
-                  civilianSelectedPlan === "300"
+                  civilianSelectedPlan === "299" || civilianSelectedPlan === "300"
                     ? "selected"
                     : ""
                 }`}
@@ -1731,7 +1743,7 @@ export default function Dashboard() {
                   </div>
 
                   <strong>
-                    ₹300
+                    ₹299
                   </strong>
                 </div>
 
@@ -1762,13 +1774,13 @@ export default function Dashboard() {
                   className="member-dashboard-primary-button member-dashboard-plan-button"
                   onClick={() =>
                     handleCivilianPlanSelect(
-                      "300"
+                      "299"
                     )
                   }
                 >
-                  {civilianSelectedPlan === "300"
-                    ? "Continue ₹300 Plan"
-                    : "Choose ₹300"}
+                  {civilianSelectedPlan === "299" || civilianSelectedPlan === "300"
+                    ? "Continue ₹299 Plan"
+                    : "Choose ₹299"}
 
                   <i className="fas fa-arrow-right"></i>
                 </button>
@@ -1776,7 +1788,7 @@ export default function Dashboard() {
 
               <article
                 className={`member-dashboard-plan-option member-dashboard-plan-option-premium ${
-                  civilianSelectedPlan === "1500"
+                  civilianSelectedPlan === "2999"
                     ? "selected"
                     : ""
                 }`}
@@ -1798,7 +1810,7 @@ export default function Dashboard() {
                   </div>
 
                   <strong>
-                    ₹1500
+                    ₹2999
                   </strong>
                 </div>
 
@@ -1834,13 +1846,13 @@ export default function Dashboard() {
                   className="member-dashboard-primary-button member-dashboard-plan-button"
                   onClick={() =>
                     handleCivilianPlanSelect(
-                      "1500"
+                      "2999"
                     )
                   }
                 >
-                  {civilianSelectedPlan === "1500"
-                    ? "Continue ₹1500 Plan"
-                    : "Choose ₹1500"}
+                  {civilianSelectedPlan === "2999"
+                    ? "Continue ₹2999 Plan"
+                    : "Choose ₹2999"}
 
                   <i className="fas fa-crown"></i>
                 </button>
@@ -2102,6 +2114,8 @@ export default function Dashboard() {
               </div>
             </div>
 
+            {hasNetworkRoyaltyAccess ? (
+              <>
             <div className="member-dashboard-network-grid">
               <article className="member-dashboard-network-stat member-dashboard-network-green">
                 <span>
@@ -2179,6 +2193,14 @@ export default function Dashboard() {
 
               View Network Members
             </Link>
+              </>
+            ) : (
+              <div className="member-dashboard-locked">
+                <p>
+                  Network &amp; Royalty features are locked on the ?299 plan. Upgrade to the ?2,999 Royalty plan to unlock Network &amp; Royalty access.
+                </p>
+              </div>
+            )}
           </section>
         </div>
 
@@ -2323,17 +2345,19 @@ export default function Dashboard() {
                 Full Private Details
               </Link>
 
-              <Link
-                to="/royalty-rewards"
-                className="member-dashboard-secondary-button"
-              >
-                <i
-                  className="fas fa-crown"
-                  aria-hidden="true"
-                ></i>
+              {hasNetworkRoyaltyAccess && (
+                <Link
+                  to="/royalty-rewards"
+                  className="member-dashboard-secondary-button"
+                >
+                  <i
+                    className="fas fa-crown"
+                    aria-hidden="true"
+                  ></i>
 
-                Royalty & Rewards
-              </Link>
+                  Royalty & Rewards
+                </Link>
+              )}
             </div>
           </section>
         )}
@@ -2379,7 +2403,7 @@ export default function Dashboard() {
                 </span>
 
                 <strong>
-                  ₹1500 Royalty Plan
+                  ₹2999 Royalty Plan
                 </strong>
               </div>
 

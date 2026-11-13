@@ -33,7 +33,7 @@ const COMMERCIAL_BASIC_PLAN =
       "Basic Membership",
 
     amount:
-      300,
+      299,
   });
 
 const COMMERCIAL_PROFILE_UPGRADE_PLAN =
@@ -45,7 +45,7 @@ const COMMERCIAL_PROFILE_UPGRADE_PLAN =
       "Profile Upgrade",
 
     amount:
-      1500,
+      2999,
   });
 
 /* =========================================================
@@ -432,7 +432,7 @@ const determineCommercialNextAction = (
         "Choose Commercial Membership",
 
       message:
-        "Select Basic Membership ₹300 or Profile Upgrade ₹1500.",
+        "Select Basic Membership ₹299 or Profile Upgrade ₹2999.",
     };
   }
 
@@ -484,7 +484,7 @@ const determineCommercialNextAction = (
           "Payment Rejected",
 
         message:
-          "Your ₹300 Basic Membership payment was rejected. Please submit the payment again.",
+          "Your ₹299 Basic Membership payment was rejected. Please submit the payment again.",
       };
     }
 
@@ -510,7 +510,7 @@ const determineCommercialNextAction = (
           "Payment Verification Pending",
 
         message:
-          "Your ₹300 Basic Membership payment is waiting for approval.",
+          "Your ₹299 Basic Membership payment is waiting for approval.",
       };
     }
 
@@ -528,7 +528,7 @@ const determineCommercialNextAction = (
         "Complete Membership Payment",
 
       message:
-        "Complete the ₹300 Basic Membership payment.",
+        "Complete the ₹299 Basic Membership payment.",
     };
   }
 
@@ -642,7 +642,7 @@ const determineCommercialNextAction = (
           "Payment Rejected",
 
         message:
-          "Your ₹1500 Profile Upgrade payment was rejected. Please submit it again.",
+          "Your ₹2999 Profile Upgrade payment was rejected. Please submit it again.",
       };
     }
 
@@ -668,7 +668,7 @@ const determineCommercialNextAction = (
           "Payment Verification Pending",
 
         message:
-          "Your ₹1500 Profile Upgrade payment is waiting for approval.",
+          "Your ₹2999 Profile Upgrade payment is waiting for approval.",
       };
     }
 
@@ -697,7 +697,7 @@ const determineCommercialNextAction = (
           "Complete Profile Upgrade Payment",
 
         message:
-          "Complete the ₹1500 Profile Upgrade payment.",
+          "Complete the ₹2999 Profile Upgrade payment.",
       };
     }
 

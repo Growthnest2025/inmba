@@ -32,10 +32,10 @@ import "./CommercialMembershipPlan.css";
 
 const COMMERCIAL_FRONTEND_ROUTES = {
   basic:
-    "/commercial/profile-upgrade?plan=basic&amount=300",
+    "/commercial/profile-upgrade?plan=basic&amount=299",
 
   profile_upgrade:
-    "/commercial/profile-upgrade?plan=profile_upgrade&amount=1500",
+    "/commercial/profile-upgrade?plan=profile_upgrade&amount=2999",
 };
 
 /* =========================================================
@@ -348,12 +348,12 @@ export default function CommercialMembershipPlan() {
         // Store selected plan in storage for payment and profile-upgrade pages
         if (selectedPlan?.id) {
           window.localStorage.setItem("commercialSelectedPlanId", selectedPlan.id);
-          window.localStorage.setItem("commercialPlanAmount", String(selectedPlan.amount || 300));
+          window.localStorage.setItem("commercialPlanAmount", String(selectedPlan.amount || 299));
           window.sessionStorage.setItem("commercialSelectedPlanId", selectedPlan.id);
-          window.sessionStorage.setItem("commercialPlanAmount", String(selectedPlan.amount || 300));
+          window.sessionStorage.setItem("commercialPlanAmount", String(selectedPlan.amount || 299));
         }
 
-        const targetAmount = selectedPlan?.id === "profile_upgrade" ? 1500 : 300;
+        const targetAmount = selectedPlan?.id === "profile_upgrade" ? 2999 : 299;
         const frontendPath = `/commercial/profile-upgrade?plan=${selectedPlan?.id || "basic"}&amount=${targetAmount}`;
 
         navigate(frontendPath, {
@@ -794,7 +794,7 @@ export default function CommercialMembershipPlan() {
                             </strong>
 
                             <span>
-                              Continue directly to the ₹300
+                              Continue directly to the ₹299
                               payment page.
                             </span>
                           </div>

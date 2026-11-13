@@ -877,9 +877,9 @@ const backendAmount =
   */
   const isPremium =
     backendPlanId === "profile_upgrade" ||
-    backendAmount === 1500 ||
+    backendAmount === 2999 || backendAmount === 1500 ||
     selectedPlanId === "profile_upgrade" ||
-    selectedAmount === 1500;
+    selectedAmount === 2999 || selectedAmount === 1500;
 
   const isBasic = !isPremium;
 
@@ -889,9 +889,9 @@ const backendAmount =
 
   const membershipType =
     isPremium
-      ? "Profile Upgrade ₹1500"
+      ? "Profile Upgrade ₹2999"
       : isBasic
-        ? "Basic Membership ₹300"
+        ? "Basic Membership ₹299"
         : "Commercial Member";
 
   /*
@@ -955,6 +955,9 @@ const backendAmount =
       isKycApproved &&
       isPremium
     );
+
+  const hasNetworkAccess =
+    hasRoyaltyRewardsAccess;
 
 
   /* =======================================================
@@ -1475,7 +1478,7 @@ const backendAmount =
                 >
                   <i className="fas fa-crown" />
 
-                  Upgrade to ₹1500
+                  Upgrade to ₹2999
                 </button>
               )}
 
@@ -1527,6 +1530,8 @@ const backendAmount =
             </div>
 
 
+            {hasNetworkAccess ? (
+              <>
             <div className="commercial-dashboard-network-grid">
 
               <NetworkStat
@@ -1584,6 +1589,14 @@ const backendAmount =
 
               View Network Members
             </Link>
+              </>
+            ) : (
+              <div className="commercial-dashboard-locked">
+                <p>
+                  Network &amp; Royalty features are locked on the ?299 plan. Upgrade to ?2,999 to unlock Network &amp; Royalty access.
+                </p>
+              </div>
+            )}
 
           </section>
 
@@ -1609,9 +1622,9 @@ const backendAmount =
               </h2>
 
               <span>
-                Your ₹300 membership already includes Referral ID,
+                Your ₹299 membership already includes Referral ID,
                 Referral Link, QR Code and Public Business Profile after
-                admin approval. Upgrade to ₹1500 to unlock Royalty & Rewards.
+                admin approval. Upgrade to ₹2999 to unlock Royalty & Rewards.
               </span>
 
               <div className="commercial-dashboard-upgrade-benefits">
@@ -1644,7 +1657,7 @@ const backendAmount =
                 )
               }
             >
-              Upgrade to ₹1500
+              Upgrade to ₹2999
 
               <i className="fas fa-arrow-right" />
             </button>
@@ -2252,7 +2265,7 @@ const backendAmount =
 
               <InfoRow
                 label="Rewards"
-                value="Enabled for ₹1500 Profile Upgrade"
+                value="Enabled for ₹2999 Profile Upgrade"
               />
             </div>
           ) : (
@@ -2263,7 +2276,7 @@ const backendAmount =
                 <h3>Royalty & Rewards Locked</h3>
                 <p>
                   Royalty and Rewards are available only for the
-                  ₹1500 Profile Upgrade after admin approval.
+                  ₹2999 Profile Upgrade after admin approval.
                 </p>
               </div>
             </div>
@@ -2317,7 +2330,7 @@ const backendAmount =
               value={
                 hasQrPublicProfileAccess
                   ? "Enabled - Public Business Details Only"
-                  : "Locked - ₹300 / ₹1500 Admin Approval Required"
+                  : "Locked - ₹299 / ₹2999 Admin Approval Required"
               }
             />
 

@@ -656,7 +656,7 @@ const assertProfileUpgradePaymentEligibility =
       throw createCommercialPaymentError(
         422,
 
-        "Complete Commercial KYC sections A-G before the ₹1500 Profile Upgrade payment.",
+        "Complete Commercial KYC sections A-G before the ₹2999 Profile Upgrade payment.",
 
         "COMMERCIAL_KYC_INCOMPLETE_FOR_PAYMENT"
       );
@@ -679,7 +679,7 @@ const assertProfileUpgradePaymentEligibility =
       throw createCommercialPaymentError(
         422,
 
-        "Submit Commercial KYC before the ₹1500 Profile Upgrade payment.",
+        "Submit Commercial KYC before the ₹2999 Profile Upgrade payment.",
 
         "COMMERCIAL_KYC_NOT_SUBMITTED_FOR_PAYMENT",
 

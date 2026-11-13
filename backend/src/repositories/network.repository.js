@@ -82,6 +82,8 @@ const NETWORK_MEMBER_FIELDS =
     education,
     educational_qualification,
     membership_type,
+    selected_plan,
+    amount,
     referral_id,
     referred_by,
     payment_status,

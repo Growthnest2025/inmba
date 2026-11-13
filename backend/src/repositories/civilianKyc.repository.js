@@ -272,15 +272,15 @@ const savePlan = async (
 
   if (
     ![
-      "300",
-      "1500",
+      "299",
+      "2999",
     ].includes(
       normalizedPlan
     )
   ) {
     const error =
       new Error(
-        "Invalid Civilian plan. Please select 300 or 1500."
+        "Invalid Civilian plan. Please select 299 or 2999."
       );
 
     error.statusCode =

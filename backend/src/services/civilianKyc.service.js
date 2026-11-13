@@ -35,8 +35,8 @@ const FILE_SECTIONS = {
 };
 
 const VALID_CIVILIAN_PLANS = new Set([
-  "300",
-  "1500",
+  "299",
+  "2999",
 ]);
 
 const toText = (value) =>
@@ -314,7 +314,7 @@ const savePlan =
     ) {
       const error =
         new Error(
-          "Invalid Civilian plan. Please select 300 or 1500."
+          "Invalid Civilian plan. Please select 299 or 2999."
         );
 
       error.statusCode =
@@ -423,7 +423,7 @@ const saveSection =
 
     if (normalized === "A" && completed) {
       const existing = await repository.getByMemberId(memberId);
-      if (toText(existing?.selected_plan) === "300") {
+      if (["299", "300"].includes(toText(existing?.selected_plan))) {
         const aadhaar = toText(
           source.aadhaar_number ?? existing?.aadhaar_number
         ).replace(/\s/g, "");
@@ -431,13 +431,31 @@ const saveSection =
         if (!/^\d{12}$/.test(aadhaar)) {
           const error = new Error(
             aadhaar
-              ? "Enter a valid 12 digit Aadhaar Number for the ₹300 plan."
-              : "Aadhaar Number is required for the ₹300 plan."
+              ? "Enter a valid 12 digit Aadhaar Number for the ₹299 plan."
+              : "Aadhaar Number is required for the ₹299 plan."
           );
           error.statusCode = 422;
           error.errorCode = "CIVILIAN_AADHAAR_REQUIRED";
           throw error;
         }
+      }
+    }
+
+    if (normalized === "C" && completed) {
+      const existing = await repository.getByMemberId(memberId);
+      const nomineeName = toText(source.nominee_name ?? existing?.nominee_name).trim();
+      const nomineeRel = toText(source.nominee_relationship ?? existing?.nominee_relationship).trim();
+      if (!nomineeName) {
+        const error = new Error("Nominee Name is required.");
+        error.statusCode = 422;
+        error.errorCode = "CIVILIAN_NOMINEE_NAME_REQUIRED";
+        throw error;
+      }
+      if (!nomineeRel) {
+        const error = new Error("Nominee Relationship is required.");
+        error.statusCode = 422;
+        error.errorCode = "CIVILIAN_NOMINEE_RELATIONSHIP_REQUIRED";
+        throw error;
       }
     }
 
@@ -519,7 +537,7 @@ const submit =
     ) {
       const error =
         new Error(
-          "Please select the Civilian ₹300 or ₹1500 plan before submitting Full KYC."
+          "Please select the Civilian ₹299 or ₹2999 plan before submitting Full KYC."
         );
 
       error.statusCode =
@@ -531,7 +549,7 @@ const submit =
       throw error;
     }
 
-    if (toText(data.selectedPlan) === "300") {
+    if (toText(data.selectedPlan) === "299") {
       const aadhaar = toText(
         data.values?.aadhaar_number
       ).replace(/\s/g, "");
@@ -539,8 +557,8 @@ const submit =
       if (!/^\d{12}$/.test(aadhaar)) {
         const error = new Error(
           aadhaar
-            ? "Enter a valid 12 digit Aadhaar Number for the ₹300 plan."
-            : "Aadhaar Number is required for the ₹300 plan."
+            ? "Enter a valid 12 digit Aadhaar Number for the ₹299 plan."
+            : "Aadhaar Number is required for the ₹299 plan."
         );
         error.statusCode = 422;
         error.errorCode = "CIVILIAN_AADHAAR_REQUIRED";

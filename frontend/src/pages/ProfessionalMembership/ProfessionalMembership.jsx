@@ -47,7 +47,7 @@ const MEMBERSHIP_PLANS = [
     name:
       "INMBA Network Member",
 
-    amount: 300,
+    amount: 299,
 
     badge:
       "NETWORK",
@@ -65,7 +65,7 @@ const MEMBERSHIP_PLANS = [
     ],
 
     button:
-      "Choose ₹300 Plan",
+      "Choose ₹299 Plan",
 
     icon:
       "fas fa-user-tie",
@@ -78,7 +78,7 @@ const MEMBERSHIP_PLANS = [
     name:
       "INMBA Network Royalty Member",
 
-    amount: 1500,
+    amount: 2999,
 
     badge:
       "ROYALTY",
@@ -97,7 +97,7 @@ const MEMBERSHIP_PLANS = [
     ],
 
     button:
-      "Choose ₹1500 Plan",
+      "Choose ₹2999 Plan",
 
     icon:
       "fas fa-crown",
@@ -282,8 +282,7 @@ export default function ProfessionalMembership() {
             "Professional Member",
 
           membershipLevel:
-            plan.amount ===
-            1500
+            plan.amount === 2999 || plan.amount === 1500
               ? "INMBA Network Royalty Member"
               : "INMBA Network Member",
 
@@ -342,8 +341,8 @@ export default function ProfessionalMembership() {
 
       if (
         ![
-          "300",
-          "1500",
+          "299",
+          "2999",
         ].includes(
           planAmount
         )
@@ -580,8 +579,8 @@ export default function ProfessionalMembership() {
         </h1>
 
         <p>
-          Select ₹300 Network Membership or
-          ₹1500 Network Royalty Membership.
+          Select ₹299 Network Membership or
+          ₹2999 Network Royalty Membership.
           Both plans require Professional Full
           KYC A-J before payment and approval.
         </p>
@@ -648,8 +647,7 @@ export default function ProfessionalMembership() {
               plan.id;
 
             const recommended =
-              plan.amount ===
-              1500;
+              plan.amount === 2999;
 
             return (
               <article

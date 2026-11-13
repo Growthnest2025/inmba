@@ -65,7 +65,7 @@ export default function ProfessionalFullAccessRoute() {
 
             setAllowed(
               paymentApproved &&
-                amount >= 1500
+                amount >= 2999 || amount === 1500
             );
           } catch (
             error

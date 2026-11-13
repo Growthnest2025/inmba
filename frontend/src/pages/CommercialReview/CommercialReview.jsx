@@ -663,7 +663,7 @@ export default function CommercialReview() {
           />
 
           <ReviewItem
-            label="Business Bio / About Us"
+            label="Bio"
             value={
               kyc.business_bio
             }

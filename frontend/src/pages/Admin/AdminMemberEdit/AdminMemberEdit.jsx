@@ -202,7 +202,7 @@ const createFormData = (
         data.membership_type
       ),
 
-    referral_id:
+    network_level: toText(data.network_level ?? data.network_level_rank ?? data.commercial_network_level), referral_id:
       toText(
         data.referral_id
       ),
@@ -1502,7 +1502,7 @@ export default function AdminMemberEdit() {
             }
           />
 
-          <div className="inmba-admin-edit-inline-note">
+          <EditField label="Network Rank (Admin Controlled)" name="network_level" value={formData.network_level} onChange={handleChange} placeholder="e.g. Bronze / Silver / Gold / Director" /> <div className="inmba-admin-edit-inline-note">
             <i
               className="fas fa-circle-info"
               aria-hidden="true"

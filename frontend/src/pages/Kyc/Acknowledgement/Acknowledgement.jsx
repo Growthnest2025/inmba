@@ -25,8 +25,8 @@ import { toText, asObject } from "../../../utils/commonHelpers";
    CONSTANTS
 ========================================================= */
 
-const BASIC_MEMBERSHIP_AMOUNT = 300;
-const PROFILE_UPGRADE_AMOUNT = 1500;
+const BASIC_MEMBERSHIP_AMOUNT = 299;
+const PROFILE_UPGRADE_AMOUNT = 2999;
 
 const PAYMENT_RESULT_STORAGE_KEY =
   "inmba_professional_payment_result";

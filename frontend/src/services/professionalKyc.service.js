@@ -790,14 +790,14 @@ export const saveProfessionalKycPlan =
 
       if (
         ![
-          "300",
-          "1500",
+          "299",
+          "2999",
         ].includes(
           plan
         )
       ) {
         throw new Error(
-          "Please select the Professional ₹300 or ₹1500 plan."
+          "Please select the Professional ₹299 or ₹2999 plan."
         );
       }
 

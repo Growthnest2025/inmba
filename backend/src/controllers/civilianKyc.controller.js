@@ -350,13 +350,13 @@ exports.saveCivilianKycSectionController =
 
    Body:
    {
-     "selected_plan": "300"
+     "selected_plan": "299"
    }
 
    OR
 
    {
-     "selected_plan": "1500"
+     "selected_plan": "2999"
    }
 ========================================================= */
 
@@ -379,15 +379,15 @@ exports.saveCivilianPlanController =
 
       if (
         ![
-          "300",
-          "1500",
+          "299",
+          "2999",
         ].includes(
           selectedPlan
         )
       ) {
         const error =
           new Error(
-            "Please select a valid Civilian plan: 300 or 1500."
+            "Please select a valid Civilian plan: 299 or 2999."
           );
 
         error.statusCode =

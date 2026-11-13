@@ -25,6 +25,7 @@ import {
 } from "../../../api/api";
 
 import "./ProfessionalPublicProfile.css";
+import { buildDefaultBio } from "../../../utils/defaultBio";
 /* =========================================================
    HELPERS
 ========================================================= */
@@ -348,13 +349,57 @@ function ProfileCard({
   isOwner,
   onEdit,
   empty = false,
+  collapsible = false,
+  hasData = !empty,
   className = "",
 }) {
+  const canOpen = collapsible ? Boolean(hasData) : true;
+  const [open, setOpen] = useState(canOpen);
+
+  useEffect(() => {
+    if (!collapsible) return;
+    setOpen(canOpen);
+  }, [collapsible, canOpen]);
+
+  const isOpen = collapsible ? canOpen && open : true;
+
   return (
     <section
       className={`pro-public-card ${className}`.trim()}
+      aria-disabled={collapsible && !canOpen ? "true" : undefined}
     >
-      <div className="pro-public-card-header">
+      <div
+        className="pro-public-card-header"
+        role={collapsible && canOpen ? "button" : undefined}
+        tabIndex={collapsible && canOpen ? 0 : undefined}
+        aria-expanded={collapsible ? isOpen : undefined}
+        onClick={
+          collapsible
+            ? () => {
+                if (!canOpen) return;
+                setOpen((prev) => !prev);
+              }
+            : undefined
+        }
+        onKeyDown={
+          collapsible && canOpen
+            ? (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setOpen((prev) => !prev);
+                }
+              }
+            : undefined
+        }
+        style={
+          collapsible
+            ? {
+                cursor: canOpen ? "pointer" : "default",
+                marginBottom: isOpen ? undefined : 0,
+              }
+            : undefined
+        }
+      >
         <div className="pro-public-card-title">
           <span className="pro-public-card-icon">
             <i
@@ -363,34 +408,60 @@ function ProfileCard({
             />
           </span>
 
-          <h2>
-            {title}
-          </h2>
+          <div>
+            <h2>
+              {title}
+            </h2>
+            {collapsible && !canOpen && (
+              <span
+                style={{
+                  display: "block",
+                  fontSize: "0.78rem",
+                  color: "#64748b",
+                  fontWeight: 500,
+                }}
+              >
+                No details added
+              </span>
+            )}
+          </div>
         </div>
 
-        {isOwner && onEdit && (
-          <button
-            type="button"
-            className="pro-public-card-edit"
-            onClick={onEdit}
-          >
-            <i
-              className={
-                empty
-                  ? "fas fa-plus"
-                  : "fas fa-pen"
-              }
-              aria-hidden="true"
-            />
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          {isOwner && onEdit && (
+            <button
+              type="button"
+              className="pro-public-card-edit"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
+            >
+              <i
+                className={
+                  empty
+                    ? "fas fa-plus"
+                    : "fas fa-pen"
+                }
+                aria-hidden="true"
+              />
 
-            {empty
-              ? "Add Details"
-              : "Edit"}
-          </button>
-        )}
+              {empty
+                ? "Add Details"
+                : "Edit"}
+            </button>
+          )}
+          {collapsible && canOpen && (
+            <i
+              className={isOpen ? "fas fa-chevron-up" : "fas fa-chevron-down"}
+              aria-hidden="true"
+              style={{ color: "#64748b", fontSize: "0.85rem" }}
+            />
+          )}
+        </div>
       </div>
 
-      {children}
+      {isOpen && children}
     </section>
   );
 }
@@ -631,7 +702,7 @@ const EDIT_TITLES = {
   overview:
     "Edit Public Profile",
   about:
-    "Edit About Me & Interests",
+    "Edit Bio & Interests",
   professional:
     "Edit Professional Information",
   education:
@@ -686,7 +757,7 @@ const PRIVACY_SECTIONS = [
   {
     value: "bio",
     label:
-      "About, Skills & Interests",
+      "Bio, Skills & Interests",
   },
   {
     value: "social",
@@ -762,6 +833,13 @@ export default function ProfessionalPublicProfile({
     setFormData,
   ] = useState(
     {}
+  );
+
+  const [
+    copiedReferral,
+    setCopiedReferral,
+  ] = useState(
+    ""
   );
 
   useEffect(
@@ -1032,6 +1110,43 @@ export default function ProfessionalPublicProfile({
         1
     );
 
+  const adminRank = text(
+    localProfile?.network_level || localProfile?.network_rank
+  );
+  const directMembersCount = Number(
+    localProfile?.direct_members ??
+      localProfile?.direct_network ??
+      localProfile?.network?.direct_members ??
+      0
+  );
+  const totalNetworkCount = Number(
+    localProfile?.total_network ??
+      localProfile?.network?.total_network ??
+      Number(localProfile?.direct_network ?? 0) +
+        Number(localProfile?.indirect_network ?? 0)
+  );
+  const referralCode = text(
+    localProfile?.referral_id ||
+      localProfile?.login_id ||
+      localProfile?.member_id
+  );
+  const referralLink = referralCode
+    ? `${typeof window !== "undefined" ? window.location.origin : ""}/membership?ref=${encodeURIComponent(referralCode)}`
+    : "";
+
+  const copyReferralText = async (kind, value) => {
+    if (!value) return;
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+      }
+      setCopiedReferral(kind);
+      window.setTimeout(() => setCopiedReferral(""), 2200);
+    } catch {
+      setCopiedReferral("");
+    }
+  };
+
   const menuItems = [
     {
       key:
@@ -1045,7 +1160,7 @@ export default function ProfessionalPublicProfile({
       key:
         "about",
       label:
-        "About Me",
+        "Bio",
       icon:
         "far fa-user",
     },
@@ -2298,18 +2413,24 @@ const handleProfilePhotoUpload =
           <div className="pro-public-membership-box">
             <div className="membership-icon">
               <i
-                className="fas fa-shield-halved"
+                className="fas fa-diagram-project"
                 aria-hidden="true"
               />
             </div>
 
             <h3>
-              Membership Status
+              My Network Profile
             </h3>
 
             <span className="membership-verified">
-              Verified Professional
+              {adminRank || "Assigned by Admin"}
             </span>
+
+            <small>Total Network</small>
+            <strong>{totalNetworkCount}</strong>
+
+            <small>Direct Member</small>
+            <strong>{directMembersCount}</strong>
 
             {isOwner &&
               localProfile
@@ -2488,18 +2609,15 @@ const handleProfilePhotoUpload =
               </div>
 
               <div className="pro-public-hero-meta">
-                {localProfile
-                  ?.network_level && (
+                {adminRank && (
                   <span>
                     <i
                       className="fas fa-ranking-star"
                       aria-hidden="true"
                     />
 
-                    Level{" "}
-                    {
-                      localProfile.network_level
-                    }
+                    Rank:{" "}
+                    {adminRank}
                   </span>
                 )}
 
@@ -2557,14 +2675,168 @@ const handleProfilePhotoUpload =
           </section>
 
           <div className="pro-public-content-grid">
-            {/* ===================== ABOUT ===================== */}
+            {/* LINKS & CONTACT (Name -> Links -> Contact) */}
+            <div
+              id="pro-contact"
+              className="pro-span-2"
+            >
+              <ProfileCard
+                title="Links & Contact"
+                icon="fas fa-link"
+                isOwner={isOwner}
+                collapsible
+                hasData={Boolean(
+                  localProfile?.email ||
+                    showPhone ||
+                    location ||
+                    localProfile?.portfolio_url ||
+                    localProfile?.social_link ||
+                    localProfile?.social_instagram ||
+                    localProfile?.social_linkedin ||
+                    localProfile?.social_facebook ||
+                    localProfile?.social_youtube ||
+                    localProfile?.social_twitter
+                )}
+                empty={
+                  !localProfile?.email &&
+                  !showPhone &&
+                  !location &&
+                  !localProfile?.portfolio_url &&
+                  !localProfile?.social_link &&
+                  !localProfile?.social_instagram &&
+                  !localProfile?.social_linkedin &&
+                  !localProfile?.social_facebook &&
+                  !localProfile?.social_youtube &&
+                  !localProfile?.social_twitter
+                }
+                onEdit={() => openEditor("contact")}
+              >
+                <div className="pro-social-icons" style={{ marginBottom: "14px" }}>
+                  {localProfile?.portfolio_url && (
+                    <a href={safeUrl(localProfile.portfolio_url)} target="_blank" rel="noreferrer" aria-label="Website">
+                      <i className="fas fa-globe" />
+                    </a>
+                  )}
+                  {localProfile?.social_linkedin && (
+                    <a href={safeUrl(localProfile.social_linkedin)} target="_blank" rel="noreferrer" aria-label="LinkedIn">
+                      <i className="fab fa-linkedin-in" />
+                    </a>
+                  )}
+                  {localProfile?.social_instagram && (
+                    <a href={safeUrl(localProfile.social_instagram)} target="_blank" rel="noreferrer" aria-label="Instagram">
+                      <i className="fab fa-instagram" />
+                    </a>
+                  )}
+                  {localProfile?.social_facebook && (
+                    <a href={safeUrl(localProfile.social_facebook)} target="_blank" rel="noreferrer" aria-label="Facebook">
+                      <i className="fab fa-facebook-f" />
+                    </a>
+                  )}
+                  {localProfile?.social_youtube && (
+                    <a href={safeUrl(localProfile.social_youtube)} target="_blank" rel="noreferrer" aria-label="YouTube">
+                      <i className="fab fa-youtube" />
+                    </a>
+                  )}
+                  {localProfile?.social_twitter && (
+                    <a href={safeUrl(localProfile.social_twitter)} target="_blank" rel="noreferrer" aria-label="Twitter">
+                      <i className="fab fa-x-twitter" />
+                    </a>
+                  )}
+                  {localProfile?.social_link && (
+                    <a href={safeUrl(localProfile.social_link)} target="_blank" rel="noreferrer" aria-label="Link">
+                      <i className="fas fa-link" />
+                    </a>
+                  )}
+                </div>
+                <div className="pro-contact-list">
+                  {localProfile?.email && (
+                    <ContactRow icon="fas fa-envelope" value={localProfile.email} link={`mailto:${localProfile.email}`} />
+                  )}
+                  {showPhone && (
+                    <ContactRow icon="fas fa-phone" value={localProfile.phone} />
+                  )}
+                  {location && (
+                    <ContactRow icon="fas fa-location-dot" value={location} />
+                  )}
+                  {localProfile?.portfolio_url && (
+                    <ContactRow icon="fas fa-globe" value={localProfile.portfolio_url} link={safeUrl(localProfile.portfolio_url)} />
+                  )}
+                </div>
+              </ProfileCard>
+            </div>
+
+            {/* ===================== MY NETWORK PROFILE & REFERRAL ===================== */}
+
+            <div id="pro-network" className="pro-span-1">
+              <ProfileCard
+                title="My Network Profile"
+                icon="fas fa-diagram-project"
+                isOwner={false}
+              >
+                <div className="pro-info-list">
+                  <InfoRow
+                    label="Rank (Admin Controlled)"
+                    value={adminRank || "Assigned by Admin"}
+                  />
+                  <InfoRow
+                    label="Total Network"
+                    value={String(totalNetworkCount)}
+                  />
+                  <InfoRow
+                    label="Direct Member"
+                    value={String(directMembersCount)}
+                  />
+                </div>
+              </ProfileCard>
+            </div>
+
+            {referralCode && (
+              <div id="pro-referral" className="pro-span-1">
+                <ProfileCard
+                  title="Referral Program"
+                  icon="fas fa-share-nodes"
+                  isOwner={false}
+                >
+                  <div style={{ display: "grid", gap: "12px" }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "10px", padding: "10px 12px", borderRadius: "10px", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                      <div>
+                        <small style={{ display: "block", color: "#64748b", fontWeight: 600 }}>Referral Code</small>
+                        <strong style={{ fontSize: "1rem", color: "#0f172a" }}>{referralCode}</strong>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => copyReferralText("code", referralCode)}
+                        style={{ padding: "7px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#fff", fontWeight: 600, cursor: "pointer" }}
+                      >
+                        {copiedReferral === "code" ? "Copied" : "Copy Code"}
+                      </button>
+                    </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "10px", padding: "10px 12px", borderRadius: "10px", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <small style={{ display: "block", color: "#64748b", fontWeight: 600 }}>Referral Link</small>
+                        <span style={{ display: "block", fontSize: "0.86rem", color: "#0f172a", overflowWrap: "anywhere" }}>{referralLink}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => copyReferralText("link", referralLink)}
+                        style={{ padding: "7px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#fff", fontWeight: 600, cursor: "pointer" }}
+                      >
+                        {copiedReferral === "link" ? "Copied" : "Copy Link"}
+                      </button>
+                    </div>
+                  </div>
+                </ProfileCard>
+              </div>
+            )}
+
+            {/* ===================== BIO ===================== */}
 
             <div
               id="pro-about"
               className="pro-span-1"
             >
               <ProfileCard
-                title="About Me"
+                title="Bio"
                 icon="fas fa-user"
                 isOwner={isOwner}
                 empty={
@@ -2581,22 +2853,14 @@ const handleProfilePhotoUpload =
                   )
                 }
               >
-                {bio ? (
-                  <p className="pro-public-about">
-                    {bio}
-                  </p>
-                ) : (
-                  <EmptyState
-                    isOwner={
-                      isOwner
-                    }
-                    onAdd={() =>
-                      openEditor(
-                        "about"
-                      )
-                    }
-                  />
-                )}
+                <p className="pro-public-about">
+                  {bio ||
+                    buildDefaultBio({
+                      name: displayName,
+                      plan: localProfile?.selected_plan,
+                      membershipType: localProfile?.membership_type || "Professional Member",
+                    })}
+                </p>
 
                 {interestCategories
                   .length >
@@ -2660,6 +2924,37 @@ const handleProfilePhotoUpload =
                 title="Professional Information"
                 icon="fas fa-briefcase"
                 isOwner={isOwner}
+                collapsible
+                hasData={Boolean(
+                  localProfile.occupation ||
+                    localProfile.profession ||
+                    localProfile.professional_role ||
+                    localProfile.current_status ||
+                    localProfile.preferred_industry ||
+                    (experience !== null &&
+                      experience !== undefined &&
+                      experience !== "") ||
+                    localProfile.availability_status ||
+                    showRate ||
+                    localProfile?.professional_license_badge ||
+                    localProfile?.council_registration_badge ||
+                    localProfile?.gst_badge
+                )}
+                empty={
+                  !localProfile.occupation &&
+                  !localProfile.profession &&
+                  !localProfile.professional_role &&
+                  !localProfile.current_status &&
+                  !localProfile.preferred_industry &&
+                  (experience === null ||
+                    experience === undefined ||
+                    experience === "") &&
+                  !localProfile.availability_status &&
+                  !showRate &&
+                  !localProfile?.professional_license_badge &&
+                  !localProfile?.council_registration_badge &&
+                  !localProfile?.gst_badge
+                }
                 onEdit={() =>
                   openEditor(
                     "professional"
@@ -2768,6 +3063,21 @@ const handleProfilePhotoUpload =
                 title="Education"
                 icon="fas fa-graduation-cap"
                 isOwner={isOwner}
+                collapsible
+                hasData={Boolean(
+                  degree ||
+                    localProfile.school_college_name ||
+                    localProfile.degree_certificate_year ||
+                    languageSkills.length > 0 ||
+                    additionalCertifications.length > 0
+                )}
+                empty={
+                  !degree &&
+                  !localProfile.school_college_name &&
+                  !localProfile.degree_certificate_year &&
+                  languageSkills.length === 0 &&
+                  additionalCertifications.length === 0
+                }
                 onEdit={() =>
                   openEditor(
                     "education"
@@ -2849,6 +3159,8 @@ const handleProfilePhotoUpload =
                 title="Skills & Interests"
                 icon="far fa-lightbulb"
                 isOwner={isOwner}
+                collapsible
+                hasData={skills.length > 0}
                 empty={
                   skills.length ===
                     0 &&
@@ -2910,6 +3222,11 @@ const handleProfilePhotoUpload =
                 title="Certifications"
                 icon="fas fa-award"
                 isOwner={isOwner}
+                collapsible
+                hasData={
+                  certifications.length > 0 ||
+                  additionalCertifications.length > 0
+                }
                 empty={
                   certifications
                     .length ===
@@ -2957,6 +3274,14 @@ const handleProfilePhotoUpload =
                 title="Achievements, Publications & Recognition"
                 icon="fas fa-trophy"
                 isOwner={isOwner}
+                collapsible
+                hasData={
+                  awards.length > 0 ||
+                  publications.length > 0 ||
+                  milestones.length > 0 ||
+                  mediaMentions.length > 0 ||
+                  referenceLetters.length > 0
+                }
                 empty={
                   awards.length ===
                     0 &&
@@ -3089,6 +3414,12 @@ const handleProfilePhotoUpload =
                 title="Work Experience & Portfolio"
                 icon="fas fa-briefcase"
                 isOwner={isOwner}
+                collapsible
+                hasData={Boolean(
+                  workSamples.length > 0 ||
+                    employers.length > 0 ||
+                    localProfile.portfolio_url
+                )}
                 empty={
                   workSamples
                     .length ===
@@ -3233,6 +3564,13 @@ const handleProfilePhotoUpload =
                 title="Media"
                 icon="fas fa-image"
                 isOwner={isOwner}
+                collapsible
+                hasData={Boolean(
+                  profileImage ||
+                    coverImage ||
+                    galleryPhotos.length > 0 ||
+                    localProfile.intro_video
+                )}
                 empty={
                   !profileImage &&
                   !coverImage &&
@@ -3350,172 +3688,6 @@ const handleProfilePhotoUpload =
             </div>
 
             {/* ===================== CONTACT / SOCIAL ===================== */}
-
-            <div
-              id="pro-contact"
-              className="pro-span-2"
-            >
-              <ProfileCard
-                title="Contact, Social & Website"
-                icon="fas fa-link"
-                isOwner={isOwner}
-                empty={
-                  !showPhone &&
-                  !localProfile
-                    .portfolio_url &&
-                  !localProfile
-                    .social_link &&
-                  !localProfile
-                    .social_instagram &&
-                  !localProfile
-                    .social_linkedin &&
-                  !localProfile
-                    .social_facebook &&
-                  !localProfile
-                    .social_youtube &&
-                  !localProfile
-                    .social_twitter
-                }
-                onEdit={() =>
-                  openEditor(
-                    "contact"
-                  )
-                }
-              >
-                <div className="pro-contact-list">
-                  {showPhone && (
-                    <ContactRow
-                      icon="fas fa-phone"
-                      value={
-                        localProfile.phone
-                      }
-                    />
-                  )}
-
-                  {location && (
-                    <ContactRow
-                      icon="fas fa-location-dot"
-                      value={
-                        location
-                      }
-                    />
-                  )}
-
-                  {localProfile
-                    ?.portfolio_url && (
-                    <ContactRow
-                      icon="fas fa-globe"
-                      value={
-                        localProfile.portfolio_url
-                      }
-                      link={
-                        safeUrl(
-                          localProfile.portfolio_url
-                        )
-                      }
-                    />
-                  )}
-                </div>
-
-                <div className="pro-social-icons">
-                  {localProfile
-                    ?.social_linkedin && (
-                    <a
-                      href={
-                        safeUrl(
-                          localProfile.social_linkedin
-                        )
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="LinkedIn"
-                    >
-                      <i className="fab fa-linkedin-in" />
-                    </a>
-                  )}
-
-                  {localProfile
-                    ?.social_instagram && (
-                    <a
-                      href={
-                        safeUrl(
-                          localProfile.social_instagram
-                        )
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="Instagram"
-                    >
-                      <i className="fab fa-instagram" />
-                    </a>
-                  )}
-
-                  {localProfile
-                    ?.social_facebook && (
-                    <a
-                      href={
-                        safeUrl(
-                          localProfile.social_facebook
-                        )
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="Facebook"
-                    >
-                      <i className="fab fa-facebook-f" />
-                    </a>
-                  )}
-
-                  {localProfile
-                    ?.social_youtube && (
-                    <a
-                      href={
-                        safeUrl(
-                          localProfile.social_youtube
-                        )
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="YouTube"
-                    >
-                      <i className="fab fa-youtube" />
-                    </a>
-                  )}
-
-                  {localProfile
-                    ?.social_twitter && (
-                    <a
-                      href={
-                        safeUrl(
-                          localProfile.social_twitter
-                        )
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="Twitter / X"
-                    >
-                      <i className="fab fa-x-twitter" />
-                    </a>
-                  )}
-
-                  {localProfile
-                    ?.social_link && (
-                    <a
-                      href={
-                        safeUrl(
-                          localProfile.social_link
-                        )
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="Professional social link"
-                    >
-                      <i className="fas fa-link" />
-                    </a>
-                  )}
-                </div>
-              </ProfileCard>
-            </div>
 
             {/* ===================== PRIVACY ===================== */}
 
@@ -3823,7 +3995,7 @@ const handleProfilePhotoUpload =
                   "about" && (
                   <>
                     <EditField
-                      label="About Me / Professional Bio"
+                      label="Bio"
                       type="textarea"
                       rows={6}
                       value={

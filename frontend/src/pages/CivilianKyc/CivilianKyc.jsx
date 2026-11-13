@@ -23,6 +23,7 @@ import {
 } from "../../services/CivilianKyc.service";
 
 import "./CivilianKyc.css";
+import { buildDefaultBio } from "../../utils/defaultBio";
 
 /* =========================================================
    CONFIG
@@ -896,8 +897,8 @@ export default function CivilianKyc() {
           planFromStorage;
 
         return [
-          "300",
-          "1500",
+          "299",
+          "2999",
         ].includes(
           candidate
         )
@@ -1025,6 +1026,8 @@ export default function CivilianKyc() {
     useState(
       {}
     );
+
+  const [optionalInterest, setOptionalInterest] = useState({});
 
   const [
     memberSummary,
@@ -1333,9 +1336,25 @@ export default function CivilianKyc() {
           sections
         );
 
-        setForm(
-          mergedBasic.next
-        );
+        const selectedPlanForBio =
+          String(
+            data?.selectedPlan ||
+              data?.selected_plan ||
+              window.localStorage.getItem("civilianSelectedPlan") ||
+              ""
+          ).trim();
+        const enrichedForm = { ...mergedBasic.next };
+        if (!String(enrichedForm.F?.bio || "").trim()) {
+          enrichedForm.F = {
+            ...(enrichedForm.F || {}),
+            bio: buildDefaultBio({
+              name: basic.summary?.name || enrichedForm.A?.full_name,
+              plan: selectedPlanForBio,
+              membershipType: data?.member?.membership_type || "Civilian Member",
+            }),
+          };
+        }
+        setForm(enrichedForm);
 
         const filesSource =
           data.filesBySection ||
@@ -1690,16 +1709,22 @@ export default function CivilianKyc() {
         }
       }
 
-      if (
-        activeSection ===
-        "C" &&
-        values.ifsc_code &&
-        !/^[A-Z]{4}0[A-Z0-9]{6}$/i.test(
-          values.ifsc_code.trim()
-        )
-      ) {
-        errors.ifsc_code =
-          "Enter valid IFSC Code.";
+      if (activeSection === "C") {
+        if (
+          values.ifsc_code &&
+          !/^[A-Z]{4}0[A-Z0-9]{6}$/i.test(
+            values.ifsc_code.trim()
+          )
+        ) {
+          errors.ifsc_code =
+            "Enter valid IFSC Code.";
+        }
+        if (!values.nominee_name?.trim()) {
+          errors.nominee_name = "Nominee Name is required.";
+        }
+        if (!values.nominee_relationship?.trim()) {
+          errors.nominee_relationship = "Nominee Relationship is required.";
+        }
       }
 
       if (
@@ -1708,7 +1733,7 @@ export default function CivilianKyc() {
         !values.bio?.trim()
       ) {
         errors.bio =
-          "Bio / About Me is required.";
+          "Bio is required.";
       }
 
       if (
@@ -1964,7 +1989,7 @@ export default function CivilianKyc() {
 
     if (!selectedPlan) {
       setError(
-        "Please select the ₹300 or ₹1500 Civilian membership plan before reviewing Full KYC."
+        "Please select the ₹299 or ₹2999 Civilian membership plan before reviewing Full KYC."
       );
       return;
     }
@@ -2038,7 +2063,7 @@ export default function CivilianKyc() {
 
         if (!selectedPlan) {
           setError(
-            "Please select the ₹300 or ₹1500 Civilian membership plan before reviewing Full KYC."
+            "Please select the ₹299 or ₹2999 Civilian membership plan before reviewing Full KYC."
           );
 
           return;
@@ -2701,23 +2726,27 @@ export default function CivilianKyc() {
               <Field
                 label="Nominee Name"
                 name="nominee_name"
+                required
                 value={
                   values.nominee_name
                 }
                 onChange={
                   updateValue
                 }
+                error={fieldErrors.nominee_name}
               />
 
               <Field
                 label="Nominee Relationship"
                 name="nominee_relationship"
+                required
                 value={
                   values.nominee_relationship
                 }
                 onChange={
                   updateValue
                 }
+                error={fieldErrors.nominee_relationship}
               />
             </div>
 
@@ -2952,7 +2981,7 @@ export default function CivilianKyc() {
           <>
             <div className="civilian-kyc-form-grid">
               <TextAreaField
-                label="Bio / About Me"
+                label="Bio"
                 name="bio"
                 value={
                   values.bio
@@ -3757,6 +3786,53 @@ export default function CivilianKyc() {
                   Already Verified
                 </span>
               </div>
+
+
+              {["D", "E", "G"].includes(activeSection) && optionalInterest[activeSection] !== true && (
+                <div
+                  style={{
+                    background: "#eff6ff",
+                    border: "1px solid #bfdbfe",
+                    borderRadius: "12px",
+                    padding: "14px 16px",
+                    marginBottom: "16px",
+                    display: "flex",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: "12px",
+                  }}
+                >
+                  <div>
+                    <strong style={{ display: "block", color: "#1e3a8a", marginBottom: "4px" }}>
+                      Are you interested in filling out Section {activeSection} ({activeMeta.title})?
+                    </strong>
+                    <span style={{ fontSize: "0.9rem", color: "#334155" }}>
+                      This section has no required fields. Choose &quot;No, Move to Next Form&quot; to skip ahead.
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                    <button
+                      type="button"
+                      className="civilian-kyc-save-draft"
+                      style={{ margin: 0 }}
+                      disabled={saving}
+                      onClick={() => setOptionalInterest((prev) => ({ ...prev, [activeSection]: true }))}
+                    >
+                      Yes, I&apos;m Interested
+                    </button>
+                    <button
+                      type="button"
+                      className="civilian-kyc-next"
+                      style={{ margin: 0 }}
+                      disabled={saving}
+                      onClick={() => { setOptionalInterest((prev) => ({ ...prev, [activeSection]: false })); handleSave(true); }}
+                    >
+                      No, Move to Next Form <i className="fa-solid fa-arrow-right" />
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {renderSection()}
 

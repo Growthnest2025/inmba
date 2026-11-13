@@ -304,8 +304,8 @@ export default function Footer() {
         }
 
         .footer-logo-img {
-          width: 88px;
-          height: 88px;
+          width: 140px;
+          height: 140px;
           display: block;
           margin: 0 auto 14px;
           object-fit: contain;
@@ -606,8 +606,8 @@ export default function Footer() {
           }
 
           .footer-logo-img {
-            width: 80px;
-            height: 80px;
+            width: 112px;
+            height: 112px;
           }
 
           .footer-logo {

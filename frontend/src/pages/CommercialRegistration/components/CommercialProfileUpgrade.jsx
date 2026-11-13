@@ -24,6 +24,7 @@ import "./CommercialProfileUpgrade.css";
 
 import CommercialFlowTopbar
   from "./CommercialFlowTopbar";
+import { buildDefaultBio } from "../../../utils/defaultBio";
 
 /* =========================================================
    CONFIG
@@ -78,7 +79,7 @@ const COMMERCIAL_PLAN_CONFIG = {
     id: "basic",
     plan_id: "basic",
     name: "Commercial Membership",
-    amount: 300,
+    amount: 299,
     requiresFullKyc: true,
     requires_full_kyc: true,
   },
@@ -87,7 +88,7 @@ const COMMERCIAL_PLAN_CONFIG = {
     id: "profile_upgrade",
     plan_id: "profile_upgrade",
     name: "Commercial Profile Upgrade",
-    amount: 1500,
+    amount: 2999,
     requiresFullKyc: true,
     requires_full_kyc: true,
   },
@@ -299,8 +300,8 @@ const normalizePlanAmount = (
     );
 
   return [
-    300,
-    1500,
+    299,
+    2999,
   ].includes(
     amount
   )
@@ -345,15 +346,13 @@ const inferPlanIdFromAmount = (
     );
 
   if (
-    amount ===
-    300
+    amount === 299 || amount === 300
   ) {
     return "basic";
   }
 
   if (
-    amount ===
-    1500
+    amount === 2999 || amount === 1500
   ) {
     return "profile_upgrade";
   }
@@ -1490,6 +1489,8 @@ export default function CommercialProfileUpgrade() {
       {}
     );
 
+  const [optionalInterest, setOptionalInterest] = useState({});
+
   /* =======================================================
      REVIEW EDIT MODE
 
@@ -1565,11 +1566,16 @@ export default function CommercialProfileUpgrade() {
             data.sections
           );
 
-          setForm(
-            mergeServerSections(
-              data.sections
-            )
-          );
+          const mergedComm = mergeServerSections(data.sections);
+          if (!String(mergedComm.E?.business_bio || "").trim()) {
+            const ownerName = mergedComm.A?.business_name || mergedComm.A?.authorized_person_name || data?.member?.first_name || "";
+            const planVal = String(data?.selectedPlan?.amount || data?.selectedPlan?.id || selectedPlan?.amount || selectedPlan?.id || "2999").trim();
+            mergedComm.E = {
+              ...(mergedComm.E || {}),
+              business_bio: buildDefaultBio({ name: ownerName, plan: planVal, membershipType: "Commercial Member" }),
+            };
+          }
+          setForm(mergedComm);
         }
 
         if (
@@ -1631,7 +1637,7 @@ export default function CommercialProfileUpgrade() {
               !selectedPlan
             ) {
               setError(
-                "No Commercial Membership plan is selected. Please return to Commercial Membership and select ₹300 or ₹1500."
+                "No Commercial Membership plan is selected. Please return to Commercial Membership and select ₹299 or ₹2999."
               );
 
               return;
@@ -1724,7 +1730,7 @@ export default function CommercialProfileUpgrade() {
               403
             ) {
               setError(
-                "Your selected Commercial Membership does not currently have access to Full Commercial KYC. Backend must allow both ₹300 and ₹1500 plans."
+                "Your selected Commercial Membership does not currently have access to Full Commercial KYC. Backend must allow both ₹299 and ₹2999 plans."
               );
             } else if (
               statusCode ===
@@ -2131,6 +2137,12 @@ export default function CommercialProfileUpgrade() {
       }
       if (!hasDoc("bank_proof")) {
         errors.bank_proof = "Passbook / cancelled cheque proof is required.";
+      }
+      if (!isNonEmpty(values.nominee_name)) {
+        errors.nominee_name = "Nominee Name is required.";
+      }
+      if (!isNonEmpty(values.nominee_relationship)) {
+        errors.nominee_relationship = "Nominee Relationship is required.";
       }
     } else if (sectionId === "E") {
       if (!isNonEmpty(values.business_category_tags)) {
@@ -3142,23 +3154,27 @@ export default function CommercialProfileUpgrade() {
               <Field
                 label="Nominee Name"
                 name="nominee_name"
+                required
                 value={
                   values.nominee_name
                 }
                 onChange={
                   updateValue
                 }
+                error={fieldErrors.nominee_name}
               />
 
               <Field
                 label="Nominee Relationship"
                 name="nominee_relationship"
+                required
                 value={
                   values.nominee_relationship
                 }
                 onChange={
                   updateValue
                 }
+                error={fieldErrors.nominee_relationship}
               />
 
               <Field
@@ -3332,7 +3348,7 @@ export default function CommercialProfileUpgrade() {
               />
 
               <TextAreaField
-                label="Business Bio / About Us"
+                label="Bio"
                 name="business_bio"
                 value={
                   values.business_bio
@@ -3878,6 +3894,55 @@ export default function CommercialProfileUpgrade() {
             )}
 
             {/* SECTION CONTENT */}
+
+              {["F"].includes(activeSection) && optionalInterest[activeSection] !== true && (
+                <div
+                  style={{
+                    background: "#eff6ff",
+                    border: "1px solid #bfdbfe",
+                    borderRadius: "12px",
+                    padding: "14px 16px",
+                    marginBottom: "16px",
+                    display: "flex",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: "12px",
+                  }}
+                >
+                  <div>
+                    <strong style={{ display: "block", color: "#1e3a8a", marginBottom: "4px" }}>
+                      Are you interested in filling out Section {activeSection} ({SECTIONS.find((item) => item.id === activeSection)?.title || ""})?
+                    </strong>
+                    <span style={{ fontSize: "0.9rem", color: "#334155" }}>
+                      This section has no required fields. Choose &quot;No, Move to Next Form&quot; to skip ahead.
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                    <button
+                      type="button"
+                      className="commercial-kyc-draft"
+                      style={{ margin: 0 }}
+                      disabled={saving || !effectiveCanEdit}
+                      onClick={() => setOptionalInterest((prev) => ({ ...prev, [activeSection]: true }))}
+                    >
+                      Yes, I&apos;m Interested
+                    </button>
+                    <button
+                      type="button"
+                      className="commercial-kyc-next"
+                      style={{ margin: 0 }}
+                      disabled={saving || !effectiveCanEdit}
+                      onClick={() => {
+                        setOptionalInterest((prev) => ({ ...prev, [activeSection]: false }));
+                        handleSave(true);
+                      }}
+                    >
+                      No, Move to Next Form <i className="fa-solid fa-arrow-right" />
+                    </button>
+                  </div>
+                </div>
+              )}
 
             {renderSection()}
 

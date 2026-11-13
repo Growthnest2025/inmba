@@ -918,6 +918,39 @@ const buildCommercialPublicProfile =
          PUBLIC PROFILE / QR TARGET
       =================================================== */
 
+      referral_id:
+        toPublicValue(
+          member.referral_id
+        ),
+
+      direct_network:
+        Number(
+          member.direct_network ||
+            0
+        ),
+
+      direct_members:
+        Number(
+          member.direct_network ||
+            0
+        ),
+
+      indirect_network:
+        Number(
+          member.indirect_network ||
+            0
+        ),
+
+      total_network:
+        Number(
+          member.direct_network ||
+            0
+        ) +
+        Number(
+          member.indirect_network ||
+            0
+        ),
+
       public_profile: {
         login_id:
           loginId,
