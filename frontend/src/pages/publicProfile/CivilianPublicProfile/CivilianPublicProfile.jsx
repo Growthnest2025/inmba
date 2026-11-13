@@ -25,6 +25,8 @@ import {
 
 import "./CivilianPublicProfile.css";
 import { buildDefaultBio } from "../../../utils/defaultBio";
+import { getMembershipTitle } from "../../../utils/membershipTitle";
+import ProfileHeroReferralBar from "../../../components/common/ProfileHeroReferralBar";
 
 /* =========================================================
    HELPERS
@@ -3637,7 +3639,7 @@ export default function CivilianPublicProfile({
                   style={isPro ? { background: "#eff6ff", color: "#1d4ed8", borderColor: "#93c5fd" } : undefined}
                 >
                   <span style={isPro ? { background: "#2563eb" } : undefined} />
-                  {isPro ? "Professional Member" : "Civilian Member"}
+                  {getMembershipTitle(p, isPro ? "INMBA Professional Member" : "INMBA Member")}
                 </span>
               </div>
             </div>
@@ -3677,6 +3679,28 @@ export default function CivilianPublicProfile({
                   }
                 />
               )}
+            </div>
+
+            <ProfileHeroReferralBar
+              referralCode={referralCode}
+              referralLink={referralLink}
+              copied={copiedReferral}
+              onCopy={(key, val) => copyReferralText(val, key)}
+            />
+
+            <div
+              className="civ-pro-role"
+              style={{
+                fontSize: "0.85rem",
+                fontWeight: 700,
+                color: isPro ? "#1d4ed8" : "#166534",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+                marginTop: "2px",
+                marginBottom: "8px",
+              }}
+            >
+              {getMembershipTitle(p, isPro ? "INMBA Professional Member" : "INMBA Member")}
             </div>
 
             {text(
@@ -3755,11 +3779,11 @@ export default function CivilianPublicProfile({
               </small>
 
               <span className="civ-pro-rank-label">
-                Network Rank
+                Rank (Admin Controlled)
               </span>
 
               <h2>
-                {rank}
+                {rank || "Assigned by Admin"}
               </h2>
             </section>
             )}
@@ -3925,11 +3949,11 @@ export default function CivilianPublicProfile({
               <div className="civ-network-list">
                 <div>
                   <span>
-                    Rank
+                    Rank (Admin Controlled)
                   </span>
 
                   <strong>
-                    {rank}
+                    {rank || "Assigned by Admin"}
                   </strong>
                 </div>
 

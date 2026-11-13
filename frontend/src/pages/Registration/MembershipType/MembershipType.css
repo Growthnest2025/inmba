@@ -1144,3 +1144,148 @@
     transition: none;
   }
 }
+/* ========================================
+   INMBA MEMBERSHIP HERO TOGGLE BUTTON
+======================================== */
+
+.inmba-membership-toggle-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 12px 0 28px;
+}
+
+.inmba-membership-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 34px;
+  background: linear-gradient(135deg, #0f4d0f 0%, #176027 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(15, 77, 15, 0.24);
+  transition: all 0.25s ease;
+}
+
+.inmba-membership-toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(15, 77, 15, 0.35);
+  background: linear-gradient(135deg, #125c12 0%, #1e7a32 100%);
+}
+
+.inmba-membership-toggle-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 0.95rem;
+}
+
+.inmba-membership-toggle-arrow {
+  margin-left: 4px;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  transition: transform 0.2s ease;
+}
+
+/* Card content spacing without subtitle and description */
+.inmba-membership-type-card-content {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+}
+
+.inmba-membership-type-card-content h3 {
+  margin: 0;
+  font-size: 1.45rem;
+  line-height: 1.25;
+}
+
+.inmba-membership-type-card > footer a,
+.inmba-membership-type-locked-button {
+  font-size: 0.92rem;
+  padding: 10px 14px;
+}
+
+/* =========================================================
+   SMALLER MEMBERSHIP CARDS (6 cards)
+   Keep this at the END of the file so it overrides the old sizes
+========================================================= */
+
+.inmba-membership-type-grid {
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.inmba-membership-type-card {
+  min-height: 220px;
+  padding: 20px;
+  border-radius: 18px;
+}
+
+.inmba-membership-type-card > header {
+  margin-bottom: 16px;
+}
+
+.inmba-membership-type-card > header > span {
+  width: 50px;
+  height: 50px;
+  border-radius: 15px;
+  font-size: 1.15rem;
+}
+
+.inmba-membership-type-card > header > small {
+  padding: 5px 10px;
+  font-size: 0.72rem;
+}
+
+.inmba-membership-type-card-content {
+  min-height: 40px;
+}
+
+.inmba-membership-type-card-content h3 {
+  font-size: 1.2rem;
+}
+
+.inmba-membership-type-card > footer {
+  margin-top: 16px;
+}
+
+.inmba-membership-type-card > footer a,
+.inmba-membership-type-locked-button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+}
+
+.inmba-membership-type-card-decoration {
+  width: 110px;
+  height: 110px;
+  right: -40px;
+  bottom: -55px;
+}
+
+/* lock watermark on the locked cards */
+.inmba-membership-type-lock-overlay {
+  width: 48px;
+  height: 48px;
+  right: 14px;
+  bottom: 66px;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 650px) {
+  .inmba-membership-type-card {
+    min-height: auto;
+    padding: 18px;
+  }
+}

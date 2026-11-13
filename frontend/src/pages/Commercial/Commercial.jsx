@@ -268,26 +268,15 @@ function CommercialRail() {
         <div className="cmr-layout">
           {/* LEFT INTRO */}
           <div className="cmr-intro" data-aos="fade-right">
-            <span className="commercial-section-badge">
-              <FontAwesomeIcon icon={faLightbulb} />
-              <span>Sectors &amp; Edge</span>
-            </span>
 
             <h2 id="commercial-sectors-title" className="cmr-heading">
-              Our Commercial Sectors &amp;{" "}
-              <span className="commercial-gradient-text">
-                Professional Edge
-              </span>
+              Our Commercial Sectors
             </h2>
 
             <p className="cmr-text">
               Supporting sustainable business development across trading,
               manufacturing and professional services, backed by modern
               expertise and professional leadership.
-            </p>
-
-            <p className="cmr-hint">
-              Auto-scrolls. Hover to pause, drag to browse.
             </p>
           </div>
 

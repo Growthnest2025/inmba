@@ -2732,7 +2732,18 @@ async function handleGetCivilianProfile(request, db, cors) {
     profile_photo_url: activePhoto,
     profile_image_url: activePhoto,
     photo_url: activePhoto,
-    membership_type: member.membership_type || "Civilian Member",
+    membership_type: ((p) => {
+      const clean = String(p || "").replace(/[^0-9]/g, "");
+      if (clean === "299" || clean === "300") return "INMBA Network Member";
+      if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+      return "INMBA Member";
+    })(fullKyc.selectedPlan || ext.amount || "299"),
+    membership_title: ((p) => {
+      const clean = String(p || "").replace(/[^0-9]/g, "");
+      if (clean === "299" || clean === "300") return "INMBA Network Member";
+      if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+      return "INMBA Member";
+    })(fullKyc.selectedPlan || ext.amount || "299"),
     payment_status: member.payment_status || "pending",
     selected_plan: fullKyc.selectedPlan || ext.amount || "299",
     amount: fullKyc.selectedPlan || ext.amount || "299",
@@ -2788,7 +2799,18 @@ async function handleGetProfessionalProfile(request, db, cors) {
     name: [fullMember.first_name || member.first_name, fullMember.last_name || member.last_name].filter(Boolean).join(" ") || "Professional Member",
     email: fullMember.email || member.email,
     phone: fullMember.phone || member.phone,
-    membership_type: fullMember.membership_type || member.membership_type || "Professional Member",
+    membership_type: ((p) => {
+      const clean = String(p || "").replace(/[^0-9]/g, "");
+      if (clean === "299" || clean === "300") return "INMBA Network Member";
+      if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+      return "INMBA Professional Member";
+    })(fullMember.selected_plan || member.selected_plan || ""),
+    membership_title: ((p) => {
+      const clean = String(p || "").replace(/[^0-9]/g, "");
+      if (clean === "299" || clean === "300") return "INMBA Network Member";
+      if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+      return "INMBA Professional Member";
+    })(fullMember.selected_plan || member.selected_plan || ""),
     payment_status: memberPaymentStatus,
     paymentStatus: memberPaymentStatus,
     is_approved: isApproved,
@@ -2984,7 +3006,22 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     name: fullName,
     email: member.email,
     phone: member.phone,
-    membership_type: isCommercial ? "Commercial Member" : (isProfessional ? "Professional Member" : (member.membership_type || "Civilian Member")),
+    membership_type: ((p, comm, pro, def) => {
+      const clean = String(p || "").replace(/[^0-9]/g, "");
+      if (clean === "299" || clean === "300") return "INMBA Network Member";
+      if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+      if (comm) return "INMBA Commercial Member";
+      if (pro) return "INMBA Professional Member";
+      return def || "INMBA Member";
+    })(planAmount, isCommercial, isProfessional, member.membership_type),
+    membership_title: ((p, comm, pro, def) => {
+      const clean = String(p || "").replace(/[^0-9]/g, "");
+      if (clean === "299" || clean === "300") return "INMBA Network Member";
+      if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+      if (comm) return "INMBA Commercial Member";
+      if (pro) return "INMBA Professional Member";
+      return def || "INMBA Member";
+    })(planAmount, isCommercial, isProfessional, member.membership_type),
     profile_type: isCommercial ? "commercial" : (isProfessional ? "professional" : "civilian"),
     payment_status: member.payment_status || "pending",
     bio: commKyc.business_bio || fullKyc?.values?.bio || member.bio || "",

@@ -1,10 +1,9 @@
 /* =========================================================
-   PROFESSIONAL PAGE (restyled like COMMERCIAL page)
-   Same class names as before - only the look changed.
+   PROFESSIONAL PAGE
    1. Variables / reset
    2. Hero
-   3. Sections / headings / cards / steps / table
-   4. CTA
+   3. Sections / headings / cards
+   4. Horizontal scroll cards
    5. Merged rail (prm-*)
    6. Responsive / polish
 ========================================================= */
@@ -57,7 +56,7 @@
   z-index: 2;
 }
 
-/* ---------- Badge ---------- */
+/* ---------- Badge (used by the rail section) ---------- */
 
 .professional-badge {
   width: fit-content;
@@ -78,29 +77,18 @@
   text-transform: uppercase;
 }
 
-.professional-dot {
-  width: 9px;
-  height: 9px;
-  flex-shrink: 0;
-  display: inline-block;
-  border-radius: 50%;
-  background: #57c477;
-  box-shadow: 0 0 0 5px rgba(87, 196, 119, 0.16);
-  animation: professional-pulse 1.8s ease-in-out infinite;
-}
-
 /* ---------- 2. HERO ---------- */
 
 .professional-hero {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  min-height: 100vh;
+  min-height: 80vh;
   display: flex;
   align-items: center;
   padding: 140px 0 80px;
   color: #fff;
-  text-align: left;
+  text-align: center;
   background:
     linear-gradient(120deg, rgba(5, 35, 11, 0.94) 0%, rgba(5, 35, 11, 0.82) 46%, rgba(5, 35, 11, 0.72) 100%),
     radial-gradient(circle at 50% 30%, rgba(34, 157, 76, 0.12), transparent 70%),
@@ -161,19 +149,8 @@
 .professional-hero-layout {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
+  grid-template-columns: 1fr;
   align-items: center;
-  gap: 64px;
-}
-
-.professional-hero .professional-badge {
-  padding: 11px 18px;
-  color: rgba(255, 255, 255, 0.92);
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 12px 28px rgba(0, 0, 0, 0.14);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 .professional-hero h1 {
@@ -199,19 +176,20 @@
 
 .professional-hero p {
   max-width: 640px;
-  margin: 26px 0 0;
+  margin: 26px auto 0;
   color: rgba(255, 255, 255, 0.82);
   font-size: clamp(1.3rem, 2vw, 1.65rem);
   line-height: 1.75;
   letter-spacing: 0.1px;
 }
 
-.professional-actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: flex-start; margin-top: 30px; }
+.professional-actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 30px; }
 
 /* ---------- Buttons ---------- */
 
 .professional-btn {
   min-height: 58px;
+  max-width: 100%;
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -225,7 +203,9 @@
   color: #fff;
   font-size: 1.24rem;
   font-weight: 700;
+  line-height: 1.3;
   letter-spacing: 0.2px;
+  text-align: center;
   cursor: pointer;
   box-shadow: 0 18px 38px rgba(8, 47, 11, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.22);
   transition: transform 0.35s ease, box-shadow 0.35s ease;
@@ -254,71 +234,7 @@
 .professional-btn:focus-visible { outline: 3px solid rgba(191, 247, 200, 0.65); outline-offset: 5px; }
 .professional-btn.ghost { background: rgba(255, 255, 255, 0.1); box-shadow: none; backdrop-filter: blur(8px); }
 
-/* ---------- Hero facts ---------- */
-
-.professional-facts { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 40px; }
-.professional-fact {
-  min-width: 170px;
-  padding: 16px 22px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-.professional-fact strong { display: block; font-size: 2.12rem; font-weight: 800; }
-.professional-fact span { font-size: 1rem; color: rgba(255, 255, 255, 0.78); }
-
-/* ---------- Hero panel ---------- */
-
-.professional-panel {
-  position: relative;
-  overflow: hidden;
-  padding: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 32px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.05));
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  animation: professional-bob 6s ease-in-out infinite;
-}
-.professional-panel::before {
-  content: "";
-  position: absolute;
-  width: 220px; height: 220px; top: -130px; right: -110px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(87, 196, 119, 0.22), transparent 70%);
-  pointer-events: none;
-}
-.professional-panel-top { position: relative; display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
-.professional-panel-icon {
-  width: 62px; height: 62px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 20px;
-  border: 1px solid rgba(191, 247, 200, 0.26);
-  background: linear-gradient(145deg, #1f7a35, #133f1b);
-  color: #bff7c8;
-  font-size: 1.89rem;
-  box-shadow: 0 14px 28px rgba(8, 47, 11, 0.35);
-}
-.professional-panel-top span { display: block; margin-bottom: 5px; color: #57c477; font-size: 0.87rem; font-weight: 800; letter-spacing: 1.1px; text-transform: uppercase; }
-.professional-panel-top h2 { margin: 0; color: #fff; font-size: 1.71rem; font-weight: 800; line-height: 1.3; }
-.professional-panel-list { position: relative; display: flex; flex-direction: column; gap: 11px; }
-.professional-panel-item {
-  display: flex; align-items: center; gap: 13px; padding: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.06);
-  transition: transform 0.3s, border-color 0.3s, background 0.3s;
-}
-.professional-panel-item:hover { transform: translateX(6px); border-color: rgba(87, 196, 119, 0.4); background: rgba(87, 196, 119, 0.1); }
-.professional-panel-item-icon { width: 42px; height: 42px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 14px; background: rgba(87, 196, 119, 0.14); color: #bff7c8; }
-.professional-panel-item strong { display: block; margin-bottom: 3px; color: #fff; font-size: 1.09rem; }
-.professional-panel-item span { display: block; color: rgba(255, 255, 255, 0.68); font-size: 0.94rem; line-height: 1.45; }
-.professional-panel-footer { display: flex; align-items: center; gap: 9px; margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.72); font-size: 0.94rem; font-weight: 600; }
-
-/* ---------- 3. SECTIONS ---------- */
+/* ---------- 3. SECTIONS / CARDS ---------- */
 
 .professional-sec {
   position: relative;
@@ -329,7 +245,6 @@
   scroll-margin-top: 90px;
 }
 .professional-sec.alt { background: var(--soft); }
-.professional-sec.dark { background: linear-gradient(135deg, #082f0b, #133f1b 60%, #1f7a35); color: #fff; }
 
 .professional-sec::before {
   content: "";
@@ -347,25 +262,6 @@
   pointer-events: none;
 }
 .professional-sec > .professional-wrap { position: relative; z-index: 2; }
-
-.professional-head { max-width: 760px; margin: 0 auto 40px; text-align: center; }
-.professional-head .professional-badge { margin-inline: auto; }
-.professional-head h2 {
-  margin: 0;
-  color: var(--ink);
-  font-size: clamp(2.6rem, 4.4vw, 4.13rem);
-  font-weight: 800;
-  line-height: 1.14;
-  letter-spacing: -1.2px;
-}
-.professional-head p { max-width: 780px; margin: 14px auto 0; color: var(--mut); font-size: 1.39rem; line-height: 1.8; }
-.professional-sec.dark .professional-head h2 { color: #fff; }
-.professional-sec.dark .professional-head p { color: rgba(255, 255, 255, 0.82); }
-.professional-sec.dark .professional-badge { color: #bff7c8; border-color: rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.1); }
-
-/* ---------- Cards ---------- */
-
-.professional-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
 
 .professional-card {
   position: relative;
@@ -442,91 +338,89 @@
 .professional-card h3 { margin: 0; color: var(--ink); font-size: 1.77rem; font-weight: 700; line-height: 1.3; letter-spacing: -0.3px; }
 .professional-card p { margin: 12px 0 0; color: var(--mut); font-size: 1.24rem; line-height: 1.7; }
 
-.professional-sec.dark .professional-card { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
-.professional-sec.dark .professional-card h3 { color: #fff; }
-.professional-sec.dark .professional-card p { color: rgba(255, 255, 255, 0.78); }
-.professional-sec.dark .professional-ico { color: #bff7c8; background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); }
+/* ---------- 4. HORIZONTAL SCROLL CARDS (Who can join) ---------- */
 
-/* ---------- Steps ---------- */
+.professional-hsec { padding: 60px 0; }
 
-.professional-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 24px; counter-reset: s; }
-.professional-step {
+.phr-wrap { position: relative; width: 100%; }
+
+.phr-rail {
   position: relative;
-  padding: 38px 24px 28px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: linear-gradient(150deg, #fff 0%, #eaf7ed 100%);
-  box-shadow: 0 20px 44px rgba(8, 47, 11, 0.1);
-  counter-increment: s;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s, border-color 0.4s;
-}
-.professional-step::before {
-  content: counter(s);
-  position: absolute; top: -20px; left: 24px;
-  width: 44px; height: 44px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 50%;
-  background: linear-gradient(145deg, #1f7a35, #133f1b);
-  color: #fff; font-weight: 800;
-  box-shadow: 0 10px 22px rgba(19, 63, 27, 0.25);
-  transition: transform 0.35s;
-}
-.professional-step:hover { transform: translateY(-11px); border-color: rgba(19, 63, 27, 0.4); box-shadow: 0 32px 64px rgba(8, 47, 11, 0.19); }
-.professional-step:hover::before { transform: scale(1.12) rotate(-8deg); }
-.professional-step h3 { margin: 0; color: var(--ink); font-size: 1.53rem; font-weight: 700; }
-.professional-step p { margin: 8px 0 0; color: var(--mut); font-size: 1.2rem; line-height: 1.7; }
-
-/* ---------- Table ---------- */
-
-.professional-table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); background: #fff; box-shadow: 0 20px 44px rgba(8, 47, 11, 0.1); }
-.professional-table { width: 100%; border-collapse: collapse; min-width: 520px; }
-.professional-table th { padding: 18px 22px; text-align: left; background: linear-gradient(135deg, #1f7a35, #133f1b); color: #fff; font-size: 1.06rem; letter-spacing: 0.6px; }
-.professional-table td { padding: 17px 22px; border-top: 1px solid rgba(19, 63, 27, 0.1); color: var(--ink); font-size: 1.18rem; }
-.professional-table tr:nth-child(even) td { background: #eaf7ed; }
-.professional-table tbody tr { transition: background 0.25s; }
-.professional-table tbody tr:hover td { background: #d6f0dc; }
-.professional-note { margin-top: 22px; color: var(--mut-light); text-align: center; font-size: 1.16rem; line-height: 1.7; }
-
-/* ---------- 4. CTA ---------- */
-
-.professional-cta {
-  position: relative;
-  isolation: isolate;
+  height: 290px;
   overflow: hidden;
-  padding: 90px 0;
-  text-align: center;
-  color: #fff;
-  background:
-    linear-gradient(120deg, rgba(5, 35, 11, 0.94), rgba(5, 35, 11, 0.82)),
-    #082f0b;
+  background: #eaf7ed;
+  border-radius: 22px;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 18px 44px rgba(8, 47, 11, 0.16);
 }
-.professional-cta h2 { margin: 0; color: #fff; font-size: clamp(2.48rem, 4.4vw, 4.01rem); font-weight: 800; line-height: 1.14; letter-spacing: -1px; }
-.professional-cta p { max-width: 680px; margin: 16px auto 30px; color: rgba(255, 255, 255, 0.82); font-size: 1.36rem; line-height: 1.8; }
-.professional-cta-glow { position: absolute; z-index: -1; border-radius: 50%; pointer-events: none; }
-.professional-cta-glow-one { width: 420px; height: 420px; top: -200px; right: -120px; background: radial-gradient(circle, rgba(34, 157, 76, 0.3), transparent 70%); animation: professional-breathe 7s ease-in-out infinite; }
-.professional-cta-glow-two { width: 320px; height: 320px; bottom: -170px; left: -100px; background: radial-gradient(circle, rgba(87, 196, 119, 0.2), transparent 70%); animation: professional-breathe 9s ease-in-out infinite reverse; }
-.professional-cta .professional-btn { animation: professional-ring 2.4s ease-out infinite; }
+.phr-rail.is-drag { cursor: grabbing; }
+.phr-rail:focus-visible { outline: 2px solid rgba(34, 157, 76, 0.55); outline-offset: 3px; }
+
+.phr-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 320px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 26px 28px;
+  overflow: hidden;
+  background: #eaf7ed;
+  border-right: 1px solid rgba(19, 63, 27, 0.12);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+}
+.phr-alt { background: #ffffff; }
+
+.phr-icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: linear-gradient(145deg, #1f7a35 0%, #133f1b 100%);
+  border-radius: 50%;
+  font-size: 1.7rem;
+  box-shadow: 0 10px 22px rgba(19, 63, 27, 0.25);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.phr-card:hover .phr-icon { transform: scale(1.08) rotate(-6deg); }
+
+.phr-card h3 { margin: 0; color: var(--ink); font-size: 1.5rem; font-weight: 800; line-height: 1.3; }
+.phr-card p { margin: 0; color: var(--mut); font-size: 1.15rem; line-height: 1.55; }
+
+.phr-nav { display: flex; justify-content: center; gap: 10px; margin-top: 16px; }
+.phr-nav button { width: 40px; height: 40px; color: var(--ink); background: #fff; border: 1px solid rgba(19, 63, 27, 0.18); border-radius: 50%; cursor: pointer; transition: background 0.2s, color 0.2s; }
+.phr-nav button:hover { background: #1f7a35; color: #fff; }
+
+.professional-hint { margin: 10px 0 0; text-align: center; color: var(--mut-light); font-size: 1.05rem; }
 
 /* ---------- Keyframes ---------- */
 
-@keyframes professional-pulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 5px rgba(87, 196, 119, 0.16); } 50% { transform: scale(0.88); box-shadow: 0 0 0 9px rgba(87, 196, 119, 0.04); } }
 @keyframes professional-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 @keyframes professional-spin { to { transform: rotate(360deg); } }
 @keyframes professional-breathe { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.12); opacity: 1; } }
 @keyframes professional-grid { from { background-position: 0 0; } to { background-position: 52px 52px; } }
-@keyframes professional-ring { 0% { box-shadow: 0 0 0 0 rgba(34, 157, 76, 0.55); } 100% { box-shadow: 0 0 0 22px rgba(34, 157, 76, 0); } }
 
 /* =========================================================
-   5. MERGED CARD RAIL (prm-*) - same look as commercial cmr-*
+   5. MERGED CARD RAIL (prm-*)
 ========================================================= */
 
 .prm-layout { display: grid; grid-template-columns: 480px minmax(0, 1fr); align-items: center; gap: 56px; }
 
 .prm-intro { max-width: 580px; }
-.prm-heading { margin: 8px 0 18px; color: var(--ink); font-size: clamp(10.0rem, 4vw, 4.25rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; }
+.prm-heading { margin: 8px 0 18px; color: var(--ink); font-size: clamp(2.4rem, 4vw, 4.25rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; }
 .prm-text { margin: 0; color: var(--mut); font-size: 1.42rem; line-height: 1.8; }
 .prm-note { margin: 18px 0 0; color: var(--mut-light); font-size: 1.18rem; line-height: 1.7; }
-.prm-hint { margin: 20px 0 0; color: var(--mut-light); font-size: 1.12rem; }
 
 .prm-wrap { position: relative; width: 100%; max-width: 480px; margin: 0 auto; }
 .prm-rail {
@@ -574,11 +468,6 @@
 .prm-nav button { width: 40px; height: 40px; color: var(--ink); background: #fff; border: 1px solid rgba(19, 63, 27, 0.18); border-radius: 50%; cursor: pointer; transition: background 0.2s, color 0.2s; }
 .prm-nav button:hover { background: #1f7a35; color: #fff; }
 
-/* Reversed layout: text LEFT, rail RIGHT */
-.prm-layout.prm-rev { grid-template-columns: minmax(0, 1fr) 480px; }
-.prm-layout.prm-rev .prm-intro { order: 1; }
-.prm-layout.prm-rev .prm-wrap { order: 2; }
-
 /* =========================================================
    6. RESPONSIVE / POLISH
 ========================================================= */
@@ -589,17 +478,11 @@
 
 @media (max-width: 992px) {
   .professional-wrap { width: min(100% - 34px, 920px); }
-  .professional-hero { min-height: auto; padding: 120px 0 80px; text-align: center; }
-  .professional-hero-layout { grid-template-columns: 1fr; gap: 48px; }
-  .professional-hero .professional-badge { margin-inline: auto; }
-  .professional-hero p { margin-left: auto; margin-right: auto; }
-  .professional-actions, .professional-facts { justify-content: center; }
-  .professional-panel { max-width: 640px; width: 100%; margin: 0 auto; text-align: left; }
+  .professional-hero { min-height: auto; padding: 120px 0 80px; }
 
-  .prm-layout, .prm-layout.prm-rev { grid-template-columns: 1fr; gap: 36px; }
-  .prm-intro { order: -1 !important; max-width: 100%; margin: 0 auto; text-align: center; }
+  .prm-layout { grid-template-columns: 1fr; gap: 36px; }
+  .prm-intro { order: -1; max-width: 100%; margin: 0 auto; text-align: center; }
   .prm-intro .professional-badge { margin-inline: auto; }
-  .prm-layout.prm-rev .prm-wrap { order: 0; }
 }
 
 @media (max-width: 820px) {
@@ -618,25 +501,25 @@
   .professional-hero h1 { letter-spacing: -1.8px; font-size: clamp(2.95rem, 11vw, 4.72rem); }
   .professional-hero p { font-size: 1.27rem; line-height: 1.65; }
   .professional-sec { padding: 56px 0; }
-  .professional-head h2 { letter-spacing: -0.8px; }
-  .professional-head p { font-size: 1.24rem; }
+  .professional-hsec { padding: 44px 0; }
+  .phr-rail { height: 260px; border-radius: 16px; }
+  .phr-card { width: 250px; padding: 20px 20px; gap: 10px; }
+  .phr-icon { width: 52px; height: 52px; font-size: 1.4rem; }
+  .phr-card h3 { font-size: 1.28rem; }
+  .phr-card p { font-size: 1.05rem; }
+  .phr-nav { display: none; }
   .professional-card { min-height: 230px; padding: 26px 22px 24px; }
   .professional-ico { width: 70px; height: 70px; border-radius: 21px; font-size: 2.06rem; }
   .professional-ico::before { width: 88px; height: 88px; border-radius: 27px; }
   .professional-card h3 { font-size: 1.59rem; }
-  .professional-cta { padding: 64px 0; }
 }
 
 @media (max-width: 560px) {
-  .professional-panel { padding: 22px; }
-  .professional-hero .professional-badge { max-width: 100%; white-space: normal; text-align: center; font-size: 0.92rem; }
-  .professional-btn { width: 100%; max-width: 270px; }
+  .professional-btn { width: 100%; max-width: 340px; padding: 16px 22px; font-size: 1.1rem; }
   .professional-float-two { display: none; }
 }
 
 @media (hover: none) {
-  .professional-panel-item:hover,
-  .professional-step:hover,
   .professional-card:hover { transform: none; }
   .professional-card:hover .professional-ico,
   .professional-card:hover .professional-ico::before { transform: none; }
@@ -655,12 +538,12 @@
 
 @media print {
   .professional-page { background: #fff; color: #000; }
-  .professional-hero, .professional-cta { min-height: auto; padding: 50px 0; background: #fff; color: #000; }
-  .professional-hero h1, .professional-hero p, .professional-cta h2, .professional-cta p { color: #000; text-shadow: none; }
+  .professional-hero { min-height: auto; padding: 50px 0; background: #fff; color: #000; }
+  .professional-hero h1, .professional-hero p { color: #000; text-shadow: none; }
   .professional-hl { color: #000; -webkit-text-fill-color: #000; }
-  .professional-hero-grid, .professional-glow, .professional-float, .professional-cta-glow, .prm-nav { display: none !important; }
+  .professional-hero-grid, .professional-glow, .professional-float, .prm-nav { display: none !important; }
   .professional-sec { padding: 40px 0; background: #fff; }
-  .professional-card, .professional-step { break-inside: avoid; box-shadow: none; }
+  .professional-card { break-inside: avoid; box-shadow: none; }
   .prm-layout { grid-template-columns: 1fr; }
   .prm-rail { height: auto; overflow: visible; box-shadow: none; }
   .prm-card { position: static; height: auto !important; transform: none !important; }

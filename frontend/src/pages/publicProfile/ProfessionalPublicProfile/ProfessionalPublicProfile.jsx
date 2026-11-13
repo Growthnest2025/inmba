@@ -26,6 +26,8 @@ import {
 
 import "./ProfessionalPublicProfile.css";
 import { buildDefaultBio } from "../../../utils/defaultBio";
+import { getMembershipTitle } from "../../../utils/membershipTitle";
+import ProfileHeroReferralBar from "../../../components/common/ProfileHeroReferralBar";
 /* =========================================================
    HELPERS
 ========================================================= */
@@ -2422,9 +2424,12 @@ const handleProfilePhotoUpload =
               My Network Profile
             </h3>
 
-            <span className="membership-verified">
-              {adminRank || "Assigned by Admin"}
+            <span className="membership-verified" style={{ marginBottom: "8px" }}>
+              {getMembershipTitle(localProfile, "INMBA Member")}
             </span>
+
+            <small>Rank (Admin Controlled)</small>
+            <strong>{adminRank || "Assigned by Admin"}</strong>
 
             <small>Total Network</small>
             <strong>{totalNetworkCount}</strong>
@@ -2565,8 +2570,15 @@ const handleProfilePhotoUpload =
                 )}
               </div>
 
+              <ProfileHeroReferralBar
+                referralCode={referralCode}
+                referralLink={referralLink}
+                copied={copiedReferral}
+                onCopy={copyReferralText}
+              />
+
               <h2>
-                {profession}
+                {profession} ? {getMembershipTitle(localProfile, "INMBA Network Member")}
               </h2>
 
               <div className="pro-public-hero-badges">
@@ -2576,7 +2588,7 @@ const handleProfilePhotoUpload =
                     aria-hidden="true"
                   />
 
-                  Verified Professional
+                  {getMembershipTitle(localProfile, "INMBA Professional Member")}
                 </span>
 
                 {isOwner &&

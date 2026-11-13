@@ -15,6 +15,8 @@ import {
 
 import "./CommercialPublicProfile.css";
 import { buildDefaultBio } from "../../../utils/defaultBio";
+import { getMembershipTitle } from "../../../utils/membershipTitle";
+import ProfileHeroReferralBar from "../../../components/common/ProfileHeroReferralBar";
 
 /* =========================================================
    HELPERS
@@ -870,7 +872,7 @@ export default function CommercialPublicProfile({
 
               <span className="commercial-pro-member-pill">
                 <span />
-                Commercial Member
+                {getMembershipTitle(profile, "Commercial Member")}
               </span>
             </div>
 
@@ -878,8 +880,15 @@ export default function CommercialPublicProfile({
               {businessName}
             </h1>
 
+            <ProfileHeroReferralBar
+              referralCode={referralCode}
+              referralLink={referralLink}
+              copied={copiedReferral}
+              onCopy={copyReferralText}
+            />
+
             <div className="commercial-pro-role">
-              BUSINESS
+              BUSINESS ? {getMembershipTitle(profile, "Commercial Member")}
             </div>
 
             <p className="commercial-pro-bio">
@@ -937,7 +946,7 @@ export default function CommercialPublicProfile({
       Account :
     </b>
 
-    Commercial
+    {" "}{getMembershipTitle(profile, "Commercial")}
   </span>
 
   <span>

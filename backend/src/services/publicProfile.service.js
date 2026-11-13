@@ -495,8 +495,20 @@ const buildLegacyPublicProfile = (
       null,
 
     membership_type:
-      source.membership_type ??
-      null,
+      (() => {
+        const clean = String(source.selected_plan ?? source.membership_type ?? "").replace(/[^0-9]/g, "");
+        if (clean === "299" || clean === "300") return "INMBA Network Member";
+        if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+        return source.membership_type ?? "INMBA Member";
+      })(),
+
+    membership_title:
+      (() => {
+        const clean = String(source.selected_plan ?? source.membership_type ?? "").replace(/[^0-9]/g, "");
+        if (clean === "299" || clean === "300") return "INMBA Network Member";
+        if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+        return source.membership_type ?? "INMBA Member";
+      })(),
 
     referral_id:
       source.referral_id ??

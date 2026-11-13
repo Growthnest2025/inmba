@@ -561,9 +561,6 @@ export default function Foundation() {
                 </ul>
 
                 <p className="fa-hint">
-                  <span className="fa-hint-desktop">
-                    Auto-scrolls. Hover to pause, drag to browse.
-                  </span>
 
                   <span className="fa-hint-touch">
                     Auto-scrolls. Swipe to browse.

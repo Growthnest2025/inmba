@@ -18,6 +18,8 @@ import {
   showToast,
 } from "./helpers";
 import { toText, asObject } from "../../utils/commonHelpers";
+import { getMembershipTitle } from "../../utils/membershipTitle";
+import ProfileHeroReferralBar from "../../components/common/ProfileHeroReferralBar";
 
 /* =========================================================
    HELPERS
@@ -1170,12 +1172,27 @@ function ProfessionalPublicHero({
         <div className="spill">
           <span className="sdot" />
 
-          Professional Member
+          {getMembershipTitle(profile, "INMBA Professional Member")}
         </div>
 
         <div className="h-name">
           {displayName}
         </div>
+
+        <ProfileHeroReferralBar
+          referralCode={toText(profile?.referral_id)}
+          referralLink={toText(profile?.referral_id) && typeof window !== "undefined" ? `${window.location.origin}/membership?ref=${encodeURIComponent(toText(profile?.referral_id))}` : ""}
+          copied={""}
+          onCopy={async (kind, val) => {
+            if (!val) return;
+            try {
+              if (navigator?.clipboard?.writeText) {
+                await navigator.clipboard.writeText(val);
+              }
+              showToast(kind === "hero-code" ? "Referral code copied" : "Referral link copied");
+            } catch {}
+          }}
+        />
 
         {username && (
           <div
@@ -1376,7 +1393,7 @@ function PublicProfilePage({
         <div className="spill">
           <span className="sdot" />
 
-          {membershipType} Member
+          {getMembershipTitle(profile, `${membershipType} Member`)}
         </div>
 
         <div className="h-name">
@@ -1384,6 +1401,21 @@ function PublicProfilePage({
             profile
           )}
         </div>
+
+        <ProfileHeroReferralBar
+          referralCode={toText(profile?.referral_id)}
+          referralLink={toText(profile?.referral_id) && typeof window !== "undefined" ? `${window.location.origin}/membership?ref=${encodeURIComponent(toText(profile?.referral_id))}` : ""}
+          copied={""}
+          onCopy={async (kind, val) => {
+            if (!val) return;
+            try {
+              if (navigator?.clipboard?.writeText) {
+                await navigator.clipboard.writeText(val);
+              }
+              showToast(kind === "hero-code" ? "Referral code copied" : "Referral link copied");
+            } catch {}
+          }}
+        />
 
         {toText(
           profile

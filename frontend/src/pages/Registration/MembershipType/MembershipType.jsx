@@ -22,77 +22,67 @@ const MEMBERSHIP_TYPES = [
   {
     id: "civilian",
     title: "Civilian Member",
-    subtitle: "Individual Membership",
-    description:
-      "Register as an individual member and become part of the INMBA professional network.",
     icon: "fas fa-user-tie",
     route: "/membership/civilian",
     status: "available",
     badge: "Available",
     theme: "green",
+    buttonText: "Become a Civilian Member",
   },
 
   {
     id: "commercial",
     title: "Commercial Member",
-    subtitle: "Business Membership",
-    description:
-      "Commercial membership option for companies and business-focused entities.",
     icon: "fas fa-store",
     route: "/commercial-basic-kyc",
     status: "available",
     badge: "Available",
     theme: "red",
+    buttonText: "Become a Commercial Member",
   },
 
   {
     id: "professional",
     title: "Professional Member",
-    subtitle: "Career Membership",
-    description:
-      "Professional membership registration for working individuals and experienced specialists.",
     icon: "fas fa-briefcase",
     route: "/professional",
     status: "available",
     badge: "Available",
     theme: "blue",
+    buttonText: "Become a Professional Member",
   },
 
   {
     id: "student",
     title: "Student Member",
-    subtitle: "Academic Membership",
-    description: "Student membership registration will be available soon.",
     icon: "fas fa-graduation-cap",
     route: "",
     status: "locked",
     badge: "Locked",
     theme: "locked",
+    buttonText: "Become a Student Member",
   },
 
   {
     id: "honor",
     title: "Honor Member",
-    subtitle: "Recognition Membership",
-    description: "Honor membership registration will be available soon.",
     icon: "fas fa-award",
     route: "",
     status: "locked",
     badge: "Locked",
     theme: "locked",
+    buttonText: "Become an Honor Member",
   },
 
   {
     id: "special",
     title: "Special Member",
-    subtitle: "Special Category",
-    description:
-      "Special category membership registration will be available soon.",
     icon: "fas fa-star",
     route: "",
     status: "locked",
     badge: "Locked",
     theme: "locked",
+    buttonText: "Become a Special Member",
   },
 ];
 
@@ -393,9 +383,6 @@ function ProcessRail() {
             ))}
           </ul>
 
-          <em className="mtr-hint">
-            Auto-scrolls. Hover to pause, drag to browse.
-          </em>
         </div>
 
         {/* RIGHT: RAIL */}
@@ -449,6 +436,7 @@ function ProcessRail() {
 
 export default function MembershipType() {
   const [searchParams] = useSearchParams();
+  const [showHero, setShowHero] = React.useState(false);
 
   const referralId = useMemo(
     () => toText(searchParams.get("ref"), ""),
@@ -542,60 +530,88 @@ export default function MembershipType() {
       <div className="inmba-membership-type-container">
 
         {/* =================================
-            HERO
+            HERO TOGGLE BUTTON (INMBA Membership button)
         ================================= */}
 
-        <section className="inmba-membership-type-hero">
-          <div className="inmba-membership-type-hero-content">
-            <p>INMBA Global Membership</p>
-
-            <h1>Choose Your Membership Type</h1>
-
-            <span>
-              Select the membership category that matches your
-              application and continue to the relevant registration
-              form.
+        <div className="inmba-membership-toggle-wrap">
+          <button
+            type="button"
+            className="inmba-membership-toggle-btn"
+            onClick={() => setShowHero((prev) => !prev)}
+            aria-expanded={showHero}
+          >
+            <span className="inmba-membership-toggle-icon">
+              <i className="fas fa-layer-group" aria-hidden="true" />
             </span>
+            <span className="inmba-membership-toggle-text">
+              INMBA Membership
+            </span>
+            <span className="inmba-membership-toggle-arrow">
+              <i
+                className={`fas fa-chevron-${showHero ? "up" : "down"}`}
+                aria-hidden="true"
+              />
+            </span>
+          </button>
+        </div>
 
-            <div className="inmba-membership-type-hero-actions">
-              <a href="#membership-options">
-                View Membership Options
-                <i className="fas fa-arrow-down" aria-hidden="true"></i>
-              </a>
+        {/* =================================
+            HERO (Shown when INMBA Membership button is clicked)
+        ================================= */}
 
-              <Link to="/contact">
-                Contact INMBA
-                <i className="fas fa-headset" aria-hidden="true"></i>
-              </Link>
+        {showHero && (
+          <section className="inmba-membership-type-hero" data-aos="fade-down">
+            <div className="inmba-membership-type-hero-content">
+              <p>INMBA Global Membership</p>
+
+              <h1>Choose Your Membership Type</h1>
+
+              <span>
+                Select the membership category that matches your
+                application and continue to the relevant registration
+                form.
+              </span>
+
+              <div className="inmba-membership-type-hero-actions">
+                <a href="#membership-cards">
+                  View Membership Options
+                  <i className="fas fa-arrow-down" aria-hidden="true"></i>
+                </a>
+
+                <Link to="/contact">
+                  Contact INMBA
+                  <i className="fas fa-headset" aria-hidden="true"></i>
+                </Link>
+              </div>
+
+              {/* HERO EXTRA CONTENT */}
+
+              <ul className="inmba-membership-type-hero-points">
+                {HERO_POINTS.map((point) => (
+                  <li key={point}>
+                    <i className="fas fa-circle-check" aria-hidden="true"></i>
+                    {point}
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            {/* HERO EXTRA CONTENT */}
+            <div className="inmba-membership-type-hero-side">
+              {HERO_STATS.map((item) => (
+                <div className="inmba-membership-type-stat" key={item.label}>
+                  <span>
+                    <i className={item.icon} aria-hidden="true"></i>
+                  </span>
 
-            <ul className="inmba-membership-type-hero-points">
-              {HERO_POINTS.map((point) => (
-                <li key={point}>
-                  <i className="fas fa-circle-check" aria-hidden="true"></i>
-                  {point}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="inmba-membership-type-hero-side">
-            {HERO_STATS.map((item) => (
-              <div className="inmba-membership-type-stat" key={item.label}>
-                <span>
-                  <i className={item.icon} aria-hidden="true"></i>
-                </span>
-
-                <div>
-                  <strong>{item.value}</strong>
-                  <small>{item.label}</small>
+                  <div>
+                    <strong>{item.value}</strong>
+                    <small>{item.label}</small>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* =================================
             REFERRAL NOTICE
@@ -621,32 +637,10 @@ export default function MembershipType() {
         )}
 
         {/* =================================
-            SECTION INTRODUCTION
-        ================================= */}
-
-        <section
-          id="membership-options"
-          className="inmba-membership-type-intro"
-        >
-          <div>
-            <p>Membership Categories</p>
-
-            <h2>Select an Application</h2>
-
-            <span>
-              Each option opens its matching registration page. Your
-              referral information will be preserved automatically.
-            </span>
-          </div>
-
-          <strong>{MEMBERSHIP_TYPES.length} Options</strong>
-        </section>
-
-        {/* =================================
             MEMBERSHIP CARDS
         ================================= */}
 
-        <section className="inmba-membership-type-grid">
+        <section id="membership-cards" className="inmba-membership-type-grid">
           {MEMBERSHIP_TYPES.map((membership) => {
             const isLocked = membership.status === "locked";
 
@@ -687,11 +681,7 @@ export default function MembershipType() {
                 </header>
 
                 <div className="inmba-membership-type-card-content">
-                  <p>{membership.subtitle}</p>
-
                   <h3>{membership.title}</h3>
-
-                  <span>{membership.description}</span>
                 </div>
 
                 <footer>
@@ -703,12 +693,12 @@ export default function MembershipType() {
                     >
                       <span>
                         <i className="fas fa-lock" aria-hidden="true"></i>
-                        Coming Soon
+                        {membership.buttonText}
                       </span>
                     </button>
                   ) : (
                     <Link to={membershipRoute}>
-                      Select Membership
+                      {membership.buttonText}
                       <i className="fas fa-arrow-right" aria-hidden="true"></i>
                     </Link>
                   )}
