@@ -629,6 +629,14 @@ export default function CommercialPublicProfile({
       .filter(Boolean)
       .join(" · ");
 
+  const cityState = [
+  profile.city,
+  profile.state,
+]
+  .map(toText)
+  .filter(Boolean)
+  .join(", ");
+
   const businessBio =
     toText(
       profile.business_bio
