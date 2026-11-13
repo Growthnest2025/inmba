@@ -533,7 +533,7 @@ export default function KycSubmitted() {
               <small>
                 Login with your ID and
                 Password / PIN, then choose
-                your ₹300 or ₹1500 plan.
+                your ₹299 or ₹2999 plan.
               </small>
 
             </div>

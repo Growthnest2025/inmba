@@ -838,8 +838,8 @@ const saveProfessionalKycPlanController =
 
       if (
         ![
-          "300",
-          "1500",
+          "299",
+          "2999",
         ].includes(
           selectedPlan
         )
@@ -847,7 +847,7 @@ const saveProfessionalKycPlanController =
         throw createControllerError(
           422,
 
-          "Please select the Professional ₹300 or ₹1500 plan.",
+          "Please select the Professional ₹299 or ₹2999 plan.",
 
           "PROFESSIONAL_PLAN_REQUIRED"
         );

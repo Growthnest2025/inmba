@@ -25,6 +25,7 @@ import {
 
 import "./ProfessionalKyc.css";
 import { asObject } from "../../utils/commonHelpers";
+import { buildDefaultBio } from "../../utils/defaultBio";
 
 /* =========================================================
    FALLBACK SECTIONS
@@ -62,8 +63,7 @@ const PROFILE_UPGRADE_PLAN = {
   planName:
     "Profile Upgrade",
 
-  amount:
-    1500,
+  amount: 2999,
 
   membershipType:
     "Professional Member",
@@ -973,7 +973,7 @@ const SECTION_FIELDS = {
         "professional_bio",
 
       label:
-        "Bio / About Me",
+        "Bio",
 
       type:
         "textarea",
@@ -1175,6 +1175,8 @@ const SECTION_FIELDS = {
 
       label:
         "Nominee Name",
+
+      required: true,
     },
 
     {
@@ -1183,6 +1185,8 @@ const SECTION_FIELDS = {
 
       label:
         "Nominee Relationship",
+
+      required: true,
     },
 
     {
@@ -2110,6 +2114,8 @@ export default function ProfessionalKyc() {
       "A"
     );
 
+  const [optionalInterest, setOptionalInterest] = useState({});
+
   const [
     forms,
     setForms,
@@ -2237,6 +2243,12 @@ export default function ProfessionalKyc() {
                   field.name
                 ]
               );
+            if (section === "F" && field.name === "bio" && !nextValues[field.name].trim()) {
+              const m = getMemberFromResponse(response);
+              const fullName = [m?.first_name, m?.last_name].filter(Boolean).join(" ").trim() || toText(values.full_name || m?.full_name || "");
+              const selPlan = toText(values.selected_plan || m?.selected_plan || "2999").trim();
+              nextValues[field.name] = buildDefaultBio({ name: fullName, plan: selPlan, membershipType: m?.membership_type || "Professional Member" });
+            }
           }
         );
 
@@ -4519,6 +4531,53 @@ export default function ProfessionalKyc() {
                     </p>
                   </div>
                 </div>
+
+                {["C", "D", "E", "G"].includes(activeSection) && editable && optionalInterest[activeSection] !== true && (
+                  <div
+                    style={{
+                      background: "#eff6ff",
+                      border: "1px solid #bfdbfe",
+                      borderRadius: "12px",
+                      padding: "14px 16px",
+                      marginBottom: "16px",
+                      display: "flex",
+                      flexWrap: "wrap",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "12px",
+                    }}
+                  >
+                    <div>
+                      <strong style={{ display: "block", color: "#1e3a8a", marginBottom: "4px" }}>
+                        Are you interested in filling out Section {activeSection} ({activeMeta.shortTitle})?
+                      </strong>
+                      <span style={{ fontSize: "0.9rem", color: "#334155" }}>
+                        This section has no required fields. Choose &quot;No, Move to Next Form&quot; to skip ahead.
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                      <button
+                        type="button"
+                        className="professional-kyc-previous-button"
+                        disabled={currentSaving || sectionLoading}
+                        onClick={() => setOptionalInterest((prev) => ({ ...prev, [activeSection]: true }))}
+                      >
+                        Yes, I&apos;m Interested
+                      </button>
+                      <button
+                        type="button"
+                        className="professional-kyc-next-button"
+                        disabled={currentSaving || sectionLoading}
+                        onClick={() => {
+                          setOptionalInterest((prev) => ({ ...prev, [activeSection]: false }));
+                          handleSaveAndNext();
+                        }}
+                      >
+                        No, Move to Next Form <i className="fa-solid fa-arrow-right" />
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* =========================================
                     GENERAL ERROR

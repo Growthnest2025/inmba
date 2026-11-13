@@ -108,7 +108,7 @@ const ADMIN_EDITABLE_FIELDS =
     "pan_name",
     "entity_aadhar_number",
 
-    "referral_id",
+    "referral_id", "network_level",
     "payment_status",
   ]);
 

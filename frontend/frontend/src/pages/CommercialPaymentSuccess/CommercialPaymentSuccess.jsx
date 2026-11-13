@@ -35,7 +35,7 @@ export default function CommercialPaymentSuccess() {
 
   const amount =
     Number(
-      selectedPlan?.amount ?? 300
+      selectedPlan?.amount ?? 299
     );
 
   const handleGoDashboard = () => {
@@ -190,7 +190,7 @@ export default function CommercialPaymentSuccess() {
                 <div>
                   <span>Paid Amount</span>
                   <strong>
-                    ₹{Number.isFinite(amount) ? amount : 300}
+                    ₹{Number.isFinite(amount) ? amount : 299}
                   </strong>
                 </div>
               </div>
@@ -216,7 +216,7 @@ export default function CommercialPaymentSuccess() {
                 <strong>What happens next?</strong>
                 <p>
                   Your membership benefits will unlock after admin approval.
-                  Basic ₹300 members will receive referral access after approval.
+                  Your membership benefits will unlock after admin approval. Basic ₹299 members unlock core member access (Network & Royalty require ₹2999 Upgrade).
                 </p>
               </div>
             </div>

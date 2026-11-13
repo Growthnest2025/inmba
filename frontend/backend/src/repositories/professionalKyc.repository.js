@@ -819,8 +819,8 @@ const saveProfessionalPlan =
 
     if (
       ![
-        "300",
-        "1500",
+        "299",
+        "2999",
       ].includes(
         plan
       )

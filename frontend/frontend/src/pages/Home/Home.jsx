@@ -342,7 +342,7 @@ export default function Home() {
             <div className="hero-content">
               <div className="hero-badge">
                 <i className="fas fa-globe"></i>
-                International Network Management and Business Association Connects
+                International Network Management and Business Association Chamber
               </div>
 
               <h1 className="typing-text">{typingText}</h1>

@@ -21,7 +21,7 @@ const COMMERCIAL_PAYMENT_PLANS =
         "Basic Membership",
 
       amount:
-        300,
+        299,
 
       requiresFullKyc:
         false,
@@ -35,7 +35,7 @@ const COMMERCIAL_PAYMENT_PLANS =
         "Profile Upgrade",
 
       amount:
-        1500,
+        2999,
 
       requiresFullKyc:
         true,

@@ -24,6 +24,13 @@ import "./Navbar.css";
 
 const navItems = [
   { label: "Home", to: "/", end: true },
+   {
+    label: "About Us",
+    children: [
+      { label: "About", to: "/about" },
+      { label: "Contact", to: "/contact" },
+    ],
+  },
 
   {
     label: "Our Network",
@@ -41,14 +48,6 @@ const navItems = [
     children: [
       { label: "Gallery & Downloads", to: "/gallery-downloads" },
       { label: "Our Brands", to: "/our-branches" },
-    ],
-  },
-
-  {
-    label: "About Us",
-    children: [
-      { label: "About", to: "/about" },
-      { label: "Contact", to: "/contact" },
     ],
   },
 ];

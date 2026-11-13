@@ -25,10 +25,10 @@ import { toText, asObject } from "../../utils/commonHelpers";
 ========================================================= */
 
 const NETWORK_MEMBERSHIP_AMOUNT =
-  300;
+  299;
 
 const ROYALTY_MEMBERSHIP_AMOUNT =
-  1500;
+  2999;
 
 /* =========================================================
    STORAGE KEYS
@@ -311,8 +311,8 @@ export default function ProfessionalPayment() {
         );
 
       return [
-        "300",
-        "1500",
+        "299",
+        "2999",
       ].includes(
         value
       )
@@ -330,8 +330,8 @@ export default function ProfessionalPayment() {
 
   const validSelectedPlan =
     [
-      "300",
-      "1500",
+      "299",
+      "2999",
     ].includes(
       selectedPlan
     )
@@ -340,23 +340,23 @@ export default function ProfessionalPayment() {
 
   const isRoyaltyPlan =
     validSelectedPlan ===
-    "1500";
+    "2999";
 
   const paymentAmount =
     validSelectedPlan ===
-    "1500"
+    "2999"
       ? ROYALTY_MEMBERSHIP_AMOUNT
       : validSelectedPlan ===
-          "300"
+          "299"
         ? NETWORK_MEMBERSHIP_AMOUNT
         : 0;
 
   const planName =
     validSelectedPlan ===
-    "1500"
+    "2999"
       ? "INMBA Network Royalty Member"
       : validSelectedPlan ===
-          "300"
+          "299"
         ? "INMBA Network Member"
         : "Professional Membership";
 
@@ -608,8 +608,8 @@ export default function ProfessionalPayment() {
 
             if (
               [
-                "300",
-                "1500",
+                "299",
+                "2999",
               ].includes(
                 backendSelectedPlan
               )
@@ -1624,8 +1624,8 @@ export default function ProfessionalPayment() {
 
             <p>
               {isRoyaltyPlan
-                ? "Your Professional Full KYC and final review are complete. Submit the fixed ₹1500 Network Royalty membership payment."
-                : "Your Professional Full KYC and final review are complete. Submit the fixed ₹300 Network membership payment."}
+                ? "Your Professional Full KYC and final review are complete. Submit the fixed ₹2999 Network Royalty membership payment."
+                : "Your Professional Full KYC and final review are complete. Submit the fixed ₹299 Network membership payment."}
             </p>
           </div>
 

@@ -55,7 +55,7 @@ const KYC_SECTIONS =
 ========================================================= */
 
 const PROFILE_UPGRADE_AMOUNT =
-  1500;
+  2999;
 
 const PROFILE_UPGRADE_PLAN = {
   planId:
@@ -1943,7 +1943,7 @@ export default function ProfessionalReview() {
             </span>
 
             <strong>
-              ₹1500
+              ₹2999
             </strong>
           </div>
         </div>
@@ -2134,7 +2134,7 @@ export default function ProfessionalReview() {
             </span>
 
             <strong>
-              ₹1500
+              ₹2999
             </strong>
 
             <small>
@@ -2656,7 +2656,7 @@ export default function ProfessionalReview() {
                 Your Professional KYC has
                 already been submitted.
                 You can continue to the
-                ₹1500 Profile Upgrade
+                ₹2999 Profile Upgrade
                 payment.
               </p>
             </div>
@@ -2694,7 +2694,7 @@ export default function ProfessionalReview() {
             </span>
 
             <strong>
-              ₹1500
+              ₹2999
             </strong>
 
             <small>
@@ -2743,7 +2743,7 @@ export default function ProfessionalReview() {
               </>
             ) : alreadySubmitted ? (
               <>
-                Continue to ₹1500 Payment
+                Continue to ₹2999 Payment
 
                 <i className="fa-solid fa-arrow-right" />
               </>

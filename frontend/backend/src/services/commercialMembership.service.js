@@ -31,7 +31,7 @@ const COMMERCIAL_MEMBERSHIP_PLANS =
         "Basic Membership",
 
       amount:
-        300,
+        299,
 
       membershipType:
         "Commercial Member",
@@ -54,7 +54,7 @@ const COMMERCIAL_MEMBERSHIP_PLANS =
         "Profile Upgrade",
 
       amount:
-        1500,
+        2999,
 
       membershipType:
         "Commercial Member",

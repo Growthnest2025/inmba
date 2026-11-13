@@ -490,9 +490,61 @@ const buildLegacyPublicProfile = (
       source.last_name ??
       null,
 
+    email:
+      source.email ??
+      null,
+
     membership_type:
       source.membership_type ??
       null,
+
+    referral_id:
+      source.referral_id ??
+      "",
+
+    network_level:
+      source.network_level ??
+      "",
+
+    network_rank:
+      source.network_level ??
+      "",
+
+    rank:
+      source.network_level ??
+      "",
+
+    bio:
+      source.bio ??
+      "",
+
+    direct_network:
+      Number(
+        source.direct_network ||
+          0
+      ),
+
+    direct_members:
+      Number(
+        source.direct_network ||
+          0
+      ),
+
+    indirect_network:
+      Number(
+        source.indirect_network ||
+          0
+      ),
+
+    total_network:
+      Number(
+        source.direct_network ||
+          0
+      ) +
+      Number(
+        source.indirect_network ||
+          0
+      ),
 
     occupation:
       source.occupation ??

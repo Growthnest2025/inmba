@@ -1343,10 +1343,10 @@ export const NAV_TABS = [
       "membership",
 
     label:
-      "Membership",
+      "My Network Profile",
 
     activeLabel:
-      "Membership",
+      "My Network Profile",
 
     icon:
       "👥",
@@ -1427,7 +1427,7 @@ export const QAW_QUADS = [
       "👥",
 
     label:
-      "Members",
+      "My Network Profile",
 
     cta:
       "Tap to open",

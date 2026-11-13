@@ -1799,6 +1799,8 @@ const toLegacyPublicUserProfile =
         );
     }
 
+    profile.email = toText(member.email);
+
     /* =========================
        EDUCATION
     ========================= */
@@ -2847,7 +2849,7 @@ const getPublicUser =
 
       const hasFullProfessionalAccess =
         isApproved &&
-        amount >= 1500;
+        (amount >= 2999 || amount === 1500);
 
       if (
         !hasFullProfessionalAccess

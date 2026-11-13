@@ -251,6 +251,21 @@ export default function RoyaltyRewards() {
       ]
     );
 
+  const isNetworkRoyaltyLocked = useMemo(() => {
+    const plan = String(
+      sessionMember?.selected_plan ??
+        sessionMember?.selectedPlan ??
+        sessionMember?.civilian_selected_plan ??
+        sessionMember?.professional_selected_plan ??
+        sessionMember?.commercial_selected_plan ??
+        ""
+    ).trim();
+    const amt = Number(sessionMember?.amount ?? sessionMember?.payment_amount ?? 0);
+    const isUpgradeAmt = amt === 1500 || amt >= 2999;
+    if (isUpgradeAmt || ["2999", "1500"].includes(plan)) return false;
+    return ["299", "300"].includes(plan) || (amt > 0 && amt <= 300);
+  }, [sessionMember]);
+
   /* =========================
      LOAD ROYALTY DATA
 
@@ -266,6 +281,11 @@ export default function RoyaltyRewards() {
           refresh = false,
         } = {}
       ) => {
+        if (isNetworkRoyaltyLocked) {
+          setLoading(false);
+          return;
+        }
+
         if (!memberLoginId) {
           setPageError(
             "Member login ID is unavailable."
@@ -686,6 +706,23 @@ export default function RoyaltyRewards() {
   /* =========================
      ERROR
   ========================= */
+
+  if (isNetworkRoyaltyLocked) {
+    return (
+      <main className="inmba-royalty-page">
+        <div className="inmba-royalty-state">
+          <span className="inmba-royalty-state-icon">
+            <i className="fas fa-lock" aria-hidden="true"></i>
+          </span>
+          <h1>Royalty Rewards Locked (?299 Plan)</h1>
+          <p>Royalty & Network Rewards are locked on the ?299 plan. Upgrade to the ?2,999 Royalty plan to unlock Royalty Rewards.</p>
+          <div className="inmba-royalty-state-actions">
+            <Link to="/dashboard" className="inmba-royalty-secondary-button">Dashboard</Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   if (pageError) {
     return (

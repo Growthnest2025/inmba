@@ -289,6 +289,21 @@ export default function DirectNetwork() {
       ]
     );
 
+  const isNetworkRoyaltyLocked = useMemo(() => {
+    const plan = String(
+      sessionMember?.selected_plan ??
+        sessionMember?.selectedPlan ??
+        sessionMember?.civilian_selected_plan ??
+        sessionMember?.professional_selected_plan ??
+        sessionMember?.commercial_selected_plan ??
+        ""
+    ).trim();
+    const amt = Number(sessionMember?.amount ?? sessionMember?.payment_amount ?? 0);
+    const isUpgradeAmt = amt === 1500 || amt >= 2999;
+    if (isUpgradeAmt || ["2999", "1500"].includes(plan)) return false;
+    return ["299", "300"].includes(plan) || (amt > 0 && amt <= 300);
+  }, [sessionMember]);
+
   /* =========================
      LOAD NETWORK DATA
 
@@ -306,6 +321,11 @@ export default function DirectNetwork() {
           refresh = false,
         } = {}
       ) => {
+        if (isNetworkRoyaltyLocked) {
+          setLoading(false);
+          return;
+        }
+
         if (!memberLoginId) {
           setPageError(
             "Member login ID is unavailable."
@@ -780,6 +800,23 @@ export default function DirectNetwork() {
   /* =========================
      ERROR STATE
   ========================= */
+
+  if (isNetworkRoyaltyLocked) {
+    return (
+      <main className="inmba-network-page">
+        <div className="inmba-network-state">
+          <span className="inmba-network-state-icon">
+            <i className="fas fa-lock" aria-hidden="true"></i>
+          </span>
+          <h1>Network Locked (?299 Plan)</h1>
+          <p>Direct & Indirect Network access is locked on the ?299 plan. Upgrade to the ?2,999 Royalty plan to view your network members.</p>
+          <div className="inmba-network-state-actions">
+            <Link to="/dashboard" className="inmba-network-secondary-button">Dashboard</Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   if (pageError) {
     return (

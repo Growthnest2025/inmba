@@ -352,7 +352,7 @@ export default function CommercialQrPage() {
 
   const amount = Number(dashboard?.payment?.amount || member?.amount || 0);
 
-  const isPremium = planId === "profile_upgrade" || amount === 1500;
+  const isPremium = planId === "profile_upgrade" || amount === 2999 || amount === 1500;
   const isBasic = !isPremium;
 
   // QR code displays for Basic once payment is approved; for Premium once payment and KYC are approved

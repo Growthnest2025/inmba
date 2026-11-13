@@ -962,7 +962,51 @@ export const normalizeProfessionalPublicProfile =
 
       network_level:
         toText(
-          data.network_level
+          data.network_level ?? data.network_rank ?? data.rank
+        ),
+
+      network_rank:
+        toText(
+          data.network_rank ?? data.network_level ?? data.rank
+        ),
+
+      referral_id:
+        toText(
+          data.referral_id ?? data.referralCode
+        ),
+
+      direct_network:
+        Number(
+          data.direct_network ??
+            data.direct_members ??
+            data.direct_members_count ??
+            0
+        ),
+
+      direct_members:
+        Number(
+          data.direct_members ??
+            data.direct_network ??
+            data.direct_members_count ??
+            0
+        ),
+
+      indirect_network:
+        Number(
+          data.indirect_network ??
+            0
+        ),
+
+      total_network:
+        Number(
+          data.total_network ??
+            (Number(
+              data.direct_network ??
+                data.direct_members ??
+                data.direct_members_count ??
+                0
+            ) +
+              Number(data.indirect_network ?? 0))
         ),
 
       /* =============================================

@@ -2142,7 +2142,7 @@ export default function AdminMemberDetails() {
               <InfoRow
                 label="Network Level / Rank"
                 value={
-                  civilianKyc?.network_level_rank
+                  member.network_level || civilianKyc?.network_level_rank
                 }
               />
 

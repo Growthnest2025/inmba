@@ -96,13 +96,13 @@ router.get(
 
    Body:
    {
-     "selected_plan": "300"
+     "selected_plan": "299"
    }
 
    OR
 
    {
-     "selected_plan": "1500"
+     "selected_plan": "2999"
    }
 ========================================================= */
 

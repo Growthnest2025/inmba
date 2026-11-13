@@ -163,7 +163,7 @@ const COMMERCIAL_PUBLIC_ACTIVATION_CONDITION = `
           0
         )
         AS DECIMAL(12,2)
-      ) = 300.00
+      ) IN (299.00, 300.00)
 
       AND LOWER(
         TRIM(
@@ -184,7 +184,7 @@ const COMMERCIAL_PUBLIC_ACTIVATION_CONDITION = `
           0
         )
         AS DECIMAL(12,2)
-      ) = 1500.00
+      ) IN (2999.00, 1500.00)
 
       AND LOWER(
         TRIM(
@@ -363,6 +363,9 @@ const findCommercialPublicProfileByLoginId =
             ============================================= */
 
             commercial_network_level,
+            referral_id,
+            direct_network,
+            indirect_network,
 
 
             /* =============================================
@@ -462,7 +465,7 @@ const findCommercialPublicProfileByLoginId =
                       0
                     )
                     AS DECIMAL(12,2)
-                  ) = 300.00
+                  ) IN (299.00, 300.00)
 
                   OR
 
@@ -473,7 +476,7 @@ const findCommercialPublicProfileByLoginId =
                         0
                       )
                       AS DECIMAL(12,2)
-                    ) = 1500.00
+                    ) IN (2999.00, 1500.00)
 
                     AND
 

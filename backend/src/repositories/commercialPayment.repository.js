@@ -29,10 +29,10 @@ const COMMERCIAL_PAYMENT_STATUSES =
   ]);
 
 const COMMERCIAL_BASIC_AMOUNT =
-  300;
+  299;
 
 const COMMERCIAL_PROFILE_UPGRADE_AMOUNT =
-  1500;
+  2999;
 
 /* =========================================================
    NORMALIZE MEMBER ID

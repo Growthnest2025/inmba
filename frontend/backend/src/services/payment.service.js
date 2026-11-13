@@ -48,8 +48,8 @@ const PAYMENT_UPLOAD_DIRECTORY =
 ========================= */
 
 const CIVILIAN_PLAN_AMOUNTS = {
-  300: 300,
-  1500: 1500,
+  299: 299,
+  2999: 2999,
 };
 
 /* =========================
@@ -549,8 +549,8 @@ const submitMemberPayment =
 
       if (
         ![
-          "300",
-          "1500",
+          "299",
+          "2999",
         ].includes(
           selectedPlan
         )

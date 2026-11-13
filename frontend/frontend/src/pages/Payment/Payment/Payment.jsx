@@ -403,8 +403,8 @@ export default function Payment() {
           ).trim();
 
         return [
-          "300",
-          "1500",
+          "299",
+          "2999",
         ].includes(
           plan
         )

@@ -24,6 +24,7 @@ import {
 } from "../../../services/profile.service";
 
 import "./CivilianPublicProfile.css";
+import { buildDefaultBio } from "../../../utils/defaultBio";
 
 /* =========================================================
    HELPERS
@@ -484,20 +485,33 @@ function Card({
   title,
   owner = false,
   onEdit,
+  hasData = true,
   children,
 }) {
+  const canOpen =
+    Boolean(hasData);
+
   const [
     opened,
     setOpened,
   ] =
     useState(
-      title === "About Me"
+      Boolean(
+        canOpen &&
+        title === "Bio"
+      )
     );
+
+  useEffect(() => {
+    if (!canOpen && opened) {
+      setOpened(false);
+    }
+  }, [canOpen, opened]);
 
   return (
     <section
       className={`civ-card civ-pro-section ${
-        opened
+        canOpen && opened
           ? "civ-pro-section-open"
           : ""
       }`}
@@ -505,14 +519,23 @@ function Card({
       <button
         type="button"
         className="civ-pro-section-header"
-        onClick={() =>
+        onClick={() => {
+          if (!canOpen) {
+            return;
+          }
           setOpened(
             (current) =>
               !current
-          )
-        }
+          );
+        }}
         aria-expanded={
-          opened
+          canOpen ? opened : false
+        }
+        aria-disabled={!canOpen}
+        style={
+          !canOpen
+            ? { cursor: "not-allowed", opacity: 0.72 }
+            : undefined
         }
       >
         <span className="civ-pro-section-icon">
@@ -527,7 +550,9 @@ function Card({
           </strong>
 
           <small>
-            View profile details
+            {canOpen
+              ? "View profile details"
+              : "No details added"}
           </small>
         </span>
 
@@ -564,17 +589,19 @@ function Card({
               </span>
             )}
 
-          <i
-            className={`fas fa-chevron-down civ-pro-section-arrow ${
-              opened
-                ? "is-open"
-                : ""
-            }`}
-          />
+          {canOpen && (
+            <i
+              className={`fas fa-chevron-down civ-pro-section-arrow ${
+                opened
+                  ? "is-open"
+                  : ""
+              }`}
+            />
+          )}
         </span>
       </button>
 
-      {opened && (
+      {canOpen && opened && (
         <div className="civ-card-body civ-pro-section-content">
           {children}
         </div>
@@ -866,7 +893,7 @@ function EditModal({
           {section ===
             "about" && (
             <Field
-              label="About Me / Bio"
+              label="Bio"
               textarea
               value={
                 data.bio
@@ -1404,7 +1431,7 @@ function EditModal({
                 ["education", "Education"],
                 ["achievements", "Achievements"],
                 ["skills", "Skills, Interests & Hobbies"],
-                ["bio", "About Me"],
+                ["bio", "Bio"],
                 ["social", "Social Links"],
                 ["media", "Gallery / Media"],
                 ["website", "Website / Portfolio"],
@@ -2020,6 +2047,22 @@ export default function CivilianPublicProfile({
       loadProfile,
     ]
   );
+
+  const [copiedReferral, setCopiedReferral] = useState("");
+
+  const copyReferralText = async (value, key) => {
+    const clean = text(value);
+    if (!clean) return;
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(clean);
+      }
+      setCopiedReferral(key);
+      setTimeout(() => {
+        setCopiedReferral((prev) => (prev === key ? "" : prev));
+      }, 2000);
+    } catch {}
+  };
 
   /* =========================================================
      EDIT
@@ -3264,15 +3307,43 @@ export default function CivilianPublicProfile({
       )
     );
 
-  const rank =
+  const adminRank =
     text(
       firstValue(
         p.network_rank,
         p.network_level,
         p.rank
-      ),
-      "Civilian Member"
+      )
     );
+
+  const rank =
+    adminRank || "Assigned by Admin";
+
+  const directMembers = Number(
+    p.direct_network ??
+      p.direct_members ??
+      p.direct_members_count ??
+      0
+  );
+
+  const indirectMembers = Number(p.indirect_network ?? 0);
+
+  const totalNetwork = Number(
+    p.total_network ?? (directMembers + indirectMembers)
+  );
+
+  const referralCode = text(
+    firstValue(p.referral_id, p.referralCode)
+  );
+
+  const referralOrigin =
+    typeof window !== "undefined" && window.location?.origin
+      ? window.location.origin
+      : "https://inmba.org";
+
+  const referralLink = referralCode
+    ? `${referralOrigin}/membership?ref=${encodeURIComponent(referralCode)}`
+    : "";
 
   const location =
     [
@@ -3393,6 +3464,37 @@ export default function CivilianPublicProfile({
         routeLoginId
       )
     );
+
+  const hasLinksData = socialLinks.length > 0 || Boolean(text(p.portfolio_url));
+  const hasContactData = Boolean(
+    text(p.email) ||
+      publicPhone ||
+      text(p.city) ||
+      text(p.district) ||
+      text(p.state) ||
+      text(p.pincode)
+  );
+  const hasEducationData = Boolean(
+    text(firstValue(p.educational_qualification, p.education)) ||
+      text(p.school_college_name) ||
+      list(p.additional_certifications).length > 0 ||
+      list(p.language_skills).length > 0
+  );
+  const hasAchievementsData = Boolean(
+    list(p.awards_recognitions).length > 0 ||
+      list(p.publications).length > 0 ||
+      list(p.professional_certifications).length > 0 ||
+      list(p.key_milestones).length > 0 ||
+      list(p.media_mentions).length > 0 ||
+      list(p.reference_letters).length > 0
+  );
+  const hasSkillsData = Boolean(
+    list(p.skills).length > 0 ||
+      list(p.interest_categories).length > 0 ||
+      list(p.hobbies).length > 0 ||
+      text(p.preferred_industry)
+  );
+  const hasMediaData = Boolean(gallery.length > 0 || introVideo);
 
   const isPro = Boolean(
     /professional/i.test(p?.membership_type || p?.membershipType || "") ||
@@ -3639,10 +3741,10 @@ export default function CivilianPublicProfile({
 
           <aside className="civ-sidebar">
 
-            {(isOwner ||
+            {(Boolean(adminRank) && (isOwner ||
               isPublic(
                 "rank"
-              )) && (
+              ))) && (
             <section className="civ-rank-card">
               <div className="civ-rank-medal">
                 <i className="fas fa-medal" />
@@ -3662,9 +3764,78 @@ export default function CivilianPublicProfile({
             </section>
             )}
 
+            {(isOwner ||
+              isPublic(
+                "social"
+              )) && (
+            <Card
+              icon="fas fa-share-nodes"
+              title="Links"
+              hasData={hasLinksData}
+              owner={
+                isOwner
+              }
+              onEdit={() =>
+                openEdit(
+                  "social"
+                )
+              }
+            >
+              {socialLinks.length ? (
+                <div className="civ-social-icons">
+                  {socialLinks.map(
+                    (
+                      item
+                    ) => (
+                      <a
+                        key={
+                          item.name
+                        }
+                        href={
+                          safeUrl(
+                            item.value
+                          )
+                        }
+                        target="_blank"
+                        rel="noreferrer"
+                        title={
+                          item.name
+                        }
+                      >
+                        <i
+                          className={
+                            item.icon
+                          }
+                        />
+                      </a>
+                    )
+                  )}
+                </div>
+              ) : (
+                <Empty />
+              )}
+
+              {p.portfolio_url && (
+                <a
+                  className="civ-website"
+                  href={
+                    safeUrl(
+                      p.portfolio_url
+                    )
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Website / Portfolio
+                </a>
+              )}
+            </Card>
+            )}
+
             <Card
               icon="fas fa-address-book"
               title="Contact (Public)"
+              hasData={hasContactData}
               owner={
                 isOwner
               }
@@ -3675,6 +3846,14 @@ export default function CivilianPublicProfile({
               }
             >
               <div className="civ-contact-list">
+                {text(p.email) && (
+                  <a href={`mailto:${text(p.email)}`}>
+                    <i className="fas fa-envelope" />
+                    <strong>{text(p.email)}</strong>
+                    <small>Email</small>
+                  </a>
+                )}
+
                 {publicPhone &&
                 (isOwner ||
                   isPublic(
@@ -3741,7 +3920,7 @@ export default function CivilianPublicProfile({
 
             <Card
               icon="fas fa-network-wired"
-              title="About Network"
+              title="My Network Profile"
             >
               <div className="civ-network-list">
                 <div>
@@ -3756,81 +3935,98 @@ export default function CivilianPublicProfile({
 
                 <div>
                   <span>
-                    Membership
+                    Total Network
                   </span>
 
                   <strong>
-                    Civilian
+                    {totalNetwork}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>
+                    Direct Member
+                  </span>
+
+                  <strong>
+                    {directMembers}
                   </strong>
                 </div>
               </div>
             </Card>
 
-            {(isOwner ||
-              isPublic(
-                "social"
-              )) && (
-            <Card
-              icon="fas fa-share-nodes"
-              title="Social Links"
-              owner={
-                isOwner
-              }
-              onEdit={() =>
-                openEdit(
-                  "social"
-                )
-              }
-            >
-              {socialLinks.length ? (
-                <div className="civ-social-icons">
-                  {socialLinks.map(
-                    (
-                      item
-                    ) => (
-                      <a
-                        key={
-                          item.name
-                        }
-                        href={
-                          safeUrl(
-                            item.value
-                          )
-                        }
-                        target="_blank"
-                        rel="noreferrer"
-                        title={
-                          item.name
-                        }
-                      >
-                        <i
-                          className={
-                            item.icon
-                          }
-                        />
-                      </a>
-                    )
-                  )}
-                </div>
-              ) : (
-                <Empty />
-              )}
+            {(referralCode || isOwner) && (
+              <Card
+                icon="fas fa-share-from-square"
+                title="Referral Program"
+                hasData={Boolean(referralCode)}
+              >
+                <div className="civ-network-list">
+                  <div>
+                    <span>
+                      Referral Code
+                    </span>
 
-              {p.portfolio_url && (
-                <a
-                  className="civ-website"
-                  href={
-                    safeUrl(
-                      p.portfolio_url
-                    )
-                  }
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Website / Portfolio
-                </a>
-              )}
-            </Card>
+                    <strong>
+                      {referralCode || "Not assigned"}
+                    </strong>
+                  </div>
+
+                  <div>
+                    <span>
+                      Referral Link
+                    </span>
+
+                    <strong style={{ wordBreak: "break-all", fontSize: "0.85rem" }}>
+                      {referralLink || "Available after approval"}
+                    </strong>
+                  </div>
+                </div>
+
+                {referralCode && (
+                  <div style={{ display: "flex", gap: "10px", marginTop: "12px", flexWrap: "wrap" }}>
+                    <button
+                      type="button"
+                      onClick={() => copyReferralText(referralCode, "code")}
+                      style={{
+                        background: "#166534",
+                        color: "#ffffff",
+                        border: "none",
+                        borderRadius: "8px",
+                        padding: "8px 14px",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                      }}
+                    >
+                      <i className="fas fa-copy" />
+                      {copiedReferral === "code" ? "Copied Code" : "Copy Code"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => copyReferralText(referralLink, "link")}
+                      style={{
+                        background: "#ecfdf5",
+                        color: "#166534",
+                        border: "1px solid #bbf7d0",
+                        borderRadius: "8px",
+                        padding: "8px 14px",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                      }}
+                    >
+                      <i className="fas fa-link" />
+                      {copiedReferral === "link" ? "Copied Link" : "Copy Link"}
+                    </button>
+                  </div>
+                )}
+              </Card>
             )}
 
             {/* OWNER PRIVATE */}
@@ -4084,7 +4280,7 @@ export default function CivilianPublicProfile({
               )) && (
             <Card
               icon="fas fa-user"
-              title="About Me"
+              title="Bio"
               owner={
                 isOwner
               }
@@ -4094,13 +4290,15 @@ export default function CivilianPublicProfile({
                 )
               }
             >
-              {p.bio ? (
-                <p className="civ-about">
-                  {p.bio}
-                </p>
-              ) : (
-                <Empty />
-              )}
+              <p className="civ-about">
+                {text(p.bio) ||
+                  buildDefaultBio({
+                    name: getBaseName(p),
+                    plan: p.selected_plan,
+                    membershipLabel: p.membership_level,
+                    membershipType: p.membership_type || "Civilian Member",
+                  })}
+              </p>
             </Card>
             )}
 
@@ -4111,6 +4309,7 @@ export default function CivilianPublicProfile({
             <Card
               icon="fas fa-graduation-cap"
               title="Education"
+              hasData={hasEducationData}
               owner={
                 isOwner
               }
@@ -4188,6 +4387,7 @@ export default function CivilianPublicProfile({
             <Card
               icon="fas fa-trophy"
               title="Achievements & Recognition"
+              hasData={hasAchievementsData}
               owner={
                 isOwner
               }
@@ -4279,6 +4479,7 @@ export default function CivilianPublicProfile({
             <Card
               icon="fas fa-lightbulb"
               title="Skills, Interests & Hobbies"
+              hasData={hasSkillsData}
               owner={
                 isOwner
               }
@@ -4347,6 +4548,7 @@ export default function CivilianPublicProfile({
             <Card
               icon="fas fa-photo-film"
               title="Media"
+              hasData={hasMediaData}
               owner={
                 isOwner
               }

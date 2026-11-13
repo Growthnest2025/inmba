@@ -17,13 +17,13 @@ const COMMERCIAL_BASIC_PLAN_ID =
   "basic";
 
 const COMMERCIAL_BASIC_AMOUNT =
-  300;
+  299;
 
 const COMMERCIAL_PROFILE_UPGRADE_PLAN_ID =
   "profile_upgrade";
 
 const COMMERCIAL_PROFILE_UPGRADE_AMOUNT =
-  1500;
+  2999;
 
 const COMMERCIAL_FULL_KYC_PLANS =
   Object.freeze({
@@ -32,7 +32,7 @@ const COMMERCIAL_FULL_KYC_PLANS =
       plan_id: "basic",
       planId: "basic",
       name: "Commercial Membership",
-      amount: 300,
+      amount: 299,
       requiresFullKyc: true,
       requires_full_kyc: true,
     },
@@ -42,7 +42,7 @@ const COMMERCIAL_FULL_KYC_PLANS =
       plan_id: "profile_upgrade",
       planId: "profile_upgrade",
       name: "Commercial Profile Upgrade",
-      amount: 1500,
+      amount: 2999,
       requiresFullKyc: true,
       requires_full_kyc: true,
     },
@@ -1733,7 +1733,7 @@ const assertCommercialProfileUpgradeAccess =
       throw createCommercialKycError(
         403,
 
-        "Select Commercial Membership ₹300 or Commercial Profile Upgrade ₹1500 before accessing Full KYC A-G.",
+        "Select Commercial Membership ₹299 or Commercial Profile Upgrade ₹2999 before accessing Full KYC A-G.",
 
         "COMMERCIAL_FULL_KYC_PLAN_REQUIRED",
 
@@ -2273,6 +2273,20 @@ const validateSectionD =
       errors.bank_proof =
         "Passbook / Cancelled Cheque Scan is required.";
     }
+
+    addRequiredError(
+      errors,
+      "nominee_name",
+      values.nominee_name,
+      "Nominee Name is required."
+    );
+
+    addRequiredError(
+      errors,
+      "nominee_relationship",
+      values.nominee_relationship,
+      "Nominee Relationship is required."
+    );
 
     const gstRequired =
       toBoolean(

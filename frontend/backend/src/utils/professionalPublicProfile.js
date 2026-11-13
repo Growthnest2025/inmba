@@ -754,6 +754,11 @@ const buildProfessionalPublicProfile =
          Email / WhatsApp / secondary mobile are NEVER here.
       =================================================== */
 
+      email:
+        toText(
+          member.email
+        ),
+
       phone:
         phoneIsPublic
           ? toText(
@@ -968,6 +973,44 @@ const buildProfessionalPublicProfile =
           member.network_level
         ),
 
+      network_rank:
+        toText(
+          member.network_level
+        ),
+
+      referral_id:
+        toText(
+          member.referral_id
+        ),
+
+      direct_network:
+        Number(
+          member.direct_network ||
+            0
+        ),
+
+      direct_members:
+        Number(
+          member.direct_network ||
+            0
+        ),
+
+      indirect_network:
+        Number(
+          member.indirect_network ||
+            0
+        ),
+
+      total_network:
+        Number(
+          member.direct_network ||
+            0
+        ) +
+        Number(
+          member.indirect_network ||
+            0
+        ),
+
       /* ===================================================
          SAFE BADGES ONLY
 
@@ -1172,11 +1215,11 @@ const PROFESSIONAL_PRIVATE_FIELDS =
     "nomini_aadhar",
     "nomini_id_document",
 
-    "referral_id",
+
     "referred_by",
 
-    "direct_network",
-    "indirect_network",
+
+
     "team_size",
 
     "royalty_slab_category",

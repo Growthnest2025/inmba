@@ -52,7 +52,7 @@ export const COMMERCIAL_PLAN_FALLBACK =
         "Commercial Membership",
 
       amount:
-        300,
+        299,
 
       currency:
         "INR",
@@ -69,7 +69,7 @@ export const COMMERCIAL_PLAN_FALLBACK =
         "Profile Upgrade",
 
       amount:
-        1500,
+        2999,
 
       currency:
         "INR",
@@ -264,10 +264,10 @@ export const normalizeCommercialPlan =
 
     const amount =
       id === "profile_upgrade"
-        ? 1500
+        ? 2999
         : id === "basic"
-          ? 300
-          : Number(plan.amount ?? fallback?.amount ?? 300);
+          ? 299
+          : Number(plan.amount ?? fallback?.amount ?? 299);
 
     return {
       id,

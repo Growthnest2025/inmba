@@ -1117,9 +1117,9 @@ async function getCivilianFullKycRecord(memberId, db) {
   if (!values.team_size) values.team_size = (Number(member.direct_network || 0) + Number(member.indirect_network || 0)) || "";
   if (!values.royalty_slab_category) values.royalty_slab_category = member.royalty_slab_category || "";
 
-  const selectedPlan = ["300", "1500"].includes(String(row.selected_plan || ""))
+  const selectedPlan = ["299", "2999", "300", "1500"].includes(String(row.selected_plan || ""))
     ? String(row.selected_plan)
-    : (member.amount ? String(member.amount) : "300");
+    : (member.amount ? String(member.amount) : "299");
 
   return {
     values,
@@ -1157,10 +1157,10 @@ async function handleCivilianPlan(request, db, cors) {
   const input = await parseRequestBody(request);
   const plan = String(input.selected_plan ?? input.selectedPlan ?? "").trim();
 
-  if (!["300", "1500"].includes(plan)) {
+  if (!["299", "2999"].includes(plan)) {
     return json({
       success: false,
-      message: "Invalid Civilian plan. Please select ₹300 or ₹1500.",
+      message: "Invalid Civilian plan. Please select ₹299 or ₹2999.",
     }, 422, cors);
   }
 
@@ -1268,7 +1268,7 @@ async function handleSubmitCivilianKyc(request, db, cors) {
   }
 
   const data = await getCivilianFullKycRecord(member.id, db);
-  const planToSet = data.selectedPlan || "300";
+  const planToSet = data.selectedPlan || "299";
 
   await db.prepare(`
     UPDATE civilian_full_kyc
@@ -1336,7 +1336,7 @@ async function handleGetPayment(request, db, cors) {
     SELECT token FROM kyc_members WHERE id = ?
   `).bind(member.id).first()) || {};
 
-  const amount = civilian.selected_plan || ext.amount || "300";
+  const amount = civilian.selected_plan || ext.amount || "299";
   const paymentStatus = member.payment_status || "pending";
   const isApproved = paymentStatus.toLowerCase() === "approved";
   const isSubmitted = Boolean(ext.transaction_id || ext.payment_proof || isApproved);
@@ -1390,7 +1390,7 @@ async function handleSubmitPayment(request, db, cors) {
     if (civRow && civRow.selected_plan) {
       amount = String(civRow.selected_plan);
     } else {
-      amount = "300";
+      amount = "299";
     }
   }
 
@@ -1412,7 +1412,7 @@ async function handleSubmitPayment(request, db, cors) {
       subscription_year = COALESCE(NULLIF(excluded.subscription_year, ''), kyc_members_ext_1.subscription_year),
       amount = COALESCE(NULLIF(excluded.amount, ''), kyc_members_ext_1.amount),
       payment_proof = COALESCE(NULLIF(excluded.payment_proof, ''), kyc_members_ext_1.payment_proof)
-  `).bind(member.id, paymentMethod, transactionId, subscriptionYear, Number(amount) || 300, paymentProof).run();
+  `).bind(member.id, paymentMethod, transactionId, subscriptionYear, Number(amount) || 299, paymentProof).run();
 
   // 3. Get member's token for civilian acknowledgement
   const fullMember = (await db.prepare(`
@@ -1474,7 +1474,7 @@ async function handleGetAcknowledgement(request, db, cors, token) {
   `).bind(member.id).first()) || {};
 
   const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "Member";
-  const planAmount = civilian.selected_plan || ext.amount || "300";
+  const planAmount = civilian.selected_plan || ext.amount || "299";
 
   const ackData = {
     token: safeToken,
@@ -1670,7 +1670,7 @@ async function getCommercialKycRecord(memberId, loginId, db) {
   const secF = {
     preferred_payout_cycle: row.preferred_payout_cycle || "",
     referral_id: row.referral_id || member.referral_id || "",
-    network_level_rank: member.network_level || "Commercial Member",
+    network_level_rank: member.network_level || "",
     team_size: member.direct_network || "0",
     royalty_slab_category: member.royalty_slab_category || "Standard",
     completed: completedSet.has("F") || (isApprovedOrSubmitted && Boolean(row.preferred_payout_cycle)),
@@ -1765,7 +1765,7 @@ async function handleGetCommercialDashboard(request, db, cors) {
   `).bind(member.referral_id || "").first();
   const directCount = directCountRow ? directCountRow.count : 0;
 
-  const planAmount = paymentRow?.amount || ext.amount || 300;
+  const planAmount = paymentRow?.amount || ext.amount || 299;
   const isApproved = String(member.payment_status || "").toLowerCase() === "approved";
   const hasSubmittedPayment = Boolean(paymentRow?.transaction_id || ext.transaction_id || paymentRow?.amount);
   const commKycStatus = commKyc.kyc_status || ext.commercial_kyc_status || "draft";
@@ -1905,7 +1905,7 @@ async function handleGetCommercialMembership(request, db, cors) {
     {
       id: "basic",
       name: "Basic Membership",
-      amount: 300,
+      amount: 299,
       currency: "INR",
       requiresFullKyc: false,
       requires_full_kyc: false,
@@ -1914,7 +1914,7 @@ async function handleGetCommercialMembership(request, db, cors) {
     {
       id: "profile_upgrade",
       name: "Profile Upgrade",
-      amount: 1500,
+      amount: 2999,
       currency: "INR",
       requiresFullKyc: true,
       requires_full_kyc: true,
@@ -1935,7 +1935,7 @@ async function handleSelectCommercialMembership(request, db, cors) {
   const member = await getCurrentMember(request, db);
   const input = await parseRequestBody(request);
   const planId = String(input.plan_id || input.planId || "basic").trim();
-  const amount = planId === "profile_upgrade" ? 1500 : 300;
+  const amount = planId === "profile_upgrade" ? 2999 : 299;
   const planName = planId === "profile_upgrade" ? "Profile Upgrade" : "Basic Membership";
 
   if (member) {
@@ -1975,14 +1975,14 @@ async function handleGetCommercialSelectedPlan(request, db, cors) {
   const member = await getCurrentMember(request, db);
   let planId = "basic";
   let planName = "Basic Membership";
-  let amount = 300;
+  let amount = 299;
 
   if (member) {
     const paymentRow = await db.prepare("SELECT * FROM commercial_payments WHERE login_id = ? ORDER BY id DESC LIMIT 1").bind(member.login_id).first();
     if (paymentRow) {
       planId = paymentRow.plan_id || "basic";
       planName = paymentRow.plan_name || (planId === "profile_upgrade" ? "Profile Upgrade" : "Basic Membership");
-      amount = Number(paymentRow.amount || 300);
+      amount = Number(paymentRow.amount || 299);
     }
   }
 
@@ -2012,7 +2012,7 @@ async function handleGetCommercialPayment(request, db, cors) {
   const paymentRow = await db.prepare("SELECT * FROM commercial_payments WHERE login_id = ? ORDER BY id DESC LIMIT 1").bind(member.login_id).first();
   const ext = (await db.prepare("SELECT * FROM kyc_members_ext_1 WHERE member_id = ?").bind(member.id).first()) || {};
 
-  const amount = paymentRow?.amount || ext.amount || 300;
+  const amount = paymentRow?.amount || ext.amount || 299;
   const isApproved = ["approved", "paid", "completed", "success", "successful"].includes(String(member.payment_status || "").toLowerCase()) ||
                      ["approved", "paid", "completed", "success", "successful"].includes(String(paymentRow?.payment_status || "").toLowerCase()) ||
                      Boolean(member.is_approved || member.is_payment_approved);
@@ -2078,7 +2078,7 @@ async function handleSubmitCommercialPayment(request, db, cors) {
 
   const planId = String(input.plan_id || input.planId || "basic").trim();
   const planName = String(input.plan_name || input.planName || (planId === "profile_upgrade" ? "Profile Upgrade" : "Basic Membership")).trim();
-  const amount = Number(input.amount || (planId === "profile_upgrade" ? 1500 : 300));
+  const amount = Number(input.amount || (planId === "profile_upgrade" ? 2999 : 299));
   const paymentMethod = String(input.payment_method || input.paymentMethod || "UPI").trim();
   const transactionId = String(input.transaction_id || input.transactionId || "").trim();
   const paymentProof = typeof input.payment_proof === "string" ? input.payment_proof : "";
@@ -2476,7 +2476,7 @@ async function getProfessionalKycRecord(memberId, db) {
     ...member,
     ...ext,
     full_legal_name: [member.first_name, member.last_name].filter(Boolean).join(" ") || "Professional Member",
-    selectedPlan: ext.subscription_year || ext.amount || "300",
+    selectedPlan: ext.subscription_year || ext.amount || "299",
   };
 
   return {
@@ -2540,8 +2540,8 @@ async function handleSaveProfessionalPlan(request, db, cors) {
   }
 
   const input = await parseRequestBody(request);
-  const selectedPlan = String(input.selectedPlan || input.plan || "300").trim();
-  const amount = Number(selectedPlan) || 300;
+  const selectedPlan = String(input.selectedPlan || input.plan || "299").trim();
+  const amount = Number(selectedPlan) || 299;
 
   try {
     await db.prepare(`
@@ -2663,6 +2663,33 @@ async function handleSubmitProfessionalKyc(request, db, cors) {
   }, 200, cors);
 }
 
+async function getMemberNetworkSummary(db, member) {
+  let directCount = Number(member?.direct_network || 0);
+  if (member?.referral_id) {
+    try {
+      const dirRow = await db.prepare(
+        "SELECT COUNT(1) AS cnt FROM kyc_members WHERE referred_by = ? AND COALESCE(is_deleted, 0) = 0"
+      ).bind(member.referral_id).first();
+      directCount = Number(dirRow?.cnt ?? directCount);
+    } catch {}
+  }
+  const indirectCount = Number(member?.indirect_network || 0);
+  const totalNetwork = directCount + indirectCount;
+  const adminRank = String(member?.network_level || "").trim();
+  return {
+    direct_network: directCount,
+    direct_members: directCount,
+    direct_members_count: directCount,
+    indirect_network: indirectCount,
+    total_network: totalNetwork,
+    network_level: adminRank,
+    network_level_badge: adminRank,
+    network_rank: adminRank,
+    rank: adminRank,
+    referral_id: member?.referral_id || "",
+  };
+}
+
 async function handleGetCivilianProfile(request, db, cors) {
   const member = await getCurrentMember(request, db);
   if (!member) {
@@ -2684,12 +2711,14 @@ async function handleGetCivilianProfile(request, db, cors) {
   `).bind(member.id).first()) || member;
 
   const activePhoto = fullMember.profile_pic || fullKyc?.files?.profile_photo || "";
+  const networkSummary = await getMemberNetworkSummary(db, fullMember);
 
   const profile = {
     ...fullMember,
     ...fullKyc.values,
     ...fullKyc.files,
     ...ext,
+    ...networkSummary,
     id: member.id,
     login_id: member.login_id,
     first_name: member.first_name,
@@ -2705,8 +2734,8 @@ async function handleGetCivilianProfile(request, db, cors) {
     photo_url: activePhoto,
     membership_type: member.membership_type || "Civilian Member",
     payment_status: member.payment_status || "pending",
-    selected_plan: fullKyc.selectedPlan || ext.amount || "300",
-    amount: fullKyc.selectedPlan || ext.amount || "300",
+    selected_plan: fullKyc.selectedPlan || ext.amount || "299",
+    amount: fullKyc.selectedPlan || ext.amount || "299",
     sections: fullKyc.sections,
     status: fullKyc.status || "draft",
   };
@@ -2745,10 +2774,12 @@ async function handleGetProfessionalProfile(request, db, cors) {
 
   const memberPaymentStatus = String(fullMember.payment_status || member.payment_status || "pending").toLowerCase().trim();
   const isApproved = ["approved", "paid", "completed", "success", "successful"].includes(memberPaymentStatus);
+  const networkSummary = await getMemberNetworkSummary(db, fullMember);
 
   const profile = {
     ...fullMember,
     ...ext1,
+    ...networkSummary,
     id: member.id,
     login_id: member.login_id,
     first_name: fullMember.first_name || member.first_name,
@@ -2917,11 +2948,12 @@ async function handleGetPublicUser(request, db, cors, loginId) {
 
   const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "INMBA Member";
   const isApproved = String(member.payment_status || "").toLowerCase() === "approved";
-  const planAmount = fullKyc?.selectedPlan || ext.amount || "300";
+  const planAmount = fullKyc?.selectedPlan || ext.amount || "299";
 
   const loginIdUpper = String(member.login_id || loginId || "").toUpperCase();
   const isCommercial = /commercial/i.test(member.membership_type) || loginIdUpper.startsWith("COM");
   const isProfessional = /professional/i.test(member.membership_type) || loginIdUpper.startsWith("PRO");
+  const networkSummary = await getMemberNetworkSummary(db, member);
 
   const business = {
     name: commBasic.business_name || commKyc.business_name || member.occupation || "Commercial Business",
@@ -2981,7 +3013,21 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     status: isApproved ? "approved" : "pending",
     selected_plan: String(planAmount),
     amount: String(planAmount),
-    referral_id: member.referral_id,
+    referral_id: networkSummary.referral_id,
+    network_level: networkSummary.network_level,
+    network_level_badge: networkSummary.network_level_badge,
+    network_rank: networkSummary.network_rank,
+    rank: networkSummary.rank,
+    direct_network: networkSummary.direct_network,
+    direct_members: networkSummary.direct_members,
+    direct_members_count: networkSummary.direct_members_count,
+    indirect_network: networkSummary.indirect_network,
+    total_network: networkSummary.total_network,
+    network: {
+      rank_badge: networkSummary.network_level,
+      direct_members: networkSummary.direct_members,
+      total_network: networkSummary.total_network,
+    },
     business,
     public_profile_fields: [
       "full_name", "first_name", "last_name", "email", "phone", "bio",
@@ -3146,7 +3192,7 @@ async function handleGetDashboard(request, db, cors) {
     `).bind(member.referred_by, member.referred_by).first();
   }
 
-  const planAmount = fullKyc?.selectedPlan || ext.amount || "300";
+  const planAmount = fullKyc?.selectedPlan || ext.amount || "299";
   const fullName = [fullMember.first_name, fullMember.last_name].filter(Boolean).join(" ") || "Member";
   const memberPaymentStatus = String(fullMember.payment_status || member.payment_status || "pending").toLowerCase().trim();
   const isApproved = ["approved", "paid", "completed", "success", "successful"].includes(memberPaymentStatus);
@@ -3278,11 +3324,11 @@ async function handleGetAdminUser(request, db, cors, id) {
     ["approved", "paid", "success", "successful", "completed"].includes(String(member.payment_status || "").toLowerCase()) ||
     ["approved", "paid", "success", "successful", "completed"].includes(String(commPayment?.payment_status || "").toLowerCase())
   );
-  const planAmount = commPayment?.amount || civilianKyc?.selectedPlan || ext.amount || (member.selected_plan ? Number(member.selected_plan) : (hasPayment ? 300 : null));
+  const planAmount = commPayment?.amount || civilianKyc?.selectedPlan || ext.amount || (member.selected_plan ? Number(member.selected_plan) : (hasPayment ? 299 : null));
   const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "Member";
 
   const payment = {
-    amount: hasPayment ? Number(commPayment?.amount || ext.amount || planAmount || 300) : (commPayment?.amount || ext.amount || null),
+    amount: hasPayment ? Number(commPayment?.amount || ext.amount || planAmount || 299) : (commPayment?.amount || ext.amount || null),
     payment_method: commPayment?.payment_method || ext.payment_method || (hasPayment ? "UPI" : ""),
     transaction_id: commPayment?.transaction_id || ext.transaction_id || "",
     payment_status: member.payment_status || commPayment?.payment_status || "pending",
@@ -3346,6 +3392,45 @@ async function handleGetAdminUser(request, db, cors, id) {
     commercialKyc: { ...commBasic, ...commKyc },
     commercialPayment: commPayment,
   }, 200, cors);
+}
+
+async function handleAdminEditUser(request, db, cors, id) {
+  try {
+    const input = await parseRequestBody(request);
+    const member = await db.prepare(
+      "SELECT * FROM kyc_members WHERE id = ? OR login_id = ? LIMIT 1"
+    ).bind(id, id).first();
+    if (!member) return json({ success: false, message: "Member not found." }, 404, cors);
+    const editableCols = [
+      "first_name", "last_name", "email", "phone", "occupation", "education",
+      "city", "district", "state", "pincode", "country", "referral_id", "referred_by",
+      "payment_status", "membership_type", "network_level", "royalty_slab_category", "bio"
+    ];
+    const updates = [];
+    const params = [];
+    for (const col of editableCols) {
+      if (Object.prototype.hasOwnProperty.call(input, col) && input[col] !== undefined) {
+        updates.push(`${col} = ?`);
+        params.push(input[col] === "" ? null : String(input[col]).trim());
+      }
+    }
+    if (updates.length > 0) {
+      updates.push("updated_at = datetime('now')");
+      params.push(member.id);
+      await db.prepare(`UPDATE kyc_members SET ${updates.join(", ")} WHERE id = ?`).bind(...params).run();
+    }
+    const updated = await db.prepare("SELECT * FROM kyc_members WHERE id = ? LIMIT 1").bind(member.id).first();
+    return json({
+      success: true,
+      statusCode: 200,
+      message: "Member details updated successfully.",
+      data: { member: updated, user: updated },
+      member: updated,
+      user: updated,
+    }, 200, cors);
+  } catch (err) {
+    return json({ success: false, message: err?.message || "Failed to update member." }, 500, cors);
+  }
 }
 
 async function handleAdminVerifyMember(request, db, cors, id) {
@@ -3849,6 +3934,11 @@ export default {
       // =========================================================
 
       const adminUserMatch = path.match(/^\/(?:api\/)?admin\/user\/([a-zA-Z0-9_-]+)$/) || path.match(/^\/(?:api\/)?admin\/member\/([a-zA-Z0-9_-]+)$/);
+      const adminUserEditMatch = path.match(/^\/(?:api\/)?admin\/user\/([a-zA-Z0-9_-]+)\/edit$/) || path.match(/^\/(?:api\/)?admin\/member\/([a-zA-Z0-9_-]+)\/edit$/);
+      if (adminUserEditMatch && (method === "POST" || method === "PATCH" || method === "PUT")) {
+        return await handleAdminEditUser(request, db, cors, adminUserEditMatch[1]);
+      }
+
       if (adminUserMatch && method === "GET") {
         return await handleGetAdminUser(request, db, cors, adminUserMatch[1]);
       }

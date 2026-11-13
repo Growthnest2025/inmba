@@ -1619,6 +1619,20 @@ const validateSectionH =
         "Enter a valid GST number.";
     }
 
+    addRequiredError(
+      errors,
+      "nomini_name",
+      values.nomini_name,
+      "Nominee Name is required."
+    );
+
+    addRequiredError(
+      errors,
+      "nomini_relationship",
+      values.nomini_relationship,
+      "Nominee Relationship is required."
+    );
+
     if (
       hasValue(
         values
@@ -2098,8 +2112,8 @@ const saveProfessionalPlan =
 
     if (
       ![
-        "300",
-        "1500",
+        "299",
+        "2999",
       ].includes(
         plan
       )
@@ -2107,7 +2121,7 @@ const saveProfessionalPlan =
       throw createProfessionalKycError(
         422,
 
-        "Please select the Professional ₹300 or ₹1500 plan.",
+        "Please select the Professional ₹299 or ₹2999 plan.",
 
         "PROFESSIONAL_PLAN_REQUIRED"
       );

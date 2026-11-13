@@ -287,15 +287,13 @@ const getMembershipLevel = (
   }
 
   if (
-    selectedPlan ===
-    "300"
+    selectedPlan === "299" || selectedPlan === "300"
   ) {
     return "INMBA Network Member";
   }
 
   if (
-    selectedPlan ===
-    "1500"
+    selectedPlan === "2999" || selectedPlan === "1500"
   ) {
     return "INMBA Network Royalty Member";
   }

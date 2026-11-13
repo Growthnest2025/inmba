@@ -285,7 +285,7 @@ const inferCommercialPlan = (
     );
 
   if (
-    numericAmount === 300
+    numericAmount === 299 || numericAmount === 300
   ) {
     return {
       id:
@@ -295,7 +295,7 @@ const inferCommercialPlan = (
         "Basic Membership",
 
       amount:
-        300,
+        299,
 
       requires_full_kyc:
         false,
@@ -303,7 +303,7 @@ const inferCommercialPlan = (
   }
 
   if (
-    numericAmount === 1500
+    numericAmount === 2999 || numericAmount === 1500
   ) {
     return {
       id:
@@ -313,7 +313,7 @@ const inferCommercialPlan = (
         "Profile Upgrade",
 
       amount:
-        1500,
+        2999,
 
       requires_full_kyc:
         true,

@@ -16,11 +16,11 @@ export const getMembershipLevel = ({
     return "INMBA Member";
   }
 
-  if (plan === "300") {
+  if (plan === "299" || plan === "300") {
     return "INMBA Network Member";
   }
 
-  if (plan === "1500") {
+  if (plan === "2999" || plan === "1500") {
     return "INMBA Network Royalty Member";
   }
 

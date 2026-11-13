@@ -542,7 +542,45 @@ export const normalizeCommercialPublicProfile =
         toText(
           data.network_level_badge ??
             data.commercial_network_level ??
-            data.network_level
+            data.network_level ??
+            data.network?.rank_badge ??
+            data.network_rank
+        ),
+
+      referral_id:
+        toText(
+          data.referral_id ??
+            data.network?.referral_id
+        ),
+
+      direct_network:
+        Number(
+          data.direct_network ??
+            data.direct_members ??
+            data.direct_members_count ??
+            data.network?.direct_members ??
+            0
+        ),
+
+      direct_members:
+        Number(
+          data.direct_members ??
+            data.direct_network ??
+            data.direct_members_count ??
+            data.network?.direct_members ??
+            0
+        ),
+
+      total_network:
+        Number(
+          data.total_network ??
+            data.network?.total_network ??
+            (Number(
+              data.direct_network ??
+                data.direct_members ??
+                0
+            ) +
+              Number(data.indirect_network ?? 0))
         ),
     };
   };

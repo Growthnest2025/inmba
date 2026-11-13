@@ -24,7 +24,7 @@ import { useAuth } from "../../../context/AuthContext";
 const DEFAULT_BASIC_PLAN = {
   id: "basic",
   name: "Basic Membership",
-  amount: 300,
+  amount: 299,
   requiresFullKyc: false,
 };
 
@@ -114,7 +114,7 @@ const readSelectedPlan =
       const amount =
         safeNumber(
           parsed?.amount,
-          300
+          299
         );
 
       /*
@@ -122,7 +122,7 @@ const readSelectedPlan =
         to backend plan id "basic".
       */
 
-      if (amount === 300) {
+      if (amount === 299) {
         return {
           id: "basic",
 
@@ -132,7 +132,7 @@ const readSelectedPlan =
               "Basic Membership"
             ),
 
-          amount: 300,
+          amount: 299,
 
           requiresFullKyc:
             false,
@@ -149,7 +149,7 @@ const readSelectedPlan =
           safeText(
             parsed?.id ||
               parsed?.plan_id,
-            amount === 1500
+            amount === 2999 || amount === 1500
               ? "profile_upgrade"
               : "basic"
           ),
@@ -157,7 +157,7 @@ const readSelectedPlan =
         name:
           safeText(
             parsed?.name,
-            amount === 1500
+            amount === 2999 || amount === 1500
               ? "Profile Upgrade"
               : "Basic Membership"
           ),

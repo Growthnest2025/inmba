@@ -166,14 +166,6 @@ const socialLinks = [
   },
   {
     id: 5,
-    name: "Linktree",
-    username: "INMBA Links",
-    icon: faLink,
-    url: "https://linktr.ee/inmba",
-    className: "contact-social-linktree",
-  },
-  {
-    id: 6,
     name: "LinkedIn",
     username: "Link will be updated",
     icon: faLinkedinIn,

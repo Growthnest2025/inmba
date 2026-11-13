@@ -162,11 +162,11 @@ export default function RegistrationSuccess() {
           </article>
           <article>
             <span>2</span>
-            <p>Pay Rs.300 after Full KYC for QR and Public Profile.</p>
+            <p>Pay Rs.299 after Full KYC for INMBA Network Member (QR and Public Profile).</p>
           </article>
           <article>
             <span>3</span>
-            <p>Choose Rs.1500 plan for Royalty Rewards eligibility.</p>
+            <p>Choose Rs.2999 plan for INMBA Network Royalty Member (Network & Royalty Rewards eligibility).</p>
           </article>
         </div>
       </section>

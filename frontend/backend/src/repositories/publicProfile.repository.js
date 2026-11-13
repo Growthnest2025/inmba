@@ -67,6 +67,8 @@ const findPublicMemberByLoginId =
             profile_pic,
             login_id,
             referral_id,
+            network_level,
+            bio,
             membership_type,
             payment_status,
             direct_network,
@@ -201,6 +203,39 @@ const toPublicProfileMember =
       membership_type:
         member.membership_type ||
         "",
+
+      referral_id:
+        member.referral_id ||
+        "",
+
+      network_level:
+        member.network_level ||
+        "",
+
+      network_rank:
+        member.network_level ||
+        "",
+
+      rank:
+        member.network_level ||
+        "",
+
+      bio:
+        member.bio ||
+        "",
+
+      direct_network:
+        directNetwork,
+
+      direct_members:
+        directNetwork,
+
+      indirect_network:
+        indirectNetwork,
+
+      total_network:
+        directNetwork +
+        indirectNetwork,
 
       payment_status:
         member.payment_status ||

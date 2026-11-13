@@ -39,6 +39,13 @@ const normalizeStatus =
       .toLowerCase();
   };
 
+const isLockedBasic299Plan = (owner) => {
+  const plan = String(owner?.selected_plan || "").trim();
+  const amt = Number(owner?.amount || 0);
+  if (amt === 1500 || amt >= 2999 || ["2999", "1500"].includes(plan)) return false;
+  return ["299", "300"].includes(plan) || (amt > 0 && amt <= 300);
+};
+
 const isApproved =
   (
     member
@@ -186,6 +193,13 @@ const requireRoyaltyOwnerById =
       );
     }
 
+    if (isLockedBasic299Plan(owner)) {
+      throw new ApiError(
+        403,
+        "Network and Royalty features require the ?2,999 Royalty Plan."
+      );
+    }
+
     return owner;
   };
 
@@ -225,6 +239,13 @@ const requireRoyaltyOwnerByLoginId =
       throw new ApiError(
         404,
         "Approved member profile not found."
+      );
+    }
+
+    if (isLockedBasic299Plan(owner)) {
+      throw new ApiError(
+        403,
+        "Network and Royalty features require the ?2,999 Royalty Plan."
       );
     }
 
