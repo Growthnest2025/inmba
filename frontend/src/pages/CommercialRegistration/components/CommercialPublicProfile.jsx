@@ -629,7 +629,7 @@ export default function CommercialPublicProfile({
       .filter(Boolean)
       .join(" · ");
 
-  const cityState = [
+      const cityState = [
   profile.city,
   profile.state,
 ]
