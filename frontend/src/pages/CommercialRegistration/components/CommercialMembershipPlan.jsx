@@ -860,6 +860,26 @@ export default function CommercialMembershipPlan() {
             </section>
 
             {/* ===============================================
+                PAYMENT DISCLAIMER
+            =============================================== */}
+
+            <section className="cmp-disclaimer">
+              <div className="cmp-disclaimer-icon">
+                <i className="fa-solid fa-triangle-exclamation" />
+              </div>
+
+              <div>
+                <strong>
+                  Payment Disclaimer (₹299 / ₹2999 Commercial Membership)
+                </strong>
+
+                <p>
+                  Commercial membership fee payments (₹299 Basic / ₹2,999 Profile Upgrade) are strictly non-refundable once submitted. Commercial features, public business listings, and dashboard tools are unlocked upon administrative verification.
+                </p>
+              </div>
+            </section>
+
+            {/* ===============================================
                 SECURITY FOOTER
             =============================================== */}
 

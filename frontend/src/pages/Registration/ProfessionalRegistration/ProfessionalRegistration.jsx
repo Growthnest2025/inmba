@@ -175,6 +175,12 @@ export default function ProfessionalRegistration() {
   ] =
     useState("");
 
+  const [
+    showGuide,
+    setShowGuide,
+  ] =
+    useState(false);
+
   /* =======================================================
      CLEAN PREVIEW
   ======================================================= */
@@ -1021,101 +1027,108 @@ export default function ProfessionalRegistration() {
   ======================================================= */
 
   return (
-    <main className="professional-registration-page">
-      {/* =================================================
-          LEFT
-      ================================================= */}
-
-      <section className="professional-registration-left">
-        <div className="professional-registration-left-pattern" />
-
-       <div className="professional-registration-brand">
-  <div className="professional-registration-brand-text">
-    <span>INMBA</span>
-    <strong>Professional</strong>
-  </div>
-</div>
-
-        <div className="professional-registration-left-content">
-          <span className="professional-registration-eyebrow">
-            PROFESSIONAL MEMBERSHIP
-          </span>
-
-          <h1>
-            Build Your
-            Professional
-            Identity
-          </h1>
-
-          <p>
-            Create your INMBA
-            Professional account and
-            continue your complete
-            Professional KYC journey.
-          </p>
-
-          <div className="professional-registration-benefits">
-            <div>
-              <span>
-                <i className="fas fa-user-check" />
-              </span>
-
-              <div>
-                <strong>
-                  Verified Identity
-                </strong>
-
-                <p>
-                  Complete your
-                  Professional KYC
-                  securely.
-                </p>
-              </div>
+    <main className="professional-registration-page professional-registration-page--unified">
+      <div className="professional-registration-container--unified">
+        {/* TOP BRAND BAR */}
+        <header className="professional-registration-top-header">
+          <Link to="/" className="professional-registration-top-brand">
+            <span className="professional-registration-brand-icon">
+              <i className="fas fa-briefcase" />
+            </span>
+            <div className="professional-registration-brand-text">
+              <span>INMBA</span>
+              <strong>Professional Member</strong>
             </div>
+          </Link>
 
-            <div>
-              <span>
-                <i className="fas fa-network-wired" />
-              </span>
-
-              <div>
-                <strong>
-                  Professional Network
-                </strong>
-
-                <p>
-                  Connect with the INMBA
-                  member ecosystem.
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <span>
-                <i className="fas fa-shield-halved" />
-              </span>
-
-              <div>
-                <strong>
-                  Secure Membership
-                </strong>
-
-                <p>
-                  Your personal KYC data
-                  remains protected.
-                </p>
-              </div>
-            </div>
+          <div className="professional-registration-top-actions">
+            <span>Already have an account?</span>
+            <button
+              type="button"
+              className="professional-top-login-btn"
+              onClick={handleExistingAccountLogin}
+              disabled={submitting}
+            >
+              Login
+            </button>
           </div>
+        </header>
+
+        {/* HERO TITLE */}
+        <section className="professional-registration-hero-center">
+          <h1>Build Your Professional Identity</h1>
+          <p>
+            Create your INMBA Professional account and continue your complete Professional KYC journey.
+          </p>
+        </section>
+
+        {/* TOGGLE BUTTON FOR PROFESSIONAL BENEFITS & GUIDE */}
+        <div className="professional-guide-toggle-wrap">
+          <button
+            type="button"
+            className="professional-guide-toggle-btn"
+            onClick={() => setShowGuide(!showGuide)}
+            aria-expanded={showGuide}
+          >
+            <span className="professional-guide-toggle-icon">
+              <i className="fas fa-circle-info" />
+            </span>
+            <span>
+              {showGuide
+                ? "Hide Professional Benefits & Guide"
+                : "View Professional Benefits & Guide"}
+            </span>
+            <i
+              className={`fas fa-chevron-${showGuide ? "up" : "down"} professional-guide-toggle-arrow`}
+            />
+          </button>
         </div>
-      </section>
 
-      {/* =================================================
-          RIGHT
-      ================================================= */}
+        {/* COLLAPSIBLE GUIDE CARD */}
+        {showGuide && (
+          <section className="professional-guide-card">
+            <div className="professional-guide-benefits-grid">
+              <div className="professional-guide-benefit-item">
+                <span className="professional-guide-benefit-icon">
+                  <i className="fas fa-user-check" />
+                </span>
+                <div>
+                  <strong>Verified Identity</strong>
+                  <p>Complete your Professional KYC securely.</p>
+                </div>
+              </div>
 
-      <section className="professional-registration-right">
-        <div className="professional-registration-form-wrapper">
+              <div className="professional-guide-benefit-item">
+                <span className="professional-guide-benefit-icon">
+                  <i className="fas fa-network-wired" />
+                </span>
+                <div>
+                  <strong>Professional Network</strong>
+                  <p>Connect with the INMBA member ecosystem.</p>
+                </div>
+              </div>
+
+              <div className="professional-guide-benefit-item">
+                <span className="professional-guide-benefit-icon">
+                  <i className="fas fa-shield-halved" />
+                </span>
+                <div>
+                  <strong>Secure Membership</strong>
+                  <p>Your personal KYC data remains protected.</p>
+                </div>
+              </div>
+            </div>
+
+            <p className="professional-guide-helpline">
+              <i className="fas fa-headset" />
+              <span>Need assistance? Call Admin: <a href="tel:+918940369361">+91 89403 69361</a></span>
+            </p>
+          </section>
+        )}
+
+        {/* FORM CONTAINER */}
+        <div className="professional-registration-form-unified">
+          <div className="professional-registration-form-wrapper">
           {/* HEADING */}
 
           <div className="professional-registration-heading">
@@ -1622,8 +1635,9 @@ export default function ProfessionalRegistration() {
               Back to Home
             </Link>
           </div>
+          </div>
         </div>
-      </section>
+      </div>
     </main>
   );
 }

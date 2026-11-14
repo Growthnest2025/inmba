@@ -2089,6 +2089,20 @@ export default function ProfessionalPayment() {
               </div>
 
               {/* =========================================
+                  DISCLAIMER
+              ========================================= */}
+
+              <div className="professional-payment-disclaimer-box">
+                <div className="professional-payment-disclaimer-header">
+                  <i className="fa-solid fa-triangle-exclamation" />
+                  <strong>Membership Payment Disclaimer (₹{paymentAmount})</strong>
+                </div>
+                <p>
+                  Professional membership payments (₹299 Network Member / ₹2,999 Network Royalty Member) are non-refundable one-time charges. Professional Member ID, verified directory badge, and royalty rewards are unlocked following administrative KYC verification within 24 hours.
+                </p>
+              </div>
+
+              {/* =========================================
                   ACTIONS
               ========================================= */}
 

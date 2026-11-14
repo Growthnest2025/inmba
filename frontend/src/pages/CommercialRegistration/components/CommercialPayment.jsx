@@ -972,6 +972,20 @@ const handleSubmit = async (event) => {
               )}
 
               {/* ===========================================
+                  DISCLAIMER
+              =========================================== */}
+
+              <div className="commercial-payment-disclaimer-box">
+                <div className="commercial-payment-disclaimer-header">
+                  <i className="fa-solid fa-triangle-exclamation" />
+                  <strong>Membership Payment Disclaimer (₹{plan.amount})</strong>
+                </div>
+                <p>
+                  Commercial membership payments (₹299 Basic / ₹2,999 Profile Upgrade) are strictly non-refundable one-time fees. Business profile activation, member directory access, and QR code tools are activated after admin review within 24 hours.
+                </p>
+              </div>
+
+              {/* ===========================================
                   SUBMIT
               =========================================== */}
 

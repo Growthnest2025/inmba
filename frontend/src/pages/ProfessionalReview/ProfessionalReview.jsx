@@ -2703,6 +2703,14 @@ export default function ProfessionalReview() {
           </div>
         </section>
 
+        {/* DISCLAIMER */}
+        <div className="professional-review-disclaimer-note">
+          <i className="fa-solid fa-triangle-exclamation" />
+          <span>
+            <strong>Payment Disclaimer (₹299 / ₹2999):</strong> Professional membership payments are non-refundable one-time fees. Verified credentials and dashboard privileges are activated after admin review within 24 hours.
+          </span>
+        </div>
+
         {/* ===============================================
             ACTIONS
         =============================================== */}

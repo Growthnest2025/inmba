@@ -135,6 +135,12 @@ export default function CommercialBasicKyc() {
   ] =
     useState(false);
 
+  const [
+    showGuide,
+    setShowGuide,
+  ] =
+    useState(false);
+
   /* =====================================================
      REGISTRATION SUCCESS STATE
   ===================================================== */
@@ -716,102 +722,108 @@ const handleContinueMembership = () => {
   ===================================================== */
 
   return (
-    <main className="commercial-registration-page">
-      {/* =================================================
-          LEFT SIDE
-      ================================================= */}
-
-      <section className="commercial-registration-left">
-        <div className="commercial-registration-left-pattern" />
-
-        {/* BRAND */}
-        
-        <div className="commercial-registration-brand">
-  <div className="commercial-registration-brand-text">
-    <span>INMBA</span>
-    <strong>Commercial</strong>
-  </div>
-</div>
-       
-        
-
-        {/* CONTENT */}
-
-        <div className="commercial-registration-left-content">
-          <span className="commercial-registration-eyebrow">
-            COMMERCIAL MEMBERSHIP
-          </span>
-
-          <h1>
-            Build Your Commercial Identity
-          </h1>
-
-          <p>
-            Create your INMBA Commercial account and
-            choose the membership plan that matches
-            your business requirements.
-          </p>
-
-          {/* BENEFITS */}
-
-          <div className="commercial-registration-benefits">
-            <div>
-              <span>
-                <i className="fas fa-store" />
-              </span>
-
-              <div>
-                <strong>
-                  Commercial Account
-                </strong>
-
-                <p>
-                  Create your Commercial Membership account securely.
-                </p>
-              </div>
+    <main className="commercial-registration-page commercial-registration-page--unified">
+      <div className="commercial-registration-container--unified">
+        {/* TOP BRAND BAR */}
+        <header className="commercial-registration-top-header">
+          <Link to="/" className="commercial-registration-top-brand">
+            <span className="commercial-registration-brand-icon">
+              <i className="fas fa-store" />
+            </span>
+            <div className="commercial-registration-brand-text">
+              <span>INMBA</span>
+              <strong>Commercial Member</strong>
             </div>
+          </Link>
 
-            <div>
-              <span>
-                <i className="fas fa-network-wired" />
-              </span>
-
-              <div>
-                <strong>
-                  Commercial Network
-                </strong>
-
-                <p>
-                  Connect with the INMBA business ecosystem.
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <span>
-                <i className="fas fa-shield-halved" />
-              </span>
-
-              <div>
-                <strong>
-                  Secure Membership
-                </strong>
-
-                <p>
-                  Your business information remains protected.
-                </p>
-              </div>
-            </div>
+          <div className="commercial-registration-top-actions">
+            <span>Already have an account?</span>
+            <button
+              type="button"
+              className="commercial-top-login-btn"
+              onClick={handleExistingAccountLogin}
+              disabled={submitting}
+            >
+              Login
+            </button>
           </div>
+        </header>
+
+        {/* HERO TITLE */}
+        <section className="commercial-registration-hero-center">
+          <h1>Build Your Commercial Identity</h1>
+          <p>
+            Create your INMBA Commercial account and continue to your commercial membership dashboard.
+          </p>
+        </section>
+
+        {/* TOGGLE BUTTON FOR COMMERCIAL BENEFITS & GUIDE */}
+        <div className="commercial-guide-toggle-wrap">
+          <button
+            type="button"
+            className="commercial-guide-toggle-btn"
+            onClick={() => setShowGuide(!showGuide)}
+            aria-expanded={showGuide}
+          >
+            <span className="commercial-guide-toggle-icon">
+              <i className="fas fa-circle-info" />
+            </span>
+            <span>
+              {showGuide
+                ? "Hide Commercial Benefits & Guide"
+                : "View Commercial Benefits & Guide"}
+            </span>
+            <i
+              className={`fas fa-chevron-${showGuide ? "up" : "down"} commercial-guide-toggle-arrow`}
+            />
+          </button>
         </div>
-      </section>
 
-      {/* =================================================
-          RIGHT SIDE
-      ================================================= */}
+        {/* COLLAPSIBLE GUIDE CARD */}
+        {showGuide && (
+          <section className="commercial-guide-card">
+            <div className="commercial-guide-benefits-grid">
+              <div className="commercial-guide-benefit-item">
+                <span className="commercial-guide-benefit-icon">
+                  <i className="fas fa-store" />
+                </span>
+                <div>
+                  <strong>Commercial Account</strong>
+                  <p>Create your Commercial Membership account securely.</p>
+                </div>
+              </div>
 
-      <section className="commercial-registration-right">
-        <div className="commercial-registration-form-wrapper">
+              <div className="commercial-guide-benefit-item">
+                <span className="commercial-guide-benefit-icon">
+                  <i className="fas fa-network-wired" />
+                </span>
+                <div>
+                  <strong>Commercial Network</strong>
+                  <p>Connect with the INMBA business ecosystem.</p>
+                </div>
+              </div>
+
+              <div className="commercial-guide-benefit-item">
+                <span className="commercial-guide-benefit-icon">
+                  <i className="fas fa-shield-halved" />
+                </span>
+                <div>
+                  <strong>Secure Membership</strong>
+                  <p>Your business information remains protected.</p>
+                </div>
+              </div>
+            </div>
+
+            <p className="commercial-guide-helpline">
+              <i className="fas fa-headset" />
+              <span>Need assistance? Call Admin: <a href="tel:+918940369361">+91 89403 69361</a></span>
+            </p>
+          </section>
+        )}
+
+        {/* FORM CONTAINER */}
+        <div className="commercial-registration-form-unified">
+          <div className="commercial-registration-form-wrapper">
           {/* HEADER */}
 
           <div className="commercial-registration-heading">
@@ -1273,8 +1285,9 @@ minLength={5}
               Back to Home
             </Link>
           </div>
+          </div>
         </div>
-      </section>
+      </div>
     </main>
   );
 }

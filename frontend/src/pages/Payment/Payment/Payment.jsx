@@ -2197,6 +2197,19 @@ export default function Payment() {
               )}
             </div>
 
+            {/* DISCLAIMER */}
+
+            <div className="inmba-payment-disclaimer-box">
+              <div className="inmba-payment-disclaimer-header">
+                <i className="fas fa-triangle-exclamation" aria-hidden="true" />
+                <strong>Membership Payment Disclaimer (₹299 / ₹2999)</strong>
+              </div>
+              <p>
+                Membership fee payments of ₹299 (Network Member) and ₹2,999 (Network Royalty Member) are strictly non-refundable one-time processing charges.
+                Digital Member ID, QR code, Public Profile, and Royalty Privileges are activated following administrative review and verification of submitted Full KYC documents.
+              </p>
+            </div>
+
             {/* SUBMIT */}
 
             <button

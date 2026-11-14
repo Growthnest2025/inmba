@@ -1751,3 +1751,484 @@
     margin-bottom: 22px;
   }
 }
+
+/* =========================================================
+   INMBA CIVILIAN REGISTRATION - UNIFIED LAYOUT STYLES
+========================================================= */
+
+.inmba-register-page--unified {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f0f6f2 0%, #fafcfa 100%);
+  padding: 24px 16px 60px;
+}
+
+.inmba-register-container--unified {
+  max-width: 920px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Top bar */
+.inmba-register-top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #dce8dd;
+  box-shadow: 0 4px 18px rgba(15, 77, 15, 0.06);
+  margin-bottom: 24px;
+}
+
+.inmba-register-top-header .inmba-register-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #0f4d1c;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.inmba-register-brand-badge {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  background: #e6f4ea;
+  color: #176027;
+  border-radius: 10px;
+  font-size: 1.05rem;
+}
+
+.inmba-register-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.inmba-register-language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: #f4f8f5;
+  border: 1px solid #d8e5da;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: #3b5240;
+}
+
+.inmba-register-language-switcher button {
+  border: none;
+  background: transparent;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #496350;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.inmba-register-language-switcher button.active {
+  background: #176027;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(23, 96, 39, 0.25);
+}
+
+.inmba-register-login-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: #556c5a;
+}
+
+.inmba-register-login-pill a {
+  color: #176027;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 6px 14px;
+  background: #edf7ef;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.inmba-register-login-pill a:hover {
+  background: #176027;
+  color: #ffffff;
+}
+
+/* Hero Center */
+.inmba-register-hero-center {
+  text-align: center;
+  margin: 18px 0 22px;
+  padding: 0 10px;
+}
+
+.inmba-register-hero-center h1 {
+  font-size: clamp(1.75rem, 3.4vw, 2.35rem);
+  font-weight: 800;
+  color: #0f3d17;
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
+}
+
+.inmba-register-hero-center p {
+  font-size: 1.02rem;
+  color: #43624a;
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.55;
+}
+
+/* Guide Toggle Button */
+.inmba-register-guide-toggle-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px 0 24px;
+}
+
+.inmba-register-guide-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 13px 30px;
+  background: linear-gradient(135deg, #0f4d1c 0%, #1e7a32 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(15, 77, 15, 0.22);
+  transition: all 0.25s ease;
+}
+
+.inmba-register-guide-toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(15, 77, 15, 0.32);
+  background: linear-gradient(135deg, #135e23 0%, #248a3a 100%);
+}
+
+.inmba-register-guide-toggle-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 0.95rem;
+}
+
+.inmba-register-guide-toggle-arrow {
+  font-size: 0.85rem;
+  transition: transform 0.2s ease;
+}
+
+/* Collapsible Guide Card */
+.inmba-register-guide-card {
+  background: #ffffff;
+  border: 1px solid #d5e6d8;
+  border-radius: 20px;
+  padding: 28px clamp(20px, 4vw, 32px);
+  box-shadow: 0 10px 30px rgba(15, 77, 15, 0.08);
+  margin-bottom: 26px;
+  animation: fadeInDown 0.3s ease;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.inmba-register-guide-benefits {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.inmba-register-guide-benefit-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 16px 18px;
+  background: #f6fbf7;
+  border: 1px solid #e0ede2;
+  border-radius: 14px;
+}
+
+.inmba-register-guide-benefit-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #e4f4e7;
+  color: #176027;
+  font-size: 1.1rem;
+}
+
+.inmba-register-guide-benefit-card strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #113818;
+  margin-bottom: 4px;
+}
+
+.inmba-register-guide-benefit-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #4a6350;
+  line-height: 1.45;
+}
+
+.inmba-register-guide-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  padding-top: 20px;
+  border-top: 1px dashed #d5e5d8;
+}
+
+@media (max-width: 768px) {
+  .inmba-register-guide-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.inmba-register-guide-box h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #123d19;
+  margin: 0 0 14px;
+}
+
+.inmba-register-guide-steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inmba-register-guide-steps-list li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.inmba-register-step-num {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #176027;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.inmba-register-guide-steps-list li strong {
+  display: block;
+  font-size: 0.9rem;
+  color: #14351a;
+  margin-bottom: 2px;
+}
+
+.inmba-register-guide-steps-list li p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #536f59;
+}
+
+.inmba-register-guide-need-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inmba-register-guide-need-list li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.86rem;
+  color: #3b5642;
+}
+
+.inmba-register-guide-need-list li i {
+  color: #1e8236;
+  font-size: 0.95rem;
+}
+
+.inmba-register-guide-note {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px;
+  background: #edf7ef;
+  border-radius: 10px;
+  font-size: 0.84rem;
+  color: #1f5429;
+  margin: 0;
+}
+
+.inmba-register-guide-note a {
+  color: #176027;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* Unified Card */
+.inmba-register-unified-card {
+  background: #ffffff;
+  border: 1px solid #dce8dd;
+  border-radius: 22px;
+  padding: 34px clamp(20px, 4vw, 42px);
+  box-shadow: 0 12px 36px rgba(15, 77, 15, 0.08);
+}
+
+/* Photo Button */
+.inmba-register-photo-btn-container {
+  margin: 10px 0 20px;
+}
+
+.inmba-photo-pick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 24px;
+  background: #f3faf5;
+  border: 2px dashed #309448;
+  border-radius: 12px;
+  color: #155d25;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.inmba-photo-pick-btn:hover:not(:disabled) {
+  background: #e5f5e8;
+  border-color: #1d7b32;
+  color: #0f4d1c;
+  transform: translateY(-1px);
+}
+
+.inmba-photo-preview-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  background: #f6fcf8;
+  border: 1px solid #cce5d1;
+  border-radius: 14px;
+}
+
+.inmba-photo-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid #23813a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.inmba-photo-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.inmba-photo-meta strong {
+  display: block;
+  font-size: 0.92rem;
+  color: #123d19;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inmba-photo-meta small {
+  display: block;
+  font-size: 0.78rem;
+  color: #55725c;
+  margin-top: 2px;
+}
+
+.inmba-photo-btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.inmba-photo-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.inmba-photo-action-btn.change {
+  background: #e4f4e7;
+  color: #176027;
+}
+
+.inmba-photo-action-btn.change:hover:not(:disabled) {
+  background: #d0edd5;
+}
+
+.inmba-photo-action-btn.remove {
+  background: #fde8e8;
+  color: #c02424;
+}
+
+.inmba-photo-action-btn.remove:hover:not(:disabled) {
+  background: #fad2d2;
+}
+
+@media (max-width: 600px) {
+  .inmba-register-top-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .inmba-register-header-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .inmba-photo-preview-bar {
+    flex-wrap: wrap;
+  }
+}
+

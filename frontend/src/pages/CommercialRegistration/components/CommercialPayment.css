@@ -1592,3 +1592,41 @@
     font-size: 0.9rem;
   }
 }
+
+/* =========================================================
+   PAYMENT DISCLAIMER
+========================================================= */
+
+.commercial-payment-disclaimer-box {
+  margin: 18px 0 20px;
+  padding: 16px 18px;
+  background: #fffdf5;
+  border: 1px solid #fae69e;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(184, 134, 11, 0.06);
+}
+
+.commercial-payment-disclaimer-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #b37400;
+  margin-bottom: 6px;
+}
+
+.commercial-payment-disclaimer-header i {
+  font-size: 1rem;
+}
+
+.commercial-payment-disclaimer-header strong {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #7a4e00;
+}
+
+.commercial-payment-disclaimer-box p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #695020;
+  line-height: 1.48;
+}

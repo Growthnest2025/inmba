@@ -1385,3 +1385,247 @@
     width: 100%;
   }
 }
+
+/* =========================================================
+   COMMERCIAL REGISTRATION - UNIFIED LAYOUT STYLES
+========================================================= */
+
+.commercial-registration-page--unified {
+  display: block;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fdf6f6 0%, #ffffff 100%);
+  padding: 24px 16px 60px;
+}
+
+.commercial-registration-container--unified {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.commercial-registration-top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #fae2e2;
+  box-shadow: 0 4px 18px rgba(184, 30, 42, 0.06);
+  margin-bottom: 24px;
+}
+
+.commercial-registration-top-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.commercial-registration-brand-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #fde8e8;
+  color: #c02424;
+  font-size: 1.1rem;
+}
+
+.commercial-registration-top-brand .commercial-registration-brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.commercial-registration-top-brand .commercial-registration-brand-text span {
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #921717;
+}
+
+.commercial-registration-top-brand .commercial-registration-brand-text strong {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #3b0909;
+}
+
+.commercial-registration-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: #634b4b;
+}
+
+.commercial-top-login-btn {
+  background: #fde8e8;
+  color: #b81e2a;
+  border: none;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.commercial-top-login-btn:hover:not(:disabled) {
+  background: #b81e2a;
+  color: #ffffff;
+}
+
+.commercial-registration-hero-center {
+  text-align: center;
+  margin: 18px 0 22px;
+  padding: 0 10px;
+}
+
+.commercial-registration-hero-center h1 {
+  font-size: clamp(1.75rem, 3.4vw, 2.35rem);
+  font-weight: 800;
+  color: #4a0f12;
+  margin: 0 0 10px;
+}
+
+.commercial-registration-hero-center p {
+  font-size: 1.02rem;
+  color: #664345;
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.55;
+}
+
+/* Guide toggle */
+.commercial-guide-toggle-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px 0 24px;
+}
+
+.commercial-guide-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 13px 30px;
+  background: linear-gradient(135deg, #a81c27 0%, #c82333 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(168, 28, 39, 0.22);
+  transition: all 0.25s ease;
+}
+
+.commercial-guide-toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(168, 28, 39, 0.32);
+  background: linear-gradient(135deg, #be202e 0%, #e0283a 100%);
+}
+
+.commercial-guide-toggle-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 0.95rem;
+}
+
+.commercial-guide-toggle-arrow {
+  font-size: 0.85rem;
+  transition: transform 0.2s ease;
+}
+
+/* Guide Card */
+.commercial-guide-card {
+  background: #ffffff;
+  border: 1px solid #fae2e2;
+  border-radius: 20px;
+  padding: 26px clamp(18px, 4vw, 30px);
+  box-shadow: 0 10px 30px rgba(168, 28, 39, 0.07);
+  margin-bottom: 24px;
+  animation: fadeInDown 0.3s ease;
+}
+
+.commercial-guide-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.commercial-guide-benefit-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 16px;
+  background: #fff8f8;
+  border: 1px solid #fae4e4;
+  border-radius: 14px;
+}
+
+.commercial-guide-benefit-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #fde8e8;
+  color: #c02424;
+  font-size: 1.1rem;
+}
+
+.commercial-guide-benefit-item strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #4a0f12;
+  margin-bottom: 4px;
+}
+
+.commercial-guide-benefit-item p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: #634b4b;
+  line-height: 1.45;
+}
+
+.commercial-guide-helpline {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px;
+  background: #fff5f5;
+  border-radius: 10px;
+  font-size: 0.84rem;
+  color: #7d1c23;
+  margin: 0;
+}
+
+.commercial-guide-helpline a {
+  color: #b81e2a;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* Form unified card */
+.commercial-registration-form-unified {
+  background: #ffffff;
+  border: 1px solid #fae2e2;
+  border-radius: 22px;
+  padding: 34px clamp(20px, 4vw, 42px);
+  box-shadow: 0 12px 36px rgba(184, 30, 42, 0.08);
+}
+
+.commercial-registration-form-unified .commercial-registration-form-wrapper {
+  max-width: 100%;
+}

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
@@ -186,13 +186,52 @@ export default function MembershipRegistration({
 
   const [civilianLanguage, setCivilianLanguage] = useState("en");
 
+  const [showGuide, setShowGuide] = useState(false);
+
+  const [photoPreview, setPhotoPreview] = useState("");
+
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (photoPreview) {
+        URL.revokeObjectURL(photoPreview);
+      }
+    };
+  }, [photoPreview]);
+
+  const handlePhotoChange = (event) => {
+    const file = event.target.files?.[0] || null;
+    if (file) {
+      if (photoPreview) {
+        URL.revokeObjectURL(photoPreview);
+      }
+      setPhotoPreview(URL.createObjectURL(file));
+      setFormData((previousData) => ({
+        ...previousData,
+        profile_pic: file,
+      }));
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    if (photoPreview) {
+      URL.revokeObjectURL(photoPreview);
+    }
+    setPhotoPreview("");
+    setFormData((previousData) => ({
+      ...previousData,
+      profile_pic: null,
+    }));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const civilianText = useMemo(() => {
     const tamil = civilianLanguage === "ta";
 
     return {
-      eyebrow: tamil
-        ? "சிவிலியன் உறுப்பினர் · அடிப்படை திட்டம்"
-        : "Civilian Membership · Basic Plan",
       title: tamil
         ? "INMBA சிவிலியன் உறுப்பினர் (அடிப்படை)"
         : "INMBA Civilian Membership (Basic)",
@@ -353,8 +392,6 @@ export default function MembershipRegistration({
     }
 
     return {
-      eyebrow: civilianText.eyebrow,
-
       title: civilianText.title,
 
       description: civilianText.description,
@@ -643,126 +680,134 @@ export default function MembershipRegistration({
         isCommercialMembership ? "" : "inmba-register-page--civilian"
       }`}
     >
-      <div className="inmba-register-container">
-        <div className="inmba-register-split-layout">
-          {/* =================================
-              LEFT PANEL
-          ================================= */}
+      <div className="inmba-register-container inmba-register-container--unified">
+        {/* TOP BRAND BAR */}
+        <header className="inmba-register-top-header">
+          <Link to="/" className="inmba-register-brand">
+            <span className="inmba-register-brand-badge">
+              <i className="fas fa-id-card-clip" aria-hidden="true"></i>
+            </span>
+            <strong>INMBA Civilian Membership</strong>
+          </Link>
 
-          <aside className="inmba-register-side-panel">
-            <header className="inmba-register-header">
-              <Link to="/" className="inmba-register-brand">
-              
+          <div className="inmba-register-header-controls">
+            {!isCommercialMembership && (
+              <div className="inmba-register-language-switcher">
+                <i className="fas fa-language" aria-hidden="true"></i>
+                <button
+                  type="button"
+                  className={civilianLanguage === "ta" ? "active" : ""}
+                  onClick={() => setCivilianLanguage("ta")}
+                >
+                  தமிழ்
+                </button>
+                <button
+                  type="button"
+                  className={civilianLanguage === "en" ? "active" : ""}
+                  onClick={() => setCivilianLanguage("en")}
+                >
+                  English
+                </button>
+              </div>
+            )}
 
-                <div>
-                  <strong>INMBA<br /> Civilian Membership</strong>
+            <div className="inmba-register-login-pill">
+              <span>{civilianText.alreadyRegistered}</span>
+              <Link to="/login">{civilianText.memberLogin}</Link>
+            </div>
+          </div>
+        </header>
 
-                  <small>
-                    International Network of Management & Business
-                    Administration
-                  </small>
-                </div>
-              </Link>
+        {/* HERO TITLE CENTER */}
+        <section className="inmba-register-hero-center">
+          <h1>{civilianText.title}</h1>
+          <p>{civilianText.description}</p>
+        </section>
 
-              {isCommercialMembership && (
-                <div>
-                  <span>Already registered?</span>
+        {/* TOGGLE BUTTON FOR REGISTRATION DETAILS & BENEFITS */}
+        {!isCommercialMembership && (
+          <div className="inmba-register-guide-toggle-wrap">
+            <button
+              type="button"
+              className="inmba-register-guide-toggle-btn"
+              onClick={() => setShowGuide((prev) => !prev)}
+              aria-expanded={showGuide}
+            >
+              <span className="inmba-register-guide-toggle-icon">
+                <i className="fas fa-circle-info" aria-hidden="true"></i>
+              </span>
+              <span>
+                {showGuide
+                  ? (civilianLanguage === "ta" ? "வழிகாட்டி & விவரங்களை மறைக்க" : "Hide Registration Details & Benefits")
+                  : (civilianLanguage === "ta" ? "பதிவு வழிகாட்டி & நன்மைகள் பார்க்க" : "View Registration Guide & Benefits")}
+              </span>
+              <i
+                className={`fas fa-chevron-${showGuide ? "up" : "down"} inmba-register-guide-toggle-arrow`}
+                aria-hidden="true"
+              ></i>
+            </button>
+          </div>
+        )}
 
-                  <Link to="/login">Member Login</Link>
-                </div>
-              )}
-            </header>
-
-            <section className="inmba-register-hero">
-              <div>
-                <p>{pageContent.eyebrow}</p>
-
-                <h1>{pageContent.title}</h1>
-
-                <span>{pageContent.description}</span>
-
-                {!isCommercialMembership && (
-                  <div className="inmba-register-benefits">
-                    {civilianText.benefits.map((benefit) => (
-                      <div key={benefit.id}>
-                        <span>
-                          <i className={benefit.icon} aria-hidden="true"></i>
-                        </span>
-
-                        <div>
-                          <strong>{benefit.title}</strong>
-
-                          <p>{benefit.text}</p>
-                        </div>
-                      </div>
-                    ))}
+        {/* COLLAPSIBLE DETAILS CARD */}
+        {!isCommercialMembership && showGuide && (
+          <section className="inmba-register-guide-card">
+            <div className="inmba-register-guide-benefits">
+              {civilianText.benefits.map((benefit) => (
+                <div key={benefit.id} className="inmba-register-guide-benefit-card">
+                  <span className="inmba-register-guide-benefit-icon">
+                    <i className={benefit.icon} aria-hidden="true"></i>
+                  </span>
+                  <div>
+                    <strong>{benefit.title}</strong>
+                    <p>{benefit.text}</p>
                   </div>
-                )}
+                </div>
+              ))}
+            </div>
+
+            <div className="inmba-register-guide-grid">
+              <div className="inmba-register-guide-box">
+                <h3>{civilianText.stepsTitle}</h3>
+                <ol className="inmba-register-guide-steps-list">
+                  {civilianText.steps.map((step, index) => (
+                    <li key={step.id}>
+                      <span>{index + 1}</span>
+                      <div>
+                        <strong>{step.title}</strong>
+                        <p>{step.text}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
               </div>
 
-              {isCommercialMembership && (
-                <div className="inmba-register-type-card">
-                  <i className={pageContent.typeIcon} aria-hidden="true"></i>
+              <div className="inmba-register-guide-box">
+                <h3>{civilianText.needTitle}</h3>
+                <ul className="inmba-register-guide-need-list">
+                  {civilianText.needItems.map((item) => (
+                    <li key={item}>
+                      <i className="fas fa-circle-check" aria-hidden="true"></i>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
 
-                  <span>Membership Type</span>
-
-                  <strong>{activeMembershipType}</strong>
-                </div>
-              )}
-            </section>
-
-            {!isCommercialMembership && (
-              <>
-                <section className="inmba-register-steps">
-                  <h3>{civilianText.stepsTitle}</h3>
-
-                  <ol>
-                    {civilianText.steps.map((step, index) => (
-                      <li key={step.id}>
-                        <span>{index + 1}</span>
-
-                        <div>
-                          <strong>{step.title}</strong>
-
-                          <p>{step.text}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ol>
-                </section>
-
-                <section className="inmba-register-need">
-                  <h3>{civilianText.needTitle}</h3>
-
-                  <ul>
-                    {civilianText.needItems.map((item) => (
-                      <li key={item}>
-                        <i className="fas fa-circle-check" aria-hidden="true"></i>
-
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-
-                <p className="inmba-register-side-note">
+                <p className="inmba-register-guide-note">
                   <i className="fas fa-headset" aria-hidden="true"></i>
-
                   <span>
                     {civilianText.helpText}{" "}
                     <a href="tel:+918940369361">+91 89403 69361</a>
                   </span>
                 </p>
-              </>
-            )}
-          </aside>
+              </div>
+            </div>
+          </section>
+        )}
 
-          {/* =================================
-              RIGHT PANEL
-          ================================= */}
-
-          <section ref={contentRef} className="inmba-register-content-panel">
-            <div className="inmba-register-form-wrapper">
+        {/* UNIFIED FORM CONTAINER */}
+        <section ref={contentRef} className="inmba-register-unified-card">
+          <div className="inmba-register-form-wrapper">
               {!isCommercialMembership && (
                 <header className="inmba-register-content-heading">
                   <span>
@@ -1115,36 +1160,80 @@ export default function MembershipRegistration({
                 )}
 
                 {/* =================================
-                    PROFILE PHOTO (CIVILIAN)
+                    PROFILE PHOTO BUTTON (CIVILIAN)
                 ================================= */}
 
                 {!isCommercialMembership && (
-                  <RegistrationSection
-                    className="inmba-register-section--single"
-                    icon="fas fa-camera"
-                    title={civilianText.photoTitle}
-                    description={civilianText.photoDescription}
-                  >
-                    <div className="inmba-register-grid">
-                      <div className="inmba-register-field">
-                        <label htmlFor="register-profile-pic">
-                          {civilianText.photoTitle}{" "}
-                          <small>({civilianText.optional})</small>
-                        </label>
+                  <div className="inmba-register-photo-btn-container">
+                    <input
+                      ref={fileInputRef}
+                      id="register-profile-pic"
+                      name="profile_pic"
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handlePhotoChange}
+                      style={{ display: "none" }}
+                      disabled={submitting}
+                    />
 
-                        <input
-                          id="register-profile-pic"
-                          name="profile_pic"
-                          type="file"
-                          accept="image/jpeg,image/png,image/webp"
-                          onChange={handleInputChange}
-                          disabled={submitting}
+                    {!photoPreview ? (
+                      <button
+                        type="button"
+                        className="inmba-photo-pick-btn"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={submitting}
+                      >
+                        <i className="fas fa-camera" aria-hidden="true"></i>
+                        <span>
+                          {civilianLanguage === "ta"
+                            ? "சுயவிவரப் புகைப்படம் சேர்க்கவும் (விருப்பத்தேர்வு)"
+                            : "Add Profile Photo (Optional)"}
+                        </span>
+                      </button>
+                    ) : (
+                      <div className="inmba-photo-preview-bar">
+                        <img
+                          src={photoPreview}
+                          alt="Preview"
+                          className="inmba-photo-thumb"
                         />
-
-                        <small>{civilianText.photoHelp}</small>
+                        <div className="inmba-photo-meta">
+                          <strong>
+                            {formData.profile_pic?.name || "Photo Selected"}
+                          </strong>
+                          <small>
+                            {civilianLanguage === "ta"
+                              ? "சுயவிவரப் புகைப்படம் தேர்ந்தெடுக்கப்பட்டது (விருப்பத்தேர்வு)"
+                              : "Profile photo attached (Optional)"}
+                          </small>
+                        </div>
+                        <div className="inmba-photo-btn-group">
+                          <button
+                            type="button"
+                            className="inmba-photo-action-btn change"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={submitting}
+                          >
+                            <i className="fas fa-arrows-rotate" aria-hidden="true"></i>
+                            <span>
+                              {civilianLanguage === "ta" ? "மாற்றுக" : "Change"}
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            className="inmba-photo-action-btn remove"
+                            onClick={handleRemovePhoto}
+                            disabled={submitting}
+                          >
+                            <i className="fas fa-trash-can" aria-hidden="true"></i>
+                            <span>
+                              {civilianLanguage === "ta" ? "நீக்குக" : "Remove"}
+                            </span>
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </RegistrationSection>
+                    )}
+                  </div>
                 )}
 
                 {/* =================================
@@ -1309,7 +1398,6 @@ export default function MembershipRegistration({
               )}
             </div>
           </section>
-        </div>
       </div>
     </main>
   );

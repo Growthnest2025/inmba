@@ -1523,6 +1523,14 @@ export default function CivilianReview() {
           </div>
         </section>
 
+        {/* DISCLAIMER */}
+        <div className="civilian-review-disclaimer-note">
+          <i className="fa-solid fa-triangle-exclamation" />
+          <span>
+            <strong>Payment Disclaimer (₹299 / ₹2999):</strong> Membership fees are non-refundable one-time charges. Digital Member ID, QR Code, and Privileges are unlocked following administrative approval within 24 hours.
+          </span>
+        </div>
+
         {/* ACTIONS */}
         <div className="civilian-review-actions">
           <button
