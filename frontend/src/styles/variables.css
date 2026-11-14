@@ -78,5 +78,23 @@
   --container-width: 1200px;
 
   /* Navbar */
-  --navbar-height: 76px;
+  --navbar-height: 124px;
+  --navbar-gap: 36px;
+  --page-top-offset: calc(var(--navbar-height) + var(--navbar-gap));
+}
+
+@media (max-width: 1199px) {
+  :root {
+    --navbar-height: 104px;
+    --navbar-gap: 28px;
+    --page-top-offset: calc(var(--navbar-height) + var(--navbar-gap));
+  }
+}
+
+@media (max-width: 575px) {
+  :root {
+    --navbar-height: 92px;
+    --navbar-gap: 20px;
+    --page-top-offset: calc(var(--navbar-height) + var(--navbar-gap));
+  }
 }

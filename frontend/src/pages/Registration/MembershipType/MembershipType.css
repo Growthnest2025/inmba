@@ -6,7 +6,7 @@
   min-height: 100vh;
   /* space for the fixed navbar (fixed values, so it does not depend
      on any global --navbar-height). navbar height + ~36px gap */
-  padding: 172px 22px 70px;
+  padding: var(--page-top-offset, 160px) 22px 70px;
   background:
     radial-gradient(circle at 8% 12%, rgba(15, 77, 15, 0.12), transparent 31%),
     radial-gradient(circle at 92% 85%, rgba(54, 143, 54, 0.08), transparent 34%),

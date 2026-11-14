@@ -32,6 +32,7 @@
 ========================================================= */
 
 .commercial-registration-page {
+  padding-top: var(--page-top-offset, 160px);
   width: 100%;
   min-height: 100vh;
 
@@ -1394,7 +1395,7 @@
   display: block;
   min-height: 100vh;
   background: linear-gradient(180deg, #fdf6f6 0%, #ffffff 100%);
-  padding: 24px 16px 60px;
+  padding: var(--page-top-offset, 160px) 16px 60px;
 }
 
 .commercial-registration-container--unified {

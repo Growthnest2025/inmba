@@ -89,7 +89,7 @@
   min-height: 100svh;
   display: flex;
   align-items: center;
-  padding: 150px 0 50px;
+  padding: var(--page-top-offset, 160px) 0 50px;
   overflow: hidden;
   background:
     radial-gradient(circle at 12% 18%, rgba(31, 122, 53, 0.12), transparent 28%),
@@ -304,6 +304,18 @@
   font-weight: 900;
   font-size: 5rem;
   color: rgba(15, 77, 15, 0.06);
+}
+
+.about-creed-title {
+  position: relative;
+  z-index: 2;
+  margin: 0 0 18px;
+  text-align: center;
+  color: var(--primary-dark);
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
 .about-creed-text {
@@ -641,6 +653,7 @@ html { scroll-behavior: smooth; }
   .about-creed-card { padding: 32px 22px 26px; border-radius: 24px; }
   .about-creed-card::before { top: 22px; bottom: 22px; width: 5px; }
   .about-creed-card::after { top: 14px; right: 18px; font-size: 3.8rem; }
+  .about-creed-title { margin-bottom: 14px; font-size: clamp(1.6rem, 7vw, 2rem); }
   .about-creed-text { font-size: 0.98rem; line-height: 2; }
   .about-creed-text-en { font-size: 0.94rem; line-height: 1.8; }
 
@@ -661,7 +674,7 @@ html { scroll-behavior: smooth; }
 }
 
 @media (max-width: 480px) {
-  .about-hero { padding: 112px 0 24px; }
+  .about-hero { padding: var(--page-top-offset, 112px) 0 24px; }
   .about-hero-title { font-size: clamp(2.15rem, 13vw, 2.85rem); }
   .about-hero-text { font-size: 0.95rem; }
   .about-hero-info-card { gap: 12px; padding: 14px; }

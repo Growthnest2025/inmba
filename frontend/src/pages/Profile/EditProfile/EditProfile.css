@@ -4,7 +4,7 @@
 
 .inmba-edit-profile-page {
   min-height: 100vh;
-  padding: 125px 22px 70px;
+  padding: var(--page-top-offset, 160px) 22px 70px;
   background:
     radial-gradient(
       circle at 8% 15%,
@@ -495,14 +495,13 @@
 
 @media (max-width: 991px) {
   .inmba-edit-profile-page {
-    padding-top: 110px;
+    padding-top: var(--page-top-offset, 132px);
   }
 }
 
 @media (max-width: 767px) {
   .inmba-edit-profile-page {
-    padding:
-      98px 14px 50px;
+    padding: var(--page-top-offset, 112px) 14px 50px;
   }
 
   .inmba-edit-profile-header {

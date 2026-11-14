@@ -4,7 +4,7 @@
 
 .inmba-org-member-page {
   min-height: 100vh;
-  padding: 34px 22px 70px;
+  padding: var(--page-top-offset, 160px) 22px 70px;
   background:
     radial-gradient(
       circle at 8% 12%,
@@ -748,7 +748,7 @@
 
 @media (max-width: 650px) {
   .inmba-org-member-page {
-    padding: 22px 12px 50px;
+    padding: var(--page-top-offset, 112px) 12px 50px;
   }
 
   .inmba-org-member-topbar {

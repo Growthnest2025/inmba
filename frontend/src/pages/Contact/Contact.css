@@ -132,7 +132,7 @@
 
   align-items: center;
 
-  padding: 145px 0 95px;
+  padding: var(--page-top-offset, 160px) 0 95px;
 
   background:
     linear-gradient(
@@ -4723,7 +4723,7 @@
   .contact-hero {
     min-height: auto;
 
-    padding-top: 105px;
+    padding-top: var(--page-top-offset, 132px);
 
     padding-bottom: 60px;
   }

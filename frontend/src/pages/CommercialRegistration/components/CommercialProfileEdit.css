@@ -24,10 +24,7 @@
 
   margin: 0;
 
-  padding:
-    54px
-    18px
-    90px;
+  padding: var(--page-top-offset, 160px) 18px 90px;
 
   color:
     var(--cpe-text);

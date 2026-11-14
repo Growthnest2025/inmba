@@ -129,6 +129,8 @@ export default function About() {
       <section className="about-creed-section">
         <div className="container">
           <div className="about-creed-card about-reveal">
+            <h2 className="about-creed-title">INMBA Creed</h2>
+
             <p className="about-creed-text">
               “உயிர் மெய் நேய அறமே வாழ்வை முழுமை பெற செய்கிறது.
               தனித்துவமுள்ள பொருளாதார வாழ்வு அமைய தரமுள்ள நல்லிணக்கம் கொண்ட

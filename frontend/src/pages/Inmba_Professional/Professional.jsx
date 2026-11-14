@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-import Navbar from "../../components/Navbar/Navbar";
 
 import "./Professional.css";
 
@@ -19,8 +18,7 @@ function PageShell({ children }) {
 
   return (
     <div className="professional-page">
-      <Navbar />
-      <main>{children}</main>
+            <main>{children}</main>
     </div>
   );
 }

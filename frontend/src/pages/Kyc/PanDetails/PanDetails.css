@@ -1,6 +1,6 @@
 .pan-details-page {
   min-height: 100vh;
-  padding: 32px 20px 70px;
+  padding: var(--page-top-offset, 160px) 20px 70px;
 
   background:
     radial-gradient(

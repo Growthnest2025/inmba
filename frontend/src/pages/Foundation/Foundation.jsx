@@ -29,7 +29,6 @@ import {
   faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
 
-import Navbar from "../../components/Navbar/Navbar";
 
 import "./Foundation.css";
 
@@ -436,8 +435,7 @@ export default function Foundation() {
 
   return (
     <div className="foundation-page">
-      <Navbar />
-
+      
       <main className="foundation-main">
         {/* =================================================
             HERO SECTION

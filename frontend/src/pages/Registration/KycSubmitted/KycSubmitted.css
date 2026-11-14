@@ -20,9 +20,7 @@
   min-height: 100vh;
 
   margin: 0;
-  padding:
-    48px
-    20px;
+  padding: var(--page-top-offset, 160px) 20px 50px;
 
   overflow: hidden;
 

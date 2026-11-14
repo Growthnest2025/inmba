@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-import Navbar from "../../components/Navbar/Navbar";
 
 import "./Shopping.css";
 
@@ -31,8 +30,7 @@ export default function Shopping() {
 
   return (
     <div className="shopping-page">
-      <Navbar />
-
+      
       <main>
         <section className="shopping-hero">
           <div className="shopping-hero-grid"></div>

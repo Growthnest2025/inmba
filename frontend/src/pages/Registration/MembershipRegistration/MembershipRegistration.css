@@ -19,7 +19,7 @@
   width: 100%;
   min-height: 100vh;
   margin: 0;
-  padding: 30px 20px 70px;
+  padding: var(--page-top-offset, 160px) 20px 70px;
   background:
     radial-gradient(
       circle at 10% 15%,
@@ -898,7 +898,7 @@
 
 @media (max-width: 768px) {
   .civilian-registration-page {
-    padding: 20px 14px 50px;
+    padding: var(--page-top-offset, 112px) 14px 50px;
   }
 
   .civilian-registration-form-unified {

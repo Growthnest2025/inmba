@@ -352,6 +352,29 @@ export default function Home() {
         </div>
       </section>
 
+      {/* INMBA Creed section (above Our Divisions) */}
+      <section className="home-creed-section">
+        <div className="container">
+          <div className="home-creed-card" data-aos="fade-up">
+            <h2 className="home-creed-title">INMBA Creed</h2>
+
+            <p className="home-creed-text">
+              “உயிர் மெய் நேய அறமே வாழ்வை முழுமை பெற செய்கிறது.
+              தனித்துவமுள்ள பொருளாதார வாழ்வு அமைய தரமுள்ள நல்லிணக்கம் கொண்ட
+              சமூக சகோதரத்துவ தொடர்பே சிறந்த வழி என நம்புகின்றோம். எல்லோரும்
+              எல்லாமும் பெற வேண்டும் என்பதே எங்களின் உயர்ந்த நம்பிக்கை.”
+            </p>
+
+            <p className="home-creed-text-en">
+              “The virtue of love for life and truth makes life complete. We
+              believe that quality, harmonious social brotherhood is the best
+              path to a distinctive economic life. Our highest belief is that
+              everyone should receive everything.”
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Divisions section */}
       <section className="divisions-section section-space">
         <div className="container">
@@ -477,8 +500,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-     
     </main>
   );
 }

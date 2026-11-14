@@ -26,8 +26,7 @@
 .commercial-review-page {
   min-height: 100vh;
 
-  padding:
-    0 0 60px;
+  padding: var(--page-top-offset, 160px) 0 60px;
 
   color:
     var(--cr-text);

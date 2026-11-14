@@ -198,7 +198,7 @@
   overflow: hidden;
   display: flex;
   align-items: center;
-  padding: 128px 0 84px;
+  padding: var(--page-top-offset, 160px) 0 84px;
   background: var(--foundation-light);
 }
 
@@ -1067,7 +1067,7 @@
   }
 
   .foundation-hero {
-    padding: 102px 0 70px;
+    padding: var(--page-top-offset, 132px) 0 70px;
   }
 
   .foundation-hero-title {

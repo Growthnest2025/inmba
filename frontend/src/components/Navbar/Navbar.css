@@ -22,6 +22,8 @@ html {
 
 :root {
   --navbar-height: 124px;
+  --navbar-gap: 36px;
+  --page-top-offset: calc(var(--navbar-height) + var(--navbar-gap));
 }
 
 .navbar-custom {

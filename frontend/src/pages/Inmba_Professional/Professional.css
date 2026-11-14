@@ -86,7 +86,7 @@
   min-height: 80vh;
   display: flex;
   align-items: center;
-  padding: 140px 0 80px;
+  padding: var(--page-top-offset, 160px) 0 80px;
   color: #fff;
   text-align: center;
   background:
@@ -478,7 +478,7 @@
 
 @media (max-width: 992px) {
   .professional-wrap { width: min(100% - 34px, 920px); }
-  .professional-hero { min-height: auto; padding: 120px 0 80px; }
+  .professional-hero { min-height: auto; padding: var(--page-top-offset, 132px) 0 80px; }
 
   .prm-layout { grid-template-columns: 1fr; gap: 36px; }
   .prm-intro { order: -1; max-width: 100%; margin: 0 auto; text-align: center; }
@@ -497,7 +497,7 @@
 
 @media (max-width: 768px) {
   .professional-wrap { width: calc(100% - 28px); }
-  .professional-hero { padding: 105px 0 64px; }
+  .professional-hero { padding: var(--page-top-offset, 112px) 0 64px; }
   .professional-hero h1 { letter-spacing: -1.8px; font-size: clamp(2.95rem, 11vw, 4.72rem); }
   .professional-hero p { font-size: 1.27rem; line-height: 1.65; }
   .professional-sec { padding: 56px 0; }

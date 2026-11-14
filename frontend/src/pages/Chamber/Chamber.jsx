@@ -12,7 +12,6 @@ import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 
 import "../Organization/Organization.css";
 import "./Chamber.css";
-import Navbar from "../../components/Navbar/Navbar";
 
 /* =========================================================
    NETWORK LOGOS
@@ -118,8 +117,7 @@ export default function Chamber() {
 
   return (
     <>
-      <Navbar />
-      <main className="organization-page inmba-chamber-merged">
+            <main className="organization-page inmba-chamber-merged">
         {/* ===================================================
             HERO SECTION
         =================================================== */}

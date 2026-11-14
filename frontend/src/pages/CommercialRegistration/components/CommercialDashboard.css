@@ -35,10 +35,7 @@
 .commercial-dashboard-page {
   min-height: 100vh;
 
-  padding:
-    28px
-    18px
-    60px;
+  padding: var(--page-top-offset, 160px) 18px 60px;
 
   color:
     var(--cd-text);

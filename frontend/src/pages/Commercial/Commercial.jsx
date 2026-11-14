@@ -20,7 +20,6 @@ import {
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import Navbar from "../../components/Navbar/Navbar";
 
 import "./Commercial.css";
 
@@ -369,8 +368,7 @@ export default function Commercial() {
 
   return (
     <div className="commercial-page">
-      <Navbar />
-
+      
       <main>
         {/* HERO */}
         <section

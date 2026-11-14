@@ -43,7 +43,7 @@
 
   overflow: hidden;
 
-  padding: 42px 22px;
+  padding: var(--page-top-offset, 160px) 22px 70px;
 
   background:
     radial-gradient(

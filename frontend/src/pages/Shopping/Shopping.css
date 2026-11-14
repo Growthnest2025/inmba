@@ -40,7 +40,7 @@
   min-height: 100vh;
   display: flex;
   align-items: center;
-  padding: 130px 0 80px;
+  padding: var(--page-top-offset, 160px) 0 80px;
   color: #fff;
   background:
     linear-gradient(120deg, rgba(5, 35, 11, 0.94) 0%, rgba(5, 35, 11, 0.82) 46%, rgba(5, 35, 11, 0.72) 100%),
@@ -163,7 +163,7 @@
 
 @media (max-width: 768px) {
   .shopping-wrap { width: calc(100% - 28px); }
-  .shopping-hero { min-height: auto; padding: 110px 0 70px; }
+  .shopping-hero { min-height: auto; padding: var(--page-top-offset, 132px) 0 70px; }
   .shopping-choices { grid-template-columns: 1fr; gap: 16px; }
   .shopping-choice { min-height: 100px; padding: 20px 22px; gap: 16px; border-radius: 22px; }
   .shopping-choice-icon { width: 58px; height: 58px; font-size: 1.6rem; border-radius: 17px; }

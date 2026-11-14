@@ -13,10 +13,7 @@
 
   min-height: 100vh;
 
-  padding:
-    55px
-    20px
-    80px;
+  padding: var(--page-top-offset, 160px) 20px 80px;
 
   background:
     radial-gradient(
