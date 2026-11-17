@@ -808,7 +808,7 @@ const handleSubmit = async (event) => {
                         ? `Payment Verified (${transactionId})`
                         : `Pay ₹${plan.amount} with Razorpay`
                     }
-                    disabled={loading}
+                    disabled={submitting}
                   />
                 </div>
               )}

@@ -1916,16 +1916,16 @@ export default function ProfessionalPayment() {
                       name="INMBA Professional Membership"
                       description={`Professional Plan: ${planName} (₹${paymentAmount || 299})`}
                       prefill={{
-                        name: userFullName || "",
-                        email: userEmail || "",
-                        contact: userMobile || "",
+                        name: member?.name || member?.full_name || "",
+                        email: member?.email || "",
+                        contact: member?.phone || member?.mobile || "",
                       }}
                       onSuccess={(verifyResult, rzpResponse) => {
                         setTransactionId(rzpResponse.razorpay_payment_id);
-                        setSubmitError("");
+                        setPageError("");
                       }}
                       onFailure={(err) => {
-                        setSubmitError(err.message || "Payment cancelled or failed.");
+                        setPageError(err.message || "Payment cancelled or failed.");
                       }}
                       buttonText={
                         transactionId && transactionId.startsWith("pay_")
