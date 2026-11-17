@@ -1642,6 +1642,31 @@ p {
    ACTIONS
 ========================================================= */
 
+.civilian-review-disclaimer-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  padding: 14px 18px;
+  background: #fffdf5;
+  border: 1px solid #fae69e;
+  border-radius: 12px;
+  color: #695020;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.civilian-review-disclaimer-note i {
+  color: #b37400;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.civilian-review-disclaimer-note strong {
+  color: #7a4e00;
+  font-weight: 800;
+}
+
 .civilian-review-actions {
   display: flex;
   align-items: center;
@@ -2060,7 +2085,32 @@ button.secondary {
       #e4e9ef;
   }
 
-  .civilian-review-actions {
+  .civilian-review-disclaimer-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  padding: 14px 18px;
+  background: #fffdf5;
+  border: 1px solid #fae69e;
+  border-radius: 12px;
+  color: #695020;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.civilian-review-disclaimer-note i {
+  color: #b37400;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.civilian-review-disclaimer-note strong {
+  color: #7a4e00;
+  font-weight: 800;
+}
+
+.civilian-review-actions {
     flex-direction: column;
   }
 
@@ -2725,6 +2775,31 @@ strong i {
 }
 
 /* Buttons exactly like Civilian success action feel */
+.civilian-review-disclaimer-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  padding: 14px 18px;
+  background: #fffdf5;
+  border: 1px solid #fae69e;
+  border-radius: 12px;
+  color: #695020;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.civilian-review-disclaimer-note i {
+  color: #b37400;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.civilian-review-disclaimer-note strong {
+  color: #7a4e00;
+  font-weight: 800;
+}
+
 .civilian-review-actions {
   gap: 10px;
 
@@ -2856,7 +2931,32 @@ strong i {
     align-items: flex-start;
   }
 
-  .civilian-review-actions {
+  .civilian-review-disclaimer-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  padding: 14px 18px;
+  background: #fffdf5;
+  border: 1px solid #fae69e;
+  border-radius: 12px;
+  color: #695020;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.civilian-review-disclaimer-note i {
+  color: #b37400;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.civilian-review-disclaimer-note strong {
+  color: #7a4e00;
+  font-weight: 800;
+}
+
+.civilian-review-actions {
     flex-direction: column;
   }
 

@@ -4,7 +4,7 @@
 
 .inmba-payment-page {
   min-height: 100vh;
-  padding: 125px 22px 70px;
+  padding: var(--page-top-offset, 160px) 22px 70px;
   background:
     radial-gradient(
       circle at 8% 15%,
@@ -877,6 +877,40 @@
     0 16px 30px rgba(15, 77, 15, 0.29);
 }
 
+.inmba-payment-disclaimer-box {
+  margin: 18px 0 22px;
+  padding: 16px 18px;
+  background: #fffdf5;
+  border: 1px solid #fae69e;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(184, 134, 11, 0.06);
+}
+
+.inmba-payment-disclaimer-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #b37400;
+  margin-bottom: 6px;
+}
+
+.inmba-payment-disclaimer-header i {
+  font-size: 1rem;
+}
+
+.inmba-payment-disclaimer-header strong {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #7a4e00;
+}
+
+.inmba-payment-disclaimer-box p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #695020;
+  line-height: 1.48;
+}
+
 .inmba-payment-submit-button:disabled {
   cursor: not-allowed;
   opacity: 0.62;
@@ -1168,7 +1202,7 @@
 
 @media (max-width: 991px) {
   .inmba-payment-page {
-    padding-top: 110px;
+    padding-top: var(--page-top-offset, 132px);
   }
 
   .inmba-payment-main-grid {
@@ -1187,8 +1221,7 @@
 
 @media (max-width: 767px) {
   .inmba-payment-page {
-    padding:
-      98px 14px 50px;
+    padding: var(--page-top-offset, 112px) 14px 50px;
   }
 
   .inmba-payment-header {

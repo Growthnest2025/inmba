@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-import Navbar from "../../components/Navbar/Navbar";
 
 import "./Professional.css";
 
@@ -19,13 +18,12 @@ function PageShell({ children }) {
 
   return (
     <div className="professional-page">
-      <Navbar />
-      <main>{children}</main>
+            <main>{children}</main>
     </div>
   );
 }
 
-function Hero({ badge, title, highlight, text, actions = [], panel }) {
+function Hero({ title, highlight, text, actions = [] }) {
   return (
     <section className="professional-hero">
       <div className="professional-hero-grid"></div>
@@ -35,12 +33,7 @@ function Hero({ badge, title, highlight, text, actions = [], panel }) {
       <span className="professional-float professional-float-two"></span>
 
       <div className="professional-wrap professional-hero-layout">
-        <div className="professional-hero-text" data-aos="fade-right">
-          <span className="professional-badge">
-            <i className="professional-dot"></i>
-            {badge}
-          </span>
-
+        <div className="professional-hero-text" data-aos="fade-up">
           <h1>
             {title}
             <span className="professional-hl">{highlight}</span>
@@ -58,87 +51,169 @@ function Hero({ badge, title, highlight, text, actions = [], panel }) {
             </div>
           )}
         </div>
-
-        {panel && (
-          <aside className="professional-panel" data-aos="fade-left" data-aos-delay="150">
-            <div className="professional-panel-top">
-              <div className="professional-panel-icon">
-                <i className={`bi ${panel.icon}`}></i>
-              </div>
-              <div>
-                <span>{panel.label}</span>
-                <h2>{panel.title}</h2>
-              </div>
-            </div>
-
-            <div className="professional-panel-list">
-              {panel.items.map((it) => (
-                <div className="professional-panel-item" key={it.title}>
-                  <div className="professional-panel-item-icon">
-                    <i className={`bi ${it.icon}`}></i>
-                  </div>
-                  <div>
-                    <strong>{it.title}</strong>
-                    <span>{it.text}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="professional-panel-footer">
-              <i className="professional-dot"></i>
-              {panel.footer}
-            </div>
-          </aside>
-        )}
       </div>
     </section>
   );
 }
 
-function Section({ badge, title, text, tone = "", children, note }) {
+/* =========================================================
+   HORIZONTAL SCROLL CARDS (who can join - no heading text)
+========================================================= */
+
+function HScroll({ items, label }) {
+  const N = items.length;
+  const railRef = useRef(null);
+  const cardRefs = useRef([]);
+  const api = useRef({ target: 0 });
+
+  useEffect(() => {
+    const rail = railRef.current;
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const SPEED = 0.00035; // cards per millisecond
+
+    let p = 0;
+    let cw = 300;
+    let dirty = true;
+    let last = 0;
+    let raf;
+    let down = false;
+    let start = 0;
+    let startT = 0;
+    let moved = 0;
+    let hover = false;
+
+    const size = () => {
+      const first = cardRefs.current[0];
+      if (first) cw = first.offsetWidth || 300;
+      dirty = true;
+    };
+
+    const paint = () => {
+      const all = cw * N;
+      cardRefs.current.forEach((c, i) => {
+        if (!c) return;
+        let x = wrap(i * cw - p * cw, all);
+        if (x > all - cw) x -= all;
+        c.style.transform = `translate3d(${x.toFixed(1)}px,0,0)`;
+      });
+    };
+
+    const frame = (now) => {
+      const dt = Math.min(50, now - last) || 16;
+      last = now;
+      const was = p;
+
+      if (!down && !hover && !calm) api.current.target += dt * SPEED;
+
+      const target = api.current.target;
+      if (calm) p = target;
+      else p += (target - p) * (1 - Math.exp(-dt * 0.0072));
+      if (Math.abs(target - p) < 0.0004) p = target;
+
+      if (p !== was || dirty) {
+        dirty = false;
+        paint();
+      }
+      raf = requestAnimationFrame(frame);
+    };
+
+    const onDown = (e) => {
+      down = true;
+      start = e.clientX;
+      startT = api.current.target;
+      moved = 0;
+    };
+    const onMove = (e) => {
+      if (!down) return;
+      const d = e.clientX - start;
+      moved = Math.max(moved, Math.abs(d));
+      if (moved > 6) {
+        rail.setPointerCapture?.(e.pointerId);
+        rail.classList.add("is-drag");
+      }
+      api.current.target = startT - d / cw;
+    };
+    const onUp = () => {
+      if (!down) return;
+      down = false;
+      rail.classList.remove("is-drag");
+      if (moved >= 6) api.current.target = Math.round(api.current.target);
+    };
+    const onEnter = () => { hover = true; };
+    const onLeave = () => { hover = false; };
+    const onKey = (e) => {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        api.current.target = Math.round(api.current.target) + 1;
+      }
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        api.current.target = Math.round(api.current.target) - 1;
+      }
+    };
+
+    size();
+    raf = requestAnimationFrame(frame);
+    window.addEventListener("resize", size);
+    rail.addEventListener("pointerdown", onDown);
+    rail.addEventListener("pointermove", onMove);
+    rail.addEventListener("pointerup", onUp);
+    rail.addEventListener("pointercancel", onUp);
+    rail.addEventListener("pointerenter", onEnter);
+    rail.addEventListener("pointerleave", onLeave);
+    rail.addEventListener("keydown", onKey);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", size);
+      rail.removeEventListener("pointerdown", onDown);
+      rail.removeEventListener("pointermove", onMove);
+      rail.removeEventListener("pointerup", onUp);
+      rail.removeEventListener("pointercancel", onUp);
+      rail.removeEventListener("pointerenter", onEnter);
+      rail.removeEventListener("pointerleave", onLeave);
+      rail.removeEventListener("keydown", onKey);
+    };
+  }, [N]);
+
+  const step = (n) => {
+    api.current.target = Math.round(api.current.target) + n;
+  };
+
   return (
-    <section className={`professional-sec ${tone}`}>
+    <section className="professional-sec professional-hsec">
       <div className="professional-wrap">
-        <div className="professional-head" data-aos="fade-up">
-          {badge && <span className="professional-badge">{badge}</span>}
-          <h2>{title}</h2>
-          {text && <p>{text}</p>}
+        <div className="phr-wrap" data-aos="fade-up">
+          <div
+            className="phr-rail"
+            ref={railRef}
+            tabIndex={0}
+            aria-label={label}
+          >
+            {items.map((c, i) => (
+              <article
+                key={c.title}
+                className={`phr-card${i % 2 ? " phr-alt" : ""}`}
+                ref={(el) => (cardRefs.current[i] = el)}
+              >
+                <span className="phr-icon">
+                  <i className={`bi ${c.icon}`} />
+                </span>
+                <h3>{c.title}</h3>
+                <p>{c.text}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="phr-nav">
+            <button type="button" onClick={() => step(-1)} aria-label="Previous">
+              <i className="bi bi-chevron-left" />
+            </button>
+            <button type="button" onClick={() => step(1)} aria-label="Next">
+              <i className="bi bi-chevron-right" />
+            </button>
+          </div>
         </div>
-        <div data-aos="fade-up" data-aos-delay="100">{children}</div>
-        {note && <p className="professional-note">{note}</p>}
-      </div>
-    </section>
-  );
-}
-
-/* Cards (numbers removed) */
-function Cards({ items }) {
-  return (
-    <div className="professional-grid">
-      {items.map((c) => (
-        <article className="professional-card" key={c.title}>
-          <span className="professional-card-deco"></span>
-          <div className="professional-ico"><i className={`bi ${c.icon}`}></i></div>
-          <h3>{c.title}</h3>
-          <p>{c.text}</p>
-        </article>
-      ))}
-    </div>
-  );
-}
-
-function CTA({ title, text, to, label }) {
-  return (
-    <section className="professional-cta">
-      <span className="professional-cta-glow professional-cta-glow-one"></span>
-      <span className="professional-cta-glow professional-cta-glow-two"></span>
-      <div className="professional-wrap" data-aos="zoom-in">
-        <h2>{title}</h2>
-        <p>{text}</p>
-        <Link to={to} className="professional-btn">
-          {label} <i className="bi bi-arrow-right"></i>
-        </Link>
       </div>
     </section>
   );
@@ -175,14 +250,14 @@ const railItems = [
 
 /* =========================================================
    AUTO-SCROLLING CARD RAIL (same engine as Chamber page)
-   Cards on the LEFT, text on the RIGHT.
+   Rail on the LEFT, text on the RIGHT.
 ========================================================= */
 
 const AUTO_SPEED = 0.0004; // cards per millisecond
 const SIDE_W = 280; // card width on phones
 const wrap = (x, n) => ((x % n) + n) % n;
 
-function CardRail({ items, reverse = false, tone = "alt", badge, heading, text, note, label }) {
+function CardRail({ items, tone = "alt", badge, heading, text, note, label }) {
   const N = items.length;
   const railRef = useRef(null);
   const cardRefs = useRef([]);
@@ -312,9 +387,9 @@ function CardRail({ items, reverse = false, tone = "alt", badge, heading, text, 
   return (
     <section className={`professional-sec ${tone} prm-section`}>
       <div className="professional-wrap">
-        <div className={`prm-layout${reverse ? " prm-rev" : ""}`}>
+        <div className="prm-layout">
           {/* RAIL */}
-          <div className="prm-wrap" data-aos={reverse ? "fade-left" : "fade-right"}>
+          <div className="prm-wrap" data-aos="fade-right">
             <aside
               className="prm-rail"
               ref={railRef}
@@ -352,12 +427,11 @@ function CardRail({ items, reverse = false, tone = "alt", badge, heading, text, 
           </div>
 
           {/* TEXT */}
-          <div className="prm-intro" data-aos={reverse ? "fade-right" : "fade-left"}>
+          <div className="prm-intro" data-aos="fade-left">
             <span className="professional-badge">{badge}</span>
             <h2 className="prm-heading">{heading}</h2>
             <p className="prm-text">{text}</p>
             {note && <p className="prm-note">{note}</p>}
-          
           </div>
         </div>
       </div>
@@ -373,40 +447,16 @@ export default function Professional() {
   return (
     <PageShell>
       <Hero
-        panel={{
-          icon: "bi-person-workspace",
-          label: "Professional Membership",
-          title: "One network, every profession",
-          items: [
-            { icon: "bi-patch-check-fill", title: "Verified identity", text: "License, registration or portfolio is checked" },
-            { icon: "bi-grid-fill", title: "9 professional categories", text: "From arts and engineering to medicine and law" },
-            { icon: "bi-globe2", title: "Global and cross-industry", text: "Open to qualified professionals worldwide" },
-          ],
-          footer: "Civilian and Professional tracks work together",
-        }}
-        badge="Professional Membership"
         title="Our"
         highlight="Professionals"
         text="One global network for every profession, built on the credibility of what members do."
-        actions={[{ label: "Join as a Professional", to: "/membership-type" }]}
+        actions={[{ label: "Become an INMBA Professional Membership", to: "/membership-type" }]}
       />
 
-      <Section badge="Two Tracks" title="Civilian and Professional, One Network" text="A member can hold either membership independently. They complement each other.">
-        <Cards items={[
-          { icon: "bi-people-fill", title: "Civilian Membership", text: "Built around personal networks and the Chamber (Sabai) system of civic self-governance." },
-          { icon: "bi-person-workspace", title: "Professional Membership", text: "Built around professional identity, expertise and industry affiliation, open to qualified professionals worldwide." },
-        ]} />
-      </Section>
-
-      {/* Who Can Join: text LEFT, rail RIGHT */}
-      <CardRail
-        reverse
-        tone=""
+      {/* Who Can Join: horizontal scroll cards (no heading text) */}
+      <HScroll
         items={fields}
-        badge="Who Can Join"
-        heading="Every Recognized Profession Is Welcome"
-        text="No single industry, sector or region. All professions join on the same standing."
-        label="Professions that can join INMBA Professional Membership. Drag or use arrow keys."
+        label="Professions that can join INMBA Professional Membership. Drag to browse."
       />
 
       {/* Benefits + How To Join (merged rail) */}
@@ -418,8 +468,6 @@ export default function Professional() {
         note="Eligibility: show genuine, active standing in your profession. Professional Membership has its own one-time fee, as per INMBA's current fee schedule."
         label="Professional membership benefits and how to join. Drag or use arrow keys."
       />
-
-      <CTA title="Bring your expertise to INMBA" text="Members practise ethically, keep licenses current and represent their field with integrity." to="/membership-type" label="Apply Now" />
     </PageShell>
   );
 }

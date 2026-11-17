@@ -1,7 +1,5 @@
-import React, { useMemo, useRef, useState } from "react";
-
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-
 import { toast } from "react-toastify";
 
 import {
@@ -9,475 +7,192 @@ import {
   validateRegistrationEmail,
   validateRegistrationPhone,
 } from "../../../services/registration.service";
-
 import { getApiErrorMessage, getFieldErrors } from "../../../utils/apiError";
-
-import "./MembershipRegistration.css";
 import { toText, asObject } from "../../../utils/commonHelpers";
 
-/* ========================================
-   MEMBERSHIP TYPES
-======================================== */
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "./MembershipRegistration.css";
 
-const DEFAULT_MEMBERSHIP_TYPE = "Civilian Member";
-
-const ALLOWED_MEMBERSHIP_TYPES = new Set([
-  "Civilian Member",
-  "Commercial Member",
-]);
-
-/* ========================================
+/* =========================================================
    INITIAL FORM
-======================================== */
+========================================================= */
 
 const INITIAL_FORM_DATA = {
   full_name: "",
-  first_name: "",
-  last_name: "",
-  father_name: "",
-  dob: "",
-  email: "",
   phone: "",
-  gender: "",
-  marital_status: "",
-  nationality: "Indian",
-  occupation: "",
-  education: "",
-
-  membership_type: DEFAULT_MEMBERSHIP_TYPE,
-
-  referral: "",
+  email: "",
+  dob: "",
   password: "",
-  confirm_password: "",
+  referral: "",
   profile_pic: null,
-  termsAccepted: false,
 };
 
-/* ========================================
-   OPTIONS
-======================================== */
-
-const GENDER_OPTIONS = ["Male", "Female", "Other"];
-
-const MARITAL_OPTIONS = ["Single", "Married", "Divorced", "Widowed"];
-
-const EDUCATION_OPTIONS = [
-  "10th",
-  "12th",
-  "Diploma",
-  "Graduate",
-  "Post Graduate",
-  "Doctorate",
-  "Other",
-];
-
-/* ========================================
+/* =========================================================
    HELPERS
-======================================== */
+========================================================= */
 
 const getErrorText = (value) => {
   if (Array.isArray(value)) {
     return toText(value[0]);
   }
-
   if (value && typeof value === "object") {
     return toText(value.message ?? value.msg ?? value.error);
   }
-
   return toText(value);
 };
 
-/* ========================================
-   INTERNAL ROUTE
-======================================== */
+/* =========================================================
+   MEMBERSHIP REGISTRATION COMPONENT (CIVILIAN)
+========================================================= */
 
-const getInternalRoute = (value) => {
-  const route = toText(value);
-
-  if (!route) {
-    return "";
-  }
-
-  if (route.startsWith("/")) {
-    return route;
-  }
-
-  try {
-    const parsedUrl = new URL(route);
-
-    return `${parsedUrl.pathname}${parsedUrl.search}`;
-  } catch {
-    return "";
-  }
-};
-
-/* ========================================
-   MEMBERSHIP REGISTRATION
-======================================== */
-
-export default function MembershipRegistration({
-  membershipType = DEFAULT_MEMBERSHIP_TYPE,
-}) {
+export default function MembershipRegistration() {
   const navigate = useNavigate();
-
   const [searchParams] = useSearchParams();
-
-  /*
-    The Civilian page covers the whole screen (no navbar / footer),
-    so "scroll to top" must scroll these containers as well.
-  */
+  const fileInputRef = useRef(null);
   const pageRef = useRef(null);
-  const contentRef = useRef(null);
 
   const scrollToTop = () => {
-    [pageRef.current, contentRef.current].forEach((element) => {
-      if (element && typeof element.scrollTo === "function") {
-        element.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    });
-
+    if (pageRef.current && typeof pageRef.current.scrollTo === "function") {
+      pageRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  /* ========================================
-     ACTIVE MEMBERSHIP TYPE
-  ======================================== */
-
-  const activeMembershipType = useMemo(() => {
-    const normalizedType = toText(membershipType, DEFAULT_MEMBERSHIP_TYPE);
-
-    return ALLOWED_MEMBERSHIP_TYPES.has(normalizedType)
-      ? normalizedType
-      : DEFAULT_MEMBERSHIP_TYPE;
-  }, [membershipType]);
-
-  const isCommercialMembership = activeMembershipType === "Commercial Member";
-
-  /* ========================================
+  /* =======================================================
      REFERRAL FROM URL
-  ======================================== */
+  ======================================================= */
 
-  const referralFromUrl = useMemo(
-    () => toText(searchParams.get("ref")),
-    [searchParams]
-  );
+  const referralFromUrl = useMemo(() => {
+    const ref = searchParams.get("ref") ?? searchParams.get("referral");
+    return toText(ref).replace(/\s/g, "").slice(0, 50);
+  }, [searchParams]);
 
-  /* ========================================
+  /* =======================================================
      FORM STATE
-  ======================================== */
+  ======================================================= */
 
   const [formData, setFormData] = useState({
     ...INITIAL_FORM_DATA,
-
-    membership_type: activeMembershipType,
-
     referral: referralFromUrl,
   });
 
   const [fieldErrors, setFieldErrors] = useState({});
-
   const [formError, setFormError] = useState("");
-
   const [submitting, setSubmitting] = useState(false);
-
   const [showPassword, setShowPassword] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState("");
+  const [showGuide, setShowGuide] = useState(false);
 
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const [civilianLanguage, setCivilianLanguage] = useState("en");
-
-  const civilianText = useMemo(() => {
-    const tamil = civilianLanguage === "ta";
-
-    return {
-      eyebrow: tamil
-        ? "சிவிலியன் உறுப்பினர் · அடிப்படை திட்டம்"
-        : "Civilian Membership · Basic Plan",
-      title: tamil
-        ? "INMBA சிவிலியன் உறுப்பினர் (அடிப்படை)"
-        : "INMBA Civilian Membership (Basic)",
-      description: tamil
-        ? "உங்கள் அடிப்படை உறுப்பினர் கணக்கை உருவாக்க தேவையான விவரங்களை உள்ளிடுங்கள். மொபைல் OTP சரிபார்ப்பு தேவையில்லை."
-        : "Enter the details required to create your basic civilian membership account. Mobile OTP verification is not required.",
-      benefits: [
-        {
-          id: "otp",
-          icon: "fas fa-mobile-screen-button",
-          title: tamil ? "OTP தேவையில்லை" : "No OTP Required",
-          text: tamil
-            ? "மொபைல் எண்ணை மட்டும் கொண்டு பதிவு செய்யலாம்."
-            : "Register with just your mobile number.",
-        },
-        {
-          id: "accounts",
-          icon: "fas fa-users",
-          title: tamil
-            ? "ஒரே எண்ணில் 3 கணக்குகள் வரை"
-            : "Up to 3 Accounts per Number",
-          text: tamil
-            ? "ஒரே மொபைல் எண்ணில் 3 சிவிலியன் கணக்குகள் வரை பதிவு செய்யலாம்."
-            : "Up to 3 Civilian accounts can share one mobile number.",
-        },
-        {
-          id: "kyc",
-          icon: "fas fa-id-card",
-          title: tamil ? "அடிப்படை பதிவுக்கு KYC இல்லை" : "No KYC for Basic",
-          text: tamil
-            ? "Upgrade செய்யும்போது மட்டுமே Aadhaar, PAN மற்றும் வங்கி விவரங்கள் கேட்கப்படும்."
-            : "Aadhaar, PAN and bank details are asked only when you upgrade.",
-        },
-      ],
-      stepsTitle: tamil ? "பதிவு செய்வது எப்படி" : "How it works",
-      steps: [
-        {
-          id: "details",
-          title: tamil ? "விவரங்களை உள்ளிடுங்கள்" : "Fill in your details",
-          text: tamil
-            ? "உங்கள் பெயர் மற்றும் மொபைல் எண்ணை உள்ளிடுங்கள்."
-            : "Enter your name and mobile number.",
-        },
-        {
-          id: "password",
-          title: tamil ? "கடவுச்சொல் / PIN அமைக்கவும்" : "Set a password / PIN",
-          text: tamil
-            ? "உள்நுழைய பயன்படுத்தும் கடவுச்சொல்லை உருவாக்குங்கள்."
-            : "Create the password you will use to log in.",
-        },
-        {
-          id: "submit",
-          title: tamil ? "பதிவைச் சமர்ப்பிக்கவும்" : "Submit your registration",
-          text: tamil
-            ? "உங்கள் சிவிலியன் Login ID உருவாக்கப்படும்."
-            : "Your Civilian login ID is generated for you.",
-        },
-        {
-          id: "login",
-          title: tamil ? "உள்நுழையுங்கள்" : "Log in",
-          text: tamil
-            ? "Login ID மற்றும் கடவுச்சொல்லுடன் உங்கள் கணக்கை அணுகுங்கள்."
-            : "Use your login ID and password to open your account.",
-        },
-      ],
-      needTitle: tamil ? "உங்களுக்குத் தேவையானவை" : "What you need",
-      needItems: tamil
-        ? [
-            "10 இலக்க மொபைல் எண்",
-            "கடவுச்சொல் அல்லது PIN (குறைந்தது 5 எழுத்துகள்)",
-            "விருப்பத்தேர்வு: மின்னஞ்சல், பிறந்த தேதி, புகைப்படம், பரிந்துரை ID",
-          ]
-        : [
-            "A 10-digit mobile number",
-            "A password or PIN (minimum 5 characters)",
-            "Optional: email, date of birth, photo, referral ID",
-          ],
-      helpText: tamil ? "உதவி தேவையா? Admin-ஐ அழைக்கவும்:" : "Need help? Call Admin:",
-      personalTitle: tamil ? "தனிப்பட்ட விவரங்கள்" : "Personal Information",
-      personalDescription: tamil
-        ? "உங்கள் முழுப் பெயர் மற்றும் பிறந்த தேதியை உள்ளிடுங்கள்."
-        : "Enter your full name and date of birth.",
-      fullName: tamil ? "முழுப் பெயர்" : "Full Name",
-      fullNamePlaceholder: tamil
-        ? "உங்கள் முழுப் பெயரை உள்ளிடுங்கள்"
-        : "Enter your full name",
-      dob: tamil ? "பிறந்த தேதி" : "Date of Birth",
-      contactTitle: tamil
-        ? "தொடர்பு மற்றும் பரிந்துரை விவரங்கள்"
-        : "Contact & Referral Details",
-      contactDescription: tamil
-        ? "உங்கள் மொபைல் எண்ணை உள்ளிடுங்கள். பிறந்த தேதி, மின்னஞ்சல் மற்றும் பரிந்துரை ID விருப்பத்தேர்வுகள்."
-        : "Enter your mobile number. Date of Birth, Email and Referral ID are optional.",
-      email: tamil ? "மின்னஞ்சல் முகவரி" : "Email ID",
-      mobile: tamil ? "மொபைல் எண்" : "Mobile Number",
-      mobilePlaceholder: tamil
-        ? "10 இலக்க மொபைல் எண்"
-        : "10-digit mobile number",
-      mobileHelp: tamil
-        ? "OTP தேவையில்லை. ஒரே மொபைல் எண்ணில் அதிகபட்சம் 3 சிவிலியன் கணக்குகள் பதிவு செய்யலாம்."
-        : "No OTP required. A maximum of 3 Civilian accounts can be registered with the same mobile number.",
-      referral: tamil ? "பரிந்துரை ID" : "Referral ID",
-      referralPlaceholder: tamil
-        ? "விருப்பத்தேர்வு பரிந்துரை ID"
-        : "Optional referral ID",
-      optional: tamil ? "விருப்பத்தேர்வு" : "Optional",
-      photoTitle: tamil ? "சுயவிவரப் புகைப்படம்" : "Profile Photo",
-      photoDescription: tamil
-        ? "இப்போது புகைப்படம் சேர்க்கலாம் அல்லது தவிர்த்து தொடரலாம்."
-        : "Add a profile photo now or skip it and continue.",
-      photoHelp: tamil
-        ? "JPG, PNG அல்லது WEBP. அதிகபட்சம் 5 MB."
-        : "JPG, PNG or WEBP. Maximum 5 MB.",
-      securityTitle: tamil ? "கணக்கு பாதுகாப்பு" : "Account Security",
-      securityDescription: tamil
-        ? "உங்கள் Login ID உடன் பயன்படுத்த கடவுச்சொல் அல்லது PIN அமைக்கவும்."
-        : "Set up the password or PIN used with your generated login ID.",
-      password: tamil ? "கடவுச்சொல் / PIN" : "Password / PIN",
-      confirmPassword: tamil
-        ? "கடவுச்சொல் / PIN உறுதிப்படுத்தவும்"
-        : "Confirm Password / PIN",
-      declaration: tamil
-        ? "இந்த உறுப்பினர் விண்ணப்பத்தில் நான் வழங்கிய அனைத்து தகவல்களும் உண்மையானவை மற்றும் சரியானவை என்பதை உறுதிப்படுத்துகிறேன்."
-        : "I confirm that all information provided in this membership application is true and correct.",
-      back: tamil ? "உறுப்பினர் வகைகள்" : "Membership Types",
-      submit: tamil ? "பதிவைச் சமர்ப்பிக்கவும்" : "Submit Registration",
-      submitting: tamil
-        ? "உறுப்பினர் கணக்கு உருவாக்கப்படுகிறது..."
-        : "Creating Membership...",
-      alreadyRegistered: tamil
-        ? "ஏற்கனவே பதிவு செய்துள்ளீர்களா?"
-        : "Already registered?",
-      memberLogin: tamil ? "உறுப்பினர் உள்நுழைவு" : "Member Login",
+  useEffect(() => {
+    return () => {
+      if (photoPreview) {
+        URL.revokeObjectURL(photoPreview);
+      }
     };
-  }, [civilianLanguage]);
+  }, [photoPreview]);
 
-  /* ========================================
-     PAGE CONTENT
-  ======================================== */
+  /* =======================================================
+     PHOTO HANDLERS
+  ======================================================= */
 
-  const pageContent = useMemo(() => {
-    if (isCommercialMembership) {
-      return {
-        eyebrow: "Commercial Membership",
-
-        title: "Register Your Commercial Membership",
-
-        description:
-          "Complete the registration form to create your commercial membership application and receive your unique login ID.",
-
-        typeIcon: "fas fa-store",
-
-        professionTitle: "Business & Qualification",
-
-        professionDescription:
-          "Add your current educational qualification and commercial occupation.",
-      };
+  const handlePhotoChange = (event) => {
+    const file = event.target.files?.[0] || null;
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          profile_pic: "Photo size must be less than 5 MB.",
+        }));
+        return;
+      }
+      if (photoPreview) {
+        URL.revokeObjectURL(photoPreview);
+      }
+      setPhotoPreview(URL.createObjectURL(file));
+      setFormData((prev) => ({
+        ...prev,
+        profile_pic: file,
+      }));
+      setFieldErrors((prev) => ({
+        ...prev,
+        profile_pic: "",
+      }));
     }
+  };
 
-    return {
-      eyebrow: civilianText.eyebrow,
+  const handleRemovePhoto = () => {
+    if (photoPreview) {
+      URL.revokeObjectURL(photoPreview);
+    }
+    setPhotoPreview("");
+    setFormData((prev) => ({
+      ...prev,
+      profile_pic: null,
+    }));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
-      title: civilianText.title,
-
-      description: civilianText.description,
-
-      typeIcon: "fas fa-user-tie",
-
-      professionTitle: "Education & Profession",
-
-      professionDescription: "Add your current qualification and occupation.",
-    };
-  }, [isCommercialMembership, civilianText]);
-
-  /* ========================================
+  /* =======================================================
      INPUT CHANGE
-  ======================================== */
+  ======================================================= */
 
   const handleInputChange = (event) => {
-    const { name, value, type, checked, files } = event.target;
+    const { name, value } = event.target;
 
-    let nextValue =
-      type === "file" ? files?.[0] || null : type === "checkbox" ? checked : value;
-
+    let nextValue = value;
     if (name === "phone") {
       nextValue = value.replace(/\D/g, "").slice(0, 10);
     }
-
     if (name === "referral") {
       nextValue = value.replace(/\s/g, "").slice(0, 50);
     }
 
-    setFormData((previousData) => ({
-      ...previousData,
-
+    setFormData((prev) => ({
+      ...prev,
       [name]: nextValue,
     }));
 
-    setFieldErrors((previousErrors) => ({
-      ...previousErrors,
-
+    setFieldErrors((prev) => ({
+      ...prev,
       [name]: "",
-
-      ...(name === "password" ? { confirm_password: "" } : {}),
     }));
 
     setFormError("");
   };
 
-  /* ========================================
+  /* =======================================================
      FORM VALIDATION
-  ======================================== */
+  ======================================================= */
 
   const validateForm = () => {
     const errors = {};
 
-    if (!isCommercialMembership && !toText(formData.full_name)) {
+    if (!toText(formData.full_name)) {
       errors.full_name = "Full name is required.";
     }
 
-    if (isCommercialMembership && !toText(formData.first_name)) {
-      errors.first_name = "First name is required.";
+    const phoneValidation = validateRegistrationPhone(formData.phone);
+    if (!phoneValidation.valid) {
+      errors.phone = phoneValidation.error;
     }
 
-    if (isCommercialMembership && !toText(formData.last_name)) {
-      errors.last_name = "Last name is required.";
+    if (formData.email) {
+      const emailValidation = validateRegistrationEmail(formData.email);
+      if (!emailValidation.valid) {
+        errors.email = emailValidation.error;
+      }
     }
 
-    if (isCommercialMembership && !toText(formData.father_name)) {
-      errors.father_name = "Father or guardian name is required.";
-    }
-
-    /*
-      Civilian Basic Registration:
-      DOB is optional.
-
-      Commercial Registration:
-      DOB remains required.
-
-      If a Civilian user enters DOB, the date is still validated.
-    */
-    if (isCommercialMembership && !formData.dob) {
-      errors.dob = "Date of birth is required.";
-    } else if (formData.dob) {
+    if (formData.dob) {
       const selectedDate = new Date(`${formData.dob}T00:00:00`);
-
       const today = new Date();
-
       today.setHours(0, 0, 0, 0);
 
       if (Number.isNaN(selectedDate.getTime()) || selectedDate >= today) {
         errors.dob = "Enter a valid date of birth.";
       }
-    }
-
-    const emailValidation = validateRegistrationEmail(formData.email);
-
-    if ((isCommercialMembership || formData.email) && !emailValidation.valid) {
-      errors.email = emailValidation.error;
-    }
-
-    const phoneValidation = validateRegistrationPhone(formData.phone);
-
-    if (!phoneValidation.valid) {
-      errors.phone = phoneValidation.error;
-    }
-
-    if (isCommercialMembership && !formData.gender) {
-      errors.gender = "Gender is required.";
-    }
-
-    if (isCommercialMembership && !formData.marital_status) {
-      errors.marital_status = "Marital status is required.";
-    }
-
-    if (isCommercialMembership && !toText(formData.nationality)) {
-      errors.nationality = "Nationality is required.";
-    }
-
-    if (isCommercialMembership && !toText(formData.occupation)) {
-      errors.occupation = "Occupation is required.";
-    }
-
-    if (isCommercialMembership && !formData.education) {
-      errors.education = "Education is required.";
     }
 
     if (!formData.password) {
@@ -486,33 +201,20 @@ export default function MembershipRegistration({
       errors.password = "Password must contain at least 5 characters.";
     }
 
-    if (!formData.confirm_password) {
-      errors.confirm_password = "Confirm password is required.";
-    } else if (formData.password !== formData.confirm_password) {
-      errors.confirm_password = "Passwords do not match.";
-    }
-
-    if (!formData.termsAccepted) {
-      errors.termsAccepted = "Please accept the membership declaration.";
-    }
-
     setFieldErrors(errors);
 
     if (Object.keys(errors).length > 0) {
-      setFormError("Please complete all required membership details.");
-
+      setFormError("Please correct the highlighted fields.");
       return false;
     }
 
+    setFormError("");
     return true;
   };
 
-  /* ========================================
-     REGISTER MEMBER
-
-     Exact API:
-     POST /api/register
-  ======================================== */
+  /* =======================================================
+     HANDLE SUBMIT
+  ======================================================= */
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -525,7 +227,6 @@ export default function MembershipRegistration({
 
     if (!validateForm()) {
       scrollToTop();
-
       return;
     }
 
@@ -535,48 +236,26 @@ export default function MembershipRegistration({
 
       const result = await registerMember({
         full_name: formData.full_name,
-        first_name: isCommercialMembership
-          ? formData.first_name
-          : formData.full_name,
-
-        last_name: isCommercialMembership ? formData.last_name : "",
-
-        father_name: isCommercialMembership ? formData.father_name : "",
-
-        dob: formData.dob,
-
-        email: formData.email,
-
+        first_name: formData.full_name,
+        last_name: "",
+        father_name: "",
+        dob: formData.dob || "",
+        email: formData.email || "",
         phone: formData.phone,
-
-        gender: isCommercialMembership ? formData.gender : "",
-
-        marital_status: isCommercialMembership ? formData.marital_status : "",
-
-        nationality: isCommercialMembership ? formData.nationality : "",
-
-        occupation: isCommercialMembership ? formData.occupation : "",
-
-        education: isCommercialMembership ? formData.education : "",
-
-        /*
-          Exact backend membership
-          value maintained here.
-        */
-
-        membership_type: activeMembershipType,
-
-        referral: formData.referral,
-
+        gender: "",
+        marital_status: "",
+        nationality: "Indian",
+        occupation: "",
+        education: "",
+        membership_type: "Civilian Member",
+        referral: formData.referral || "",
         password: formData.password,
-
-        confirm_password: formData.confirm_password,
-
+        confirm_password: formData.password,
         profile_pic: formData.profile_pic,
       });
 
       toast.success(
-        result.message || "Membership registration submitted successfully."
+        result.message || "Civilian registration completed successfully!"
       );
 
       const newLoginId = toText(
@@ -596,26 +275,22 @@ export default function MembershipRegistration({
           window.sessionStorage.setItem("inmba_civilian_login_id", newLoginId);
           window.sessionStorage.setItem("last_registered_login_id", newLoginId);
         } catch {
-          // Storage access fallback
+          // Storage fallback
         }
       }
 
-      const nextRoute = !isCommercialMembership
-        ? `/success${
-            newLoginId ? `?loginId=${encodeURIComponent(newLoginId)}` : ""
-          }`
-        : getInternalRoute(result.nextRoute) || "/success";
-
-      navigate(nextRoute, {
-        state: {
-          loginId: newLoginId,
-          registration: result,
-          registrationResult: result,
-        },
-      });
+      navigate(
+        `/success${newLoginId ? `?loginId=${encodeURIComponent(newLoginId)}` : ""}`,
+        {
+          state: {
+            loginId: newLoginId,
+            registration: result,
+            registrationResult: result,
+          },
+        }
+      );
     } catch (requestError) {
       const apiFieldErrors = asObject(requestError.fieldErrors);
-
       const utilityErrors = asObject(getFieldErrors(requestError));
 
       setFieldErrors({
@@ -626,7 +301,7 @@ export default function MembershipRegistration({
       setFormError(
         getApiErrorMessage(
           requestError,
-          "Unable to complete membership registration."
+          "Unable to complete Civilian registration."
         )
       );
 
@@ -636,858 +311,479 @@ export default function MembershipRegistration({
     }
   };
 
+  /* =======================================================
+     JSX
+  ======================================================= */
+
   return (
-    <main
-      ref={pageRef}
-      className={`inmba-register-page ${
-        isCommercialMembership ? "" : "inmba-register-page--civilian"
-      }`}
-    >
-      <div className="inmba-register-container">
-        <div className="inmba-register-split-layout">
-          {/* =================================
-              LEFT PANEL
-          ================================= */}
+    <main ref={pageRef} className="civilian-registration-page">
+      <div className="civilian-registration-container">
+        {/* TOP BRAND BAR */}
+        <header className="civilian-registration-top-header">
+          <Link to="/" className="civilian-registration-top-brand">
+            <span className="civilian-registration-brand-icon">
+              <i className="fas fa-id-card-clip" aria-hidden="true" />
+            </span>
+            <div className="civilian-registration-brand-text">
+              <span>INMBA</span>
+              <strong>Civilian Member</strong>
+            </div>
+          </Link>
 
-          <aside className="inmba-register-side-panel">
-            <header className="inmba-register-header">
-              <Link to="/" className="inmba-register-brand">
-              
+          <div className="civilian-registration-top-actions">
+            <span>Already have an account?</span>
+            <Link to="/login" className="civilian-top-login-btn">
+              Login
+            </Link>
+          </div>
+        </header>
 
+        {/* HERO TITLE CENTER */}
+        <section className="civilian-registration-hero-center">
+          <h1>INMBA Civilian Membership (Basic)</h1>
+          <p>
+            Enter the details required to create your basic civilian membership
+            account. Mobile OTP verification is not required.
+          </p>
+        </section>
+
+        {/* TOGGLE BUTTON FOR REGISTRATION DETAILS & BENEFITS */}
+        <div className="civilian-guide-toggle-wrap">
+          <button
+            type="button"
+            className="civilian-guide-toggle-btn"
+            onClick={() => setShowGuide((prev) => !prev)}
+            aria-expanded={showGuide}
+          >
+            <span className="civilian-guide-toggle-icon">
+              <i className="fas fa-circle-info" aria-hidden="true" />
+            </span>
+            <span>
+              {showGuide
+                ? "Hide Registration Details & Benefits"
+                : "View Registration Details & Benefits"}
+            </span>
+            <i
+              className={`fas fa-chevron-${showGuide ? "up" : "down"} civilian-guide-toggle-arrow`}
+              aria-hidden="true"
+            />
+          </button>
+        </div>
+
+        {/* COLLAPSIBLE GUIDE CARD */}
+        {showGuide && (
+          <section className="civilian-guide-card">
+            <div className="civilian-guide-benefits-grid">
+              <div className="civilian-guide-benefit-item">
+                <span className="civilian-guide-benefit-icon">
+                  <i className="fas fa-mobile-screen-button" aria-hidden="true" />
+                </span>
                 <div>
-                  <strong>INMBA<br /> Civilian Membership</strong>
-
-                  <small>
-                    International Network of Management & Business
-                    Administration
-                  </small>
+                  <strong>No OTP Required</strong>
+                  <p>Register with just your mobile number.</p>
                 </div>
-              </Link>
-
-              {isCommercialMembership && (
-                <div>
-                  <span>Already registered?</span>
-
-                  <Link to="/login">Member Login</Link>
-                </div>
-              )}
-            </header>
-
-            <section className="inmba-register-hero">
-              <div>
-                <p>{pageContent.eyebrow}</p>
-
-                <h1>{pageContent.title}</h1>
-
-                <span>{pageContent.description}</span>
-
-                {!isCommercialMembership && (
-                  <div className="inmba-register-benefits">
-                    {civilianText.benefits.map((benefit) => (
-                      <div key={benefit.id}>
-                        <span>
-                          <i className={benefit.icon} aria-hidden="true"></i>
-                        </span>
-
-                        <div>
-                          <strong>{benefit.title}</strong>
-
-                          <p>{benefit.text}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
 
-              {isCommercialMembership && (
-                <div className="inmba-register-type-card">
-                  <i className={pageContent.typeIcon} aria-hidden="true"></i>
-
-                  <span>Membership Type</span>
-
-                  <strong>{activeMembershipType}</strong>
+              <div className="civilian-guide-benefit-item">
+                <span className="civilian-guide-benefit-icon">
+                  <i className="fas fa-users" aria-hidden="true" />
+                </span>
+                <div>
+                  <strong>Up to 3 Accounts per Number</strong>
+                  <p>Up to 3 Civilian accounts can share one mobile number.</p>
                 </div>
-              )}
-            </section>
+              </div>
 
-            {!isCommercialMembership && (
-              <>
-                <section className="inmba-register-steps">
-                  <h3>{civilianText.stepsTitle}</h3>
+              <div className="civilian-guide-benefit-item">
+                <span className="civilian-guide-benefit-icon">
+                  <i className="fas fa-id-card" aria-hidden="true" />
+                </span>
+                <div>
+                  <strong>No KYC for Basic</strong>
+                  <p>Aadhaar, PAN and bank details are asked only when you upgrade.</p>
+                </div>
+              </div>
+            </div>
 
-                  <ol>
-                    {civilianText.steps.map((step, index) => (
-                      <li key={step.id}>
-                        <span>{index + 1}</span>
+            <div className="civilian-guide-steps-grid">
+              <div className="civilian-guide-box">
+                <h3>How it works</h3>
+                <ol className="civilian-guide-steps-list">
+                  <li>
+                    <span>1</span>
+                    <div>
+                      <strong>Fill in your details</strong>
+                      <p>Enter your name and mobile number.</p>
+                    </div>
+                  </li>
+                  <li>
+                    <span>2</span>
+                    <div>
+                      <strong>Set a password / PIN</strong>
+                      <p>Create the password you will use to log in.</p>
+                    </div>
+                  </li>
+                  <li>
+                    <span>3</span>
+                    <div>
+                      <strong>Submit your registration</strong>
+                      <p>Your Civilian login ID is generated for you.</p>
+                    </div>
+                  </li>
+                  <li>
+                    <span>4</span>
+                    <div>
+                      <strong>Log in</strong>
+                      <p>Use your login ID and password to open your account.</p>
+                    </div>
+                  </li>
+                </ol>
+              </div>
 
-                        <div>
-                          <strong>{step.title}</strong>
+              <div className="civilian-guide-box">
+                <h3>What you need</h3>
+                <ul className="civilian-guide-need-list">
+                  <li>
+                    <i className="fas fa-circle-check" aria-hidden="true" />
+                    <span>A 10-digit mobile number</span>
+                  </li>
+                  <li>
+                    <i className="fas fa-circle-check" aria-hidden="true" />
+                    <span>A password or PIN (minimum 5 characters)</span>
+                  </li>
+                  <li>
+                    <i className="fas fa-circle-check" aria-hidden="true" />
+                    <span>Optional: email, date of birth, photo, referral ID</span>
+                  </li>
+                </ul>
 
-                          <p>{step.text}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ol>
-                </section>
-
-                <section className="inmba-register-need">
-                  <h3>{civilianText.needTitle}</h3>
-
-                  <ul>
-                    {civilianText.needItems.map((item) => (
-                      <li key={item}>
-                        <i className="fas fa-circle-check" aria-hidden="true"></i>
-
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-
-                <p className="inmba-register-side-note">
-                  <i className="fas fa-headset" aria-hidden="true"></i>
-
+                <p className="civilian-guide-helpline">
+                  <i className="fas fa-headset" aria-hidden="true" />
                   <span>
-                    {civilianText.helpText}{" "}
+                    Need help? Call Admin:{" "}
                     <a href="tel:+918940369361">+91 89403 69361</a>
                   </span>
                 </p>
-              </>
-            )}
-          </aside>
-
-          {/* =================================
-              RIGHT PANEL
-          ================================= */}
-
-          <section ref={contentRef} className="inmba-register-content-panel">
-            <div className="inmba-register-form-wrapper">
-              {!isCommercialMembership && (
-                <header className="inmba-register-content-heading">
-                  <span>
-                    <i className="fas fa-user" aria-hidden="true"></i>
-                  </span>
-
-                  <div>
-                    <h2>
-                      {civilianLanguage === "ta"
-                        ? "சிவிலியன் அடிப்படை பதிவு"
-                        : "Civilian Basic Registration"}
-                    </h2>
-
-                    <p>
-                      {civilianLanguage === "ta"
-                        ? "உங்கள் INMBA Civilian Membership கணக்கை உருவாக்குங்கள்."
-                        : "Create your INMBA Civilian Membership account."}
-                    </p>
-                  </div>
-                </header>
-              )}
-
-              {!isCommercialMembership && (
-                <section
-                  className="inmba-register-language"
-                  aria-label="Form language"
-                >
-                  <div>
-                    <i className="fas fa-language" aria-hidden="true"></i>
-
-                    <span>Form Language / படிவ மொழி</span>
-                  </div>
-
-                  <div className="inmba-register-language-options">
-                    <button
-                      type="button"
-                      className={civilianLanguage === "ta" ? "active" : ""}
-                      onClick={() => setCivilianLanguage("ta")}
-                    >
-                      தமிழ்
-                    </button>
-
-                    <button
-                      type="button"
-                      className={civilianLanguage === "en" ? "active" : ""}
-                      onClick={() => setCivilianLanguage("en")}
-                    >
-                      English
-                    </button>
-                  </div>
-                </section>
-              )}
-
-              {/* =================================
-                  REFERRAL NOTICE
-              ================================= */}
-
-              {referralFromUrl && (
-                <section className="inmba-register-referral-notice">
-                  <i className="fas fa-user-plus" aria-hidden="true"></i>
-
-                  <div>
-                    <strong>Referral Applied</strong>
-
-                    <span>
-                      Referral ID <b>{referralFromUrl}</b> was added from your
-                      membership link.
-                    </span>
-                  </div>
-                </section>
-              )}
-
-              {/* =================================
-                  FORM ERROR
-              ================================= */}
-
-              {formError && (
-                <div className="inmba-register-alert" role="alert">
-                  <i
-                    className="fas fa-circle-exclamation"
-                    aria-hidden="true"
-                  ></i>
-
-                  <span>{formError}</span>
-                </div>
-              )}
-
-              <form
-                className="inmba-register-form"
-                onSubmit={handleSubmit}
-                noValidate
-              >
-                {/* =================================
-                    PERSONAL
-                ================================= */}
-
-                <RegistrationSection
-                  icon="fas fa-user"
-                  title={
-                    isCommercialMembership
-                      ? "Personal Information"
-                      : civilianText.personalTitle
-                  }
-                  description={
-                    isCommercialMembership
-                      ? "Enter your identity and basic personal details."
-                      : civilianText.personalDescription
-                  }
-                >
-                  <div className="inmba-register-grid">
-                    {!isCommercialMembership && (
-                      <RegistrationField
-                        id="register-full-name"
-                        name="full_name"
-                        label={civilianText.fullName}
-                        value={formData.full_name}
-                        onChange={handleInputChange}
-                        error={getErrorText(fieldErrors.full_name)}
-                        placeholder={civilianText.fullNamePlaceholder}
-                        autoComplete="name"
-                        required
-                        disabled={submitting}
-                      />
-                    )}
-
-                    {isCommercialMembership && (
-                      <>
-                        <RegistrationField
-                          id="register-first-name"
-                          name="first_name"
-                          label="First Name"
-                          value={formData.first_name}
-                          onChange={handleInputChange}
-                          error={getErrorText(fieldErrors.first_name)}
-                          placeholder="Enter first name"
-                          autoComplete="given-name"
-                          required
-                          disabled={submitting}
-                        />
-
-                        <RegistrationField
-                          id="register-last-name"
-                          name="last_name"
-                          label="Last Name"
-                          value={formData.last_name}
-                          onChange={handleInputChange}
-                          error={getErrorText(fieldErrors.last_name)}
-                          placeholder="Enter last name"
-                          autoComplete="family-name"
-                          required
-                          disabled={submitting}
-                        />
-
-                        <RegistrationField
-                          id="register-father-name"
-                          name="father_name"
-                          label="Father / Guardian Name"
-                          value={formData.father_name}
-                          onChange={handleInputChange}
-                          error={getErrorText(fieldErrors.father_name)}
-                          placeholder="Enter father or guardian name"
-                          required
-                          disabled={submitting}
-                        />
-                      </>
-                    )}
-
-                    <RegistrationField
-                      id="register-dob"
-                      name="dob"
-                      label={
-                        isCommercialMembership ? "Date of Birth" : civilianText.dob
-                      }
-                      type="date"
-                      value={formData.dob}
-                      onChange={handleInputChange}
-                      error={getErrorText(fieldErrors.dob)}
-                      max={new Date().toISOString().split("T")[0]}
-                      required={isCommercialMembership}
-                      optional={!isCommercialMembership}
-                      disabled={submitting}
-                    />
-
-                    {isCommercialMembership && (
-                      <>
-                        <RegistrationSelect
-                          id="register-gender"
-                          name="gender"
-                          label="Gender"
-                          value={formData.gender}
-                          onChange={handleInputChange}
-                          error={getErrorText(fieldErrors.gender)}
-                          options={GENDER_OPTIONS}
-                          placeholder="Select gender"
-                          required
-                          disabled={submitting}
-                        />
-
-                        <RegistrationSelect
-                          id="register-marital"
-                          name="marital_status"
-                          label="Marital Status"
-                          value={formData.marital_status}
-                          onChange={handleInputChange}
-                          error={getErrorText(fieldErrors.marital_status)}
-                          options={MARITAL_OPTIONS}
-                          placeholder="Select marital status"
-                          required
-                          disabled={submitting}
-                        />
-
-                        <RegistrationField
-                          id="register-nationality"
-                          name="nationality"
-                          label="Nationality"
-                          value={formData.nationality}
-                          onChange={handleInputChange}
-                          error={getErrorText(fieldErrors.nationality)}
-                          placeholder="Enter nationality"
-                          required
-                          disabled={submitting}
-                        />
-                      </>
-                    )}
-                  </div>
-                </RegistrationSection>
-
-                {/* =================================
-                    CONTACT
-                ================================= */}
-
-                <RegistrationSection
-                  icon="fas fa-address-book"
-                  title={
-                    isCommercialMembership
-                      ? "Contact & Location"
-                      : civilianText.contactTitle
-                  }
-                  description={
-                    isCommercialMembership
-                      ? "Provide your registered communication details."
-                      : civilianText.contactDescription
-                  }
-                >
-                  <div className="inmba-register-grid">
-                    <RegistrationField
-                      id="register-email"
-                      name="email"
-                      label={
-                        isCommercialMembership
-                          ? "Email Address"
-                          : civilianText.email
-                      }
-                      type="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      error={getErrorText(fieldErrors.email)}
-                      placeholder="example@email.com"
-                      autoComplete="email"
-                      required={isCommercialMembership}
-                      optional={!isCommercialMembership}
-                      disabled={submitting}
-                    />
-
-                    <RegistrationField
-                      id="register-phone"
-                      name="phone"
-                      label={
-                        isCommercialMembership
-                          ? "Mobile Number"
-                          : civilianText.mobile
-                      }
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      error={getErrorText(fieldErrors.phone)}
-                      placeholder={
-                        isCommercialMembership
-                          ? "10-digit mobile number"
-                          : civilianText.mobilePlaceholder
-                      }
-                      autoComplete="tel"
-                      inputMode="numeric"
-                      maxLength={10}
-                      required
-                      disabled={submitting}
-                      helperText={
-                        !isCommercialMembership ? civilianText.mobileHelp : ""
-                      }
-                    />
-
-                    <RegistrationField
-                      id="register-referral"
-                      name="referral"
-                      label={
-                        isCommercialMembership
-                          ? "Referral ID"
-                          : civilianText.referral
-                      }
-                      value={formData.referral}
-                      onChange={handleInputChange}
-                      error={getErrorText(fieldErrors.referral)}
-                      placeholder={
-                        isCommercialMembership
-                          ? "Optional referral ID"
-                          : civilianText.referralPlaceholder
-                      }
-                      disabled={submitting}
-                      optional
-                    />
-                  </div>
-                </RegistrationSection>
-
-                {/* =================================
-                    EDUCATION / PROFESSION
-                ================================= */}
-
-                {isCommercialMembership && (
-                  <RegistrationSection
-                    icon="fas fa-building"
-                    title={pageContent.professionTitle}
-                    description={pageContent.professionDescription}
-                  >
-                    <div className="inmba-register-grid">
-                      <RegistrationSelect
-                        id="register-education"
-                        name="education"
-                        label="Education"
-                        value={formData.education}
-                        onChange={handleInputChange}
-                        error={getErrorText(fieldErrors.education)}
-                        options={EDUCATION_OPTIONS}
-                        placeholder="Select education"
-                        required
-                        disabled={submitting}
-                      />
-
-                      <RegistrationField
-                        id="register-occupation"
-                        name="occupation"
-                        label="Business / Occupation"
-                        value={formData.occupation}
-                        onChange={handleInputChange}
-                        error={getErrorText(fieldErrors.occupation)}
-                        placeholder="Enter business or occupation"
-                        required
-                        disabled={submitting}
-                      />
-                    </div>
-                  </RegistrationSection>
-                )}
-
-                {/* =================================
-                    PROFILE PHOTO (CIVILIAN)
-                ================================= */}
-
-                {!isCommercialMembership && (
-                  <RegistrationSection
-                    className="inmba-register-section--single"
-                    icon="fas fa-camera"
-                    title={civilianText.photoTitle}
-                    description={civilianText.photoDescription}
-                  >
-                    <div className="inmba-register-grid">
-                      <div className="inmba-register-field">
-                        <label htmlFor="register-profile-pic">
-                          {civilianText.photoTitle}{" "}
-                          <small>({civilianText.optional})</small>
-                        </label>
-
-                        <input
-                          id="register-profile-pic"
-                          name="profile_pic"
-                          type="file"
-                          accept="image/jpeg,image/png,image/webp"
-                          onChange={handleInputChange}
-                          disabled={submitting}
-                        />
-
-                        <small>{civilianText.photoHelp}</small>
-                      </div>
-                    </div>
-                  </RegistrationSection>
-                )}
-
-                {/* =================================
-                    SECURITY
-                ================================= */}
-
-                <RegistrationSection
-                  icon="fas fa-shield-halved"
-                  title={
-                    isCommercialMembership
-                      ? "Account Security"
-                      : civilianText.securityTitle
-                  }
-                  description={
-                    isCommercialMembership
-                      ? "Create the password used with your generated login ID."
-                      : civilianText.securityDescription
-                  }
-                >
-                  <div className="inmba-register-grid">
-                    <PasswordField
-                      id="register-password"
-                      name="password"
-                      label={
-                        isCommercialMembership
-                          ? "Password"
-                          : civilianText.password
-                      }
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      error={getErrorText(fieldErrors.password)}
-                      show={showPassword}
-                      onToggle={() =>
-                        setShowPassword((previousValue) => !previousValue)
-                      }
-                      placeholder="Minimum 5 characters"
-                      disabled={submitting}
-                    />
-
-                    <PasswordField
-                      id="register-confirm-password"
-                      name="confirm_password"
-                      label={
-                        isCommercialMembership
-                          ? "Confirm Password"
-                          : civilianText.confirmPassword
-                      }
-                      value={formData.confirm_password}
-                      onChange={handleInputChange}
-                      error={getErrorText(fieldErrors.confirm_password)}
-                      show={showConfirmPassword}
-                      onToggle={() =>
-                        setShowConfirmPassword(
-                          (previousValue) => !previousValue
-                        )
-                      }
-                      placeholder="Re-enter password"
-                      disabled={submitting}
-                    />
-                  </div>
-
-                  <div
-                    className={`inmba-register-declaration ${
-                      getErrorText(fieldErrors.termsAccepted)
-                        ? "inmba-register-declaration-error"
-                        : ""
-                    }`}
-                  >
-                    <label htmlFor="register-terms">
-                      <input
-                        id="register-terms"
-                        type="checkbox"
-                        name="termsAccepted"
-                        checked={formData.termsAccepted}
-                        onChange={handleInputChange}
-                        disabled={submitting}
-                      />
-
-                      <span>
-                        <i className="fas fa-check" aria-hidden="true"></i>
-                      </span>
-
-                      <p>
-                        {isCommercialMembership
-                          ? "I confirm that all information provided in this membership application is true and correct."
-                          : civilianText.declaration}
-                      </p>
-                    </label>
-
-                    {getErrorText(fieldErrors.termsAccepted) && (
-                      <small>{getErrorText(fieldErrors.termsAccepted)}</small>
-                    )}
-                  </div>
-                </RegistrationSection>
-
-                {!isCommercialMembership && (
-                  <section className="inmba-register-upgrade-note">
-                    <span>
-                      <i className="fas fa-circle-info" aria-hidden="true"></i>
-                    </span>
-
-                    <div>
-                      <strong>
-                        {civilianLanguage === "ta"
-                          ? "கூடுதல் KYC எப்போது தேவை?"
-                          : "When is additional KYC required?"}
-                      </strong>
-
-                      <p>
-                        {civilianLanguage === "ta"
-                          ? "Network / Royalty Level-க்கு Upgrade செய்யும்போது மட்டும் Aadhaar, PAN மற்றும் Bank Account விவரங்கள் போன்ற கூடுதல் KYC தகவல்கள் கேட்கப்படும். Basic Civilian registration-க்கு அவை தேவையில்லை."
-                          : "Aadhaar, PAN and Bank Account details are required only when upgrading to the Network / Royalty Level. They are not required for Basic Civilian registration."}
-                      </p>
-                    </div>
-                  </section>
-                )}
-
-                {/* =================================
-                    ACTIONS
-                ================================= */}
-
-                <section className="inmba-register-actions">
-                  <Link to="/membership-type">
-                    <i className="fas fa-arrow-left" aria-hidden="true"></i>
-
-                    {isCommercialMembership
-                      ? "Membership Types"
-                      : civilianText.back}
-                  </Link>
-
-                  <button type="submit" disabled={submitting}>
-                    {submitting ? (
-                      <>
-                        <span
-                          className="spinner-border spinner-border-sm"
-                          aria-hidden="true"
-                        ></span>
-
-                        {isCommercialMembership
-                          ? "Creating Membership..."
-                          : civilianText.submitting}
-                      </>
-                    ) : (
-                      <>
-                        {isCommercialMembership
-                          ? "Submit Registration"
-                          : civilianText.submit}
-
-                        <i className="fas fa-arrow-right" aria-hidden="true"></i>
-                      </>
-                    )}
-                  </button>
-                </section>
-              </form>
-
-              {!isCommercialMembership && (
-                <p className="inmba-register-login">
-                  <span>{civilianText.alreadyRegistered}</span>
-
-                  <Link to="/login">{civilianText.memberLogin}</Link>
-                </p>
-              )}
+              </div>
             </div>
           </section>
+        )}
+
+        {/* MAIN FORM CARD */}
+        <div className="civilian-registration-form-unified">
+          <div className="civilian-registration-form-wrapper">
+            {/* HEADING */}
+            <div className="civilian-registration-heading">
+              <span className="civilian-registration-heading-icon">
+                <i className="fas fa-id-card" aria-hidden="true" />
+              </span>
+              <div>
+                <h2>Civilian Basic KYC</h2>
+                <p>Create your Civilian Membership account.</p>
+              </div>
+            </div>
+
+            {/* REFERRAL NOTICE */}
+            {referralFromUrl && (
+              <div className="civilian-registration-referral-notice">
+                <i className="fas fa-user-plus" aria-hidden="true" />
+                <div>
+                  <strong>Referral Applied</strong>
+                  <span>
+                    Referral ID <b>{referralFromUrl}</b> was added from your
+                    membership link.
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* FORM ERROR */}
+            {formError && (
+              <div className="civilian-registration-alert" role="alert">
+                <i className="fas fa-circle-exclamation" aria-hidden="true" />
+                <span>{formError}</span>
+              </div>
+            )}
+
+            {/* FORM */}
+            <form
+              className="civilian-registration-form"
+              onSubmit={handleSubmit}
+              noValidate
+            >
+              {/* FULL NAME */}
+              <div className="civilian-registration-field">
+                <label htmlFor="civilian-full-name">
+                  Full Name
+                  <em>*</em>
+                </label>
+                <div className="civilian-registration-input">
+                  <i className="fas fa-user" aria-hidden="true" />
+                  <input
+                    id="civilian-full-name"
+                    name="full_name"
+                    type="text"
+                    value={formData.full_name}
+                    onChange={handleInputChange}
+                    placeholder="Enter Full Name"
+                    autoComplete="name"
+                    disabled={submitting}
+                  />
+                </div>
+                {getErrorText(fieldErrors.full_name) && (
+                  <small className="civilian-registration-field-error">
+                    {getErrorText(fieldErrors.full_name)}
+                  </small>
+                )}
+              </div>
+
+              {/* MOBILE NUMBER */}
+              <div className="civilian-registration-field">
+                <label htmlFor="civilian-mobile">
+                  Mobile Number
+                  <em>*</em>
+                </label>
+                <div className="civilian-registration-input">
+                  <i className="fas fa-mobile-screen-button" aria-hidden="true" />
+                  <input
+                    id="civilian-mobile"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="10-digit Mobile Number"
+                    inputMode="numeric"
+                    autoComplete="tel"
+                    maxLength={10}
+                    disabled={submitting}
+                  />
+                </div>
+                {getErrorText(fieldErrors.phone) && (
+                  <small className="civilian-registration-field-error">
+                    {getErrorText(fieldErrors.phone)}
+                  </small>
+                )}
+              </div>
+
+              {/* EMAIL ID - OPTIONAL */}
+              <div className="civilian-registration-field">
+                <div className="civilian-registration-label-row">
+                  <label htmlFor="civilian-email">Email ID</label>
+                  <span>Optional</span>
+                </div>
+                <div className="civilian-registration-input">
+                  <i className="fas fa-envelope" aria-hidden="true" />
+                  <input
+                    id="civilian-email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Enter Email ID (Optional)"
+                    autoComplete="email"
+                    disabled={submitting}
+                  />
+                </div>
+                {getErrorText(fieldErrors.email) && (
+                  <small className="civilian-registration-field-error">
+                    {getErrorText(fieldErrors.email)}
+                  </small>
+                )}
+              </div>
+
+              {/* DATE OF BIRTH - OPTIONAL */}
+              <div className="civilian-registration-field">
+                <div className="civilian-registration-label-row">
+                  <label htmlFor="civilian-dob">Date of Birth</label>
+                  <span>Optional</span>
+                </div>
+                <div className="civilian-registration-input">
+                  <i className="fas fa-calendar-days" aria-hidden="true" />
+                  <input
+                    id="civilian-dob"
+                    name="dob"
+                    type="date"
+                    value={formData.dob}
+                    onChange={handleInputChange}
+                    max={new Date().toISOString().split("T")[0]}
+                    disabled={submitting}
+                  />
+                </div>
+                {getErrorText(fieldErrors.dob) && (
+                  <small className="civilian-registration-field-error">
+                    {getErrorText(fieldErrors.dob)}
+                  </small>
+                )}
+              </div>
+
+              {/* PASSWORD / PIN SETUP */}
+              <div className="civilian-registration-field">
+                <label htmlFor="civilian-password">
+                  Password / PIN Setup
+                  <em>*</em>
+                </label>
+                <div className="civilian-registration-input">
+                  <i className="fas fa-lock" aria-hidden="true" />
+                  <input
+                    id="civilian-password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    placeholder="Minimum 5 characters"
+                    autoComplete="new-password"
+                    disabled={submitting}
+                  />
+                  <button
+                    type="button"
+                    className="civilian-registration-password-toggle"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    disabled={submitting}
+                  >
+                    <i
+                      className={showPassword ? "far fa-eye-slash" : "far fa-eye"}
+                      aria-hidden="true"
+                    />
+                  </button>
+                </div>
+                {getErrorText(fieldErrors.password) && (
+                  <small className="civilian-registration-field-error">
+                    {getErrorText(fieldErrors.password)}
+                  </small>
+                )}
+              </div>
+
+              {/* REFERRAL ID - OPTIONAL */}
+              <div className="civilian-registration-field">
+                <div className="civilian-registration-label-row">
+                  <label htmlFor="civilian-referral">Referral ID</label>
+                  <span>Optional</span>
+                </div>
+                <div className="civilian-registration-input">
+                  <i className="fas fa-user-plus" aria-hidden="true" />
+                  <input
+                    id="civilian-referral"
+                    name="referral"
+                    type="text"
+                    value={formData.referral}
+                    onChange={handleInputChange}
+                    placeholder="Enter Referral ID"
+                    disabled={submitting}
+                  />
+                </div>
+              </div>
+
+              {/* PROFILE PHOTO - OPTIONAL (FULL WIDTH) */}
+              <div className="civilian-registration-field full-width">
+                <div className="civilian-registration-label-row">
+                  <label>Profile Photo</label>
+                  <span>Optional</span>
+                </div>
+
+                {!formData.profile_pic ? (
+                  <button
+                    type="button"
+                    className="civilian-registration-upload"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={submitting}
+                  >
+                    <span className="civilian-registration-upload-icon">
+                      <i className="fas fa-user" aria-hidden="true" />
+                    </span>
+                    <div>
+                      <strong>Upload your profile photo</strong>
+                      <small>You can also add or change this later.</small>
+                    </div>
+                    <span className="civilian-registration-upload-button">
+                      <i className="fas fa-cloud-arrow-up" aria-hidden="true" />
+                      Choose Photo
+                    </span>
+                  </button>
+                ) : (
+                  <div className="civilian-registration-photo-selected">
+                    <div className="civilian-registration-photo-preview">
+                      {photoPreview && (
+                        <img src={photoPreview} alt="Profile preview" />
+                      )}
+                    </div>
+                    <div className="civilian-registration-photo-details">
+                      <strong>{formData.profile_pic.name}</strong>
+                      <span>Profile photo selected</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemovePhoto}
+                      disabled={submitting}
+                      aria-label="Remove photo"
+                    >
+                      <i className="fas fa-xmark" aria-hidden="true" />
+                    </button>
+                  </div>
+                )}
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                  onChange={handlePhotoChange}
+                  hidden
+                />
+
+                {getErrorText(fieldErrors.profile_pic) && (
+                  <small className="civilian-registration-field-error">
+                    {getErrorText(fieldErrors.profile_pic)}
+                  </small>
+                )}
+              </div>
+
+              {/* SECURITY NOTE (FULL WIDTH) */}
+              <div className="civilian-registration-security-note full-width">
+                <i className="fas fa-shield-halved" aria-hidden="true" />
+                <span>
+                  Your registration details are securely processed by INMBA.
+                </span>
+              </div>
+
+              {/* SUBMIT BUTTON */}
+              <button
+                type="submit"
+                className="civilian-registration-submit"
+                disabled={submitting}
+              >
+                {submitting ? (
+                  <>
+                    <i
+                      className="fas fa-circle-notch fa-spin"
+                      aria-hidden="true"
+                    />
+                    <span>Submitting...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Submit Basic KYC</span>
+                    <i className="fas fa-arrow-right" aria-hidden="true" />
+                  </>
+                )}
+              </button>
+            </form>
+
+            {/* EXISTING ACCOUNT LOGIN */}
+            <div className="civilian-registration-login">
+              <span>Already have a Civilian account?</span>
+              <Link to="/login">Login</Link>
+            </div>
+
+            {/* BACK TO HOME */}
+            <div className="civilian-registration-home">
+              <Link to="/">
+                <i className="fas fa-arrow-left" aria-hidden="true" />
+                Back to Home
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </main>
-  );
-}
-
-/* ========================================
-   SECTION COMPONENT
-======================================== */
-
-function RegistrationSection({
-  icon,
-  title,
-  description,
-  className = "",
-  children,
-}) {
-  return (
-    <section className={`inmba-register-section ${className}`.trim()}>
-      <header>
-        <span>
-          <i className={icon} aria-hidden="true"></i>
-        </span>
-
-        <div>
-          <h2>{title}</h2>
-
-          <p>{description}</p>
-        </div>
-      </header>
-
-      {children}
-    </section>
-  );
-}
-
-/* ========================================
-   INPUT COMPONENT
-======================================== */
-
-function RegistrationField({
-  id,
-  name,
-  label,
-  type = "text",
-  value,
-  onChange,
-  error,
-  required = false,
-  optional = false,
-  helperText = "",
-  ...inputProps
-}) {
-  return (
-    <div className="inmba-register-field">
-      <label htmlFor={id}>
-        {label}
-
-        {required && <span>*</span>}
-
-        {optional && <small>Optional</small>}
-      </label>
-
-      <input
-        id={id}
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        className={error ? "inmba-register-input-error" : ""}
-        {...inputProps}
-      />
-
-      {error && <small className="inmba-register-field-error">{error}</small>}
-
-      {!error && helperText && (
-        <small className="inmba-register-field-help">{helperText}</small>
-      )}
-    </div>
-  );
-}
-
-/* ========================================
-   SELECT COMPONENT
-======================================== */
-
-function RegistrationSelect({
-  id,
-  name,
-  label,
-  value,
-  onChange,
-  error,
-  options,
-  placeholder,
-  required = false,
-  disabled = false,
-}) {
-  return (
-    <div className="inmba-register-field">
-      <label htmlFor={id}>
-        {label}
-
-        {required && <span>*</span>}
-      </label>
-
-      <select
-        id={id}
-        name={name}
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-        className={error ? "inmba-register-input-error" : ""}
-      >
-        <option value="">{placeholder}</option>
-
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-
-      {error && <small className="inmba-register-field-error">{error}</small>}
-    </div>
-  );
-}
-
-/* ========================================
-   PASSWORD COMPONENT
-======================================== */
-
-function PasswordField({
-  id,
-  name,
-  label,
-  value,
-  onChange,
-  error,
-  show,
-  onToggle,
-  placeholder,
-  disabled,
-}) {
-  return (
-    <div className="inmba-register-field">
-      <label htmlFor={id}>
-        {label}
-
-        <span>*</span>
-      </label>
-
-      <div className="inmba-register-password-shell">
-        <input
-          id={id}
-          type={show ? "text" : "password"}
-          name={name}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          autoComplete="new-password"
-          disabled={disabled}
-          className={error ? "inmba-register-input-error" : ""}
-        />
-
-        <button
-          type="button"
-          onClick={onToggle}
-          disabled={disabled}
-          aria-label={show ? "Hide password" : "Show password"}
-        >
-          <i
-            className={show ? "fas fa-eye-slash" : "fas fa-eye"}
-            aria-hidden="true"
-          ></i>
-        </button>
-      </div>
-
-      {error && <small className="inmba-register-field-error">{error}</small>}
-    </div>
   );
 }

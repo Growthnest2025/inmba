@@ -5,7 +5,7 @@
 
 .member-dashboard-page.member-dashboard-theme-blue {
   min-height: 100vh;
-  padding: 130px 24px 60px;
+  padding: var(--page-top-offset, 160px) 24px 60px;
   background:
     radial-gradient(
       circle at 10% 10%,

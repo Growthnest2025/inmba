@@ -4,7 +4,7 @@
 
 .inmba-policy-page {
   min-height: 100vh;
-  padding: 115px 22px 70px;
+  padding: var(--page-top-offset, 160px) 22px 70px;
   background:
     radial-gradient(
       circle at 8% 12%,
@@ -677,8 +677,7 @@
 
 @media (max-width: 650px) {
   .inmba-policy-page {
-    padding:
-      95px 12px 50px;
+    padding: var(--page-top-offset, 112px) 12px 50px;
   }
 
   .inmba-policy-hero {

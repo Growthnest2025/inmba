@@ -29,7 +29,6 @@ import {
   faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
 
-import Navbar from "../../components/Navbar/Navbar";
 
 import "./Foundation.css";
 
@@ -436,8 +435,7 @@ export default function Foundation() {
 
   return (
     <div className="foundation-page">
-      <Navbar />
-
+      
       <main className="foundation-main">
         {/* =================================================
             HERO SECTION
@@ -561,9 +559,6 @@ export default function Foundation() {
                 </ul>
 
                 <p className="fa-hint">
-                  <span className="fa-hint-desktop">
-                    Auto-scrolls. Hover to pause, drag to browse.
-                  </span>
 
                   <span className="fa-hint-touch">
                     Auto-scrolls. Swipe to browse.

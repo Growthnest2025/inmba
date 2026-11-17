@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -12,15 +12,9 @@ import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 
 import "../Organization/Organization.css";
 import "./Chamber.css";
-import Navbar from "../../components/Navbar/Navbar";
-import { Link } from "react-router-dom";
 
 /* =========================================================
    NETWORK LOGOS
-
-   Imported directly from src/assets/images, same pattern
-   used everywhere else in this project (bundled by webpack,
-   so no public/ folder or fallback handling is needed).
 ========================================================= */
 
 import inmbacom1 from "../../assets/images/inmbacom (1).png";
@@ -75,16 +69,6 @@ const heroPoints = [
 ];
 
 /* =========================================================
-   CHAMBER AT A GLANCE
-========================================================= */
-
-const chamberGlance = [
-  { icon: "bi-people-fill", title: "31 members minimum", text: "The Patron plus 30 directly connected members" },
-  { icon: "bi-person-badge-fill", title: "10% to the Patron", text: "Share of subscriptions collected through the Chamber" },
-  { icon: "bi-pie-chart-fill", title: "20% Development Fund", text: "Allocated back to the Chamber" },
-];
-
-/* =========================================================
    CONTACT DATA
 ========================================================= */
 
@@ -120,299 +104,6 @@ const contactDetails = [
   },
 ];
 
-/* extra content under the contact cards */
-const contactHelp = [
-  { icon: "bi-person-plus", title: "Membership enquiries", text: "Civilian Royalty and Civilian Network membership." },
-  { icon: "bi-diagram-3", title: "Chamber formation", text: "Guidance on building your network and forming a Chamber." },
-  { icon: "bi-journal-check", title: "Directory listing", text: "Get your Chamber listed once the requirements are met." },
-];
-
-/* =========================================================
-   CHAMBER RAIL (What is a Chamber + How to Form a Chamber)
-========================================================= */
-
-/* "What is a Chamber" cards + "How to Form a Chamber" step cards, merged into one list */
-const railItems = [
-  {
-    icon: "bi-people-fill",
-    tag: "About",
-    title: "Member-led Community",
-    text: "Chambers are formed by INMBA Civilian Network Members and grow through direct connections.",
-  },
-  {
-    icon: "bi-person-badge",
-    tag: "About",
-    title: "Founded by a Patron",
-    text: "The founding member becomes the Patron (Atchi Mandra Thalaivar).",
-  },
-  {
-    icon: "bi-award",
-    tag: "About",
-    title: "Recognized Chamber",
-    text: "A Chamber is recognized and listed in the directory when it reaches its required membership strength.",
-  },
-  {
-    icon: "bi-person-plus",
-    tag: "Get Started",
-    title: "Become a Civilian Member",
-    text: "Start with INMBA Civilian Network Membership.",
-  },
-  {
-    icon: "bi-diagram-3",
-    tag: "Get Started",
-    title: "Build Your Network",
-    text: "Invite and connect your direct contacts within INMBA.",
-  },
-  {
-    icon: "bi-people",
-    tag: "Get Started",
-    title: "Reach 31 Members",
-    text: "A Patron and at least 30 directly connected members are required.",
-  },
-  {
-    icon: "bi-patch-check",
-    tag: "Get Started",
-    title: "Receive Recognition",
-    text: "The Chamber becomes active and is entered into the directory once requirements are met.",
-  },
-];
-
-/* extra content next to the rail */
-const railStats = [
-  { value: "4", label: "Steps to form" },
-  { value: "31", label: "Members to activate" },
-  { value: "10%", label: "Patron share" },
-];
-
-const railPoints = [
-  "Formed by INMBA Civilian Network Members",
-  "Founding member becomes the Patron (Atchi Mandra Thalaivar)",
-  "Recognized and listed once the membership requirement is met",
-];
-
-const N = railItems.length;
-const AUTO_SPEED = 0.0004; // cards per millisecond
-const SIDE_W = 280; // card width on phones (must match .cr-card width in CSS)
-const wrap = (x, n) => ((x % n) + n) % n;
-
-function ChamberRail() {
-  const railRef = useRef(null);
-  const cardRefs = useRef([]);
-  const api = useRef({ target: 0 });
-
-  useEffect(() => {
-    const rail = railRef.current;
-    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    let p = 0;
-    let cardS = 0;
-    let side = false;
-    let dirty = true;
-    let last = 0;
-    let raf;
-    let down = false;
-    let start = 0;
-    let startT = 0;
-    let moved = 0;
-    let hover = false;
-
-    const size = () => {
-      side = window.innerWidth <= 820;
-      cardS = side ? SIDE_W : rail.clientHeight / 3;
-      cardRefs.current.forEach((c) => {
-        if (c) c.style.height = side ? "100%" : `${cardS}px`;
-      });
-      dirty = true;
-    };
-
-    const paint = () => {
-      const all = cardS * N;
-      cardRefs.current.forEach((c, i) => {
-        if (!c) return;
-        let y = wrap(i * cardS - p * cardS, all);
-        if (y > all - cardS) y -= all;
-        c.style.transform = side
-          ? `translate3d(${y.toFixed(1)}px,0,0)`
-          : `translate3d(0,${y.toFixed(1)}px,0)`;
-      });
-    };
-
-    const frame = (now) => {
-      const dt = Math.min(50, now - last) || 16;
-      last = now;
-      const was = p;
-      // auto scroll (pauses on hover / drag)
-      if (!down && !hover && !calm) api.current.target += dt * AUTO_SPEED;
-      const target = api.current.target;
-      if (calm) p = target;
-      else p += (target - p) * (1 - Math.exp(-dt * 0.0072));
-      if (Math.abs(target - p) < 0.0004) p = target;
-      if (p !== was || dirty) {
-        dirty = false;
-        paint();
-      }
-      raf = requestAnimationFrame(frame);
-    };
-
-    const pos = (e) => (side ? e.clientX : e.clientY);
-
-    const onDown = (e) => {
-      down = true;
-      start = pos(e);
-      startT = api.current.target;
-      moved = 0;
-    };
-    const onMove = (e) => {
-      if (!down) return;
-      const d = pos(e) - start;
-      moved = Math.max(moved, Math.abs(d));
-      if (moved > 6) {
-        rail.setPointerCapture?.(e.pointerId);
-        rail.classList.add("is-drag");
-      }
-      api.current.target = startT - d / cardS;
-    };
-    const onUp = () => {
-      if (!down) return;
-      down = false;
-      rail.classList.remove("is-drag");
-      if (moved >= 6) api.current.target = Math.round(api.current.target);
-    };
-    const onEnter = () => {
-      hover = true;
-    };
-    const onLeave = () => {
-      hover = false;
-    };
-    const onKey = (e) => {
-      if (["ArrowDown", "ArrowRight"].includes(e.key)) {
-        e.preventDefault();
-        api.current.target = Math.round(api.current.target) + 1;
-      }
-      if (["ArrowUp", "ArrowLeft"].includes(e.key)) {
-        e.preventDefault();
-        api.current.target = Math.round(api.current.target) - 1;
-      }
-    };
-
-    size();
-    raf = requestAnimationFrame(frame);
-    window.addEventListener("resize", size);
-    rail.addEventListener("pointerdown", onDown);
-    rail.addEventListener("pointermove", onMove);
-    rail.addEventListener("pointerup", onUp);
-    rail.addEventListener("pointercancel", onUp);
-    rail.addEventListener("pointerenter", onEnter);
-    rail.addEventListener("pointerleave", onLeave);
-    rail.addEventListener("keydown", onKey);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", size);
-      rail.removeEventListener("pointerdown", onDown);
-      rail.removeEventListener("pointermove", onMove);
-      rail.removeEventListener("pointerup", onUp);
-      rail.removeEventListener("pointercancel", onUp);
-      rail.removeEventListener("pointerenter", onEnter);
-      rail.removeEventListener("pointerleave", onLeave);
-      rail.removeEventListener("keydown", onKey);
-    };
-  }, []);
-
-  const step = (n) => {
-    api.current.target = Math.round(api.current.target) + n;
-  };
-
-  return (
-    <section className="cr-section" id="about-chamber">
-      <div className="ic-container">
-        <div className="cr-layout">
-          <div className="cr-intro">
-            <span className="ic-eyebrow">ABOUT &amp; GET STARTED</span>
-            <h2 className="cr-heading">
-              What Is an INMBA Chamber &amp; How to Form One
-            </h2>
-            <p className="cr-text">
-              An independent, member-led civic assembly within the INMBA
-              network, built to connect, lead and serve communities. Learn what
-              a Chamber is, then follow four simple steps to establish your own.
-            </p>
-
-            {/* EXTRA CONTENT */}
-
-            <div className="cr-stats">
-              {railStats.map((s) => (
-                <div className="cr-stat" key={s.label}>
-                  <strong>{s.value}</strong>
-                  <span>{s.label}</span>
-                </div>
-              ))}
-            </div>
-
-            <ul className="cr-points">
-              {railPoints.map((p) => (
-                <li key={p}>
-                  <i className="bi bi-check-circle-fill" />
-                  {p}
-                </li>
-              ))}
-            </ul>
-
-            <p className="cr-hint">Auto-scrolls. Hover to pause, drag to browse.</p>
-          </div>
-
-          <div className="cr-wrap">
-            <aside
-              className="cr-rail"
-              ref={railRef}
-              tabIndex={0}
-              aria-label="About the INMBA Chamber, leadership and membership. Drag or use arrow keys."
-            >
-              {railItems.map((item, i) => (
-                <article
-                  key={item.title}
-                  className={`cr-card${i % 2 ? " cr-alt" : ""}`}
-                  ref={(el) => (cardRefs.current[i] = el)}
-                >
-                  <div className="cr-card-top">
-                    <span className="cr-icon">
-                      <i className={`bi ${item.icon}`} />
-                    </span>
-                    <div>
-                      <span className="cr-tag">{item.tag}</span>
-                      <h3>{item.title}</h3>
-                    </div>
-                  </div>
-                  <p>{item.text}</p>
-                </article>
-              ))}
-            </aside>
-
-            <div className="cr-nav">
-              <button type="button" onClick={() => step(-1)} aria-label="Previous">
-                <i className="bi bi-chevron-up" />
-              </button>
-              <button type="button" onClick={() => step(1)} aria-label="Next">
-                <i className="bi bi-chevron-down" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="ic-join cr-join">
-          <div>
-            <h3>Ready to build your Chamber?</h3>
-            <p>Join INMBA and begin connecting your community.</p>
-          </div>
-          <Link to="/membership-type" className="ic-join-btn">
-            Join Now <i className="bi bi-arrow-up-right" />
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* =========================================================
    CHAMBER PAGE
 ========================================================= */
@@ -426,8 +117,7 @@ export default function Chamber() {
 
   return (
     <>
-      <Navbar />
-      <main className="organization-page inmba-chamber-merged">
+            <main className="organization-page inmba-chamber-merged">
         {/* ===================================================
             HERO SECTION
         =================================================== */}
@@ -508,41 +198,6 @@ export default function Chamber() {
                       ))}
                     </div>
                   </div>
-
-                  {/* CHAMBER AT A GLANCE */}
-
-                  <aside className="ic-glance">
-                    <div className="ic-glance-top">
-                      <div className="ic-glance-icon">
-                        <i className="bi bi-bank2" />
-                      </div>
-
-                      <div>
-                        <span>The Sabai</span>
-                        <h2>Chamber at a glance</h2>
-                      </div>
-                    </div>
-
-                    <div className="ic-glance-list">
-                      {chamberGlance.map((item) => (
-                        <div className="ic-glance-item" key={item.title}>
-                          <div className="ic-glance-item-icon">
-                            <i className={`bi ${item.icon}`} />
-                          </div>
-
-                          <div>
-                            <strong>{item.title}</strong>
-                            <span>{item.text}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="ic-glance-footer">
-                      <i className="ic-glance-dot" />
-                      Listed in the INMBA Chamber Directory
-                    </div>
-                  </aside>
                 </div>
               </div>
             </div>
@@ -585,60 +240,6 @@ export default function Chamber() {
         </section>
 
         {/* ===================================================
-            WHAT IS A CHAMBER + HOW TO FORM A CHAMBER
-            (cards and steps merged into one auto-scrolling rail,
-             with the Join banner underneath)
-        =================================================== */}
-
-        <ChamberRail />
-
-        {/* ===================================================
-            LEADERSHIP & MEMBERSHIP
-        =================================================== */}
-
-        <section className="ic-policy" id="chamber-policy">
-          <div className="ic-container">
-            <div className="ic-heading">
-              <span className="ic-eyebrow">CHAMBER ESSENTIALS</span>
-              <h2>Leadership &amp; Membership</h2>
-              <p>Key guidelines to understand before forming a Chamber.</p>
-            </div>
-
-            <div className="ic-policy-grid">
-              <article className="ic-policy-card">
-                <i className="bi bi-diagram-3" />
-                <h3>Leadership Roles</h3>
-                <p>
-                  Patron, President, Vice Presidents, Secretary and Treasurer
-                  form the Chamber governance structure. Elected positions
-                  require Civilian Royalty status.
-                </p>
-              </article>
-
-              <article className="ic-policy-card">
-                <i className="bi bi-person-check" />
-                <h3>Membership Requirements</h3>
-                <p>
-                  31 members minimum for active status: the Patron plus 30
-                  directly connected members. Governing positions must remain
-                  filled.
-                </p>
-              </article>
-
-              <article className="ic-policy-card">
-                <i className="bi bi-pie-chart" />
-                <h3>Membership &amp; Allocation</h3>
-                <p>
-                  One-time fees: Civilian Royalty ₹2,999 and Civilian Network
-                  ₹299. Chamber Patron 10%, Development Fund 20%, with the
-                  balance to the INMBA General Fund.
-                </p>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        {/* ===================================================
             CONTACT
         =================================================== */}
 
@@ -673,20 +274,6 @@ export default function Chamber() {
 
                   <div className="organization-contact-arrow">→</div>
                 </a>
-              ))}
-            </div>
-
-            {/* EXTRA CONTENT */}
-
-            <div className="cc-help">
-              {contactHelp.map((h) => (
-                <div className="cc-help-item" key={h.title}>
-                  <i className={`bi ${h.icon}`} />
-                  <div>
-                    <strong>{h.title}</strong>
-                    <span>{h.text}</span>
-                  </div>
-                </div>
               ))}
             </div>
           </div>

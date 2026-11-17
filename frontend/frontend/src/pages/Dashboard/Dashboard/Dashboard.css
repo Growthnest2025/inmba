@@ -4,7 +4,7 @@
 
 .member-dashboard-page {
   min-height: 100vh;
-  padding: 130px 24px 60px;
+  padding: var(--page-top-offset, 160px) 24px 60px;
   background:
     radial-gradient(
       circle at 10% 10%,
@@ -820,7 +820,7 @@
 
 @media (max-width: 991px) {
   .member-dashboard-page {
-    padding-top: 115px;
+    padding-top: var(--page-top-offset, 132px);
   }
 
   .member-dashboard-summary-grid {

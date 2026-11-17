@@ -172,7 +172,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding: 130px 0 80px;
+  padding: var(--page-top-offset, 160px) 0 80px;
   background:
     linear-gradient(
       180deg,
@@ -3823,7 +3823,7 @@ body {
 
   .organization-hero-overlay {
     min-height: auto;
-    padding: 30px 0;
+    padding: var(--page-top-offset, 112px) 0 40px;
     background: #ffffff !important;
   }
 

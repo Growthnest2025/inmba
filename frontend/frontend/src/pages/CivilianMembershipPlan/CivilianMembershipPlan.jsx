@@ -589,6 +589,26 @@ export default function CivilianMembershipPlan() {
         </section>
 
         {/* =================================================
+            DISCLAIMER
+        ================================================= */}
+
+        <section className="civilian-membership-disclaimer">
+          <div className="civilian-membership-disclaimer-icon">
+            <i className="fas fa-triangle-exclamation" />
+          </div>
+
+          <div>
+            <strong>
+              Payment Disclaimer (₹299 / ₹2999 Membership Fee)
+            </strong>
+
+            <p>
+              Membership payments of ₹299 (INMBA Network Member) and ₹2,999 (INMBA Network Royalty Member) are non-refundable one-time charges. Digital Member ID card, QR Code, Public Profile, and Royalty Privileges are activated only after administrative review and verification of submitted Full KYC details.
+            </p>
+          </div>
+        </section>
+
+        {/* =================================================
             NOTE
         ================================================= */}
 

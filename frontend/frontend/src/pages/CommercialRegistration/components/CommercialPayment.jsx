@@ -13,6 +13,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./CommercialPayment.css";
 import api from "../../../api/api";
 import { useAuth } from "../../../context/AuthContext";
+import RazorpayButton from "../../../components/RazorpayCheckout/RazorpayButton";
 
 /* =========================================================
    DEFAULT BASIC PLAN
@@ -36,6 +37,11 @@ const DEFAULT_BASIC_PLAN = {
 ========================================================= */
 
 const PAYMENT_METHODS = [
+  {
+    id: "Razorpay",
+    label: "Razorpay",
+    icon: "fa-solid fa-bolt",
+  },
   {
     id: "Account",
     label: "Account",
@@ -777,6 +783,36 @@ const handleSubmit = async (event) => {
                 </div>
               </div>
 
+              {/* RAZORPAY CHECKOUT ACTION */}
+              {paymentMethod === "Razorpay" && (
+                <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: "10px", padding: "16px", marginBottom: "20px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+                    <i className="fa-solid fa-shield-halved" style={{ color: "#16a34a", fontSize: "1.2rem" }} />
+                    <span style={{ fontSize: "0.9rem", color: "#15803d", fontWeight: "600" }}>
+                      Razorpay Instant Standard Checkout (UPI, Cards, NetBanking)
+                    </span>
+                  </div>
+                  <RazorpayButton
+                    amountInRupees={plan.amount}
+                    name="INMBA Commercial Membership"
+                    description={`Commercial Plan: ${plan.name} (₹${plan.amount})`}
+                    onSuccess={(verifyResult, rzpResponse) => {
+                      setTransactionId(rzpResponse.razorpay_payment_id);
+                      setError("");
+                    }}
+                    onFailure={(err) => {
+                      setError(err.message || "Payment cancelled or failed.");
+                    }}
+                    buttonText={
+                      transactionId && transactionId.startsWith("pay_")
+                        ? `Payment Verified (${transactionId})`
+                        : `Pay ₹${plan.amount} with Razorpay`
+                    }
+                    disabled={loading}
+                  />
+                </div>
+              )}
+
               {/* ===========================================
                   AMOUNT
               =========================================== */}
@@ -970,6 +1006,20 @@ const handleSubmit = async (event) => {
                   </span>
                 </div>
               )}
+
+              {/* ===========================================
+                  DISCLAIMER
+              =========================================== */}
+
+              <div className="commercial-payment-disclaimer-box">
+                <div className="commercial-payment-disclaimer-header">
+                  <i className="fa-solid fa-triangle-exclamation" />
+                  <strong>Membership Payment Disclaimer (₹{plan.amount})</strong>
+                </div>
+                <p>
+                  Commercial membership payments (₹299 Basic / ₹2,999 Profile Upgrade) are strictly non-refundable one-time fees. Business profile activation, member directory access, and QR code tools are activated after admin review within 24 hours.
+                </p>
+              </div>
 
               {/* ===========================================
                   SUBMIT

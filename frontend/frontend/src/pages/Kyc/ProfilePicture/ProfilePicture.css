@@ -1,6 +1,6 @@
 .kyc-profile-page {
   min-height: 100vh;
-  padding: 30px 20px 70px;
+  padding: var(--page-top-offset, 160px) 20px 70px;
   background: linear-gradient(
     180deg,
     #f7fbf5,

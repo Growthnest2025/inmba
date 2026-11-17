@@ -28,20 +28,12 @@ const railItems = [
   { id: 7, title: "INMBA Chamber", label: "Division", to: "/chamber", icon: "bi bi-bank2" },
   { id: 8, title: "INMBA Commercial", label: "Division", to: "/commercial", icon: "bi bi-graph-up-arrow" },
   { id: 9, title: "INMBA Foundation", label: "Division", to: "/foundation", icon: "bi bi-heart-fill" },
-  { id: 10, title: "Level 1 → Level 16", label: "Growth Path", to: "/membership-type", icon: "bi bi-bar-chart-steps" },
 ];
 
-const membershipStats = [
-  { value: "6", label: "Membership types" },
-  { value: "3", label: "Connected divisions" },
-  { value: "16", label: "Growth levels" },
-];
-
-const membershipPoints = [
-  "Pick the type that fits you: business, professional, citizen, student or honored contributor.",
-  "Grow step by step, from Level 1 Member to Level 16 Patron Senate.",
-  "Get access to the Chamber, Commercial and Foundation divisions.",
-  "Register online and continue with your generated member credentials.",
+const heroMemberships = [
+  { label: "INMBA Civilian Membership", to: "/membership/civilian", icon: "bi bi-person-fill" },
+  { label: "INMBA Commercial Membership", to: "/commercial-basic-kyc", icon: "bi bi-shop" },
+  { label: "INMBA Professional Membership", to: "/professional", icon: "bi bi-briefcase-fill" },
 ];
 
 const RAIL_N = railItems.length;
@@ -57,9 +49,8 @@ function MembershipRail() {
     const rail = railRef.current;
     const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    let p = 0;
-    let cardS = 0;
-    let side = false;
+    let p = 0; // eased position (what is drawn)
+    let cardS = 0; // real card width (read from CSS, so cards never overlap)
     let dirty = true;
     let last = 0;
     let raf;
@@ -71,18 +62,7 @@ function MembershipRail() {
     let speed = 1; // 0..1, ramps so pause / resume is smooth
 
     const size = () => {
-      side = window.innerWidth <= 820;
-
-      if (side) {
-        // use the real card width from CSS so cards never overlap
-        cardS = cardRefs.current[0]?.offsetWidth || 170;
-      } else {
-        cardS = rail.clientHeight / 3;
-      }
-
-      cardRefs.current.forEach((c) => {
-        if (c) c.style.height = side ? "100%" : `${cardS}px`;
-      });
+      cardS = cardRefs.current[0]?.offsetWidth || 220;
       dirty = true;
     };
 
@@ -90,11 +70,9 @@ function MembershipRail() {
       const all = cardS * RAIL_N;
       cardRefs.current.forEach((c, i) => {
         if (!c) return;
-        let y = wrap(i * cardS - p * cardS, all);
-        if (y > all - cardS) y -= all;
-        c.style.transform = side
-          ? `translate3d(${y.toFixed(2)}px,0,0)`
-          : `translate3d(0,${y.toFixed(2)}px,0)`;
+        let x = wrap(i * cardS - p * cardS, all);
+        if (x > all - cardS) x -= all;
+        c.style.transform = `translate3d(${x.toFixed(2)}px,0,0)`;
       });
     };
 
@@ -102,6 +80,7 @@ function MembershipRail() {
       const dt = Math.min(50, now - last) || 16;
       last = now;
       const was = p;
+
       // auto scroll: eases to a stop while hovering / dragging,
       // and eases back up to full speed afterwards
       const wanted = down || hover || calm ? 0 : 1;
@@ -114,6 +93,7 @@ function MembershipRail() {
       if (calm) p = target;
       else p += (target - p) * (1 - Math.exp(-dt * 0.0072));
       if (Math.abs(target - p) < 0.0004) p = target;
+
       if (p !== was || dirty) {
         dirty = false;
         paint();
@@ -121,18 +101,16 @@ function MembershipRail() {
       raf = requestAnimationFrame(frame);
     };
 
-    const pos = (e) => (side ? e.clientX : e.clientY);
-
     const onDown = (e) => {
       down = true;
-      start = pos(e);
+      start = e.clientX;
       startT = api.current.target;
       moved = 0;
       rail.dataset.moved = "0";
     };
     const onMove = (e) => {
       if (!down) return;
-      const d = pos(e) - start;
+      const d = e.clientX - start;
       moved = Math.max(moved, Math.abs(d));
       if (moved > 6) {
         rail.setPointerCapture?.(e.pointerId);
@@ -155,11 +133,11 @@ function MembershipRail() {
       hover = false;
     };
     const onKey = (e) => {
-      if (["ArrowDown", "ArrowRight"].includes(e.key)) {
+      if (["ArrowRight", "ArrowDown"].includes(e.key)) {
         e.preventDefault();
         api.current.target = Math.round(api.current.target) + 1;
       }
-      if (["ArrowUp", "ArrowLeft"].includes(e.key)) {
+      if (["ArrowLeft", "ArrowUp"].includes(e.key)) {
         e.preventDefault();
         api.current.target = Math.round(api.current.target) - 1;
       }
@@ -234,10 +212,10 @@ function MembershipRail() {
 
       <div className="vc-nav">
         <button type="button" onClick={() => step(-1)} aria-label="Previous">
-          <i className="fas fa-chevron-up"></i>
+          <i className="fas fa-chevron-left"></i>
         </button>
         <button type="button" onClick={() => step(1)} aria-label="Next">
-          <i className="fas fa-chevron-down"></i>
+          <i className="fas fa-chevron-right"></i>
         </button>
       </div>
     </div>
@@ -342,7 +320,7 @@ export default function Home() {
             <div className="hero-content">
               <div className="hero-badge">
                 <i className="fas fa-globe"></i>
-                International Network Management and Business Association Chamber
+                International Network Management and Business Association Chamber (Non-Profit Organisation)
               </div>
 
               <h1 className="typing-text">{typingText}</h1>
@@ -353,6 +331,15 @@ export default function Home() {
                 communities through collaboration, learning, opportunity, and
                 meaningful social impact.
               </p>
+
+              <div className="hero-memberships">
+                {heroMemberships.map((item) => (
+                  <Link to={item.to} className="hero-membership" key={item.label}>
+                    <i className={item.icon}></i>
+                    <span>{item.label}</span>
+                  </Link>
+                ))}
+              </div>
 
               <div className="hero-actions">
                 <Link to="/membership-type" className="btn-light-premium">
@@ -365,16 +352,34 @@ export default function Home() {
         </div>
       </section>
 
+      {/* INMBA Creed section (above Our Divisions) */}
+      <section className="home-creed-section">
+        <div className="container">
+          <div className="home-creed-card" data-aos="fade-up">
+            <h2 className="home-creed-title">INMBA Creed</h2>
+
+            <p className="home-creed-text">
+              “உயிர் மெய் நேய அறமே வாழ்வை முழுமை பெற செய்கிறது.
+              தனித்துவமுள்ள பொருளாதார வாழ்வு அமைய தரமுள்ள நல்லிணக்கம் கொண்ட
+              சமூக சகோதரத்துவ தொடர்பே சிறந்த வழி என நம்புகின்றோம். எல்லோரும்
+              எல்லாமும் பெற வேண்டும் என்பதே எங்களின் உயர்ந்த நம்பிக்கை.”
+            </p>
+
+            <p className="home-creed-text-en">
+              “The virtue of love for life and truth makes life complete. We
+              believe that quality, harmonious social brotherhood is the best
+              path to a distinctive economic life. Our highest belief is that
+              everyone should receive everything.”
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Divisions section */}
       <section className="divisions-section section-space">
         <div className="container">
           <div className="section-head" data-aos="fade-up">
-            <span className="section-label">Our Ecosystem</span>
             <h2 className="section-title">Our Divisions</h2>
-            <p className="section-description">
-              Three connected divisions working together to support
-              professional development, business growth, and community welfare.
-            </p>
           </div>
 
           <div className="row g-4">
@@ -436,56 +441,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Membership section — Maison Vell style rail */}
-      <section className="stats-section section-space">
+      {/* Membership section - horizontal auto-scrolling cards */}
+      <section className="stats-section">
         <div className="container">
-          <div className="row align-items-center g-5">
-            <div className="col-lg-6" data-aos="fade-right">
-              <div className="vc-intro">
-                <span className="section-label">Membership</span>
-                <h2 className="vc-heading">Our Membership Types</h2>
-                <p className="vc-text">
-                  Six membership types designed for businesses, professionals,
-                  citizens, students, and honored contributors — alongside our
-                  three divisions and a structured growth path from Level 1 to
-                  Level 16.
-                </p>
-
-                <div className="vc-stats">
-                  {membershipStats.map((stat) => (
-                    <div className="vc-stat" key={stat.label}>
-                      <strong>{stat.value}</strong>
-                      <span>{stat.label}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <ul className="vc-points">
-                  {membershipPoints.map((point) => (
-                    <li key={point}>
-                      <i className="bi bi-check-circle-fill"></i>
-                      <span>{point}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="vc-actions">
-                  <Link to="/membership-type" className="vc-link">
-                    View all memberships
-                  </Link>
-                  <Link to="/login" className="vc-login">
-                    Already a member? Login
-                  </Link>
-                </div>
-
-                <p className="vc-hint">Auto-scrolls. Hover to pause, drag to browse.</p>
-              </div>
-            </div>
-
-            <div className="col-lg-6" data-aos="fade-left">
-              <MembershipRail />
-            </div>
-          </div>
+          <MembershipRail />
         </div>
       </section>
 
@@ -538,41 +497,6 @@ export default function Home() {
                 </div>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA section */}
-      <section className="cta-wrap">
-        <div className="container">
-          <div className="cta-section">
-            <div className="row align-items-center g-5">
-              <div className="col-lg-6">
-                <div className="cta-content cta-text" data-aos="fade-right">
-                  <h2>Be the Change You Want to See</h2>
-
-                  <p>
-                    Join INMBA Foundation and begin your leadership journey.
-                    Empower yourself, connect with professionals, build
-                    opportunities, and create positive impact in your community.
-                  </p>
-
-                  <Link to="/membership-type" className="btn-light-premium">
-                    Become a Member
-                    <i className="fas fa-arrow-right"></i>
-                  </Link>
-                </div>
-              </div>
-
-              <div className="col-lg-6">
-                <div className="cta-img" data-aos="fade-left">
-                  <img
-                    src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg"
-                    alt="INMBA leadership and collaboration"
-                  />
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>

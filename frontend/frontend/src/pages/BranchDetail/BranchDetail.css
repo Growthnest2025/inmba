@@ -4,7 +4,7 @@
 
 .branch-detail-page {
   background: var(--background-color, #f8fbf8);
-  padding-top: var(--navbar-height, 76px);
+  padding-top: var(--page-top-offset, 160px);
 }
 
 /* =====================

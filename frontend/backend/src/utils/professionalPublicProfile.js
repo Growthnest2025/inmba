@@ -661,7 +661,20 @@ const buildProfessionalPublicProfile =
       =================================================== */
 
       membership_type:
-        "Professional Member",
+        (() => {
+          const clean = String(member.selected_plan ?? member.membership_type ?? "").replace(/[^0-9]/g, "");
+          if (clean === "299" || clean === "300") return "INMBA Network Member";
+          if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+          return "INMBA Professional Member";
+        })(),
+
+      membership_title:
+        (() => {
+          const clean = String(member.selected_plan ?? member.membership_type ?? "").replace(/[^0-9]/g, "");
+          if (clean === "299" || clean === "300") return "INMBA Network Member";
+          if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+          return "INMBA Professional Member";
+        })(),
 
       profile_type:
         "professional",

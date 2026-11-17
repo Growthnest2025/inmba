@@ -17,32 +17,32 @@ const loginOptions = [
   {
     key: "civilian",
     title: "Civilian Member",
-    subtitle: "Individual Membership",
-    description: "Login using your 7 digit INMBA Member ID.",
     example: "Example: 1234567",
     icon: "fa-solid fa-user",
     route: "/login/civilian",
-    className: "civilian",
+    theme: "green",
+    badge: "Available",
+    buttonText: "Civilian Member Login",
   },
   {
     key: "commercial",
     title: "Commercial Member",
-    subtitle: "Business Membership",
-    description: "Access your commercial membership and business dashboard.",
-    example: "Commercial Member Login",
-    icon: "fa-solid fa-building",
+    example: "Example: COM1234567",
+    icon: "fa-solid fa-store",
     route: "/login/commercial",
-    className: "commercial",
+    theme: "red",
+    badge: "Available",
+    buttonText: "Commercial Member Login",
   },
   {
     key: "professional",
     title: "Professional Member",
-    subtitle: "Professional Membership",
-    description: "Login using your Professional INMBA Member ID.",
     example: "Example: PRO1234567",
-    icon: "fa-solid fa-user-tie",
+    icon: "fa-solid fa-briefcase",
     route: "/login/professional",
-    className: "professional",
+    theme: "blue",
+    badge: "Available",
+    buttonText: "Professional Member Login",
   },
 ];
 
@@ -156,34 +156,51 @@ export default function LoginSelection() {
 
               <div className="inmba-login-selection-grid">
                 {loginOptions.map((option) => (
-                  <button
+                  <article
                     key={option.key}
-                    type="button"
-                    className={`inmba-login-type-card ${option.className}`}
+                    className={`inmba-login-type-card inmba-login-type-card-${option.theme}`}
                     onClick={() => navigate(option.route)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        navigate(option.route);
+                      }
+                    }}
                   >
-                    <div className="inmba-login-type-top">
-                      <div className="inmba-login-type-icon">
-                        <i className={option.icon} />
-                      </div>
-                      <div className="inmba-login-type-arrow">
-                        <i className="fa-solid fa-arrow-right" />
-                      </div>
-                    </div>
+                    <header className="inmba-login-type-header">
+                      <span className="inmba-login-type-icon">
+                        <i className={option.icon} aria-hidden="true" />
+                      </span>
+
+                      <small className="inmba-login-type-badge">
+                        <i className="fa-solid fa-circle-check" aria-hidden="true" />
+                        {option.badge}
+                      </small>
+                    </header>
+
                     <div className="inmba-login-type-content">
-                      <span className="inmba-login-type-subtitle">{option.subtitle}</span>
-                      <h2>{option.title}</h2>
-                      <p>{option.description}</p>
+                      <h3>{option.title}</h3>
+
                       <div className="inmba-login-id-example">
-                        <i className="fa-regular fa-id-card" />
-                        {option.example}
+                        <i className="fa-regular fa-id-card" aria-hidden="true" />
+                        <span>{option.example}</span>
                       </div>
                     </div>
-                    <div className="inmba-login-type-button">
-                      Continue to Login
-                      <i className="fa-solid fa-chevron-right" />
-                    </div>
-                  </button>
+
+                    <footer className="inmba-login-type-footer">
+                      <div className="inmba-login-type-btn">
+                        <span>{option.buttonText}</span>
+                        <i className="fa-solid fa-arrow-right" aria-hidden="true" />
+                      </div>
+                    </footer>
+
+                    <div
+                      className="inmba-login-type-card-decoration"
+                      aria-hidden="true"
+                    />
+                  </article>
                 ))}
               </div>
 

@@ -11,9 +11,19 @@
    global CSS also defines --navbar-height, set it to the same
    value as below so content does not hide under the navbar.
 ========================================================= */
+:root {
+  color-scheme: only light;
+}
+
+html {
+  color-scheme: only light;
+  background: #ffffff;
+}
 
 :root {
   --navbar-height: 124px;
+  --navbar-gap: 36px;
+  --page-top-offset: calc(var(--navbar-height) + var(--navbar-gap));
 }
 
 .navbar-custom {

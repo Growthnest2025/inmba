@@ -43,7 +43,7 @@
 
   background: var(--events-green-dark);
 
-  padding: 110px 0 90px;
+  padding: var(--page-top-offset, 160px) 0 90px;
 }
 
 /* ===========================================================
@@ -421,7 +421,7 @@
 
   .events-hero{
 
-    padding:90px 0 70px;
+    padding: var(--page-top-offset, 132px) 0 70px;
 
   }
 

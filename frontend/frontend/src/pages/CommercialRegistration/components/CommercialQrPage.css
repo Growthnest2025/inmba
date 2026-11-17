@@ -16,10 +16,7 @@
   min-height: 100vh;
   overflow: hidden;
 
-  padding:
-    38px
-    20px
-    70px;
+  padding: var(--page-top-offset, 160px) 20px 70px;
 
   background:
     linear-gradient(

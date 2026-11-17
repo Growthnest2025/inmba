@@ -1,7 +1,7 @@
 /* =========================================================
    INMBA LOGIN SELECTION
-   Bigger fonts everywhere
-   (Commercial red theme is merged into the main card rules)
+   Login cards use the same compact style as the
+   Membership Type cards (green / red / blue themes)
 ========================================================= */
 
 .inmba-login-selection-page,
@@ -25,9 +25,7 @@
   font-family: "Poppins", "Segoe UI", Arial, sans-serif;
 }
 
-/* =========================================================
-   BACKGROUND EFFECTS
-========================================================= */
+/* ---------- Background effects ---------- */
 
 .inmba-login-selection-background {
   position: absolute;
@@ -69,38 +67,33 @@
   background-size: 45px 45px;
 }
 
-/* =========================================================
-   MAIN + CARD
-========================================================= */
+/* ---------- Main + card ---------- */
 
 .inmba-login-selection-main {
   position: relative;
   z-index: 2;
-  width: min(1200px, 100%);
+  width: min(1100px, 100%);
   margin: 0 auto;
 }
 
 .inmba-login-selection-card {
   width: 100%;
-  max-width: 1200px;
   margin: auto;
-  padding: 34px 38px 38px;
+  padding: 30px 34px 32px;
   background: rgba(255, 255, 255, 0.985);
   border: 1px solid rgba(255, 255, 255, 0.48);
   border-radius: 28px;
   box-shadow: 0 30px 80px rgba(1, 35, 12, 0.28);
 }
 
-/* =========================================================
-   HEADER
-========================================================= */
+/* ---------- Header ---------- */
 
 .inmba-login-selection-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding-bottom: 24px;
+  padding-bottom: 22px;
   border-bottom: 1px solid #e2eee4;
 }
 
@@ -108,7 +101,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  min-height: 48px;
+  min-height: 46px;
   padding: 10px 18px;
   color: #49664f;
   background: #f6fbf7;
@@ -128,8 +121,6 @@
   transform: translateX(-2px);
 }
 
-/* ----- brand ----- */
-
 .inmba-login-selection-brand {
   display: flex;
   align-items: center;
@@ -137,8 +128,8 @@
 }
 
 .inmba-login-selection-logo {
-  width: 64px;
-  height: 64px;
+  width: 62px;
+  height: 62px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,13 +166,11 @@
   line-height: 1.4;
 }
 
-/* =========================================================
-   INTRO
-========================================================= */
+/* ---------- Intro ---------- */
 
 .inmba-login-selection-intro {
   max-width: 760px;
-  margin: 40px auto 38px;
+  margin: 30px auto 28px;
   text-align: center;
 }
 
@@ -189,7 +178,7 @@
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   padding: 9px 17px;
   color: #0f4d0f;
   background: #eaf6ec;
@@ -202,269 +191,264 @@
 .inmba-login-selection-intro h1 {
   margin: 0;
   color: #102d17;
-  font-size: clamp(34px, 4.6vw, 52px);
+  font-size: clamp(32px, 4.4vw, 48px);
   font-weight: 800;
   letter-spacing: -0.04em;
 }
 
 .inmba-login-selection-intro p {
-  margin: 14px auto 0;
+  margin: 12px auto 0;
   color: #5c6a60;
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.7;
 }
 
 /* =========================================================
-   GRID
+   LOGIN TYPE CARDS (same style as the membership cards)
 ========================================================= */
 
 .inmba-login-selection-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
+  gap: 14px;
 }
-
-/* =========================================================
-   LOGIN TYPE CARD
-========================================================= */
 
 .inmba-login-type-card {
   position: relative;
-  min-height: 350px;
+  min-height: 230px;
   display: flex;
   flex-direction: column;
   text-align: left;
-  padding: 26px;
+  padding: 20px;
   overflow: hidden;
   color: #17301d;
-  background: #ffffff;
-  border: 1px solid #dbe9de;
-  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(15, 77, 15, 0.11);
+  border-radius: 18px;
   font-family: inherit;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(15, 77, 15, 0.07);
-  transition:
-    transform 0.28s ease,
-    border-color 0.28s ease,
-    box-shadow 0.28s ease;
-}
-
-.inmba-login-type-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 5px;
-  background: #0f4d0f;
+  box-shadow: 0 14px 34px rgba(34, 68, 34, 0.08);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
 }
 
 .inmba-login-type-card:hover {
-  transform: translateY(-6px);
-  border-color: #b9d8bf;
-  box-shadow: 0 20px 44px rgba(15, 77, 15, 0.14);
+  transform: translateY(-5px);
+  border-color: rgba(15, 77, 15, 0.25);
+  box-shadow: 0 21px 45px rgba(34, 68, 34, 0.13);
 }
 
-/* ----- card types ----- */
-
-.inmba-login-type-card.civilian::before {
-  background: linear-gradient(90deg, #0f4d0f, #2f7a2f);
+.inmba-login-type-card:focus-visible {
+  outline: 2px solid rgba(34, 197, 94, 0.55);
+  outline-offset: 3px;
 }
 
-.inmba-login-type-card.professional::before {
-  background: linear-gradient(90deg, #163c70, #2d64ac);
-}
+/* header: icon + badge */
 
-/* commercial = red theme */
-
-.inmba-login-type-card.commercial {
-  background: linear-gradient(180deg, #ffffff 0%, #fff7f8 100%);
-  border-color: #f1c6cb;
-  box-shadow: 0 10px 30px rgba(226, 55, 68, 0.08);
-}
-
-.inmba-login-type-card.commercial::before {
-  background: linear-gradient(90deg, #b51f2d, #e23744);
-}
-
-.inmba-login-type-card.commercial:hover {
-  border-color: #e9aeb5;
-  box-shadow: 0 20px 44px rgba(226, 55, 68, 0.18);
-}
-
-/* ----- top ----- */
-
-.inmba-login-type-top {
+.inmba-login-type-header {
+  position: relative;
+  z-index: 2;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 .inmba-login-type-icon {
-  width: 62px;
-  height: 62px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #0f4d0f;
-  background: #eaf6ec;
-  border: 1px solid #cfe5d3;
-  border-radius: 17px;
-  font-size: 25px;
-}
-
-.inmba-login-type-card.commercial .inmba-login-type-icon {
-  color: #e23744;
-  background: #fff0f2;
-  border-color: #f4c9ce;
-}
-
-.inmba-login-type-card.professional .inmba-login-type-icon {
-  color: #194d8c;
-  background: #edf4ff;
-  border-color: #cdddf4;
-}
-
-.inmba-login-type-arrow {
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #76857a;
-  background: #f6fbf7;
-  border-radius: 50%;
-  font-size: 15px;
-  transition: all 0.3s ease;
-}
-
-.inmba-login-type-card:hover .inmba-login-type-arrow {
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
   color: #ffffff;
-  background: #0f4d0f;
-  transform: translateX(3px);
+  font-size: 1.15rem;
+  box-shadow: 0 9px 20px rgba(15, 77, 15, 0.17);
 }
 
-.inmba-login-type-card.commercial .inmba-login-type-arrow {
-  color: #c92937;
-  background: #fff0f2;
+.inmba-login-type-badge {
+  position: relative;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 900;
 }
 
-.inmba-login-type-card.commercial:hover .inmba-login-type-arrow {
-  color: #ffffff;
-  background: #e23744;
-}
-
-.inmba-login-type-card.professional:hover .inmba-login-type-arrow {
-  background: #1d4f8f;
-}
-
-/* ----- content ----- */
+/* content: title + id example */
 
 .inmba-login-type-content {
+  position: relative;
+  z-index: 2;
   flex: 1;
 }
 
-.inmba-login-type-subtitle {
-  color: #6b786f;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.inmba-login-type-card.commercial .inmba-login-type-subtitle {
-  color: #c92937;
-}
-
-.inmba-login-type-content h2 {
-  margin: 6px 0 11px;
-  color: #17301d;
-  font-size: 26px;
-  font-weight: 800;
+.inmba-login-type-content h3 {
+  margin: 0 0 10px;
+  color: #1c3c1c;
+  font-size: 1.3rem;
+  font-weight: 900;
   line-height: 1.25;
 }
-
-.inmba-login-type-card.commercial .inmba-login-type-content h2 {
-  color: #63141d;
-}
-
-.inmba-login-type-content p {
-  min-height: 56px;
-  margin: 0;
-  color: #5c6a60;
-  font-size: 16px;
-  line-height: 1.65;
-}
-
-.inmba-login-type-card.commercial .inmba-login-type-content p {
-  color: #7b555a;
-}
-
-/* ----- id example ----- */
 
 .inmba-login-id-example {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  margin-top: 18px;
-  padding: 9px 14px;
-  color: #45614b;
-  background: #f6fbf7;
+  gap: 8px;
+  padding: 6px 11px;
   border-radius: 10px;
-  font-size: 14px;
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
-.inmba-login-type-card.commercial .inmba-login-id-example {
-  color: #a5222f;
-  background: #fff0f2;
-  border: 1px solid #f4d2d6;
+/* footer: action button */
+
+.inmba-login-type-footer {
+  position: relative;
+  z-index: 2;
+  margin-top: 16px;
 }
 
-.inmba-login-type-card.commercial .inmba-login-id-example i {
-  color: #e23744;
-}
-
-/* ----- continue button ----- */
-
-.inmba-login-type-button {
+.inmba-login-type-btn {
+  width: 100%;
+  min-height: 46px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin-top: 24px;
-  padding-top: 18px;
-  color: #0f4d0f;
-  border-top: 1px solid #e4eee6;
-  font-size: 16px;
-  font-weight: 700;
+  gap: 9px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 900;
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
-.inmba-login-type-card.commercial .inmba-login-type-button {
-  color: #e23744;
-  border-top-color: #f2d8db;
+.inmba-login-type-btn i {
+  transition: transform 0.25s ease;
 }
 
-.inmba-login-type-card.commercial:hover .inmba-login-type-button {
-  color: #b51f2d;
+.inmba-login-type-card:hover .inmba-login-type-btn i {
+  transform: translateX(4px);
 }
 
-.inmba-login-type-card.professional .inmba-login-type-button {
-  color: #1d4f8f;
+.inmba-login-type-card-decoration {
+  position: absolute;
+  right: -40px;
+  bottom: -55px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: rgba(15, 77, 15, 0.04);
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* =========================================================
-   FOOTER
-========================================================= */
+/* ---------- Themes ---------- */
+
+/* Civilian = green */
+.inmba-login-type-card-green .inmba-login-type-icon {
+  background: linear-gradient(135deg, #0f6b36, #2aa85f);
+}
+.inmba-login-type-card-green .inmba-login-type-badge {
+  color: #146b35;
+  background: #e4f7eb;
+}
+.inmba-login-type-card-green .inmba-login-id-example {
+  color: #1e5c2b;
+  background: #f1f8f2;
+  border: 1px solid #d4ead7;
+}
+.inmba-login-type-card-green .inmba-login-type-btn {
+  color: #176a38;
+  background: #eefaf2;
+  border: 1px solid #bfe3cc;
+}
+.inmba-login-type-card-green:hover .inmba-login-type-btn {
+  color: #ffffff;
+  background: #176a38;
+}
+
+/* Commercial = red */
+.inmba-login-type-card-red {
+  border-color: rgba(181, 31, 45, 0.14);
+}
+.inmba-login-type-card-red:hover {
+  border-color: rgba(181, 31, 45, 0.35);
+}
+.inmba-login-type-card-red .inmba-login-type-icon {
+  background: linear-gradient(135deg, #b3132b, #e43f55);
+}
+.inmba-login-type-card-red .inmba-login-type-badge {
+  color: #a11229;
+  background: #fde8eb;
+}
+.inmba-login-type-card-red .inmba-login-type-content h3 {
+  color: #3b1014;
+}
+.inmba-login-type-card-red .inmba-login-id-example {
+  color: #b52932;
+  background: #fdf2f3;
+  border: 1px solid #f6cfd3;
+}
+.inmba-login-type-card-red .inmba-login-type-btn {
+  color: #b3132b;
+  background: #fff0f2;
+  border: 1px solid #f0c0c7;
+}
+.inmba-login-type-card-red:hover .inmba-login-type-btn {
+  color: #ffffff;
+  background: #b3132b;
+}
+.inmba-login-type-card-red .inmba-login-type-card-decoration {
+  background: rgba(181, 31, 45, 0.04);
+}
+
+/* Professional = blue */
+.inmba-login-type-card-blue {
+  border-color: rgba(22, 79, 153, 0.14);
+}
+.inmba-login-type-card-blue:hover {
+  border-color: rgba(22, 79, 153, 0.35);
+}
+.inmba-login-type-card-blue .inmba-login-type-icon {
+  background: linear-gradient(135deg, #174f9b, #2f7bd8);
+}
+.inmba-login-type-card-blue .inmba-login-type-badge {
+  color: #1f5da7;
+  background: #e7f0fd;
+}
+.inmba-login-type-card-blue .inmba-login-type-content h3 {
+  color: #112644;
+}
+.inmba-login-type-card-blue .inmba-login-id-example {
+  color: #1956a6;
+  background: #edf4fd;
+  border: 1px solid #d0e1f7;
+}
+.inmba-login-type-card-blue .inmba-login-type-btn {
+  color: #1e5fae;
+  background: #edf4fd;
+  border: 1px solid #c5d8f3;
+}
+.inmba-login-type-card-blue:hover .inmba-login-type-btn {
+  color: #ffffff;
+  background: #1e5fae;
+}
+.inmba-login-type-card-blue .inmba-login-type-card-decoration {
+  background: rgba(22, 79, 153, 0.04);
+}
+
+/* ---------- Footer ---------- */
 
 .inmba-login-selection-footer {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 18px;
-  margin-top: 32px;
-  padding-top: 24px;
+  margin-top: 26px;
+  padding-top: 20px;
   border-top: 1px solid #e5eee7;
   color: #667369;
   font-size: 14px;
@@ -477,9 +461,7 @@
   gap: 8px;
 }
 
-.inmba-login-selection-footer i {
-  color: #1f7a35;
-}
+.inmba-login-selection-footer i { color: #1f7a35; }
 
 .footer-divider {
   width: 1px;
@@ -493,8 +475,8 @@
 
 .inmba-login-maintenance {
   max-width: 800px;
-  margin: 42px auto 14px;
-  padding: 30px 18px 18px;
+  margin: 36px auto 12px;
+  padding: 26px 18px 16px;
   text-align: center;
   animation: inmbaNoticeAppear 0.65s ease both;
 }
@@ -538,7 +520,7 @@
 
 .inmba-login-maintenance > p {
   max-width: 680px;
-  margin: 0 auto 32px;
+  margin: 0 auto 30px;
   color: #56685b;
   font-size: clamp(16px, 2vw, 19px);
   line-height: 1.85;
@@ -547,8 +529,8 @@
 .inmba-admin-contact {
   position: relative;
   max-width: 720px;
-  margin: 0 auto 28px;
-  padding: 30px 32px;
+  margin: 0 auto 26px;
+  padding: 28px 30px;
   border: 1px solid #d4eadb;
   border-radius: 24px;
   background: linear-gradient(135deg, #f7fdf9 0%, #edf9f0 100%);
@@ -606,7 +588,7 @@
   align-items: center;
   justify-content: center;
   gap: 14px;
-  margin-top: 24px;
+  margin-top: 22px;
 }
 
 .inmba-admin-call-button,
@@ -615,8 +597,8 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-height: 54px;
-  padding: 13px 26px;
+  min-height: 52px;
+  padding: 12px 26px;
   border-radius: 13px;
   font-size: 16px;
   font-weight: 700;
@@ -648,8 +630,8 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 13px 26px;
-  min-height: 52px;
+  padding: 12px 26px;
+  min-height: 50px;
   border-radius: 12px;
   cursor: pointer;
   font-family: inherit;
@@ -667,69 +649,29 @@
 }
 
 @keyframes inmbaNoticeAppear {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes inmbaNoticeFloat {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 /* =========================================================
-   TABLET (<= 900px)
+   RESPONSIVE
 ========================================================= */
 
 @media (max-width: 900px) {
-  .inmba-login-selection-page {
-    padding: 28px 16px;
-  }
-
-  .inmba-login-selection-card {
-    padding: 26px 22px 30px;
-  }
-
-  .inmba-login-selection-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .inmba-login-type-card {
-    min-height: auto;
-  }
-
-  .inmba-login-type-content p {
-    min-height: 0;
-  }
-
-  .inmba-login-type-card.commercial {
-    box-shadow: 0 12px 32px rgba(226, 55, 68, 0.1);
-  }
+  .inmba-login-selection-page { padding: 28px 16px; }
+  .inmba-login-selection-card { padding: 24px 20px 28px; }
+  .inmba-login-selection-grid { grid-template-columns: 1fr; }
+  .inmba-login-type-card { min-height: auto; }
 }
 
-/* =========================================================
-   MOBILE (<= 600px)
-========================================================= */
-
 @media (max-width: 600px) {
-  .inmba-login-selection-page {
-    padding: 16px 12px;
-  }
-
-  .inmba-login-selection-card {
-    padding: 18px 15px 24px;
-    border-radius: 22px;
-  }
+  .inmba-login-selection-page { padding: 16px 12px; }
+  .inmba-login-selection-card { padding: 18px 15px 24px; border-radius: 22px; }
 
   .inmba-login-selection-header {
     align-items: flex-start;
@@ -737,94 +679,36 @@
     padding-bottom: 18px;
   }
 
-  .inmba-login-selection-brand {
-    width: 100%;
-  }
+  .inmba-login-selection-brand { width: 100%; }
+  .inmba-login-selection-brand-name { font-size: 21px; }
+  .inmba-login-selection-brand-subtitle { max-width: 240px; font-size: 12.5px; }
+  .inmba-login-selection-home { min-height: 44px; padding: 9px 14px; font-size: 15px; }
 
-  .inmba-login-selection-brand-name {
-    font-size: 21px;
-  }
+  .inmba-login-selection-intro { margin: 24px auto; }
+  .inmba-login-selection-intro h1 { font-size: 32px; }
+  .inmba-login-selection-intro p { font-size: 16px; }
 
-  .inmba-login-selection-brand-subtitle {
-    max-width: 240px;
-    font-size: 12.5px;
-  }
+  .inmba-login-type-card { padding: 18px; }
 
-  .inmba-login-selection-home {
-    min-height: 44px;
-    padding: 9px 14px;
-    font-size: 15px;
-  }
+  .inmba-login-selection-footer { flex-direction: column; gap: 9px; }
+  .footer-divider { display: none; }
 
-  .inmba-login-selection-intro {
-    margin: 28px auto;
-  }
-
-  .inmba-login-selection-intro h1 {
-    font-size: 34px;
-  }
-
-  .inmba-login-selection-intro p {
-    font-size: 16px;
-  }
-
-  .inmba-login-type-card {
-    padding: 21px;
-    border-radius: 18px;
-  }
-
-  .inmba-login-type-content h2 {
-    font-size: 24px;
-  }
-
-  .inmba-login-type-content p {
-    font-size: 15.5px;
-  }
-
-  .inmba-login-selection-footer {
-    flex-direction: column;
-    gap: 9px;
-  }
-
-  .footer-divider {
-    display: none;
-  }
-
-  .inmba-login-maintenance {
-    margin: 22px auto 8px;
-    padding: 18px 0 8px;
-  }
-
-  .inmba-login-maintenance-icon {
-    width: 72px;
-    height: 72px;
-    font-size: 28px;
-  }
-
-  .inmba-admin-contact {
-    padding: 23px 15px;
-    border-radius: 18px;
-  }
-
-  .inmba-admin-contact-actions {
-    flex-direction: column;
-  }
-
+  .inmba-login-maintenance { margin: 22px auto 8px; padding: 18px 0 8px; }
+  .inmba-login-maintenance-icon { width: 72px; height: 72px; font-size: 28px; }
+  .inmba-admin-contact { padding: 23px 15px; border-radius: 18px; }
+  .inmba-admin-contact-actions { flex-direction: column; }
   .inmba-admin-call-button,
-  .inmba-admin-whatsapp-button {
-    width: 100%;
-  }
+  .inmba-admin-whatsapp-button { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .inmba-login-maintenance,
-  .inmba-login-maintenance-icon {
-    animation: none;
-  }
+  .inmba-login-maintenance-icon { animation: none; }
+
+  .inmba-login-type-card,
+  .inmba-login-type-btn i { transition: none; }
 
   .inmba-admin-contact:hover,
   .inmba-admin-call-button:hover,
-  .inmba-admin-whatsapp-button:hover {
-    transform: none;
-  }
+  .inmba-admin-whatsapp-button:hover { transform: none; }
 }
