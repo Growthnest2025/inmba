@@ -7,6 +7,8 @@ const express =
    HEALTH
 ========================================================= */
 
+const razorpayRoutes = require("./razorpay.routes");
+
 const healthRoutes =
   require(
     "./health.routes"
@@ -381,6 +383,12 @@ router.use(
 router.use(
   "/",
   apiPaymentRoutes
+);
+
+/* RAZORPAY STANDARD CHECKOUT */
+router.use(
+  "/",
+  razorpayRoutes
 );
 
 /* =========================================================

@@ -28,10 +28,8 @@ const ApiError =
     "./utils/apiError"
   );
 
-const apiRoutes =
-  require(
-    "./routes"
-  );
+const apiRoutes = require("./routes");
+const razorpayRoutes = require("./routes/razorpay.routes");
 
 const legacyPageRoutes =
   require(
@@ -915,8 +913,17 @@ app.use(
 
 app.use(
   "/api",
-
   apiRoutes
+);
+
+/* RAZORPAY TOP-LEVEL ENDPOINTS */
+app.use(
+  "/api",
+  razorpayRoutes
+);
+app.use(
+  "/",
+  razorpayRoutes
 );
 
 /* =========================================================

@@ -33,11 +33,12 @@ import Foundation from "../pages/Foundation/Foundation";
 import OurBranches from "../pages/OurBranches/OurBranches";
 import BranchDetail from "../pages/BranchDetail/BranchDetail";
 
-/* NEW PAGES (Our Chamber / Our Professional / INMBA Shopping) */
+/* NEW PAGES (Our Chamber / Our Professional / INMBA Shopping / Razorpay Checkout) */
 
 import Chamber from "../pages/Chamber/Chamber";
 import OurProfessional from "../pages/Inmba_Professional/Professional.jsx";
 import Shopping from "../pages/Shopping/Shopping";
+import RazorpayTest from "../pages/RazorpayTest/RazorpayTest";
 
 /* =========================
    REGISTRATION PAGES
@@ -379,6 +380,13 @@ export default function AppRoutes() {
         <Route path="/our-professional" element={<OurProfessional />} />
 
         <Route path="/shopping" element={<Shopping />} />
+
+        {/* ===============================================
+            RAZORPAY STANDARD WEB CHECKOUT TEST / DEMO
+        =============================================== */}
+
+        <Route path="/test-payment" element={<RazorpayTest />} />
+        <Route path="/razorpay-checkout" element={<RazorpayTest />} />
 
         {/* ===============================================
             MEMBERSHIP TYPE
