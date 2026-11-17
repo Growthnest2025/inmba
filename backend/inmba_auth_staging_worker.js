@@ -2732,7 +2732,18 @@ async function handleGetCivilianProfile(request, db, cors) {
     profile_photo_url: activePhoto,
     profile_image_url: activePhoto,
     photo_url: activePhoto,
-    membership_type: member.membership_type || "Civilian Member",
+    membership_type: ((p) => {
+      const clean = String(p || "").replace(/[^0-9]/g, "");
+      if (clean === "299" || clean === "300") return "INMBA Network Member";
+      if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+      return "INMBA Member";
+    })(fullKyc.selectedPlan || ext.amount || "299"),
+    membership_title: ((p) => {
+      const clean = String(p || "").replace(/[^0-9]/g, "");
+      if (clean === "299" || clean === "300") return "INMBA Network Member";
+      if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+      return "INMBA Member";
+    })(fullKyc.selectedPlan || ext.amount || "299"),
     payment_status: member.payment_status || "pending",
     selected_plan: fullKyc.selectedPlan || ext.amount || "299",
     amount: fullKyc.selectedPlan || ext.amount || "299",
@@ -2788,7 +2799,18 @@ async function handleGetProfessionalProfile(request, db, cors) {
     name: [fullMember.first_name || member.first_name, fullMember.last_name || member.last_name].filter(Boolean).join(" ") || "Professional Member",
     email: fullMember.email || member.email,
     phone: fullMember.phone || member.phone,
-    membership_type: fullMember.membership_type || member.membership_type || "Professional Member",
+    membership_type: ((p) => {
+      const clean = String(p || "").replace(/[^0-9]/g, "");
+      if (clean === "299" || clean === "300") return "INMBA Network Member";
+      if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+      return "INMBA Professional Member";
+    })(fullMember.selected_plan || member.selected_plan || ""),
+    membership_title: ((p) => {
+      const clean = String(p || "").replace(/[^0-9]/g, "");
+      if (clean === "299" || clean === "300") return "INMBA Network Member";
+      if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+      return "INMBA Professional Member";
+    })(fullMember.selected_plan || member.selected_plan || ""),
     payment_status: memberPaymentStatus,
     paymentStatus: memberPaymentStatus,
     is_approved: isApproved,
@@ -2984,7 +3006,22 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     name: fullName,
     email: member.email,
     phone: member.phone,
-    membership_type: isCommercial ? "Commercial Member" : (isProfessional ? "Professional Member" : (member.membership_type || "Civilian Member")),
+    membership_type: ((p, comm, pro, def) => {
+      const clean = String(p || "").replace(/[^0-9]/g, "");
+      if (clean === "299" || clean === "300") return "INMBA Network Member";
+      if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+      if (comm) return "INMBA Commercial Member";
+      if (pro) return "INMBA Professional Member";
+      return def || "INMBA Member";
+    })(planAmount, isCommercial, isProfessional, member.membership_type),
+    membership_title: ((p, comm, pro, def) => {
+      const clean = String(p || "").replace(/[^0-9]/g, "");
+      if (clean === "299" || clean === "300") return "INMBA Network Member";
+      if (clean === "2999" || clean === "1500") return "INMBA Network Royalty Member";
+      if (comm) return "INMBA Commercial Member";
+      if (pro) return "INMBA Professional Member";
+      return def || "INMBA Member";
+    })(planAmount, isCommercial, isProfessional, member.membership_type),
     profile_type: isCommercial ? "commercial" : (isProfessional ? "professional" : "civilian"),
     payment_status: member.payment_status || "pending",
     bio: commKyc.business_bio || fullKyc?.values?.bio || member.bio || "",
@@ -3866,8 +3903,175 @@ export default {
 
       
       // =========================================================
+      
+/* =========================================================
+   RAZORPAY STANDARD CHECKOUT HANDLERS
+========================================================= */
+
+async function handleRazorpayCreateOrder(request, env, cors) {
+  try {
+    const body = await request.json().catch(() => ({}));
+    const { amount, currency = "INR", receipt, notes } = body;
+    const numericAmount = Number(amount);
+    if (!amount || isNaN(numericAmount) || numericAmount < 100) {
+      return json({
+        statusCode: 400,
+        success: false,
+        message: "Invalid amount. Amount must be at least 100 paise (1 INR).",
+        error: "AMOUNT_TOO_LOW",
+      }, 400, cors);
+    }
+
+    const keyId = env.RAZORPAY_KEY_ID || "rzp_test_U1AQxKTavMChW2";
+    const keySecret = env.RAZORPAY_KEY_SECRET || "UcqnUwstguJCWGbXPcbl6PGK";
+
+    const orderPayload = {
+      amount: Math.round(numericAmount),
+      currency: String(currency || "INR").trim().toUpperCase(),
+      receipt: String(receipt || `rcpt_${Date.now()}_${Math.floor(Math.random() * 1000)}`).slice(0, 40),
+    };
+    if (notes && typeof notes === "object") {
+      orderPayload.notes = notes;
+    }
+
+    const basicAuth = btoa(`${keyId}:${keySecret}`);
+    const rzpRes = await fetch("https://api.razorpay.com/v1/orders", {
+      method: "POST",
+      headers: {
+        "Authorization": `Basic ${basicAuth}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(orderPayload),
+    });
+
+    const rzpData = await rzpRes.json();
+    if (!rzpRes.ok) {
+      const isAuthError = rzpRes.status === 401 || /auth|unauthorized|key/i.test(rzpData.error?.description || "");
+      return json({
+        statusCode: isAuthError ? 401 : (rzpRes.status || 500),
+        success: false,
+        message: isAuthError ? "Razorpay authentication failed. Invalid API credentials." : (rzpData.error?.description || "Failed to create Razorpay order."),
+        error: rzpData.error || rzpData,
+      }, isAuthError ? 401 : (rzpRes.status || 500), cors);
+    }
+
+    return json({
+      statusCode: 200,
+      success: true,
+      key_id: keyId,
+      order_id: rzpData.id,
+      amount: rzpData.amount,
+      currency: rzpData.currency,
+      data: {
+        key_id: keyId,
+        order_id: rzpData.id,
+        amount: rzpData.amount,
+        currency: rzpData.currency,
+        receipt: rzpData.receipt,
+        status: rzpData.status,
+      },
+      message: "Razorpay order created successfully.",
+    }, 200, cors);
+  } catch (err) {
+    return json({
+      statusCode: 500,
+      success: false,
+      message: err.message || "Internal server error creating Razorpay order.",
+    }, 500, cors);
+  }
+}
+
+async function handleRazorpayVerifyPayment(request, env, cors) {
+  try {
+    const body = await request.json().catch(() => ({}));
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      order_id,
+      payment_id,
+      signature,
+    } = body;
+
+    const effectiveOrderId = razorpay_order_id || order_id;
+    const effectivePaymentId = razorpay_payment_id || payment_id;
+    const effectiveSignature = razorpay_signature || signature;
+
+    if (!effectiveOrderId || !effectivePaymentId || !effectiveSignature) {
+      return json({
+        statusCode: 400,
+        success: false,
+        message: "Missing required fields: razorpay_order_id, razorpay_payment_id, and razorpay_signature are required.",
+        error: "MISSING_REQUIRED_FIELDS",
+      }, 400, cors);
+    }
+
+    const keySecret = env.RAZORPAY_KEY_SECRET || "UcqnUwstguJCWGbXPcbl6PGK";
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      "raw",
+      enc.encode(keySecret),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"]
+    );
+    const dataToSign = enc.encode(`${effectiveOrderId}|${effectivePaymentId}`);
+    const signatureBuffer = await crypto.subtle.sign("HMAC", key, dataToSign);
+    const expectedSignature = Array.from(new Uint8Array(signatureBuffer))
+      .map(b => b.toString(16).padStart(2, "0"))
+      .join("");
+
+    if (expectedSignature !== effectiveSignature) {
+      return json({
+        statusCode: 400,
+        success: false,
+        message: "Invalid payment signature. Signature mismatch.",
+        error: "SIGNATURE_MISMATCH",
+      }, 400, cors);
+    }
+
+    return json({
+      statusCode: 200,
+      success: true,
+      message: "Payment verified successfully.",
+      data: {
+        order_id: effectiveOrderId,
+        payment_id: effectivePaymentId,
+        verified: true,
+      },
+    }, 200, cors);
+  } catch (err) {
+    return json({
+      statusCode: 500,
+      success: false,
+      message: err.message || "Internal server error verifying payment.",
+    }, 500, cors);
+  }
+}
+
+async function handleRazorpayGetKey(request, env, cors) {
+  const keyId = env.RAZORPAY_KEY_ID || "rzp_test_U1AQxKTavMChW2";
+  return json({
+    statusCode: 200,
+    success: true,
+    key_id: keyId,
+    data: { key_id: keyId },
+  }, 200, cors);
+}
+
       // PAYMENT ROUTES
       // =========================================================
+
+      // RAZORPAY ROUTES
+      if ((path === "/api/create-order" || path === "/create-order") && method === "POST") {
+        return await handleRazorpayCreateOrder(request, env, cors);
+      }
+      if ((path === "/api/verify-payment" || path === "/verify-payment") && method === "POST") {
+        return await handleRazorpayVerifyPayment(request, env, cors);
+      }
+      if ((path === "/api/razorpay-key" || path === "/razorpay-key") && method === "GET") {
+        return await handleRazorpayGetKey(request, env, cors);
+      }
 
       if ((path === "/payment" || path === "/api/payment" || path === "/api/payment/status" || path === "/payment/status") && method === "GET") {
         return await handleGetPayment(request, db, cors);

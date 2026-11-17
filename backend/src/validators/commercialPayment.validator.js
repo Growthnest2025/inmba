@@ -44,6 +44,7 @@ const COMMERCIAL_PAYMENT_PLANS =
 
 const ALLOWED_COMMERCIAL_PAYMENT_METHODS =
   Object.freeze([
+    "Razorpay",
     "Account",
     "UPI",
     "QR",
@@ -136,6 +137,9 @@ const normalizePaymentMethod =
         .toLowerCase();
 
     const aliases = {
+      razorpay:
+        "Razorpay",
+
       account:
         "Account",
 
