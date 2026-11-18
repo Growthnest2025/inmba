@@ -666,6 +666,8 @@ async function handleRegistration(request, db, cors) {
 
   const referral = String(input.referral || input.referred_by || "").trim();
   const aadhar = String(input.aadhar || input.aadhaar_number || "").trim();
+  const pan = String(input.pan || input.pan_number || "").trim().toUpperCase();
+  const firmRegistrationType = String(input.firm_registration_type || input.firmRegistrationType || "").trim();
   const password = String(input.password || input.pin || "");
 
   if (!firstName || !phone || !password) {
@@ -691,9 +693,18 @@ async function handleRegistration(request, db, cors) {
         "SELECT id, login_id, first_name, last_name, phone, email, membership_type, payment_status, referral_id FROM kyc_members WHERE phone = ? AND LOWER(COALESCE(membership_type, '')) LIKE '%student%' LIMIT 1"
       ).bind(phone).first();
     } else {
-      existingPhone = await db.prepare(
-        "SELECT id, login_id, first_name, last_name, phone, email, membership_type, payment_status, referral_id FROM kyc_members WHERE phone = ? AND (LOWER(COALESCE(membership_type, '')) LIKE '%civilian%' OR LOWER(COALESCE(membership_type, '')) LIKE '%inmba%' OR membership_type IS NULL OR membership_type = '') LIMIT 1"
+      // Civilian registration: allow up to 3 accounts per mobile number
+      const civilianCount = await db.prepare(
+        "SELECT COUNT(*) as cnt FROM kyc_members WHERE phone = ? AND (LOWER(COALESCE(membership_type, '')) LIKE '%civilian%' OR LOWER(COALESCE(membership_type, '')) LIKE '%inmba%' OR membership_type IS NULL OR membership_type = '')"
       ).bind(phone).first();
+      const count = Number(civilianCount?.cnt || 0);
+      if (count >= 3) {
+        return json({
+          success: false,
+          code: "PHONE_LIMIT_EXCEEDED",
+          message: "This mobile number has already reached the maximum limit of 3 accounts.",
+        }, 400, cors);
+      }
     }
 
     if (existingPhone) {
@@ -784,18 +795,18 @@ async function handleRegistration(request, db, cors) {
     INSERT INTO kyc_members (
       login_id, first_name, last_name, father_name, dob, email, phone,
       pincode, gender, marital_status, nationality, occupation, education,
-      membership_type, referred_by, referral_id, aadhar, token, password,
+      membership_type, referred_by, referral_id, aadhar, pan_number, token, password,
       payment_status, created_at, is_deleted
     ) VALUES (
       ?, ?, ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?, ?,
-      ?, ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?, ?, ?,
       'pending', ?, 0
     )
   `).bind(
     loginId, firstName, lastName || null, fatherName || null, dob || null, email || null, phone,
     pincode || null, gender || null, maritalStatus || null, nationality || "Indian", occupation || null, education || null,
-    membershipType, referral || null, referralId, aadhar || null, memberToken, passwordHash,
+    membershipType, referral || null, referralId, aadhar || null, pan || null, memberToken, passwordHash,
     nowIso
   ).run();
 
@@ -821,7 +832,7 @@ async function handleRegistration(request, db, cors) {
         phone,
         email || "",
         input.business_name || occupation || "Commercial Business",
-        input.business_category || "Commercial",
+        firmRegistrationType || input.business_category || "Commercial",
         input.city || "",
         loginId
       ).run();

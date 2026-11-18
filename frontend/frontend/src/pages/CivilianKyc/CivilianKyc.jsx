@@ -1640,7 +1640,12 @@ export default function CivilianKyc() {
         }
 
         if (
-          values.aadhaar_number &&
+          !values.aadhaar_number ||
+          !values.aadhaar_number.trim()
+        ) {
+          errors.aadhaar_number =
+            "Aadhaar Number is required.";
+        } else if (
           !/^\d{12}$/.test(
             values.aadhaar_number.replace(
               /\s/g,
@@ -2145,6 +2150,34 @@ export default function CivilianKyc() {
       ) {
         return (
           <>
+            <div
+              className="civilian-kyc-policy-banner"
+              style={{
+                backgroundColor: "#eff6ff",
+                border: "1px solid #93c5fd",
+                borderRadius: "10px",
+                padding: "14px 18px",
+                marginBottom: "20px",
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "12px",
+                color: "#1e40af",
+              }}
+            >
+              <i
+                className="fas fa-triangle-exclamation"
+                style={{ fontSize: "1.3rem", marginTop: "2px", color: "#2563eb", flexShrink: 0 }}
+                aria-hidden="true"
+              />
+              <div>
+                <strong style={{ display: "block", marginBottom: "3px", fontSize: "0.95rem" }}>
+                  Aadhaar Verification Policy (90-Day Rule)
+                </strong>
+                <span style={{ fontSize: "0.85rem", lineHeight: "1.45", display: "block" }}>
+                  Aadhaar submission is strictly <strong>mandatory within 90 days</strong> of registration. Accounts without Aadhaar verification after 90 days will be permanently terminated.
+                </span>
+              </div>
+            </div>
             <div className="civilian-kyc-form-grid">
 
               <Field
@@ -2259,7 +2292,7 @@ export default function CivilianKyc() {
               <Field
                 label="Aadhaar Number"
                 name="aadhaar_number"
-                description="Optional. If already provided in Basic KYC, it is shown as verified and cannot be re-entered."
+                description="Mandatory within 90 days of registration. Accounts without Aadhaar verification will be terminated."
                 value={
                   values.aadhaar_number
                 }
@@ -2267,6 +2300,7 @@ export default function CivilianKyc() {
                   updateValue
                 }
                 placeholder="12 digit Aadhaar"
+                required
                 error={
                   fieldErrors.aadhaar_number
                 }

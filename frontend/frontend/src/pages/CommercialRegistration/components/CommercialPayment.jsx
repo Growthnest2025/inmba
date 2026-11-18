@@ -13,7 +13,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./CommercialPayment.css";
 import api from "../../../api/api";
 import { useAuth } from "../../../context/AuthContext";
-import RazorpayButton from "../../../components/RazorpayCheckout/RazorpayButton";
+import PaymentDetailsCard from "../../../components/PaymentDetailsCard/PaymentDetailsCard";
 
 /* =========================================================
    DEFAULT BASIC PLAN
@@ -38,23 +38,18 @@ const DEFAULT_BASIC_PLAN = {
 
 const PAYMENT_METHODS = [
   {
-    id: "Razorpay",
-    label: "Razorpay",
-    icon: "fa-solid fa-bolt",
-  },
-  {
     id: "Account",
-    label: "Account",
+    label: "Bank Account",
     icon: "fa-solid fa-building-columns",
   },
   {
     id: "UPI",
-    label: "UPI",
+    label: "UPI Payment",
     icon: "fa-solid fa-mobile-screen-button",
   },
   {
     id: "QR",
-    label: "QR",
+    label: "Scan QR",
     icon: "fa-solid fa-qrcode",
   },
 ];
@@ -717,6 +712,18 @@ const handleSubmit = async (event) => {
                 </div>
               </div>
 
+              {/* OPEN PAYMENT DETAILS CARD */}
+              <PaymentDetailsCard
+                amount={plan.amount}
+                upiId="robertsonraja@barodampay"
+                accountName="INMBA ORGANIZATION"
+                accountNumber="70340200001467"
+                ifsc="BARB0VJPACO"
+                bankName="Bank of Baroda"
+                branch="Chitlapakkam Branch, Chennai"
+                qrUrl="/inmba-qr.png"
+              />
+
               {/* ===========================================
                   PAYMENT METHOD
               =========================================== */}
@@ -783,35 +790,7 @@ const handleSubmit = async (event) => {
                 </div>
               </div>
 
-              {/* RAZORPAY CHECKOUT ACTION */}
-              {paymentMethod === "Razorpay" && (
-                <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: "10px", padding: "16px", marginBottom: "20px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
-                    <i className="fa-solid fa-shield-halved" style={{ color: "#16a34a", fontSize: "1.2rem" }} />
-                    <span style={{ fontSize: "0.9rem", color: "#15803d", fontWeight: "600" }}>
-                      Razorpay Instant Standard Checkout (UPI, Cards, NetBanking)
-                    </span>
-                  </div>
-                  <RazorpayButton
-                    amountInRupees={plan.amount}
-                    name="INMBA Commercial Membership"
-                    description={`Commercial Plan: ${plan.name} (₹${plan.amount})`}
-                    onSuccess={(verifyResult, rzpResponse) => {
-                      setTransactionId(rzpResponse.razorpay_payment_id);
-                      setError("");
-                    }}
-                    onFailure={(err) => {
-                      setError(err.message || "Payment cancelled or failed.");
-                    }}
-                    buttonText={
-                      transactionId && transactionId.startsWith("pay_")
-                        ? `Payment Verified (${transactionId})`
-                        : `Pay ₹${plan.amount} with Razorpay`
-                    }
-                    disabled={loading}
-                  />
-                </div>
-              )}
+
 
               {/* ===========================================
                   AMOUNT

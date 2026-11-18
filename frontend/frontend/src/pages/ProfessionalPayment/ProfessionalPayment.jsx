@@ -19,7 +19,7 @@ import {
 
 import "./ProfessionalPayment.css";
 import { toText, asObject } from "../../utils/commonHelpers";
-import RazorpayButton from "../../components/RazorpayCheckout/RazorpayButton";
+import PaymentDetailsCard from "../../components/PaymentDetailsCard/PaymentDetailsCard";
 
 /* =========================================================
    PAYMENT CONSTANTS
@@ -107,24 +107,12 @@ const MAIN_FLOW_STEPS = [
 
 const PAYMENT_METHODS = [
   {
-    id: "Razorpay",
-
-    title: "Razorpay Online",
-
-    description:
-      "Instant checkout via UPI, Cards, NetBanking.",
-
-    icon:
-      "fa-solid fa-bolt",
-  },
-
-  {
     id: "UPI",
 
     title: "UPI",
 
     description:
-      "Pay using any UPI application.",
+      "Pay using any UPI application or QR code.",
 
     icon:
       "fa-solid fa-mobile-screen-button",
@@ -145,13 +133,13 @@ const PAYMENT_METHODS = [
   {
     id: "Other",
 
-    title: "Other",
+    title: "Scan QR / Other",
 
     description:
-      "Use another approved payment method.",
+      "Scan QR or use another payment method.",
 
     icon:
-      "fa-solid fa-wallet",
+      "fa-solid fa-qrcode",
   },
 ];
 
@@ -1805,6 +1793,18 @@ export default function ProfessionalPayment() {
               }
               noValidate
             >
+              {/* OPEN PAYMENT DETAILS CARD */}
+              <PaymentDetailsCard
+                amount={paymentAmount || 299}
+                upiId="robertsonraja@barodampay"
+                accountName="INMBA ORGANIZATION"
+                accountNumber="70340200001467"
+                ifsc="BARB0VJPACO"
+                bankName="Bank of Baroda"
+                branch="Chitlapakkam Branch, Chennai"
+                qrUrl="/inmba-qr.png"
+              />
+
               {/* =========================================
                   PAYMENT METHOD
               ========================================= */}
@@ -1901,42 +1901,7 @@ export default function ProfessionalPayment() {
                 )}
               </div>
 
-              {/* RAZORPAY CHECKOUT ACTION */}
-              {paymentMethod === "Razorpay" && (
-                <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: "10px", padding: "16px", marginBottom: "20px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
-                    <i className="fa-solid fa-shield-halved" style={{ color: "#16a34a", fontSize: "1.2rem" }} />
-                    <span style={{ fontSize: "0.9rem", color: "#15803d", fontWeight: "600" }}>
-                      Razorpay Instant Standard Checkout (UPI, Cards, NetBanking)
-                    </span>
-                  </div>
-                  <div style={{ maxWidth: "340px" }}>
-                    <RazorpayButton
-                      amountInRupees={paymentAmount || 299}
-                      name="INMBA Professional Membership"
-                      description={`Professional Plan: ${planName} (₹${paymentAmount || 299})`}
-                      prefill={{
-                        name: userFullName || "",
-                        email: userEmail || "",
-                        contact: userMobile || "",
-                      }}
-                      onSuccess={(verifyResult, rzpResponse) => {
-                        setTransactionId(rzpResponse.razorpay_payment_id);
-                        setSubmitError("");
-                      }}
-                      onFailure={(err) => {
-                        setSubmitError(err.message || "Payment cancelled or failed.");
-                      }}
-                      buttonText={
-                        transactionId && transactionId.startsWith("pay_")
-                          ? `Payment Verified (${transactionId})`
-                          : `Pay ₹${paymentAmount || 299} with Razorpay`
-                      }
-                      disabled={submitting || !paymentAmount}
-                    />
-                  </div>
-                </div>
-              )}
+
 
               {/* =========================================
                   YEAR + AMOUNT
