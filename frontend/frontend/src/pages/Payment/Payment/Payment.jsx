@@ -38,6 +38,7 @@ import {
 import "./Payment.css";
 import { toText, asObject, toNumber } from "../../../utils/commonHelpers";
 import PaymentDetailsCard from "../../../components/PaymentDetailsCard/PaymentDetailsCard";
+import RazorpayButton from "../../../components/RazorpayCheckout/RazorpayButton";
 
 /* =========================
    FORM INITIAL STATE
@@ -1735,198 +1736,75 @@ export default function Payment() {
               qrUrl="/inmba-qr.png"
             />
 
-            {/* PAYMENT METHOD */}
-
-            <div className="inmba-payment-form-group">
-              <label>
-                Select Payment Method Used
-                <span>
-                  *
-                </span>
-              </label>
-
-              <div className="inmba-payment-method-grid">
-                {PAYMENT_METHODS.map(
-                  (
-                    method
-                  ) => {
-                    const selected =
-                      formData.payment_method ===
-                      method.value;
-
-                    return (
-                      <button
-                        key={
-                          method.value
-                        }
-                        type="button"
-                        className={`inmba-payment-method ${
-                          selected
-                            ? "inmba-payment-method-selected"
-                            : ""
-                        }`}
-                        onClick={() =>
-                          handlePaymentMethodChange(
-                            method.value
-                          )
-                        }
-                        disabled={
-                          submitting ||
-                          isApproved
-                        }
-                      >
-                        <span>
-                          <i
-                            className={
-                              method.icon
-                            }
-                            aria-hidden="true"
-                          ></i>
-                        </span>
-
-                        <div>
-                          <strong>
-                            {method.label}
-                          </strong>
-
-                          <small>
-                            {method.description}
-                          </small>
-                        </div>
-
-                        <i
-                          className={
-                            selected
-                              ? "fas fa-circle-check"
-                              : "far fa-circle"
-                          }
-                          aria-hidden="true"
-                        ></i>
-                      </button>
-                    );
-                  }
-                )}
+            {/* RAZORPAY INSTANT PAYMENT */}
+            <div
+              className="inmba-payment-instant-box"
+              style={{
+                background: "#f0fdf4",
+                border: "1.5px solid #86efac",
+                borderRadius: "14px",
+                padding: "20px",
+                marginBottom: "24px",
+                boxShadow: "0 4px 14px rgba(22, 163, 74, 0.08)",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", marginBottom: "14px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  <div style={{ width: "42px", height: "42px", borderRadius: "10px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.25rem" }}>
+                    <i className="fa-solid fa-bolt" />
+                  </div>
+                  <div>
+                    <h4 style={{ margin: "0 0 2px 0", fontSize: "1.05rem", fontWeight: 700, color: "#14532d" }}>
+                      Instant Online Payment (Razorpay)
+                    </h4>
+                    <p style={{ margin: 0, fontSize: "0.84rem", color: "#166534" }}>
+                      Pay instantly with UPI (GPay, PhonePe, Paytm), All Debit/Credit Cards & NetBanking. Auto-verified immediately!
+                    </p>
+                  </div>
+                </div>
+                <div style={{ background: "#dcfce7", padding: "6px 14px", borderRadius: "8px", fontWeight: 800, color: "#15803d", fontSize: "1.1rem" }}>
+                  ₹{Number(formData.amount) || 299}
+                </div>
               </div>
 
-              {getErrorText(
-                fieldErrors.payment_method
-              ) && (
-                <small className="inmba-payment-field-error">
-                  {getErrorText(
-                    fieldErrors.payment_method
-                  )}
-                </small>
-              )}
+              <div style={{ maxWidth: "360px" }}>
+                <RazorpayButton
+                  amountInRupees={Number(formData.amount) || 299}
+                  name="INMBA Membership"
+                  description={`INMBA Membership Plan - ${formData.subscription_year || 1} Year`}
+                  prefill={{
+                    name: fullName,
+                    email: member?.email || "",
+                    contact: member?.phone || member?.mobile || "",
+                  }}
+                  onSuccess={(verifyResult, rzpResponse) => {
+                    toast.success("Payment verified successfully via Razorpay!");
+                    setFormData((prev) => ({
+                      ...prev,
+                      payment_method: "Razorpay",
+                      transaction_id: rzpResponse.razorpay_payment_id,
+                    }));
+                  }}
+                  onFailure={(err) => {
+                    toast.error(err.message || "Payment cancelled or failed.");
+                  }}
+                  buttonText={
+                    formData.transaction_id && formData.transaction_id.startsWith("pay_")
+                      ? `Paid via Razorpay (${formData.transaction_id})`
+                      : `Pay ₹${formData.amount || 299} Instantly with Razorpay`
+                  }
+                  disabled={submitting || isApproved || !Number(formData.amount)}
+                />
+              </div>
             </div>
 
-            {/* METHOD INFORMATION */}
-
-            {formData.payment_method && (
-              <div className="inmba-payment-selected-details">
-
-
-                {formData.payment_method ===
-                  "Account" && (
-                  <>
-                    <div className="inmba-payment-selected-icon">
-                      <i
-                        className="fas fa-building-columns"
-                        aria-hidden="true"
-                      ></i>
-                    </div>
-
-                    <div>
-                      <p>
-                        Bank Transfer Details
-                      </p>
-
-                      <span>
-                        Account Number
-                      </span>
-
-                      <strong>
-                        {bankAccountNumber}
-                      </strong>
-
-                      <span>
-                        IFSC Code
-                      </span>
-
-                      <strong>
-                        {bankIfsc}
-                      </strong>
-                    </div>
-                  </>
-                )}
-
-                {formData.payment_method ===
-                  "UPI" && (
-                  <>
-                    <div className="inmba-payment-selected-icon">
-                      <i
-                        className="fas fa-mobile-screen-button"
-                        aria-hidden="true"
-                      ></i>
-                    </div>
-
-                    <div>
-                      <p>
-                        UPI Payment Details
-                      </p>
-
-                      <span>
-                        UPI ID
-                      </span>
-
-                      <strong>
-                        {upiId}
-                      </strong>
-                    </div>
-                  </>
-                )}
-
-                {formData.payment_method ===
-                  "QR" && (
-                  <div className="inmba-payment-qr-details">
-                    <div>
-                      <p>
-                        Scan and Pay
-                      </p>
-
-                      <span>
-                        Scan using any UPI-supported payment application.
-                      </span>
-                    </div>
-
-                    {!qrImageError &&
-                    paymentQrUrl ? (
-                      <img
-                        src={
-                          paymentQrUrl
-                        }
-                        alt="INMBA payment QR code"
-                        onError={() =>
-                          setQrImageError(
-                            true
-                          )
-                        }
-                      />
-                    ) : (
-                      <div className="inmba-payment-qr-placeholder">
-                        <i
-                          className="fas fa-qrcode"
-                          aria-hidden="true"
-                        ></i>
-
-                        <span>
-                          Payment QR
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
+            {/* DIVIDER */}
+            <div style={{ textAlign: "center", margin: "24px 0 28px 0", position: "relative" }}>
+              <hr style={{ border: "none", borderTop: "1px solid #cbd5e1", margin: 0 }} />
+              <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#64748b", fontSize: "0.8rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                OR Submit Payment Proof (After Bank / UPI / QR Transfer)
+              </span>
+            </div>
 
             {/* SUBSCRIPTION */}
 

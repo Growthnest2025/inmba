@@ -20,6 +20,7 @@ import {
 import "./ProfessionalPayment.css";
 import { toText, asObject } from "../../utils/commonHelpers";
 import PaymentDetailsCard from "../../components/PaymentDetailsCard/PaymentDetailsCard";
+import RazorpayButton from "../../components/RazorpayCheckout/RazorpayButton";
 
 /* =========================================================
    PAYMENT CONSTANTS
@@ -1805,100 +1806,70 @@ export default function ProfessionalPayment() {
                 qrUrl="/inmba-qr.png"
               />
 
-              {/* =========================================
-                  PAYMENT METHOD
-              ========================================= */}
-
-              <div className="professional-payment-field-group">
-                <label className="professional-payment-main-label">
-                  Payment Method
-
-                  <span>
-                    *
-                  </span>
-                </label>
-
-                <div className="professional-payment-method-grid">
-                  {PAYMENT_METHODS.map(
-                    (
-                      method
-                    ) => {
-                      const selected =
-                        paymentMethod ===
-                        method.id;
-
-                      return (
-                        <button
-                          key={
-                            method.id
-                          }
-                          type="button"
-                          className={[
-                            "professional-payment-method-card",
-
-                            selected
-                              ? "selected"
-                              : "",
-                          ]
-                            .filter(
-                              Boolean
-                            )
-                            .join(
-                              " "
-                            )}
-                          onClick={() =>
-                            handlePaymentMethodChange(
-                              method.id
-                            )
-                          }
-                          disabled={
-                            submitting
-                          }
-                        >
-                          <div className="professional-payment-method-icon">
-                            <i
-                              className={
-                                method.icon
-                              }
-                            />
-                          </div>
-
-                          <div>
-                            <strong>
-                              {
-                                method.title
-                              }
-                            </strong>
-
-                            <span>
-                              {
-                                method.description
-                              }
-                            </span>
-                          </div>
-
-                          <div className="professional-payment-radio">
-                            {selected && (
-                              <i className="fa-solid fa-check" />
-                            )}
-                          </div>
-                        </button>
-                      );
-                    }
-                  )}
+              {/* RAZORPAY INSTANT PAYMENT */}
+              <div
+                style={{
+                  background: "#f0fdf4",
+                  border: "1.5px solid #86efac",
+                  borderRadius: "14px",
+                  padding: "20px",
+                  marginBottom: "24px",
+                  boxShadow: "0 4px 14px rgba(22, 163, 74, 0.08)",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", marginBottom: "14px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div style={{ width: "42px", height: "42px", borderRadius: "10px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.25rem" }}>
+                      <i className="fa-solid fa-bolt" />
+                    </div>
+                    <div>
+                      <h4 style={{ margin: "0 0 2px 0", fontSize: "1.05rem", fontWeight: 700, color: "#14532d" }}>
+                        Instant Online Payment (Razorpay)
+                      </h4>
+                      <p style={{ margin: 0, fontSize: "0.84rem", color: "#166534" }}>
+                        Pay instantly with UPI (GPay, PhonePe, Paytm), All Debit/Credit Cards & NetBanking. Auto-verified immediately!
+                      </p>
+                    </div>
+                  </div>
+                  <div style={{ background: "#dcfce7", padding: "6px 14px", borderRadius: "8px", fontWeight: 800, color: "#15803d", fontSize: "1.1rem" }}>
+                    ₹{paymentAmount || 299}
+                  </div>
                 </div>
 
-                {fieldErrors
-                  .paymentMethod && (
-                  <small className="professional-payment-field-error">
-                    <i className="fa-solid fa-circle-exclamation" />
-
-                    {
-                      fieldErrors
-                        .paymentMethod
+                <div style={{ maxWidth: "360px" }}>
+                  <RazorpayButton
+                    amountInRupees={paymentAmount || 299}
+                    name="INMBA Professional Membership"
+                    description={`Professional Plan: ${planName} (₹${paymentAmount || 299})`}
+                    prefill={{
+                      name: member?.name || member?.full_name || "",
+                      email: member?.email || "",
+                      contact: member?.phone || member?.mobile || "",
+                    }}
+                    onSuccess={(verifyResult, rzpResponse) => {
+                      setTransactionId(rzpResponse.razorpay_payment_id);
+                      setPaymentMethod("Razorpay");
+                      setPageError("");
+                    }}
+                    onFailure={(err) => {
+                      setPageError(err.message || "Payment cancelled or failed.");
+                    }}
+                    buttonText={
+                      transactionId && transactionId.startsWith("pay_")
+                        ? `Paid via Razorpay (${transactionId})`
+                        : `Pay ₹${paymentAmount || 299} Instantly with Razorpay`
                     }
-                  </small>
-                )}
+                    disabled={submitting || !paymentAmount}
+                  />
+                </div>
+              </div>
+
+              {/* DIVIDER */}
+              <div style={{ textAlign: "center", margin: "24px 0 28px 0", position: "relative" }}>
+                <hr style={{ border: "none", borderTop: "1px solid #cbd5e1", margin: 0 }} />
+                <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#64748b", fontSize: "0.8rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                  OR Submit Payment Proof (After Bank / UPI / QR Transfer)
+                </span>
               </div>
 
 
