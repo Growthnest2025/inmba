@@ -14,7 +14,7 @@ import "./CommercialPayment.css";
 import api from "../../../api/api";
 import { useAuth } from "../../../context/AuthContext";
 import PaymentDetailsCard from "../../../components/PaymentDetailsCard/PaymentDetailsCard";
-import RazorpayButton from "../../../components/RazorpayCheckout/RazorpayButton";
+import RazorpayCard from "../../../components/RazorpayCheckout/RazorpayCard";
 
 /* =========================================================
    DEFAULT BASIC PLAN
@@ -713,7 +713,32 @@ const handleSubmit = async (event) => {
                 </div>
               </div>
 
-              {/* OPEN PAYMENT DETAILS CARD */}
+              {/* 1. RAZORPAY INSTANT ONLINE PAYMENT (FIRST) */}
+              <RazorpayCard
+                amount={plan.amount}
+                name="INMBA Commercial Membership"
+                description={`Commercial Plan: ${plan.name} (₹${plan.amount})`}
+                onSuccess={(verifyResult, rzpResponse) => {
+                  setTransactionId(rzpResponse.razorpay_payment_id);
+                  setPaymentMethod("Razorpay");
+                  setError("");
+                }}
+                onFailure={(err) => {
+                  setError(err.message || "Payment cancelled or failed.");
+                }}
+                transactionId={transactionId}
+                disabled={submitting}
+              />
+
+              {/* DIVIDER: OR PAY VIA DIRECT BANK / UPI / QR CODE */}
+              <div style={{ textAlign: "center", margin: "24px 0 24px 0", position: "relative" }}>
+                <hr style={{ border: "none", borderTop: "1px solid #cbd5e1", margin: 0 }} />
+                <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
+                  OR PAY VIA DIRECT BANK / UPI / QR CODE
+                </span>
+              </div>
+
+              {/* 2. OFFICIAL PAYMENT DETAILS CARD (NEXT) */}
               <PaymentDetailsCard
                 amount={plan.amount}
                 upiId="robertsonraja@barodampay"
@@ -725,64 +750,11 @@ const handleSubmit = async (event) => {
                 qrUrl="/inmba-qr.png"
               />
 
-              {/* RAZORPAY INSTANT PAYMENT */}
-              <div
-                style={{
-                  background: "#f0fdf4",
-                  border: "1.5px solid #86efac",
-                  borderRadius: "14px",
-                  padding: "20px",
-                  marginBottom: "24px",
-                  boxShadow: "0 4px 14px rgba(22, 163, 74, 0.08)",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", marginBottom: "14px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <div style={{ width: "42px", height: "42px", borderRadius: "10px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.25rem" }}>
-                      <i className="fa-solid fa-bolt" />
-                    </div>
-                    <div>
-                      <h4 style={{ margin: "0 0 2px 0", fontSize: "1.05rem", fontWeight: 700, color: "#14532d" }}>
-                        Instant Online Payment (Razorpay)
-                      </h4>
-                      <p style={{ margin: 0, fontSize: "0.84rem", color: "#166534" }}>
-                        Pay instantly with UPI (GPay, PhonePe, Paytm), All Debit/Credit Cards & NetBanking. Auto-verified immediately!
-                      </p>
-                    </div>
-                  </div>
-                  <div style={{ background: "#dcfce7", padding: "6px 14px", borderRadius: "8px", fontWeight: 800, color: "#15803d", fontSize: "1.1rem" }}>
-                    ₹{plan.amount}
-                  </div>
-                </div>
-
-                <div style={{ maxWidth: "360px" }}>
-                  <RazorpayButton
-                    amountInRupees={plan.amount}
-                    name="INMBA Commercial Membership"
-                    description={`Commercial Plan: ${plan.name} (₹${plan.amount})`}
-                    onSuccess={(verifyResult, rzpResponse) => {
-                      setTransactionId(rzpResponse.razorpay_payment_id);
-                      setPaymentMethod("Razorpay");
-                      setError("");
-                    }}
-                    onFailure={(err) => {
-                      setError(err.message || "Payment cancelled or failed.");
-                    }}
-                    buttonText={
-                      transactionId && transactionId.startsWith("pay_")
-                        ? `Paid via Razorpay (${transactionId})`
-                        : `Pay ₹${plan.amount} Instantly with Razorpay`
-                    }
-                    disabled={submitting}
-                  />
-                </div>
-              </div>
-
-              {/* DIVIDER */}
+              {/* DIVIDER: SUBMIT PAYMENT PROOF */}
               <div style={{ textAlign: "center", margin: "24px 0 28px 0", position: "relative" }}>
                 <hr style={{ border: "none", borderTop: "1px solid #cbd5e1", margin: 0 }} />
-                <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#64748b", fontSize: "0.8rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                  OR Submit Payment Proof (After Bank / UPI / QR Transfer)
+                <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
+                  SUBMIT PAYMENT PROOF (AFTER BANK / UPI / QR TRANSFER)
                 </span>
               </div>
 
