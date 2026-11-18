@@ -321,7 +321,8 @@ export const validateRegistrationPincode = (
 };
 
 export const validateRegistrationAadhaar = (
-  value
+  value,
+  required = true
 ) => {
   const aadhar =
     normalizeDigits(
@@ -330,18 +331,23 @@ export const validateRegistrationAadhaar = (
     );
 
   if (!aadhar) {
+    if (required) {
+      return {
+        valid: false,
+        error: "Aadhaar number is required.",
+      };
+    }
     return {
-      valid: false,
-      error:
-        "Aadhaar number is required.",
+      valid: true,
+      error: "",
+      value: "",
     };
   }
 
   if (!/^\d{12}$/.test(aadhar)) {
     return {
       valid: false,
-      error:
-        "Enter a valid 12-digit Aadhaar number.",
+      error: "Enter a valid 12-digit Aadhaar number.",
     };
   }
 
@@ -349,6 +355,40 @@ export const validateRegistrationAadhaar = (
     valid: true,
     error: "",
     value: aadhar,
+  };
+};
+
+export const validateRegistrationPan = (
+  value,
+  required = false
+) => {
+  const pan = toText(value).toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
+
+  if (!pan) {
+    if (required) {
+      return {
+        valid: false,
+        error: "PAN number is required.",
+      };
+    }
+    return {
+      valid: true,
+      error: "",
+      value: "",
+    };
+  }
+
+  if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan)) {
+    return {
+      valid: false,
+      error: "Enter a valid 10-character PAN (e.g. ABCDE1234F).",
+    };
+  }
+
+  return {
+    valid: true,
+    error: "",
+    value: pan,
   };
 };
 
@@ -440,9 +480,27 @@ export const createMemberRegistrationPayload = (
 
     aadhar:
       normalizeDigits(
-        source.aadhar,
+        source.aadhar ?? source.aadhar_number,
         12
       ),
+
+    aadhar_number:
+      normalizeDigits(
+        source.aadhar ?? source.aadhar_number,
+        12
+      ),
+
+    pan:
+      toText(source.pan ?? source.pan_number)
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "")
+        .slice(0, 10),
+
+    pan_number:
+      toText(source.pan ?? source.pan_number)
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "")
+        .slice(0, 10),
 
     password:
       String(
@@ -645,6 +703,7 @@ const registrationService = {
   validateRegistrationPhone,
   validateRegistrationPincode,
   validateRegistrationAadhaar,
+  validateRegistrationPan,
 
   storeRegistrationResult,
   getStoredRegistrationResult,

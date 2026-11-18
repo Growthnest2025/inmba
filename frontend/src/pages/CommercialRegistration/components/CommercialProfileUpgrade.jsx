@@ -2678,7 +2678,7 @@ export default function CommercialProfileUpgrade() {
               />
 
               <FileField
-                label="PAN Card Scan"
+                label="Firm PAN Card (or) Authorized Person PAN Card Scan"
                 name="pan_card_scan"
                 accept={
                   DOCUMENT_ACCEPT
@@ -2766,7 +2766,7 @@ export default function CommercialProfileUpgrade() {
               />
 
               <Field
-                label="Company PAN / TAN"
+                label="Firm PAN Card (or) Authorized Person PAN Card"
                 name="company_pan_tan"
                 value={
                   values.company_pan_tan

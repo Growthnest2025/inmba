@@ -27,6 +27,8 @@ const INITIAL_FORM_DATA = {
   phone: "",
   email: "",
   business_category: "",
+  firm_registration_type: "",
+  pan_number: "",
   city: "",
   business_address: "",
   password: "",
@@ -204,6 +206,16 @@ export default function CommercialBasicKyc() {
           .toUpperCase();
     }
 
+    if (
+      name === "pan_number"
+    ) {
+      nextValue =
+        value
+          .toUpperCase()
+          .replace(/[^A-Z0-9]/g, "")
+          .slice(0, 10);
+    }
+
     setFormData(
       (
         previousData
@@ -303,6 +315,13 @@ export default function CommercialBasicKyc() {
       ) {
         errors.business_category =
           "Select a Business Category.";
+      }
+
+      /* PAN VALIDATION (IF ENTERED) */
+      if (formData.pan_number) {
+        if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.pan_number)) {
+          errors.pan_number = "Enter a valid 10-character PAN (e.g. ABCDE1234F).";
+        }
       }
 
       /* CITY */
@@ -1029,6 +1048,93 @@ const handleContinueMembership = () => {
                 </small>
               )}
             </div>
+
+            {/* FIRM REGISTRATION TYPE */}
+            <div className="commercial-registration-field">
+              <label htmlFor="commercial-firm-registration-type">
+                Firm Registration Type
+              </label>
+
+              <div className="commercial-registration-input commercial-registration-select-wrap">
+                <i className="fas fa-building" />
+
+                <select
+                  id="commercial-firm-registration-type"
+                  name="firm_registration_type"
+                  value={
+                    formData.firm_registration_type
+                  }
+                  onChange={
+                    handleInputChange
+                  }
+                  disabled={
+                    submitting
+                  }
+                >
+                  <option value="">
+                    Select Firm Registration Type
+                  </option>
+                  <option value="Sole Proprietorship">
+                    Sole Proprietorship
+                  </option>
+                  <option value="Partnership Firm">
+                    Partnership Firm
+                  </option>
+                  <option value="Limited Liability Partnership (LLP)">
+                    Limited Liability Partnership (LLP)
+                  </option>
+                  <option value="Private Limited Company (Pvt Ltd)">
+                    Private Limited Company (Pvt Ltd)
+                  </option>
+                  <option value="Public Limited Company (Ltd)">
+                    Public Limited Company (Ltd)
+                  </option>
+                  <option value="One Person Company (OPC)">
+                    One Person Company (OPC)
+                  </option>
+                  <option value="Trust / Society / NGO">
+                    Trust / Society / NGO
+                  </option>
+                  <option value="Hindu Undivided Family (HUF)">
+                    Hindu Undivided Family (HUF)
+                  </option>
+                  <option value="Others">
+                    Others
+                  </option>
+                </select>
+              </div>
+
+              {errorText(
+                fieldErrors.firm_registration_type
+              ) && (
+                <small className="commercial-registration-field-error">
+                  {errorText(
+                    fieldErrors.firm_registration_type
+                  )}
+                </small>
+              )}
+            </div>
+
+            {/* FIRM PAN CARD / AUTHORIZED PERSON PAN CARD */}
+            <Field
+              label="Firm PAN Card (or) Authorized Person PAN Card"
+              name="pan_number"
+              value={
+                formData.pan_number
+              }
+              onChange={
+                handleInputChange
+              }
+              error={
+                fieldErrors.pan_number
+              }
+              icon="fas fa-credit-card"
+              placeholder="10-character PAN (e.g. ABCDE1234F)"
+              maxLength={10}
+              disabled={
+                submitting
+              }
+            />
 
             {/* CITY */}
 

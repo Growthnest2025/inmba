@@ -22,6 +22,8 @@ const INITIAL_FORM_DATA = {
   phone: "",
   email: "",
   dob: "",
+  aadhar: "",
+  pan: "",
   password: "",
   referral: "",
   profile_pic: null,
@@ -145,6 +147,12 @@ export default function MembershipRegistration() {
     if (name === "phone") {
       nextValue = value.replace(/\D/g, "").slice(0, 10);
     }
+    if (name === "aadhar") {
+      nextValue = value.replace(/\D/g, "").slice(0, 12);
+    }
+    if (name === "pan") {
+      nextValue = value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
+    }
     if (name === "referral") {
       nextValue = value.replace(/\s/g, "").slice(0, 50);
     }
@@ -192,6 +200,18 @@ export default function MembershipRegistration() {
 
       if (Number.isNaN(selectedDate.getTime()) || selectedDate >= today) {
         errors.dob = "Enter a valid date of birth.";
+      }
+    }
+
+    if (formData.aadhar) {
+      if (!/^\d{12}$/.test(formData.aadhar)) {
+        errors.aadhar = "Aadhaar must be a 12-digit number.";
+      }
+    }
+
+    if (formData.pan) {
+      if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.pan)) {
+        errors.pan = "Enter a valid 10-character PAN (e.g. ABCDE1234F).";
       }
     }
 
@@ -249,6 +269,10 @@ export default function MembershipRegistration() {
         education: "",
         membership_type: "Civilian Member",
         referral: formData.referral || "",
+        aadhar: formData.aadhar || "",
+        aadhar_number: formData.aadhar || "",
+        pan: formData.pan || "",
+        pan_number: formData.pan || "",
         password: formData.password,
         confirm_password: formData.password,
         profile_pic: formData.profile_pic,
@@ -483,6 +507,36 @@ export default function MembershipRegistration() {
               </div>
             </div>
 
+            {/* 90-DAY POLICY NOTICE */}
+            <div
+              className="civilian-registration-policy-banner"
+              style={{
+                backgroundColor: "#eff6ff",
+                border: "1px solid #93c5fd",
+                borderRadius: "10px",
+                padding: "14px 16px",
+                marginBottom: "18px",
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "12px",
+                color: "#1e40af",
+              }}
+            >
+              <i
+                className="fas fa-shield-halved"
+                style={{ fontSize: "1.3rem", marginTop: "2px", color: "#2563eb", flexShrink: 0 }}
+                aria-hidden="true"
+              />
+              <div>
+                <strong style={{ display: "block", marginBottom: "3px", fontSize: "0.95rem" }}>
+                  Important Aadhaar Policy (90-Day Notice)
+                </strong>
+                <span style={{ fontSize: "0.85rem", lineHeight: "1.45", display: "block" }}>
+                  Aadhaar entry is optional during registration, but <strong>mandatory within 90 days</strong> of joining. Accounts without Aadhaar verification after 90 days will be permanently terminated. One mobile number can be used to register up to 3 civilian accounts with separate login IDs.
+                </span>
+              </div>
+            </div>
+
             {/* REFERRAL NOTICE */}
             {referralFromUrl && (
               <div className="civilian-registration-referral-notice">
@@ -612,6 +666,60 @@ export default function MembershipRegistration() {
                 {getErrorText(fieldErrors.dob) && (
                   <small className="civilian-registration-field-error">
                     {getErrorText(fieldErrors.dob)}
+                  </small>
+                )}
+              </div>
+
+              {/* AADHAAR CARD - OPTIONAL (FORMAT VALIDATED) */}
+              <div className="civilian-registration-field">
+                <div className="civilian-registration-label-row">
+                  <label htmlFor="civilian-aadhar">Aadhaar Card Number</label>
+                  <span>Optional (Mandatory within 90 days)</span>
+                </div>
+                <div className="civilian-registration-input">
+                  <i className="fas fa-id-card" aria-hidden="true" />
+                  <input
+                    id="civilian-aadhar"
+                    name="aadhar"
+                    type="text"
+                    inputMode="numeric"
+                    value={formData.aadhar}
+                    onChange={handleInputChange}
+                    placeholder="12-digit Aadhaar Number"
+                    maxLength={12}
+                    disabled={submitting}
+                  />
+                </div>
+                {getErrorText(fieldErrors.aadhar) && (
+                  <small className="civilian-registration-field-error">
+                    {getErrorText(fieldErrors.aadhar)}
+                  </small>
+                )}
+              </div>
+
+              {/* PAN CARD - OPTIONAL (FORMAT VALIDATED) */}
+              <div className="civilian-registration-field">
+                <div className="civilian-registration-label-row">
+                  <label htmlFor="civilian-pan">PAN Card Number</label>
+                  <span>Optional</span>
+                </div>
+                <div className="civilian-registration-input">
+                  <i className="fas fa-credit-card" aria-hidden="true" />
+                  <input
+                    id="civilian-pan"
+                    name="pan"
+                    type="text"
+                    value={formData.pan}
+                    onChange={handleInputChange}
+                    placeholder="10-character PAN (e.g. ABCDE1234F)"
+                    maxLength={10}
+                    style={{ textTransform: "uppercase" }}
+                    disabled={submitting}
+                  />
+                </div>
+                {getErrorText(fieldErrors.pan) && (
+                  <small className="civilian-registration-field-error">
+                    {getErrorText(fieldErrors.pan)}
                   </small>
                 )}
               </div>

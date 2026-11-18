@@ -1229,7 +1229,7 @@ const progress =
             />
 
             <ReviewRow
-              label="PAN Card"
+              label="Firm PAN Card (or) Authorized Person PAN Card"
               value={
                 fileStatus(
                   A.pan_card_scan
@@ -1291,7 +1291,7 @@ const progress =
             />
 
             <ReviewRow
-              label="Company PAN / TAN"
+              label="Firm PAN Card (or) Authorized Person PAN Card"
               value={
                 maskValue(
                   B.company_pan_tan

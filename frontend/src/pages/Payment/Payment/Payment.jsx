@@ -37,7 +37,7 @@ import {
 
 import "./Payment.css";
 import { toText, asObject, toNumber } from "../../../utils/commonHelpers";
-import RazorpayButton from "../../../components/RazorpayCheckout/RazorpayButton";
+import PaymentDetailsCard from "../../../components/PaymentDetailsCard/PaymentDetailsCard";
 
 /* =========================
    FORM INITIAL STATE
@@ -56,12 +56,6 @@ const INITIAL_FORM_DATA = {
 ========================= */
 
 const PAYMENT_METHODS = [
-  {
-    value: "Razorpay",
-    label: "Razorpay Online",
-    description: "Instant payment via UPI, Credit/Debit Card, NetBanking.",
-    icon: "fas fa-bolt",
-  },
   {
     value: "Account",
     label: "Bank Account",
@@ -1729,11 +1723,23 @@ export default function Payment() {
               </div>
             </header>
 
+            {/* OPEN PAYMENT DETAILS CARD */}
+            <PaymentDetailsCard
+              amount={formData.amount || (civilianPlan ? 299 : "")}
+              upiId={upiId}
+              accountNumber={bankAccountNumber}
+              ifsc={bankIfsc}
+              accountName="INMBA ORGANIZATION"
+              bankName="Bank of Baroda"
+              branch="Chitlapakkam Branch, Chennai"
+              qrUrl="/inmba-qr.png"
+            />
+
             {/* PAYMENT METHOD */}
 
             <div className="inmba-payment-form-group">
               <label>
-                Select Payment Method
+                Select Payment Method Used
                 <span>
                   *
                 </span>
@@ -1817,48 +1823,7 @@ export default function Payment() {
 
             {formData.payment_method && (
               <div className="inmba-payment-selected-details">
-                {formData.payment_method === "Razorpay" && (
-                  <div style={{ width: "100%", padding: "8px 0" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "14px" }}>
-                      <div className="inmba-payment-selected-icon" style={{ background: "#eff6ff", color: "#0284c7" }}>
-                        <i className="fas fa-shield-halved" aria-hidden="true"></i>
-                      </div>
-                      <div>
-                        <p style={{ margin: 0, fontWeight: 700, color: "#0f172a" }}>Razorpay Online Gateway</p>
-                        <small style={{ color: "#64748b" }}>Instant checkout supporting UPI (GPay, PhonePe, Paytm), All Debit/Credit Cards & NetBanking.</small>
-                      </div>
-                    </div>
 
-                    <div style={{ maxWidth: "340px" }}>
-                      <RazorpayButton
-                        amountInRupees={Number(formData.amount) || 299}
-                        name="INMBA Membership"
-                        description={`INMBA Membership Plan - ${formData.subscription_year || 1} Year`}
-                        prefill={{
-                          name: fullName,
-                          email: member?.email || "",
-                          contact: member?.phone || member?.mobile || "",
-                        }}
-                        onSuccess={(verifyResult, rzpResponse) => {
-                          toast.success("Payment verified successfully via Razorpay!");
-                          setFormData((prev) => ({
-                            ...prev,
-                            transaction_id: rzpResponse.razorpay_payment_id,
-                          }));
-                        }}
-                        onFailure={(err) => {
-                          toast.error(err.message || "Payment cancelled or failed.");
-                        }}
-                        buttonText={
-                          formData.transaction_id && formData.transaction_id.startsWith("pay_")
-                            ? `Paid (${formData.transaction_id})`
-                            : `Pay ₹${formData.amount || 299} Now`
-                        }
-                        disabled={submitting || isApproved || !Number(formData.amount)}
-                      />
-                    </div>
-                  </div>
-                )}
 
                 {formData.payment_method ===
                   "Account" && (
