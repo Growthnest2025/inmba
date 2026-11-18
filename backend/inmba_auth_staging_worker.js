@@ -3624,14 +3624,100 @@ async function handleAdminRestore(request, db, cors, id) {
 }
 
 async function handleAdminPermanentDelete(request, db, cors, id) {
-  await db.prepare(`DELETE FROM civilian_full_kyc WHERE member_id = ?`).bind(id).run();
-  await db.prepare(`DELETE FROM kyc_members_ext_1 WHERE member_id = ?`).bind(id).run();
-  await db.prepare(`DELETE FROM kyc_members WHERE id = ?`).bind(id).run();
-  return json({
-    success: true,
-    statusCode: 200,
-    message: "User permanently deleted.",
-  }, 200, cors);
+  try {
+    const memberId = Number(id);
+    if (!memberId || isNaN(memberId)) {
+      return json({
+        success: false,
+        statusCode: 400,
+        message: "Invalid member ID.",
+      }, 400, cors);
+    }
+
+    // 1. Fetch member before deletion to capture backup snapshot and login_id
+    let member = null;
+    try {
+      member = await db.prepare("SELECT * FROM kyc_members WHERE id = ?").bind(memberId).first();
+    } catch (fetchErr) {
+      console.warn("Could not fetch member for backup:", fetchErr);
+    }
+
+    // 2. Insert into deleted_users_backup table if member exists
+    if (member) {
+      try {
+        await db.prepare(`
+          CREATE TABLE IF NOT EXISTS deleted_users_backup (
+            backup_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            original_id INTEGER,
+            first_name TEXT,
+            last_name TEXT,
+            email TEXT,
+            phone TEXT,
+            backup_data TEXT NOT NULL,
+            backed_up_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+          )
+        `).run().catch(() => {});
+
+        await db.prepare(`
+          INSERT INTO deleted_users_backup (
+            original_id, first_name, last_name, email, phone, backup_data, backed_up_at
+          ) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
+        `).bind(
+          member.id,
+          member.first_name || null,
+          member.last_name || null,
+          member.email || null,
+          member.phone || null,
+          JSON.stringify(member)
+        ).run().catch((bInsertErr) => {
+          console.warn("deleted_users_backup insert error:", bInsertErr);
+        });
+      } catch (bErr) {
+        console.warn("deleted_users_backup table error:", bErr);
+      }
+    }
+
+    // 3. Delete dependent rows referencing member_id to avoid foreign key failures
+    await db.prepare(`DELETE FROM worker_auth_sessions WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+    await db.prepare(`DELETE FROM civilian_full_kyc WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+    await db.prepare(`DELETE FROM kyc_members_ext_1 WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+    await db.prepare(`DELETE FROM kyc_members_ext_2 WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+    await db.prepare(`DELETE FROM commercial_kyc WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+    await db.prepare(`DELETE FROM professional_kyc_progress WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+    await db.prepare(`DELETE FROM commercial_kyc_progress WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+
+    // 4. Delete dependent rows referencing member login_id if present
+    if (member && member.login_id) {
+      await db.prepare(`DELETE FROM commercial_basic_kyc WHERE login_id = ?`).bind(member.login_id).run().catch(() => {});
+      await db.prepare(`DELETE FROM commercial_payments WHERE login_id = ?`).bind(member.login_id).run().catch(() => {});
+      await db.prepare(`DELETE FROM commercial_kyc WHERE login_id = ?`).bind(member.login_id).run().catch(() => {});
+    }
+
+    // 5. Clear referral dependencies
+    if (member && member.referral_id) {
+      await db.prepare(`UPDATE kyc_members SET referred_by = NULL WHERE referred_by = ?`).bind(member.referral_id).run().catch(() => {});
+    }
+
+    // 6. Permanently delete from kyc_members
+    await db.prepare(`DELETE FROM kyc_members WHERE id = ?`).bind(memberId).run();
+
+    return json({
+      success: true,
+      statusCode: 200,
+      message: "User permanently deleted.",
+      data: {
+        id: memberId,
+        deleted: true,
+      },
+    }, 200, cors);
+  } catch (error) {
+    console.error("handleAdminPermanentDelete error:", error);
+    return json({
+      success: false,
+      statusCode: 500,
+      message: error?.message || "Failed to permanently delete member.",
+    }, 500, cors);
+  }
 }
 
 async function handleAdminRequestUserOtp(request, db, cors, id) {
@@ -4175,8 +4261,9 @@ async function handleRazorpayGetKey(request, env, cors) {
         return await handleAdminRestore(request, db, cors, restoreMatch[1]);
       }
 
-      const permDeleteMatch = path.match(/^\/(?:api\/)?permanent_delete\/(\d+)$/);
-      if (permDeleteMatch && method === "POST") {
+      const permDeleteMatch = path.match(/^\/(?:api\/)?permanent_delete\/(\d+)$/) ||
+                              path.match(/^\/(?:api\/)?admin\/user\/(\d+)\/permanent$/);
+      if (permDeleteMatch && (method === "POST" || method === "DELETE")) {
         return await handleAdminPermanentDelete(request, db, cors, permDeleteMatch[1]);
       }
 
@@ -4316,6 +4403,42 @@ async function handleRazorpayGetKey(request, env, cors) {
             total: (deletedUsers.results || []).length,
           },
         }, 200, cors);
+      }
+
+      if ((path === "/deleted_users_backup" || path === "/api/deleted_users_backup" || path === "/api/admin/backups/deleted-users") && method === "GET") {
+        try {
+          await db.prepare(`
+            CREATE TABLE IF NOT EXISTS deleted_users_backup (
+              backup_id INTEGER PRIMARY KEY AUTOINCREMENT,
+              original_id INTEGER,
+              first_name TEXT,
+              last_name TEXT,
+              email TEXT,
+              phone TEXT,
+              backup_data TEXT NOT NULL,
+              backed_up_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+          `).run().catch(() => {});
+
+          const backups = await db.prepare(`
+            SELECT * FROM deleted_users_backup ORDER BY backup_id DESC
+          `).all();
+
+          return json({
+            success: true,
+            backups: backups.results || [],
+            data: {
+              backups: backups.results || [],
+              total: (backups.results || []).length,
+            },
+          }, 200, cors);
+        } catch (backupErr) {
+          return json({
+            success: true,
+            backups: [],
+            data: { backups: [], total: 0 },
+          }, 200, cors);
+        }
       }
 
       if (path === "/api/auth/admin-me" && method === "GET") {
