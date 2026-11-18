@@ -120,7 +120,7 @@ export default function PaymentDetailsCard({
           </div>
         </div>
 
-        {/* RIGHT COLUMN: QR CODE */}
+        {/* RIGHT COLUMN: OFFICIAL QR CODE */}
         <div className="inmba-open-payment-qr-box">
           <div className="inmba-open-payment-section-title" style={{ justifyContent: "center" }}>
             <i className="fa-solid fa-qrcode" aria-hidden="true" />
@@ -137,24 +137,7 @@ export default function PaymentDetailsCard({
               }}
             />
           </div>
-          <div className="inmba-open-payment-qr-labels">
-            <strong>{accountName}</strong>
-            <p>{upiId}</p>
-            <div className="inmba-open-payment-apps-row">
-              <span>GPay</span>
-              <span>PhonePe</span>
-              <span>Paytm</span>
-              <span>BHIM</span>
-            </div>
-          </div>
         </div>
-      </div>
-
-      <div className="inmba-open-payment-instruction-bar">
-        <i className="fa-solid fa-circle-info" aria-hidden="true" />
-        <span>
-          <strong>Next Step:</strong> After paying, enter your <strong>Transaction ID / UTR</strong> and upload the <strong>Payment Screenshot</strong> below to submit for instant admin verification.
-        </span>
       </div>
     </div>
   );

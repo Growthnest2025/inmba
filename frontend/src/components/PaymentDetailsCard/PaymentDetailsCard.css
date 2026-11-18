@@ -3,7 +3,7 @@
   border: 1px solid #d1e2cf;
   border-radius: 16px;
   padding: 24px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
   box-shadow: 0 4px 18px rgba(15, 77, 15, 0.06);
 }
 
@@ -74,9 +74,8 @@
 
 .inmba-open-payment-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
+  grid-template-columns: 1.3fr 1fr;
   gap: 22px;
-  margin-bottom: 20px;
 }
 
 @media (max-width: 768px) {
@@ -221,68 +220,19 @@
 
 .inmba-open-payment-qr-frame {
   background: #ffffff;
-  padding: 10px;
-  border-radius: 14px;
+  padding: 8px;
+  border-radius: 12px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-  margin-bottom: 12px;
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .inmba-open-payment-qr-img {
-  width: 170px;
-  height: 170px;
+  width: 100%;
+  max-width: 250px;
+  height: auto;
   object-fit: contain;
   display: block;
-  border-radius: 8px;
-}
-
-.inmba-open-payment-qr-labels strong {
-  display: block;
-  font-size: 0.95rem;
-  color: #1b3d1b;
-  margin-bottom: 2px;
-}
-
-.inmba-open-payment-qr-labels p {
-  margin: 0 0 10px 0;
-  font-size: 0.82rem;
-  color: #1e7e34;
-  font-family: monospace, sans-serif;
-  font-weight: 600;
-}
-
-.inmba-open-payment-apps-row {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.inmba-open-payment-apps-row span {
-  background: #eaf3e8;
-  color: #245724;
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 4px;
-}
-
-.inmba-open-payment-instruction-bar {
-  background: #eef7ee;
-  border: 1px solid #cce5cb;
-  border-radius: 10px;
-  padding: 12px 16px;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  font-size: 0.85rem;
-  color: #1d4d1d;
-  line-height: 1.45;
-}
-
-.inmba-open-payment-instruction-bar i {
-  color: #1e7e34;
-  font-size: 1.1rem;
-  margin-top: 2px;
-  flex-shrink: 0;
+  border-radius: 6px;
 }
