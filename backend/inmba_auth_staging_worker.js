@@ -4692,11 +4692,11 @@ async function handleRazorpayGetKey(request, env, cors) {
         if (!admin) {
           return json({
             success: false,
-            statusCode: 401,
+            statusCode: 200,
             authenticated: false,
             admin: null,
             message: "Admin is not authenticated.",
-          }, 401, cors);
+          }, 200, cors);
         }
 
         return json({
