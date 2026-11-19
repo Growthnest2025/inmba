@@ -1582,10 +1582,10 @@ async function handleGetAcknowledgement(request, db, cors, token) {
   `).bind(member.id).first()) || {};
 
   const civilian = (await db.prepare(`
-    SELECT selected_plan FROM civilian_full_kyc WHERE member_id = ?
+    SELECT * FROM civilian_full_kyc WHERE member_id = ?
   `).bind(member.id).first()) || {};
 
-  const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "Member";
+  const fullName = civilian.full_legal_name || [member.first_name, member.last_name].filter(Boolean).join(" ") || "Member";
   const planAmount = civilian.selected_plan || ext.amount || "299";
 
   const ackData = {
@@ -1595,8 +1595,8 @@ async function handleGetAcknowledgement(request, db, cors, token) {
     last_name: member.last_name,
     full_name: fullName,
     name: fullName,
-    email: member.email,
-    phone: member.phone,
+    email: member.email || civilian.primary_email,
+    phone: member.phone || civilian.primary_mobile,
     membership_type: member.membership_type || "Civilian Member",
     payment_status: member.payment_status || "pending",
     selected_plan: planAmount,
@@ -1605,6 +1605,18 @@ async function handleGetAcknowledgement(request, db, cors, token) {
     payment_method: ext.payment_method || "UPI",
     payment_proof: ext.payment_proof || null,
     created_at: member.created_at,
+    aadhaar_number: civilian.aadhaar_number || null,
+    pan_number: civilian.pan_number || null,
+    bank_account_number: civilian.bank_account_number || null,
+    ifsc_code: civilian.ifsc_code || null,
+    bank_name: civilian.bank_name || null,
+    bank_branch: civilian.bank_branch_name || null,
+    nominee_name: civilian.nominee_name || null,
+    nominee_relationship: civilian.nominee_relationship || null,
+    district: civilian.district || null,
+    state: civilian.state || null,
+    pincode: civilian.pincode || null,
+    address: civilian.current_address || civilian.permanent_address || null,
   };
 
   return json({
@@ -4307,6 +4319,50 @@ async function handleRazorpayVerifyPayment(request, env, cors) {
       }, 400, cors);
     }
 
+    // Auto-approve and complete payment in database upon successful verification
+    const memberId = body.member_id || body.memberId;
+    const loginId = body.login_id || body.loginId;
+    const amount = Number(body.amount) || 299;
+    const planName = body.plan_name || body.plan || "Membership";
+
+    try {
+      if (memberId && env.inmba_db) {
+        await env.inmba_db.prepare(`
+          UPDATE kyc_members
+          SET payment_status = 'approved',
+              updated_at = datetime('now')
+          WHERE id = ?
+        `).bind(memberId).run().catch(() => {});
+
+        await env.inmba_db.prepare(`
+          UPDATE kyc_members_ext_1
+          SET payment_status = 'approved',
+              transaction_id = ?,
+              payment_method = 'Razorpay',
+              amount = COALESCE(?, amount),
+              updated_at = datetime('now')
+          WHERE member_id = ?
+        `).bind(effectivePaymentId, amount, memberId).run().catch(() => {});
+      }
+
+      if (loginId && env.inmba_db) {
+        await env.inmba_db.prepare(`
+          UPDATE kyc_members
+          SET payment_status = 'approved',
+              updated_at = datetime('now')
+          WHERE login_id = ?
+        `).bind(loginId).run().catch(() => {});
+
+        await env.inmba_db.prepare(`
+          INSERT INTO commercial_payments (
+            login_id, plan_name, amount, payment_method, transaction_id, payment_status, created_at
+          ) VALUES (?, ?, ?, 'Razorpay', ?, 'approved', datetime('now'))
+        `).bind(loginId, planName, amount, effectivePaymentId).run().catch(() => {});
+      }
+    } catch (dbErr) {
+      console.warn("Could not auto-update member payment status:", dbErr);
+    }
+
     return json({
       statusCode: 200,
       success: true,
@@ -4315,6 +4371,7 @@ async function handleRazorpayVerifyPayment(request, env, cors) {
         order_id: effectiveOrderId,
         payment_id: effectivePaymentId,
         verified: true,
+        payment_status: "approved",
       },
     }, 200, cors);
   } catch (err) {
@@ -4486,6 +4543,15 @@ async function handleRazorpayGetKey(request, env, cors) {
       }
 
       if ((path === "/api/admin/users" || path === "/admin/users") && method === "GET") {
+        const currentAdmin = await getCurrentAdmin(request, db);
+        if (!currentAdmin) {
+          return json({
+            success: false,
+            statusCode: 401,
+            message: "Unauthorized. Admin credentials required.",
+          }, 401, cors);
+        }
+
         const users = await db.prepare(`
           SELECT 
             k.id, k.login_id, k.first_name, k.last_name, k.email, k.phone, 
@@ -4623,11 +4689,21 @@ async function handleRazorpayGetKey(request, env, cors) {
 
       if (path === "/api/auth/admin-me" && method === "GET") {
         const admin = await getCurrentAdmin(request, db);
+        if (!admin) {
+          return json({
+            success: false,
+            statusCode: 401,
+            authenticated: false,
+            admin: null,
+            message: "Admin is not authenticated.",
+          }, 401, cors);
+        }
 
         return json({
           success: true,
-          authenticated: !!admin,
-          admin: admin || null,
+          statusCode: 200,
+          authenticated: true,
+          admin,
         }, 200, cors);
       }
 

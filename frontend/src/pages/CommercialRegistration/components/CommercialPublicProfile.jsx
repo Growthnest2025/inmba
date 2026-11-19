@@ -166,11 +166,13 @@ function PublicField({
       value
     );
 
-  if (
+  if (value) {
+    content = displayValue(value);
+  } else if (
     privateField
   ) {
     content =
-      "Access Restricted";
+      "Not Provided";
   }
 
   if (
@@ -1257,6 +1259,14 @@ export default function CommercialPublicProfile({
           />
 
           <PublicField
+            label="Firm Registration Type"
+            value={
+              profile.firm_registration_type ||
+              profile.business_type
+            }
+          />
+
+          <PublicField
             label="Registration Status"
             value={
               profile
@@ -1276,11 +1286,29 @@ export default function CommercialPublicProfile({
 
           <PublicField
             label="Business Registration Number"
+            value={
+              profile.business_registration_number ||
+              profile.registration_number
+            }
             privateField
           />
 
           <PublicField
             label="Company PAN / TAN"
+            value={
+              profile.company_pan ||
+              profile.pan_number ||
+              profile.pan
+            }
+            privateField
+          />
+
+          <PublicField
+            label="Authorized Signatory PAN"
+            value={
+              profile.authorized_pan ||
+              profile.signatory_pan
+            }
             privateField
           />
 
@@ -1291,6 +1319,10 @@ export default function CommercialPublicProfile({
 
           <PublicField
             label="GST Certificate / Number"
+            value={
+              profile.gst_number ||
+              profile.gstin
+            }
             privateField
           />
 
@@ -1432,26 +1464,49 @@ export default function CommercialPublicProfile({
         >
           <PublicField
             label="Bank Account Number"
+            value={
+              profile.bank_account_number
+                ? (profile.bank_account_number.length > 4
+                    ? `•••• •••• ${profile.bank_account_number.slice(-4)}`
+                    : profile.bank_account_number)
+                : profile.account_number
+            }
             privateField
           />
 
           <PublicField
             label="IFSC Code"
+            value={
+              profile.ifsc_code ||
+              profile.ifsc
+            }
             privateField
           />
 
           <PublicField
             label="Bank Branch"
+            value={
+              profile.bank_branch_name ||
+              profile.bank_branch ||
+              profile.branch
+            }
             privateField
           />
 
           <PublicField
             label="UPI ID"
+            value={
+              profile.upi_id
+            }
             privateField
           />
 
           <PublicField
             label="GST Number"
+            value={
+              profile.gst_number ||
+              profile.gstin
+            }
             privateField
           />
 

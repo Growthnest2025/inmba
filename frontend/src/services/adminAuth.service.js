@@ -1671,16 +1671,35 @@ export const getAdminSession =
     const cachedAdmin =
       readAdminSessionCache();
 
+    let hasToken = false;
+    try {
+      if (typeof localStorage !== "undefined") {
+        hasToken = Boolean(localStorage.getItem("inmba_session_token"));
+      }
+    } catch {}
+
+    if (!hasToken && !cachedAdmin) {
+      clearAdminClientState();
+      return {
+        success: false,
+        authenticated: false,
+        admin: null,
+        data: {
+          authenticated: false,
+          admin: null,
+        },
+      };
+    }
+
     try {
       const response =
         await api.get(
-          "/admin/users",
+          "/auth/admin-me",
           {
             params: {
               _session_check:
                 Date.now(),
             },
-
             headers: {
               Accept:
                 "application/json",
@@ -1688,100 +1707,64 @@ export const getAdminSession =
           }
         );
 
-      /*
-        Endpoint success means backend admin
-        session is active.
-
-        We intentionally do not use member
-        list data here.
-      */
-
       const responseAdmin =
         extractAdmin(
           response.data
         );
 
-      const admin =
-        responseAdmin ||
-        cachedAdmin ||
-        normalizeAdmin({
-          username:
-            "Administrator",
-
-          /*
-            Unknown role fallback is regular
-            Admin because it is the safest
-            frontend permission level.
-          */
-
-          role:
-            "admin",
-        });
-
-      if (
-        responseAdmin
-      ) {
+      if (responseAdmin) {
         saveAdminSessionCache(
           responseAdmin
         );
+
+        return {
+          success: true,
+          authenticated: true,
+          admin: responseAdmin,
+          data: {
+            authenticated: true,
+            admin: responseAdmin,
+          },
+          raw: response.data,
+        };
       }
 
+      if (cachedAdmin && (response.data?.authenticated || response.data?.success)) {
+        return {
+          success: true,
+          authenticated: true,
+          admin: cachedAdmin,
+          data: {
+            authenticated: true,
+            admin: cachedAdmin,
+          },
+          raw: response.data,
+        };
+      }
+
+      clearAdminClientState();
       return {
-        success:
-          true,
-
-        authenticated:
-          true,
-
-        admin,
-
+        success: false,
+        authenticated: false,
+        admin: null,
         data: {
-          authenticated:
-            true,
-
-          admin,
+          authenticated: false,
+          admin: null,
         },
-
-        raw:
-          response.data,
       };
     } catch (
       error
     ) {
-      const normalizedError =
-        normalizeAdminAuthError(
-          error,
-          "Admin session is not active."
-        );
-
-      if (
-        normalizedError
-          .statusCode ===
-        401
-      ) {
-        clearAdminClientState();
-
-        return {
-          success:
-            false,
-
-          authenticated:
-            false,
-
-          admin:
-            null,
-
-          data: {
-            authenticated:
-              false,
-
-            admin:
-              null,
-          },
-        };
-      }
-
-      throw normalizedError;
+      clearAdminClientState();
+      return {
+        success: false,
+        authenticated: false,
+        admin: null,
+        data: {
+          authenticated: false,
+          admin: null,
+        },
+      };
     }
   };
 

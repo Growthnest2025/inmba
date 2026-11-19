@@ -1001,6 +1001,15 @@ export default function CommercialFullProfile() {
           />
 
           <ProfileField
+            icon="fa-solid fa-building"
+            label="Firm Registration Type"
+            value={
+              B.firm_registration_type ||
+              B.business_type
+            }
+          />
+
+          <ProfileField
             icon="fa-solid fa-file-signature"
             label="Business Registration Number"
             value={

@@ -500,6 +500,64 @@ const handleSubmit = async (event) => {
     "Upgrade Later",
   ];
 
+  const handleRazorpaySuccess = async (verifyResult, rzpResponse) => {
+    const pId = rzpResponse.razorpay_payment_id;
+    setTransactionId(pId);
+    setPaymentMethod("Razorpay");
+    setError("");
+
+    const currentLoginId =
+      sessionStorage.getItem("commercial_login_id") ||
+      localStorage.getItem("commercial_login_id") ||
+      sessionStorage.getItem("inmba_commercial_login_id") ||
+      localStorage.getItem("inmba_commercial_login_id") ||
+      sessionStorage.getItem("inmba_member_login_id") ||
+      localStorage.getItem("inmba_member_login_id") ||
+      sessionStorage.getItem("inmba_login_id") ||
+      localStorage.getItem("inmba_login_id") ||
+      authMember?.login_id ||
+      location?.state?.loginId ||
+      location?.state?.login_id ||
+      "";
+
+    if (!currentLoginId) {
+      toast.success("Payment verified via Razorpay! Transaction ID: " + pId);
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      const endpoint = `/commercial-payment?login_id=${encodeURIComponent(currentLoginId)}`;
+      const headers = {
+        "X-Login-Id": currentLoginId,
+        "X-Commercial-Login-Id": currentLoginId,
+      };
+      const payload = {
+        login_id: currentLoginId,
+        plan_id: plan.id,
+        plan_name: plan.name,
+        amount: Number(plan.amount),
+        payment_method: "Razorpay",
+        transaction_id: pId,
+      };
+
+      await api.post(endpoint, payload, { headers });
+      toast.success("Commercial payment completed and approved!");
+      navigate("/commercial/qr", {
+        replace: true,
+        state: {
+          loginId: currentLoginId,
+          paymentSuccess: true,
+        },
+      });
+    } catch (e) {
+      console.warn("Auto submit after commercial razorpay error:", e);
+      toast.success("Payment verified via Razorpay! Transaction ID: " + pId);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   /* =======================================================
      UI
   ======================================================= */
@@ -718,11 +776,14 @@ const handleSubmit = async (event) => {
                 amount={plan.amount}
                 name="INMBA Commercial Membership"
                 description={`Commercial Plan: ${plan.name} (₹${plan.amount})`}
-                onSuccess={(verifyResult, rzpResponse) => {
-                  setTransactionId(rzpResponse.razorpay_payment_id);
-                  setPaymentMethod("Razorpay");
-                  setError("");
+                notes={{
+                  login_id:
+                    sessionStorage.getItem("commercial_login_id") ||
+                    localStorage.getItem("commercial_login_id") ||
+                    "",
+                  plan_name: plan.name,
                 }}
+                onSuccess={handleRazorpaySuccess}
                 onFailure={(err) => {
                   setError(err.message || "Payment cancelled or failed.");
                 }}

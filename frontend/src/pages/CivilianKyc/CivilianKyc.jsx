@@ -1528,8 +1528,25 @@ export default function CivilianKyc() {
   const updateValue =
     (
       name,
-      value
+      rawValue
     ) => {
+      let value = rawValue;
+      if (name === "aadhaar_number") {
+        value = String(rawValue || "").replace(/\D/g, "").slice(0, 12);
+      } else if (name === "pan_number") {
+        value = String(rawValue || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
+      } else if (name === "pincode") {
+        value = String(rawValue || "").replace(/\D/g, "").slice(0, 6);
+      } else if (name === "bank_account_number") {
+        value = String(rawValue || "").replace(/\D/g, "").slice(0, 18);
+      } else if (name === "ifsc_code") {
+        value = String(rawValue || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 11);
+      } else if (["primary_mobile", "secondary_mobile", "whatsapp_number", "emergency_contact_number"].includes(name)) {
+        value = String(rawValue || "").replace(/\D/g, "").slice(0, 10);
+      } else if (name === "gst_number") {
+        value = String(rawValue || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 15);
+      }
+
       setForm(
         (
           previous
@@ -1654,7 +1671,7 @@ export default function CivilianKyc() {
           )
         ) {
           errors.aadhaar_number =
-            "Enter valid 12 digit Aadhaar Number.";
+            "Enter valid 12-digit Aadhaar Number.";
         }
 
         if (
@@ -1664,7 +1681,7 @@ export default function CivilianKyc() {
           )
         ) {
           errors.pan_number =
-            "Enter valid PAN Number.";
+            "Enter valid 10-character PAN (e.g. ABCDE1234F).";
         }
       }
 
@@ -1676,7 +1693,6 @@ export default function CivilianKyc() {
           Primary Mobile and Primary Email belong to Civilian Basic KYC.
           They are intentionally not validated again in Full KYC.
         */
-
 
         if (
           !values.current_address?.trim()
@@ -1711,10 +1727,28 @@ export default function CivilianKyc() {
         ) {
           errors.pincode =
             "Pincode is required.";
+        } else if (
+          !/^\d{6}$/.test(values.pincode.trim())
+        ) {
+          errors.pincode = "Enter valid 6-digit Pincode.";
+        }
+
+        if (
+          values.secondary_mobile &&
+          !/^[6-9]\d{9}$/.test(values.secondary_mobile.trim())
+        ) {
+          errors.secondary_mobile = "Enter valid 10-digit mobile number.";
         }
       }
 
       if (activeSection === "C") {
+        if (
+          values.bank_account_number &&
+          !/^\d{9,18}$/.test(values.bank_account_number.trim())
+        ) {
+          errors.bank_account_number =
+            "Bank Account Number must be between 9 and 18 digits.";
+        }
         if (
           values.ifsc_code &&
           !/^[A-Z]{4}0[A-Z0-9]{6}$/i.test(
@@ -1722,7 +1756,7 @@ export default function CivilianKyc() {
           )
         ) {
           errors.ifsc_code =
-            "Enter valid IFSC Code.";
+            "Enter valid 11-character IFSC Code (e.g. SBIN0001234).";
         }
         if (!values.nominee_name?.trim()) {
           errors.nominee_name = "Nominee Name is required.";
@@ -1757,6 +1791,11 @@ export default function CivilianKyc() {
         ) {
           errors.emergency_contact_number =
             "Emergency Contact Number is required.";
+        } else if (
+          !/^[6-9]\d{9}$/.test(values.emergency_contact_number.replace(/\D/g, ""))
+        ) {
+          errors.emergency_contact_number =
+            "Enter valid 10-digit mobile number.";
         }
 
         if (

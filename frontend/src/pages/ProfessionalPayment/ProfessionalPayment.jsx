@@ -1135,6 +1135,70 @@ export default function ProfessionalPayment() {
     };
 
   /* =======================================================
+     RAZORPAY SUCCESS HANDLER (AUTO-SUBMIT & COMPLETE)
+  ======================================================= */
+  const handleRazorpaySuccess = async (verifyResult, rzpResponse) => {
+    const paymentId = rzpResponse?.razorpay_payment_id || transactionId;
+    setTransactionId(paymentId);
+    setPaymentMethod("Razorpay");
+    setPageError("");
+
+    setSubmitting(true);
+    try {
+      const result = await submitPayment({
+        payment_method: "Razorpay",
+        subscription_year: subscriptionYear || 1,
+        amount: paymentAmount || 299,
+        selected_plan: validSelectedPlan,
+        transaction_id: paymentId,
+        payment_proof: null,
+      });
+
+      const resultToken = toText(
+        result?.token || result?.data?.token || paymentToken
+      );
+      if (resultToken) {
+        setPaymentToken(resultToken);
+      }
+
+      const paymentResult = {
+        success: true,
+        planId: isRoyaltyPlan ? "network_royalty_member" : "network_member",
+        selectedPlan: validSelectedPlan,
+        selected_plan: validSelectedPlan,
+        membershipLevel,
+        planName,
+        amount: paymentAmount || 299,
+        loginId,
+        memberName,
+        membershipType: "Professional Member",
+        professionalFlow: professionalFlow,
+        paymentMethod: "Razorpay",
+        subscriptionYear: subscriptionYear || 1,
+        transactionId: paymentId,
+        token: resultToken,
+        message: "Razorpay payment verified and approved successfully!",
+        paymentStatus: "approved",
+        submittedAt: new Date().toISOString(),
+      };
+
+      sessionStorage.setItem(PAYMENT_STATUS_STORAGE_KEY, "approved");
+      sessionStorage.setItem(PAYMENT_RESULT_STORAGE_KEY, JSON.stringify(paymentResult));
+      if (resultToken) {
+        sessionStorage.setItem(NEXT_ROUTE_STORAGE_KEY, `/acknowledgement/${resultToken}`);
+      }
+
+      setSuccessMessage("Payment verified and completed successfully!");
+      setPaymentCompleted(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      setPageError(getErrorText(err, "Payment verified, but error completing registration record."));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  /* =======================================================
      BACK
   ======================================================= */
 
@@ -1804,11 +1868,7 @@ export default function ProfessionalPayment() {
                   email: member?.email || "",
                   contact: member?.phone || member?.mobile || "",
                 }}
-                onSuccess={(verifyResult, rzpResponse) => {
-                  setTransactionId(rzpResponse.razorpay_payment_id);
-                  setPaymentMethod("Razorpay");
-                  setPageError("");
-                }}
+                onSuccess={handleRazorpaySuccess}
                 onFailure={(err) => {
                   setPageError(err.message || "Payment cancelled or failed.");
                 }}

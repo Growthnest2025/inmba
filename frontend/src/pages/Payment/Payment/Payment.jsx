@@ -1452,6 +1452,49 @@ export default function Payment() {
     );
   }
 
+  const handleRazorpaySuccess = async (verifyResult, rzpResponse) => {
+    const paymentId = rzpResponse.razorpay_payment_id;
+    setFormData((prev) => ({
+      ...prev,
+      payment_method: "Razorpay",
+      transaction_id: paymentId,
+    }));
+
+    try {
+      setSubmitting(true);
+      const result = await submitMemberPayment({
+        payment_method: "Razorpay",
+        subscription_year: formData.subscription_year || 1,
+        amount: formData.amount || 299,
+        transaction_id: paymentId,
+        payment_proof: null,
+      });
+
+      if (!civilianPlan) {
+        await checkMemberSession();
+      }
+
+      toast.success(result?.response?.message || "Payment completed and verified via Razorpay!");
+
+      const acknowledgementToken = toText(
+        result?.token ?? result?.response?.token ?? result?.data?.token ?? result?.response?.data?.token,
+        sessionStorage.getItem("inmba_civilian_token") || ""
+      );
+
+      if (civilianPlan && acknowledgementToken) {
+        navigate(`/civilian-acknowledgement/${encodeURIComponent(acknowledgementToken)}`, { replace: true });
+        return;
+      }
+
+      navigate(memberDashboardPath, { replace: true });
+    } catch (err) {
+      console.warn("Auto submit after razorpay error:", err);
+      toast.success("Payment verified! Transaction ID: " + paymentId);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <main className="inmba-payment-page">
       <div className="inmba-payment-container">
@@ -1734,14 +1777,12 @@ export default function Payment() {
                 email: member?.email || "",
                 contact: member?.phone || member?.mobile || "",
               }}
-              onSuccess={(verifyResult, rzpResponse) => {
-                toast.success("Payment verified successfully via Razorpay!");
-                setFormData((prev) => ({
-                  ...prev,
-                  payment_method: "Razorpay",
-                  transaction_id: rzpResponse.razorpay_payment_id,
-                }));
+              notes={{
+                member_id: member?.id || "",
+                login_id: loginId || "",
+                plan_name: "INMBA Membership",
               }}
+              onSuccess={handleRazorpaySuccess}
               onFailure={(err) => {
                 toast.error(err.message || "Payment cancelled or failed.");
               }}

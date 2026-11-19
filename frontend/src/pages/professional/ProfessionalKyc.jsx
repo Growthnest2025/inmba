@@ -1117,6 +1117,12 @@ const SECTION_FIELDS = {
 
       required:
         true,
+
+      minLength:
+        9,
+
+      maxLength:
+        18,
     },
 
     {
@@ -2732,6 +2738,22 @@ export default function ProfessionalKyc() {
 
       if (
         name ===
+        "account_number"
+      ) {
+        nextValue =
+          value
+            .replace(
+              /\D/g,
+              ""
+            )
+            .slice(
+              0,
+              18
+            );
+      }
+
+      if (
+        name ===
         "ifsc"
       ) {
         nextValue =
@@ -3130,6 +3152,19 @@ export default function ProfessionalKyc() {
               field.name
             ] =
               "Enter a valid IFSC code.";
+          }
+
+          if (
+            field.name ===
+              "account_number" &&
+            !/^\d{9,18}$/.test(
+              value
+            )
+          ) {
+            nextErrors[
+              field.name
+            ] =
+              "Bank Account Number must be between 9 and 18 digits.";
           }
 
           if (
