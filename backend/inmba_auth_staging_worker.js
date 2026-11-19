@@ -335,11 +335,30 @@ async function handleLogin(request, db, cors) {
     });
   }
 
+  const cleanLoginAadhar = loginId.replace(/\D/g, "");
+  const hasAadharFormat = cleanLoginAadhar.length >= 10 && cleanLoginAadhar.length <= 12;
+
   const member = await db.prepare(`
     SELECT ${MEMBER_FIELDS}, password
     FROM kyc_members
-    WHERE login_id = ?
-  `).bind(loginId).first();
+    WHERE (
+      login_id = ?
+      OR phone = ?
+      OR email = ?
+      OR (? = 1 AND REPLACE(REPLACE(COALESCE(aadhar, ''), ' ', ''), '-', '') = ?)
+      OR (? = 1 AND REPLACE(REPLACE(COALESCE(entity_aadhar_number, ''), ' ', ''), '-', '') = ?)
+    )
+    AND is_deleted = 0
+    LIMIT 1
+  `).bind(
+    loginId,
+    loginId,
+    loginId,
+    hasAadharFormat ? 1 : 0,
+    cleanLoginAadhar,
+    hasAadharFormat ? 1 : 0,
+    cleanLoginAadhar
+  ).first();
 
   let valid = !!member &&
     await verifyPassword(password, member.password);
@@ -675,6 +694,46 @@ async function handleRegistration(request, db, cors) {
       success: false,
       message: "First name, mobile number, and password are required.",
     }, 400, cors);
+  }
+
+  // Strict Aadhaar uniqueness: 1 Aadhaar number can ONLY be registered once across ALL membership types
+  const cleanAadhar = aadhar.replace(/\D/g, "");
+  if (cleanAadhar.length >= 10) {
+    const existingAadharMember = await db.prepare(`
+      SELECT id, login_id, first_name, last_name, membership_type
+      FROM kyc_members
+      WHERE (
+        REPLACE(REPLACE(COALESCE(aadhar, ''), ' ', ''), '-', '') = ?
+        OR REPLACE(REPLACE(COALESCE(entity_aadhar_number, ''), ' ', ''), '-', '') = ?
+      )
+      AND is_deleted = 0
+      LIMIT 1
+    `).bind(cleanAadhar, cleanAadhar).first();
+
+    if (existingAadharMember) {
+      return json({
+        success: false,
+        code: "AADHAAR_ALREADY_EXISTS",
+        error: "This Aadhaar number is already registered with another membership.",
+        message: "This Aadhaar number is already registered with another membership. An Aadhaar number can only be used once across all memberships.",
+      }, 400, cors);
+    }
+
+    const existingCivilianAadhar = await db.prepare(`
+      SELECT id, member_id
+      FROM civilian_full_kyc
+      WHERE REPLACE(REPLACE(COALESCE(aadhaar_number, ''), ' ', ''), '-', '') = ?
+      LIMIT 1
+    `).bind(cleanAadhar).first();
+
+    if (existingCivilianAadhar) {
+      return json({
+        success: false,
+        code: "AADHAAR_ALREADY_EXISTS",
+        error: "This Aadhaar number is already registered with another membership.",
+        message: "This Aadhaar number is already registered with another membership. An Aadhaar number can only be used once across all memberships.",
+      }, 400, cors);
+    }
   }
 
   // Check if phone already registered for THIS membership type - if so, allow user to continue smoothly without blocking
@@ -1228,6 +1287,48 @@ async function handleSaveCivilianSection(request, db, cors, section) {
   ].includes(input.completed);
 
   const allowed = CIVILIAN_SECTION_FIELDS[s] || [];
+
+  if (s === "A" && input.aadhaar_number) {
+    const cleanKycAadhar = String(input.aadhaar_number).replace(/\D/g, "");
+    if (cleanKycAadhar.length >= 10) {
+      const duplicateMember = await db.prepare(`
+        SELECT id, login_id FROM kyc_members
+        WHERE (
+          REPLACE(REPLACE(COALESCE(aadhar, ''), ' ', ''), '-', '') = ?
+          OR REPLACE(REPLACE(COALESCE(entity_aadhar_number, ''), ' ', ''), '-', '') = ?
+        )
+        AND id != ?
+        AND is_deleted = 0
+        LIMIT 1
+      `).bind(cleanKycAadhar, cleanKycAadhar, member.id).first();
+
+      if (duplicateMember) {
+        return json({
+          success: false,
+          code: "AADHAAR_ALREADY_EXISTS",
+          message: "This Aadhaar number is already registered with another account.",
+        }, 400, cors);
+      }
+
+      const duplicateCivilian = await db.prepare(`
+        SELECT id, member_id FROM civilian_full_kyc
+        WHERE REPLACE(REPLACE(COALESCE(aadhaar_number, ''), ' ', ''), '-', '') = ?
+        AND member_id != ?
+        LIMIT 1
+      `).bind(cleanKycAadhar, member.id).first();
+
+      if (duplicateCivilian) {
+        return json({
+          success: false,
+          code: "AADHAAR_ALREADY_EXISTS",
+          message: "This Aadhaar number is already registered with another account.",
+        }, 400, cors);
+      }
+
+      await db.prepare(`UPDATE kyc_members SET aadhar = ? WHERE id = ?`).bind(cleanKycAadhar, member.id).run().catch(() => {});
+    }
+  }
+
   const updates = [];
   const bindings = [];
 
@@ -2229,6 +2330,36 @@ async function handleSaveCommercialSection(request, db, cors, section) {
     }
   }
 
+  // Duplicate Aadhaar check for commercial Section A
+  if (normalizedInput.aadhaar_number) {
+    const cleanCommAadhaar = String(normalizedInput.aadhaar_number).replace(/\D/g, "");
+    if (cleanCommAadhaar.length >= 10) {
+      const dupMember = await db.prepare(`
+        SELECT id, login_id FROM kyc_members
+        WHERE (
+          REPLACE(REPLACE(COALESCE(aadhar, ''), ' ', ''), '-', '') = ?
+          OR REPLACE(REPLACE(COALESCE(entity_aadhar_number, ''), ' ', ''), '-', '') = ?
+        )
+        AND id != ?
+        AND is_deleted = 0
+        LIMIT 1
+      `).bind(cleanCommAadhaar, cleanCommAadhaar, member.id).first();
+
+      if (dupMember) {
+        return json({
+          success: false,
+          code: "AADHAAR_ALREADY_EXISTS",
+          message: "This Aadhaar number is already registered with another account.",
+          fieldErrors: {
+            aadhaar_number: "This Aadhaar number is already registered with another account."
+          }
+        }, 400, cors);
+      }
+
+      await db.prepare(`UPDATE kyc_members SET aadhar = ? WHERE id = ?`).bind(cleanCommAadhaar, member.id).run().catch(() => {});
+    }
+  }
+
   const updates = [];
   const bindings = [];
 
@@ -2580,6 +2711,36 @@ async function handleSaveProfessionalSection(request, db, cors, section) {
 
   const input = await parseRequestBody(request);
   const normalizedSec = String(section || "A").trim().toUpperCase();
+
+  // Duplicate Aadhaar check for professional Section A
+  if (normalizedSec === "A" && (input.aadhar || input.aadhaar_number)) {
+    const cleanProfAadhar = String(input.aadhar || input.aadhaar_number).replace(/\D/g, "");
+    if (cleanProfAadhar.length >= 10) {
+      const dupMember = await db.prepare(`
+        SELECT id, login_id FROM kyc_members
+        WHERE (
+          REPLACE(REPLACE(COALESCE(aadhar, ''), ' ', ''), '-', '') = ?
+          OR REPLACE(REPLACE(COALESCE(entity_aadhar_number, ''), ' ', ''), '-', '') = ?
+        )
+        AND id != ?
+        AND is_deleted = 0
+        LIMIT 1
+      `).bind(cleanProfAadhar, cleanProfAadhar, member.id).first();
+
+      if (dupMember) {
+        return json({
+          success: false,
+          code: "AADHAAR_ALREADY_EXISTS",
+          message: "This Aadhaar number is already registered with another account.",
+          fieldErrors: {
+            aadhar: "This Aadhaar number is already registered with another account."
+          }
+        }, 400, cors);
+      }
+
+      await db.prepare(`UPDATE kyc_members SET aadhar = ? WHERE id = ?`).bind(cleanProfAadhar, member.id).run().catch(() => {});
+    }
+  }
 
   try {
     await db.prepare(`
@@ -3625,24 +3786,29 @@ async function handleAdminRestore(request, db, cors, id) {
 
 async function handleAdminPermanentDelete(request, db, cors, id) {
   try {
-    const memberId = Number(id);
-    if (!memberId || isNaN(memberId)) {
-      return json({
-        success: false,
-        statusCode: 400,
-        message: "Invalid member ID.",
-      }, 400, cors);
-    }
-
-    // 1. Fetch member before deletion to capture backup snapshot and login_id
     let member = null;
-    try {
-      member = await db.prepare("SELECT * FROM kyc_members WHERE id = ?").bind(memberId).first();
-    } catch (fetchErr) {
-      console.warn("Could not fetch member for backup:", fetchErr);
+    let memberId = Number(id);
+
+    if (memberId && !isNaN(memberId)) {
+      try {
+        member = await db.prepare("SELECT * FROM kyc_members WHERE id = ?").bind(memberId).first();
+      } catch (e) {
+        console.warn("Could not fetch member by id:", e);
+      }
     }
 
-    // 2. Insert into deleted_users_backup table if member exists
+    if (!member) {
+      try {
+        member = await db.prepare("SELECT * FROM kyc_members WHERE login_id = ?").bind(String(id)).first();
+        if (member) {
+          memberId = member.id;
+        }
+      } catch (e) {
+        console.warn("Could not fetch member by login_id:", e);
+      }
+    }
+
+    // 1. Insert into deleted_users_backup table if member exists
     if (member) {
       try {
         await db.prepare(`
@@ -3677,36 +3843,49 @@ async function handleAdminPermanentDelete(request, db, cors, id) {
       }
     }
 
-    // 3. Delete dependent rows referencing member_id to avoid foreign key failures
-    await db.prepare(`DELETE FROM worker_auth_sessions WHERE member_id = ?`).bind(memberId).run().catch(() => {});
-    await db.prepare(`DELETE FROM civilian_full_kyc WHERE member_id = ?`).bind(memberId).run().catch(() => {});
-    await db.prepare(`DELETE FROM kyc_members_ext_1 WHERE member_id = ?`).bind(memberId).run().catch(() => {});
-    await db.prepare(`DELETE FROM kyc_members_ext_2 WHERE member_id = ?`).bind(memberId).run().catch(() => {});
-    await db.prepare(`DELETE FROM commercial_kyc WHERE member_id = ?`).bind(memberId).run().catch(() => {});
-    await db.prepare(`DELETE FROM professional_kyc_progress WHERE member_id = ?`).bind(memberId).run().catch(() => {});
-    await db.prepare(`DELETE FROM commercial_kyc_progress WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+    // 2. Delete all dependent child rows referencing member_id to avoid foreign key failures
+    if (memberId) {
+      await db.prepare(`DELETE FROM worker_auth_sessions WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+      await db.prepare(`DELETE FROM civilian_full_kyc WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+      await db.prepare(`DELETE FROM kyc_members_ext_1 WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+      await db.prepare(`DELETE FROM kyc_members_ext_2 WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+      await db.prepare(`DELETE FROM commercial_kyc WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+      await db.prepare(`DELETE FROM professional_kyc_progress WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+      await db.prepare(`DELETE FROM commercial_kyc_progress WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+    }
 
-    // 4. Delete dependent rows referencing member login_id if present
+    // 3. Delete dependent rows referencing member login_id if present
     if (member && member.login_id) {
       await db.prepare(`DELETE FROM commercial_basic_kyc WHERE login_id = ?`).bind(member.login_id).run().catch(() => {});
       await db.prepare(`DELETE FROM commercial_payments WHERE login_id = ?`).bind(member.login_id).run().catch(() => {});
       await db.prepare(`DELETE FROM commercial_kyc WHERE login_id = ?`).bind(member.login_id).run().catch(() => {});
+      await db.prepare(`DELETE FROM inmba_sessions WHERE data LIKE ?`).bind(`%${member.login_id}%`).run().catch(() => {});
     }
 
-    // 5. Clear referral dependencies
-    if (member && member.referral_id) {
-      await db.prepare(`UPDATE kyc_members SET referred_by = NULL WHERE referred_by = ?`).bind(member.referral_id).run().catch(() => {});
+    // 4. Clear referral dependencies
+    if (member) {
+      if (member.referral_id) {
+        await db.prepare(`UPDATE kyc_members SET referred_by = NULL WHERE referred_by = ?`).bind(member.referral_id).run().catch(() => {});
+      }
+      if (member.login_id) {
+        await db.prepare(`UPDATE kyc_members SET referred_by = NULL WHERE referred_by = ?`).bind(member.login_id).run().catch(() => {});
+      }
+      await db.prepare(`UPDATE kyc_members SET referred_by = NULL WHERE referred_by = ?`).bind(String(member.id)).run().catch(() => {});
     }
 
-    // 6. Permanently delete from kyc_members
-    await db.prepare(`DELETE FROM kyc_members WHERE id = ?`).bind(memberId).run();
+    // 5. Permanently delete from kyc_members
+    if (memberId) {
+      await db.prepare(`DELETE FROM kyc_members WHERE id = ?`).bind(memberId).run().catch(() => {});
+    } else if (member && member.login_id) {
+      await db.prepare(`DELETE FROM kyc_members WHERE login_id = ?`).bind(member.login_id).run().catch(() => {});
+    }
 
     return json({
       success: true,
       statusCode: 200,
       message: "User permanently deleted.",
       data: {
-        id: memberId,
+        id: memberId || id,
         deleted: true,
       },
     }, 200, cors);
@@ -3715,6 +3894,7 @@ async function handleAdminPermanentDelete(request, db, cors, id) {
     return json({
       success: false,
       statusCode: 500,
+      error: error?.message || "Failed to permanently delete member.",
       message: error?.message || "Failed to permanently delete member.",
     }, 500, cors);
   }
@@ -4261,8 +4441,8 @@ async function handleRazorpayGetKey(request, env, cors) {
         return await handleAdminRestore(request, db, cors, restoreMatch[1]);
       }
 
-      const permDeleteMatch = path.match(/^\/(?:api\/)?permanent_delete\/(\d+)$/) ||
-                              path.match(/^\/(?:api\/)?admin\/user\/(\d+)\/permanent$/);
+      const permDeleteMatch = path.match(/^\/(?:api\/)?permanent_delete\/([a-zA-Z0-9_-]+)$/) ||
+                              path.match(/^\/(?:api\/)?admin\/user\/([a-zA-Z0-9_-]+)\/permanent$/);
       if (permDeleteMatch && (method === "POST" || method === "DELETE")) {
         return await handleAdminPermanentDelete(request, db, cors, permDeleteMatch[1]);
       }
