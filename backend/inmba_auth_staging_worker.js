@@ -4211,8 +4211,8 @@ async function handleRazorpayCreateOrder(request, env, cors) {
       }, 400, cors);
     }
 
-    const keyId = env.RAZORPAY_KEY_ID || "rzp_test_U1AQxKTavMChW2";
-    const keySecret = env.RAZORPAY_KEY_SECRET || "UcqnUwstguJCWGbXPcbl6PGK";
+    const keyId = env.RAZORPAY_KEY_ID || "rzp_live_U22ipTA2hIJrdz";
+    const keySecret = env.RAZORPAY_KEY_SECRET || "MH4dSmqUFSpjZYFzOPVCRUAn";
 
     const orderPayload = {
       amount: Math.round(numericAmount),
@@ -4295,7 +4295,7 @@ async function handleRazorpayVerifyPayment(request, env, cors) {
       }, 400, cors);
     }
 
-    const keySecret = env.RAZORPAY_KEY_SECRET || "UcqnUwstguJCWGbXPcbl6PGK";
+    const keySecret = env.RAZORPAY_KEY_SECRET || "MH4dSmqUFSpjZYFzOPVCRUAn";
     const enc = new TextEncoder();
     const key = await crypto.subtle.importKey(
       "raw",
@@ -4384,7 +4384,7 @@ async function handleRazorpayVerifyPayment(request, env, cors) {
 }
 
 async function handleRazorpayGetKey(request, env, cors) {
-  const keyId = env.RAZORPAY_KEY_ID || "rzp_test_U1AQxKTavMChW2";
+  const keyId = env.RAZORPAY_KEY_ID || "rzp_live_U22ipTA2hIJrdz";
   return json({
     statusCode: 200,
     success: true,

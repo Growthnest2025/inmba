@@ -11,7 +11,7 @@
   ],
   "vars": {
     "FRONTEND_ORIGIN": "https://inmba.org,http://localhost:5173,http://localhost:3000,http://127.0.0.1:3000",
-    "RAZORPAY_KEY_ID": "rzp_test_U1AQxKTavMChW2",
-    "RAZORPAY_KEY_SECRET": "UcqnUwstguJCWGbXPcbl6PGK"
+    "RAZORPAY_KEY_ID": "rzp_live_U22ipTA2hIJrdz",
+    "RAZORPAY_KEY_SECRET": "MH4dSmqUFSpjZYFzOPVCRUAn"
   }
 }

@@ -51,7 +51,7 @@ export const getRazorpayKeyId = async () => {
     return process.env.REACT_APP_RAZORPAY_KEY_ID;
   }
 
-  return "rzp_test_U1AQxKTavMChW2";
+  return "rzp_live_U22ipTA2hIJrdz";
 };
 
 /**
