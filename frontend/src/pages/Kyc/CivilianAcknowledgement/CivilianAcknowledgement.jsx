@@ -687,6 +687,30 @@ export default function CivilianAcknowledgement() {
         <section className="civilian-ack-actions">
 
 
+          {/* COMPLETE FULL KYC */}
+
+          <button
+            type="button"
+            className="civilian-ack-primary"
+            style={{
+              background: "linear-gradient(135deg, #0f766e 0%, #15803d 100%)",
+              color: "#ffffff",
+              fontWeight: 700,
+            }}
+            onClick={() =>
+              navigate(
+                "/civilian-kyc"
+              )
+            }
+          >
+            <span>
+              📋
+            </span>
+
+            Complete Full KYC (Within 90 Days)
+          </button>
+
+
           {/* VIEW PROFILE */}
 
           <button

@@ -1154,7 +1154,7 @@ export default function Dashboard() {
         );
 
         navigate(
-          `/civilian-kyc?plan=${encodeURIComponent(
+          `/payment?plan=${encodeURIComponent(
             selectedPlan
           )}`
         );
@@ -1719,8 +1719,8 @@ export default function Dashboard() {
             </div>
 
             <p className="member-dashboard-plan-description">
-              Choose ₹299 or ₹2999. Both plans require Civilian
-              Full KYC before payment and activation.
+              Choose ₹299 or ₹2999 to proceed directly to Payment.
+              Civilian Full KYC can be completed within 90 days.
             </p>
 
             <div className="member-dashboard-plan-grid">

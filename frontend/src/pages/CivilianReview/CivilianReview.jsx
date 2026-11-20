@@ -832,6 +832,16 @@ export default function CivilianReview() {
           // Optional storage only.
         }
 
+        const alreadyPaid =
+          data?.member?.payment_status === "approved" ||
+          data?.member?.payment_status === "paid" ||
+          Number(data?.member?.amount || data?.member?.payment_amount || 0) > 0;
+
+        if (alreadyPaid) {
+          navigate("/dashboard", { replace: true });
+          return;
+        }
+
         navigate(
           `/payment?plan=${encodeURIComponent(
             effectivePlan

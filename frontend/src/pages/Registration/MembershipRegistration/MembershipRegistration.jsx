@@ -457,8 +457,15 @@ export default function MembershipRegistration() {
                   <li>
                     <span>4</span>
                     <div>
-                      <strong>Log in</strong>
-                      <p>Use your login ID and password to open your account.</p>
+                      <strong>Pay Membership Fee (₹299)</strong>
+                      <p>Instant activation via Razorpay UPI/Cards or Bank transfer.</p>
+                    </div>
+                  </li>
+                  <li>
+                    <span>5</span>
+                    <div>
+                      <strong>Complete Full KYC (Within 90 Days)</strong>
+                      <p>Aadhaar, address & nominee details can be submitted within 90 days.</p>
                     </div>
                   </li>
                 </ol>

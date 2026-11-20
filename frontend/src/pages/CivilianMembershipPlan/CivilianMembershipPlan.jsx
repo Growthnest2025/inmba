@@ -26,13 +26,13 @@ const CIVILIAN_PLANS = [
     name: "INMBA Network Member",
     shortName: "Network Member",
     description:
-      "Complete your Civilian Full KYC and payment. QR Code, Public Profile and Referral access will be enabled after admin approval.",
+      "Activate your Civilian membership with ₹299 payment. Full KYC can be completed anytime within 90 days.",
     features: [
-      "Civilian Full KYC A-H",
       "₹299 Membership Payment",
-      "Personal QR Code after approval",
-      "Public Profile after approval",
-      "Referral access after approval",
+      "Instant Razorpay or UPI/Bank Transfer",
+      "Personal QR Code after activation",
+      "Public Profile after activation",
+      "Civilian Full KYC (Complete within 90 days)",
     ],
     royalty: false,
   },
@@ -42,14 +42,14 @@ const CIVILIAN_PLANS = [
     name: "INMBA Network Royalty Member",
     shortName: "Royalty Member",
     description:
-      "Complete your Civilian Full KYC and payment. All Network Member benefits plus Royalty Rewards will be enabled after admin approval.",
+      "Activate your Civilian Royalty membership with ₹2999 payment. All Network Member benefits plus Royalty Rewards enabled.",
     features: [
-      "Civilian Full KYC A-H",
       "₹2999 Membership Payment",
-      "Personal QR Code after approval",
-      "Public Profile after approval",
-      "Referral access after approval",
-      "Royalty Rewards after approval",
+      "Instant Razorpay or UPI/Bank Transfer",
+      "Personal QR Code after activation",
+      "Public Profile after activation",
+      "Royalty Rewards after activation",
+      "Civilian Full KYC (Complete within 90 days)",
     ],
     royalty: true,
   },
@@ -214,7 +214,7 @@ export default function CivilianMembershipPlan() {
         }
 
         navigate(
-          `/civilian-kyc?plan=${encodeURIComponent(
+          `/payment?plan=${encodeURIComponent(
             amount
           )}`,
           {
@@ -231,8 +231,8 @@ export default function CivilianMembershipPlan() {
               membershipLevel:
                 plan.name,
 
-              startSection:
-                "A",
+              amount:
+                amount,
             },
           }
         );
@@ -281,9 +281,8 @@ export default function CivilianMembershipPlan() {
             </h1>
 
             <p className="civilian-membership-description">
-              Choose ₹299 or ₹2999. Your selected
-              membership amount will continue through
-              Civilian Full KYC and Payment.
+              Choose ₹299 or ₹2999 to continue directly to Payment.
+              Full KYC verification can be completed within 90 days.
             </p>
 
           </div>

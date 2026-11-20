@@ -354,7 +354,7 @@ export default function CommercialMembershipPlan() {
         }
 
         const targetAmount = selectedPlan?.id === "profile_upgrade" ? 2999 : 299;
-        const frontendPath = `/commercial/profile-upgrade?plan=${selectedPlan?.id || "basic"}&amount=${targetAmount}`;
+        const frontendPath = `/commercial/payment?plan=${selectedPlan?.id || "basic"}&amount=${targetAmount}`;
 
         navigate(frontendPath, {
           state: {
