@@ -1129,8 +1129,9 @@ const handleContinueMembership = () => {
                 fieldErrors.pan_number
               }
               icon="fas fa-credit-card"
-              placeholder="10-character PAN (e.g. ABCDE1234F)"
+              placeholder="10-character PAN (Optional)"
               maxLength={10}
+              required={false}
               disabled={
                 submitting
               }
@@ -1411,6 +1412,7 @@ function Field({
   error,
   icon,
   placeholder,
+  required = true,
   ...props
 }) {
   return (
@@ -1419,9 +1421,15 @@ function Field({
         htmlFor={`commercial-${name}`}
       >
         {label}{" "}
-        <em>
-          *
-        </em>
+        {required ? (
+          <em>
+            *
+          </em>
+        ) : (
+          <span style={{ fontSize: "0.82rem", color: "#64748b", fontWeight: 400, marginLeft: "6px" }}>
+            (Optional)
+          </span>
+        )}
       </label>
 
       <div className="commercial-registration-input">

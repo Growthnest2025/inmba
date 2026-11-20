@@ -536,10 +536,10 @@ export default function MembershipRegistration() {
               />
               <div>
                 <strong style={{ display: "block", marginBottom: "3px", fontSize: "0.95rem" }}>
-                  Important Aadhaar Policy (90-Day Notice)
+                  Aadhaar &amp; PAN Details (Optional)
                 </strong>
                 <span style={{ fontSize: "0.85rem", lineHeight: "1.45", display: "block" }}>
-                  Aadhaar entry is optional during registration, but <strong>mandatory within 90 days</strong> of joining. Accounts without Aadhaar verification after 90 days will be permanently terminated. One mobile number can be used to register up to 3 civilian accounts with separate login IDs.
+                  Aadhaar and PAN entry are optional during Basic Registration. You can enter them now or complete them later in Full KYC. One mobile number can be used to register up to 3 civilian accounts with separate login IDs.
                 </span>
               </div>
             </div>
@@ -681,7 +681,7 @@ export default function MembershipRegistration() {
               <div className="civilian-registration-field">
                 <div className="civilian-registration-label-row">
                   <label htmlFor="civilian-aadhar">Aadhaar Card Number</label>
-                  <span>Optional (Mandatory within 90 days)</span>
+                  <span>Optional</span>
                 </div>
                 <div className="civilian-registration-input">
                   <i className="fas fa-id-card" aria-hidden="true" />
@@ -692,7 +692,7 @@ export default function MembershipRegistration() {
                     inputMode="numeric"
                     value={formData.aadhar}
                     onChange={handleInputChange}
-                    placeholder="12-digit Aadhaar Number"
+                    placeholder="12-digit Aadhaar Number (Optional)"
                     maxLength={12}
                     disabled={submitting}
                   />
@@ -718,7 +718,7 @@ export default function MembershipRegistration() {
                     type="text"
                     value={formData.pan}
                     onChange={handleInputChange}
-                    placeholder="10-character PAN (e.g. ABCDE1234F)"
+                    placeholder="10-character PAN (Optional)"
                     maxLength={10}
                     style={{ textTransform: "uppercase" }}
                     disabled={submitting}
