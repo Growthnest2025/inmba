@@ -457,17 +457,121 @@ export const normalizeMemberProfile =
       educational_qualification:
         toText(
           data.educational_qualification ??
+            data.highest_qualification ??
             data.education ??
             data.ug_degree ??
             data.pg_degree
         ),
 
+      highest_qualification:
+        toText(
+          data.highest_qualification ??
+            data.educational_qualification ??
+            data.education
+        ),
+
       school_college_name:
         toText(
           data.school_college_name ??
+            data.institution_name ??
             data.school_name ??
             data.ug_college ??
             data.pg_college
+        ),
+
+      institution_name:
+        toText(
+          data.institution_name ??
+            data.school_college_name ??
+            data.school_name ??
+            data.ug_college
+        ),
+
+      certifications_achievements:
+        toText(
+          data.certifications_achievements ??
+            data.additional_certifications
+        ),
+
+      nominee_name:
+        toText(
+          data.nominee_name ??
+            data.nomini_name
+        ),
+
+      nomini_name:
+        toText(
+          data.nomini_name ??
+            data.nominee_name
+        ),
+
+      nominee_relationship:
+        toText(
+          data.nominee_relationship ??
+            data.nomini_relationship
+        ),
+
+      nomini_relationship:
+        toText(
+          data.nomini_relationship ??
+            data.nominee_relationship
+        ),
+
+      nominee_dob:
+        data.nominee_dob ??
+        data.nomini_dob ??
+        "",
+
+      nomini_dob:
+        data.nomini_dob ??
+        data.nominee_dob ??
+        "",
+
+      nominee_aadhaar:
+        toText(
+          data.nominee_aadhaar ??
+            data.nomini_aadhar
+        ),
+
+      nomini_aadhar:
+        toText(
+          data.nomini_aadhar ??
+            data.nominee_aadhaar
+        ),
+
+      permanent_address:
+        toText(
+          data.permanent_address
+        ),
+
+      blood_group:
+        toText(
+          data.blood_group
+        ),
+
+      emergency_contact_name:
+        toText(
+          data.emergency_contact_name
+        ),
+
+      emergency_contact_number:
+        toText(
+          data.emergency_contact_number
+        ),
+
+      emergency_relationship:
+        toText(
+          data.emergency_relationship
+        ),
+
+      bank_name:
+        toText(
+          data.bank_name
+        ),
+
+      branch:
+        toText(
+          data.branch
         ),
 
       bio:
@@ -945,6 +1049,32 @@ export const getOwnFullProfile =
   async ({
     signal,
   } = {}) => {
+    let isPro = false;
+    try {
+      if (typeof localStorage !== "undefined") {
+        const raw = localStorage.getItem("inmba_user") || localStorage.getItem("inmba_member");
+        if (raw) {
+          const u = JSON.parse(raw);
+          const loginId = String(u?.login_id || u?.loginId || u?.user_id || "").toUpperCase();
+          const type = String(u?.membership_type || u?.membershipType || "").toLowerCase();
+          if (loginId.startsWith("PRO") || type.includes("professional")) {
+            isPro = true;
+          }
+        }
+      }
+    } catch {}
+
+    if (!isPro) {
+      try {
+        return await getOwnCivilianProfile({
+          signal,
+        });
+      } catch (civilianError) {
+        const civStatus = Number(civilianError?.statusCode ?? civilianError?.response?.status ?? 0);
+        if (civStatus === 401) throw civilianError;
+      }
+    }
+
     try {
       return await getOwnProfessionalProfile({
         signal,

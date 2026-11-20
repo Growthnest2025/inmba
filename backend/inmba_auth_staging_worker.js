@@ -2959,6 +2959,16 @@ async function handleGetProfessionalProfile(request, db, cors) {
     }, 401, cors);
   }
 
+  const loginIdUpper = String(member.login_id || "").toUpperCase();
+  const isProfessional = /professional/i.test(member.membership_type || "") || loginIdUpper.startsWith("PRO");
+  if (!isProfessional) {
+    return json({
+      success: false,
+      statusCode: 403,
+      message: "This endpoint is only for Professional members.",
+    }, 403, cors);
+  }
+
   const ext1 = (await db.prepare(`
     SELECT * FROM kyc_members_ext_1 WHERE member_id = ?
   `).bind(member.id).first()) || {};
@@ -3181,6 +3191,8 @@ async function handleGetPublicUser(request, db, cors, loginId) {
   };
 
   const profile = {
+    ...(fullKyc?.values || {}),
+    ...(fullKyc?.files || {}),
     id: member.id,
     login_id: member.login_id,
     first_name: member.first_name,
@@ -3218,9 +3230,43 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     city: commBasic.city || member.city || fullKyc?.values?.city || "",
     state: member.state || fullKyc?.values?.state || "",
     district: member.district || fullKyc?.values?.district || "",
+    pincode: fullKyc?.values?.pincode || member.pincode || "",
+    current_address: fullKyc?.values?.current_address || member.current_address || member.address || "",
+    permanent_address: fullKyc?.values?.permanent_address || "",
+    address: fullKyc?.values?.current_address || member.current_address || member.address || "",
     country: "India",
     profession: member.occupation || (isProfessional ? "Professional" : ""),
-    education: member.education || fullKyc?.values?.highest_qualification || "",
+    education: fullKyc?.values?.highest_qualification || member.education || "",
+    highest_qualification: fullKyc?.values?.highest_qualification || member.highest_qualification || member.education || "",
+    educational_qualification: fullKyc?.values?.highest_qualification || member.educational_qualification || member.education || "",
+    institution_name: fullKyc?.values?.institution_name || member.institution_name || "",
+    school_college_name: fullKyc?.values?.institution_name || member.school_college_name || "",
+    certifications_achievements: fullKyc?.values?.certifications_achievements || "",
+    additional_certifications: fullKyc?.values?.certifications_achievements || "",
+    father_spouse_name: fullKyc?.values?.father_spouse_name || member.father_spouse_name || member.father_name || "",
+    father_name: fullKyc?.values?.father_spouse_name || member.father_spouse_name || member.father_name || "",
+    blood_group: fullKyc?.values?.blood_group || member.blood_group || "",
+    aadhaar_number: fullKyc?.values?.aadhaar_number || member.aadhaar_number || member.aadhar || "",
+    aadhar: fullKyc?.values?.aadhaar_number || member.aadhaar_number || member.aadhar || "",
+    pan_number: fullKyc?.values?.pan_number || member.pan_number || member.pan || "",
+    pan: fullKyc?.values?.pan_number || member.pan_number || member.pan || "",
+    nominee_name: fullKyc?.values?.nominee_name || member.nominee_name || member.nomini_name || "",
+    nomini_name: fullKyc?.values?.nominee_name || member.nomini_name || "",
+    nominee_relationship: fullKyc?.values?.nominee_relationship || member.nominee_relationship || member.nomini_relationship || "",
+    nomini_relationship: fullKyc?.values?.nominee_relationship || member.nomini_relationship || "",
+    nominee_dob: fullKyc?.values?.nominee_dob || member.nominee_dob || member.nomini_dob || "",
+    nomini_dob: fullKyc?.values?.nominee_dob || member.nomini_dob || "",
+    nominee_aadhaar: fullKyc?.values?.nominee_aadhaar || member.nominee_aadhaar || member.nomini_aadhar || "",
+    nomini_aadhar: fullKyc?.values?.nominee_aadhaar || member.nomini_aadhar || "",
+    emergency_contact_name: fullKyc?.values?.emergency_contact_name || member.emergency_contact_name || "",
+    emergency_contact_number: fullKyc?.values?.emergency_contact_number || member.emergency_contact_number || "",
+    emergency_relationship: fullKyc?.values?.emergency_relationship || member.emergency_relationship || "",
+    bank_name: fullKyc?.values?.bank_name || member.bank_name || "",
+    bank_account_number: fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || member.bank_account_number || member.account_number || "",
+    account_number: fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || member.account_number || "",
+    ifsc_code: fullKyc?.values?.ifsc_code || member.ifsc_code || "",
+    ifsc: fullKyc?.values?.ifsc_code || member.ifsc_code || "",
+    branch: fullKyc?.values?.branch || member.branch || "",
     skills: fullKyc?.values?.skills || "",
     social_instagram: fullKyc?.values?.instagram_url || "",
     social_linkedin: fullKyc?.values?.linkedin_url || "",
@@ -3252,12 +3298,13 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     business,
     public_profile_fields: [
       "full_name", "first_name", "last_name", "email", "phone", "bio",
-      "profile_pic", "city", "state", "profession", "education", "skills",
-      "social_instagram", "social_linkedin", "social_facebook", "social_youtube",
-      "portfolio_url", "business"
+      "profile_photo", "profile_pic", "city", "state", "district", "location",
+      "profession", "education", "skills", "achievements", "social", "media",
+      "rank", "website", "social_instagram", "social_linkedin", "social_facebook",
+      "social_youtube", "portfolio_url", "business"
     ],
     public_profile_sections: [
-      "about", "contact", "social", "experience", "education", "skills", "business"
+      "about", "contact", "social", "experience", "education", "skills", "achievements", "media", "business"
     ],
     values: {
       ...fullKyc?.values,
