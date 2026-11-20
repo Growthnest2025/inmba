@@ -53,6 +53,11 @@ const MAIN_FLOW_STEPS = [
     icon: "fa-solid fa-id-card",
   },
   {
+    key: "payment",
+    label: "Payment",
+    icon: "fa-solid fa-credit-card",
+  },
+  {
     key: "full-kyc",
     label: "Full KYC",
     icon: "fa-solid fa-file-shield",
@@ -61,11 +66,6 @@ const MAIN_FLOW_STEPS = [
     key: "review",
     label: "Review",
     icon: "fa-solid fa-clipboard-check",
-  },
-  {
-    key: "payment",
-    label: "Payment",
-    icon: "fa-solid fa-credit-card",
   },
   {
     key: "complete",

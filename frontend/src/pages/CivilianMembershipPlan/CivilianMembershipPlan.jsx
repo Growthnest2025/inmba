@@ -302,7 +302,7 @@ export default function CivilianMembershipPlan() {
         </section>
 
         {/* =================================================
-            FLOW
+            FLOW: 1. Plan -> 2. Payment -> 3. Full KYC -> 4. Admin Approval
         ================================================= */}
 
         <section className="civilian-plan-flow">
@@ -328,7 +328,7 @@ export default function CivilianMembershipPlan() {
             </span>
 
             <span className="civilian-plan-flow-label">
-              Full KYC
+              Payment
             </span>
 
           </div>
@@ -342,7 +342,7 @@ export default function CivilianMembershipPlan() {
             </span>
 
             <span className="civilian-plan-flow-label">
-              Payment
+              Full KYC
             </span>
 
           </div>
@@ -362,6 +362,47 @@ export default function CivilianMembershipPlan() {
           </div>
 
         </section>
+
+        {/* NOTICE BEFORE FORM: ALL DETAILS MUST BE MANDATORY FILLED */}
+        <div
+          style={{
+            background: "linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)",
+            border: "1.5px solid #86efac",
+            borderRadius: "12px",
+            padding: "14px 20px",
+            margin: "0 auto 24px auto",
+            maxWidth: "760px",
+            display: "flex",
+            alignItems: "center",
+            gap: "14px",
+            boxShadow: "0 2px 8px rgba(22, 101, 52, 0.06)",
+          }}
+        >
+          <div
+            style={{
+              width: "36px",
+              height: "36px",
+              borderRadius: "50%",
+              background: "#15803d",
+              color: "#ffffff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "1rem",
+              flexShrink: 0,
+            }}
+          >
+            <i className="fa-solid fa-clipboard-check" />
+          </div>
+          <div>
+            <strong style={{ display: "block", color: "#14532d", fontSize: "0.95rem", fontWeight: 700, marginBottom: "2px" }}>
+              முக்கிய தகவல்: ஃபார்மில் உள்ள அனைத்து விவரங்களையும் கட்டாயமாக பதிவு செய்ய வேண்டும்.
+            </strong>
+            <span style={{ fontSize: "0.85rem", color: "#166534" }}>
+              All details in the form must be mandatory filled. Please provide complete and accurate information.
+            </span>
+          </div>
+        </div>
 
         {/* =================================================
             ERROR

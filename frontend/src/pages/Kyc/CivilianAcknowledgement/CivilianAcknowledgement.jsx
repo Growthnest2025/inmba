@@ -680,6 +680,32 @@ export default function CivilianAcknowledgement() {
         </section>
 
 
+        {/* NOTICE: ALL DETAILS MANDATORY BEFORE GOING TO FULL KYC */}
+        <div
+          style={{
+            background: "#f0fdf4",
+            border: "1px solid #86efac",
+            borderRadius: "12px",
+            padding: "12px 18px",
+            margin: "0 auto 20px auto",
+            maxWidth: "760px",
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            textAlign: "left",
+          }}
+        >
+          <span style={{ fontSize: "1.2rem" }}>📋</span>
+          <div>
+            <strong style={{ display: "block", color: "#14532d", fontSize: "0.92rem", fontWeight: 700 }}>
+              முக்கிய தகவல்: Full KYC ஃபார்மில் உள்ள அனைத்து விவரங்களையும் கட்டாயமாக பதிவு செய்ய வேண்டும்.
+            </strong>
+            <span style={{ fontSize: "0.82rem", color: "#166534" }}>
+              All details in the Full KYC form must be strictly filled. Please complete within 90 days.
+            </span>
+          </div>
+        </div>
+
         {/* ==================================
             ACTION BUTTONS
         ================================== */}

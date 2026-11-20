@@ -4522,6 +4522,46 @@ export default function ProfessionalKyc() {
               </div>
             )}
 
+            {/* ALL DETAILS MANDATORY NOTICE */}
+            <div
+              style={{
+                background: "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)",
+                border: "1.5px solid #86efac",
+                borderRadius: "10px",
+                padding: "12px 18px",
+                marginBottom: "16px",
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                boxShadow: "0 2px 6px rgba(21, 128, 61, 0.08)",
+              }}
+            >
+              <div
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "50%",
+                  background: "#15803d",
+                  color: "#ffffff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "0.95rem",
+                  flexShrink: 0,
+                }}
+              >
+                <i className="fa-solid fa-clipboard-check" />
+              </div>
+              <div>
+                <strong style={{ display: "block", color: "#14532d", fontSize: "0.92rem", fontWeight: 700, marginBottom: "2px" }}>
+                  முக்கிய குறிப்பு: படிவத்தில் உள்ள அனைத்து விவரங்களையும் கட்டாயமாக பதிவு செய்ய வேண்டும்.
+                </strong>
+                <span style={{ fontSize: "0.82rem", color: "#166534" }}>
+                  All details are strictly mandatory. Please fill in complete and accurate information across all sections.
+                </span>
+              </div>
+            </div>
+
             {sectionLoading ? (
               <div className="professional-kyc-coming-section">
                 <div className="professional-kyc-spinner" />
@@ -5132,7 +5172,10 @@ function RequirementBadge({
   requirement,
 }) {
   if (
-    !requirement?.label
+    !requirement?.label ||
+    ["required", "optional", "conditional"].includes(
+      String(requirement?.label).toLowerCase()
+    )
   ) {
     return null;
   }
