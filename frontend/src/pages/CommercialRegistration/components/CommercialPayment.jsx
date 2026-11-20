@@ -772,55 +772,15 @@ const handleSubmit = async (event) => {
                 </div>
               </div>
 
-              {/* 1. RAZORPAY INSTANT ONLINE PAYMENT (FIRST) */}
-              <RazorpayCard
-                amount={plan.amount}
-                name="INMBA Commercial Membership"
-                description={`Commercial Plan: ${plan.name} (₹${plan.amount})`}
-                notes={{
-                  login_id:
-                    sessionStorage.getItem("commercial_login_id") ||
-                    localStorage.getItem("commercial_login_id") ||
-                    "",
-                  plan_name: plan.name,
-                }}
-                onSuccess={handleRazorpaySuccess}
-                onFailure={(err) => {
-                  setError(err.message || "Payment cancelled or failed.");
-                }}
-                transactionId={transactionId}
-                disabled={submitting}
-              />
-
-              {/* DIVIDER: OR PAY VIA DIRECT BANK / UPI / QR CODE */}
-              <div style={{ textAlign: "center", margin: "24px 0 24px 0", position: "relative" }}>
+              {/* ========================================================
+                  1. SUBMIT PAYMENT PROOF (TOP)
+                  ======================================================== */}
+              <div style={{ textAlign: "center", margin: "16px 0 24px 0", position: "relative" }}>
                 <hr style={{ border: "none", borderTop: "1px solid #cbd5e1", margin: 0 }} />
-                <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
-                  OR PAY VIA DIRECT BANK / UPI / QR CODE
-                </span>
-              </div>
-
-              {/* 2. OFFICIAL PAYMENT DETAILS CARD (NEXT) */}
-              <PaymentDetailsCard
-                amount={plan.amount}
-                upiId="robertsonraja@barodampay"
-                accountName="INMBA ORGANIZATION"
-                accountNumber="70340200001467"
-                ifsc="BARB0VJPACO"
-                bankName="Bank of Baroda"
-                branch="Chitlapakkam Branch, Chennai"
-                qrUrl="/inmba-qr.png"
-              />
-
-              {/* DIVIDER: SUBMIT PAYMENT PROOF */}
-              <div style={{ textAlign: "center", margin: "24px 0 28px 0", position: "relative" }}>
-                <hr style={{ border: "none", borderTop: "1px solid #cbd5e1", margin: 0 }} />
-                <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
+                <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#166534", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
                   SUBMIT PAYMENT PROOF (AFTER BANK / UPI / QR TRANSFER)
                 </span>
               </div>
-
-
 
               {/* ===========================================
                   AMOUNT
@@ -983,6 +943,57 @@ const handleSubmit = async (event) => {
                   </div>
                 )}
               </div>
+
+              {/* ========================================================
+                  2. PAYMENT METHODS (FOLLOWING THE PROOF PART)
+                  ======================================================== */}
+              {/* DIVIDER: OFFICIAL PAYMENT METHODS */}
+              <div style={{ textAlign: "center", margin: "28px 0 24px 0", position: "relative" }}>
+                <hr style={{ border: "none", borderTop: "1px solid #cbd5e1", margin: 0 }} />
+                <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
+                  OFFICIAL PAYMENT DETAILS (BANK / UPI / QR CODE)
+                </span>
+              </div>
+
+              {/* 1. OFFICIAL PAYMENT DETAILS CARD (BANK & QR) */}
+              <PaymentDetailsCard
+                amount={plan.amount}
+                upiId="robertsonraja@barodampay"
+                accountName="INMBA ORGANIZATION"
+                accountNumber="70340200001467"
+                ifsc="BARB0VJPACO"
+                bankName="Bank of Baroda"
+                branch="Chitlapakkam Branch, Chennai"
+                qrUrl="/inmba-qr.png"
+              />
+
+              {/* DIVIDER: OR PAY VIA RAZORPAY */}
+              <div style={{ textAlign: "center", margin: "24px 0 24px 0", position: "relative" }}>
+                <hr style={{ border: "none", borderTop: "1px solid #cbd5e1", margin: 0 }} />
+                <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
+                  OR PAY INSTANTLY ONLINE (RAZORPAY)
+                </span>
+              </div>
+
+              {/* 2. RAZORPAY INSTANT ONLINE PAYMENT */}
+              <RazorpayCard
+                amount={plan.amount}
+                name="INMBA Commercial Membership"
+                description={`Commercial Plan: ${plan.name} (₹${plan.amount})`}
+                notes={{
+                  login_id:
+                    sessionStorage.getItem("commercial_login_id") ||
+                    localStorage.getItem("commercial_login_id") ||
+                    "",
+                  plan_name: plan.name,
+                }}
+                onSuccess={handleRazorpaySuccess}
+                onFailure={(err) => {
+                  setError(err.message || "Payment cancelled or failed.");
+                }}
+                transactionId={transactionId}
+                disabled={submitting}
+              />
 
               {/* ===========================================
                   INFO
