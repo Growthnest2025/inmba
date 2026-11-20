@@ -11,6 +11,7 @@ import {
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import "./CommercialPayment.css";
+import { toast } from "react-toastify";
 import api from "../../../api/api";
 import { useAuth } from "../../../context/AuthContext";
 import PaymentDetailsCard from "../../../components/PaymentDetailsCard/PaymentDetailsCard";

@@ -1486,7 +1486,7 @@ export default function Payment() {
         return;
       }
 
-      navigate(memberDashboardPath, { replace: true });
+      navigate("/dashboard", { replace: true });
     } catch (err) {
       console.warn("Auto submit after razorpay error:", err);
       toast.success("Payment verified! Transaction ID: " + paymentId);
