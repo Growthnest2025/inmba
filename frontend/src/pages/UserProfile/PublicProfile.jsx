@@ -1184,7 +1184,7 @@ function ProfessionalPublicHero({
 
         <ProfileHeroReferralBar
           referralCode={toText(profile?.referral_id)}
-          referralLink={toText(profile?.referral_id) && typeof window !== "undefined" ? `${window.location.origin}/membership?ref=${encodeURIComponent(toText(profile?.referral_id))}` : ""}
+          referralLink={toText(profile?.referral_id) && typeof window !== "undefined" ? `${window.location.origin}/membership-type?ref=${encodeURIComponent(toText(profile?.referral_id))}` : ""}
           copied={""}
           onCopy={async (kind, val) => {
             if (!val) return;
@@ -1407,7 +1407,7 @@ function PublicProfilePage({
 
         <ProfileHeroReferralBar
           referralCode={toText(profile?.referral_id)}
-          referralLink={toText(profile?.referral_id) && typeof window !== "undefined" ? `${window.location.origin}/membership?ref=${encodeURIComponent(toText(profile?.referral_id))}` : ""}
+          referralLink={toText(profile?.referral_id) && typeof window !== "undefined" ? `${window.location.origin}/membership-type?ref=${encodeURIComponent(toText(profile?.referral_id))}` : ""}
           copied={""}
           onCopy={async (kind, val) => {
             if (!val) return;

@@ -1277,7 +1277,7 @@ export default function Dashboard() {
 
   const referralLink =
     referralId
-      ? `${frontendBaseUrl}/membership?ref=${encodeURIComponent(
+      ? `${frontendBaseUrl}/membership-type?ref=${encodeURIComponent(
           referralId
         )}`
       : "";
@@ -2458,22 +2458,29 @@ export default function Dashboard() {
             Authenticated owner dashboard only.
         ================================================= */}
 
-        {(toText(
-          member?.referred_by ??
-            member?.referrer_id ??
-            member?.introducer_id ??
-            dashboardData?.sponsor?.referral_id
-        ) ||
-          toText(
-            member?.organization_id ??
-              member?.org_id ??
-              dashboardData?.sponsor?.organization_id ??
-              dashboardData?.sponsor?.org_id
-          ) ||
-          Object.keys(
-            dashboardData?.sponsor ||
-              {}
-          ).length > 0) && (
+        {(joinedViaOrganization ||
+          (Boolean(
+            toText(
+              member?.introducer_name ??
+                member?.referrer_name ??
+                dashboardData?.sponsor?.full_name ??
+                `${toText(
+                  dashboardData?.sponsor?.first_name
+                )} ${toText(
+                  dashboardData?.sponsor?.last_name
+                )}`.trim()
+            ) &&
+            toText(
+              member?.introducer_name ??
+                member?.referrer_name ??
+                dashboardData?.sponsor?.full_name ??
+                `${toText(
+                  dashboardData?.sponsor?.first_name
+                )} ${toText(
+                  dashboardData?.sponsor?.last_name
+                )}`.trim()
+            ).toLowerCase() !== "not available"
+          ))) && (
           <section className="member-dashboard-card member-dashboard-sponsor-card">
             <div className="member-dashboard-card-header">
               <div>
@@ -2486,11 +2493,11 @@ export default function Dashboard() {
 
                 <div>
                   <p>
-                    Your Introducer
+                    {joinedViaOrganization ? "Organization" : "Your Introducer"}
                   </p>
 
                   <h2>
-                    Introducer Details
+                    {joinedViaOrganization ? "Organization Details" : "Introducer Details"}
                   </h2>
                 </div>
               </div>
@@ -2519,7 +2526,7 @@ export default function Dashboard() {
                       {organizationId ||
                         (introducerId === "7777777"
                           ? "7777777"
-                          : "Not available")}
+                          : "INMBA-ORG")}
                     </strong>
                   </div>
                 </>
@@ -2539,20 +2546,8 @@ export default function Dashboard() {
                             dashboardData?.sponsor?.first_name
                           )} ${toText(
                             dashboardData?.sponsor?.last_name
-                          )}`.trim(),
-                        "Not available"
+                          )}`.trim()
                       )}
-                    </strong>
-                  </div>
-
-                  <div>
-                    <span>
-                      Introducer ID
-                    </span>
-
-                    <strong>
-                      {introducerId ||
-                        "Not available"}
                     </strong>
                   </div>
                 </>

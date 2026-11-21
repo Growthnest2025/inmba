@@ -1923,11 +1923,19 @@ export default function ProfessionalDashboard() {
             Authenticated owner dashboard only.
         ================================================= */}
 
-        {Object.keys(
-          dashboardData
-            ?.sponsor ||
-          {}
-        ).length > 0 && (
+        {Boolean(
+          toText(
+            dashboardData?.sponsor?.organization_id ??
+              dashboardData?.sponsor?.org_id ??
+              dashboardData?.sponsor?.organization_name ??
+              dashboardData?.sponsor?.organization
+          ) ||
+          (toText(
+            dashboardData?.sponsor?.first_name ?
+              `${toText(dashboardData?.sponsor?.first_name)} ${toText(dashboardData?.sponsor?.last_name)}`.trim() : ""
+          ) &&
+            toText(dashboardData?.sponsor?.first_name).toLowerCase() !== "not available")
+        ) && (
           <section className="member-dashboard-card member-dashboard-sponsor-card">
             <div className="member-dashboard-card-header">
               <div>
@@ -2005,11 +2013,8 @@ export default function ProfessionalDashboard() {
                           .organization_id ??
                         dashboardData
                           .sponsor
-                          .org_id ??
-                        dashboardData
-                          .sponsor
-                          .referral_id,
-                        "Not available"
+                          .org_id,
+                        "INMBA-ORG"
                       )}
                     </strong>
                   </div>
@@ -2032,21 +2037,6 @@ export default function ProfessionalDashboard() {
                           .sponsor
                           .last_name
                       )}`.trim()}
-                    </strong>
-                  </div>
-
-                  <div>
-                    <span>
-                      Introducer ID
-                    </span>
-
-                    <strong>
-                      {toText(
-                        dashboardData
-                          .sponsor
-                          .referral_id,
-                        "Not available"
-                      )}
                     </strong>
                   </div>
                 </>

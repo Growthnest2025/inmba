@@ -66,7 +66,14 @@ export default function MembershipRegistration() {
 
   const referralFromUrl = useMemo(() => {
     const ref = searchParams.get("ref") ?? searchParams.get("referral");
-    return toText(ref).replace(/\s/g, "").slice(0, 50);
+    if (ref) return toText(ref).replace(/\s/g, "").slice(0, 50);
+    if (typeof window !== "undefined") {
+      try {
+        const stored = sessionStorage.getItem("inmba_referral_code") || localStorage.getItem("inmba_referral_code");
+        if (stored) return toText(stored).replace(/\s/g, "").slice(0, 50);
+      } catch {}
+    }
+    return "";
   }, [searchParams]);
 
   /* =======================================================
@@ -542,6 +549,42 @@ export default function MembershipRegistration() {
                   Aadhaar and PAN entry are optional during Basic Registration. You can enter them now or complete them later in Full KYC. One mobile number can be used to register up to 3 civilian accounts with separate login IDs.
                 </span>
               </div>
+            </div>
+
+            {/* MEMBERSHIP TYPE SWITCHER */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: "10px",
+                padding: "10px 16px",
+                marginBottom: "16px",
+                background: "#f8fafc",
+                border: "1px solid #e2e8f0",
+                borderRadius: "10px",
+                fontSize: "0.88rem",
+                color: "#475569",
+              }}
+            >
+              <span>
+                Registering for: <strong style={{ color: "#166534" }}>Civilian Membership</strong>
+              </span>
+              <Link
+                to={referralFromUrl ? `/membership-type?ref=${encodeURIComponent(referralFromUrl)}` : "/membership-type"}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  fontWeight: 600,
+                  color: "#1e7d34",
+                  textDecoration: "none",
+                }}
+              >
+                <i className="fas fa-layer-group" aria-hidden="true" />
+                Want Commercial or Professional? Change here
+              </Link>
             </div>
 
             {/* REFERRAL NOTICE */}

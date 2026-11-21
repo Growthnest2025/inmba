@@ -3353,7 +3353,7 @@ export default function CivilianPublicProfile({
       : "https://inmba.org";
 
   const referralLink = referralCode
-    ? `${referralOrigin}/membership?ref=${encodeURIComponent(referralCode)}`
+    ? `${referralOrigin}/membership-type?ref=${encodeURIComponent(referralCode)}`
     : "";
 
   const location =
