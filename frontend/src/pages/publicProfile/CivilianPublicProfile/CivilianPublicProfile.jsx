@@ -3344,7 +3344,7 @@ export default function CivilianPublicProfile({
   );
 
   const referralCode = text(
-    firstValue(p.referral_id, p.referralCode)
+    firstValue(p.referral_id, p.referralCode, p.login_id, p.loginId)
   );
 
   const referralOrigin =

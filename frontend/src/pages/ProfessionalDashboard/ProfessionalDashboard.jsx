@@ -1079,7 +1079,8 @@ export default function ProfessionalDashboard() {
         ?.referral_id ??
       dashboardData
         ?.referralId ??
-      member.referral_id
+      member.referral_id ??
+      member.login_id
     );
 
   const referralLink =
@@ -1157,8 +1158,12 @@ export default function ProfessionalDashboard() {
     toNumber(
       ownerProfile
         ?.direct_network ??
+      ownerProfile
+        ?.direct_members ??
       dashboardData
         ?.direct ??
+      dashboardData
+        ?.network?.direct ??
       member.direct_network
     );
 
@@ -1166,15 +1171,25 @@ export default function ProfessionalDashboard() {
     toNumber(
       ownerProfile
         ?.indirect_network ??
+      ownerProfile
+        ?.indirect_members ??
       dashboardData
         ?.indirect ??
+      dashboardData
+        ?.network?.indirect ??
       member.indirect_network
     );
 
   const totalNetwork =
     toNumber(
       ownerProfile
+        ?.total_network ??
+      ownerProfile
         ?.team_size ??
+      dashboardData
+        ?.total_network ??
+      dashboardData
+        ?.network?.total ??
       dashboardData
         ?.networkStrength ??
       directNetwork +
