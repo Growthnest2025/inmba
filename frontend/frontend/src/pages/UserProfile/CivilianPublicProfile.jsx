@@ -401,7 +401,9 @@ export default function CivilianPublicProfile({
         "";
 
     const referralLink =
-        profile.referral_link || "";
+        (toText(profile.referral_id || profile.login_id) && typeof window !== "undefined"
+            ? `${window.location.origin}/membership-type?ref=${encodeURIComponent(toText(profile.referral_id || profile.login_id))}`
+            : (profile.referral_link || ""));
 
     if (loading) {
         return <div style={{ minHeight: "70vh", display: "grid", placeItems: "center", fontFamily: "Arial, sans-serif" }}>Loading public profile...</div>;

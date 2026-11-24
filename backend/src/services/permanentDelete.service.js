@@ -156,16 +156,18 @@ const permanentlyDeleteMember =
         memberIdValue
       );
 
+    const adminRole = String(
+      admin?.role ||
+        ""
+    ).toLowerCase().trim();
+
     if (
-      String(
-        admin?.role ||
-          ""
-      ).toLowerCase() !==
-      "super_admin"
+      adminRole !== "super_admin" &&
+      adminRole !== "admin"
     ) {
       throw new ApiError(
         403,
-        "Only Super Admin can permanently delete a member."
+        "You do not have permission to permanently delete a member."
       );
     }
 
@@ -245,6 +247,29 @@ const permanentlyDeleteMember =
           },
         };
 
+        await executeQuery(
+          `
+            CREATE TABLE IF NOT EXISTS
+              deleted_users_backup
+            (
+              backup_id INT
+                AUTO_INCREMENT
+                PRIMARY KEY,
+              original_id INT,
+              first_name VARCHAR(120),
+              last_name VARCHAR(120),
+              email VARCHAR(255),
+              phone VARCHAR(30),
+              backup_data LONGTEXT,
+              backed_up_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+            ENGINE = InnoDB
+            DEFAULT CHARSET = utf8mb4
+          `,
+          [],
+          connection
+        ).catch(() => {});
+
         const backupResult =
           await executeQuery(
             `
@@ -298,13 +323,49 @@ const permanentlyDeleteMember =
             backupResult
           );
 
-        if (
-          !backupId
-        ) {
-          throw new ApiError(
-            500,
-            "Deleted member backup could not be created."
-          );
+        // Delete dependent child rows first to avoid foreign key constraint violations
+        await executeQuery(
+          `DELETE FROM worker_auth_sessions WHERE member_id = ?`,
+          [memberId],
+          connection
+        ).catch(() => {});
+
+        await executeQuery(
+          `DELETE FROM civilian_full_kyc WHERE member_id = ?`,
+          [memberId],
+          connection
+        ).catch(() => {});
+
+        await executeQuery(
+          `DELETE FROM kyc_members_ext_1 WHERE member_id = ?`,
+          [memberId],
+          connection
+        ).catch(() => {});
+
+        await executeQuery(
+          `DELETE FROM kyc_members_ext_2 WHERE member_id = ?`,
+          [memberId],
+          connection
+        ).catch(() => {});
+
+        await executeQuery(
+          `DELETE FROM commercial_kyc WHERE member_id = ?`,
+          [memberId],
+          connection
+        ).catch(() => {});
+
+        if (member.login_id) {
+          await executeQuery(
+            `DELETE FROM commercial_basic_kyc WHERE login_id = ?`,
+            [member.login_id],
+            connection
+          ).catch(() => {});
+
+          await executeQuery(
+            `DELETE FROM commercial_payments WHERE login_id = ?`,
+            [member.login_id],
+            connection
+          ).catch(() => {});
         }
 
         const deleteResult =

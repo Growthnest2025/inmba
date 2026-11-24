@@ -19,6 +19,19 @@ const ApiError =
   );
 
 const {
+  checkDuplicatePaymentProof,
+  registerPaymentProof,
+} = require(
+  "../utils/paymentProofDeduplication"
+);
+
+const {
+  verifyPaymentProofAmount,
+} = require(
+  "../utils/paymentOcrVerifier"
+);
+
+const {
   normalizeMemberId,
 
   findPaymentMemberById,
@@ -530,120 +543,22 @@ const submitMemberPayment =
           connection
         );
 
-      if (!civilianPlan) {
-        await removeFileSafely(
-          paymentFile?.filepath
-        );
+      const incomingAmount = Number(finalPaymentData.amount);
+      const incomingYears = Math.max(1, Math.min(3, Number(finalPaymentData.subscription_year) || 1));
+      const VALID_CIVILIAN_AMOUNTS = [299, 598, 897, 2999, 5998, 8997];
 
+      if (!incomingAmount || !VALID_CIVILIAN_AMOUNTS.includes(incomingAmount)) {
+        await removeFileSafely(paymentFile?.filepath);
         throw new ApiError(
           422,
-          "Please select a Civilian membership plan before payment."
+          `Invalid payment amount (₹${incomingAmount || 0}). Only official membership plan fees (₹299, ₹598, ₹897 for Network Member or ₹2,999, ₹5,998, ₹8,997 for Royalty Member) are accepted.`
         );
       }
-
-      const selectedPlan =
-        String(
-          civilianPlan.selected_plan ||
-            ""
-        ).trim();
-
-      if (
-        ![
-          "299",
-          "2999",
-        ].includes(
-          selectedPlan
-        )
-      ) {
-        await removeFileSafely(
-          paymentFile?.filepath
-        );
-
-        throw new ApiError(
-          422,
-          "Invalid Civilian membership plan."
-        );
-      }
-
-      /* =========================
-         FULL KYC CHECK
-      ========================= */
-
-      const civilianKycStatus =
-        String(
-          civilianPlan.status ||
-            ""
-        )
-          .trim()
-          .toLowerCase();
-
-      if (
-        ![
-          "submitted",
-          "approved",
-        ].includes(
-          civilianKycStatus
-        )
-      ) {
-        await removeFileSafely(
-          paymentFile?.filepath
-        );
-
-        throw new ApiError(
-          422,
-          "Please submit Civilian Full KYC before payment."
-        );
-      }
-
-      /* =========================
-         TRUSTED AMOUNT
-      ========================= */
-
-      const requiredAmount =
-        Number(
-          CIVILIAN_PLAN_AMOUNTS[
-            selectedPlan
-          ]
-        );
-
-      if (
-        !Number.isFinite(
-          requiredAmount
-        ) ||
-        requiredAmount <= 0
-      ) {
-        await removeFileSafely(
-          paymentFile?.filepath
-        );
-
-        throw new ApiError(
-          422,
-          "Civilian plan amount is invalid."
-        );
-      }
-
-      /*
-        IMPORTANT:
-
-        Whatever amount frontend sends,
-        backend overwrites it here.
-
-        Example:
-
-        DB selected_plan = 300
-        frontend amount = 1500
-
-        Stored amount = 300
-      */
 
       finalPaymentData = {
         ...finalPaymentData,
-
-        amount:
-          requiredAmount,
-
-        subscription_year:
-          "1",
+        amount: incomingAmount,
+        subscription_year: String(incomingYears),
       };
     }
 
@@ -653,9 +568,12 @@ const submitMemberPayment =
     let destinationPath =
       null;
 
+    let verifiedHashes =
+      null;
+
     try {
       /* =========================
-         PAYMENT PROOF
+         PAYMENT PROOF & DEDUPLICATION CHECK
       ========================= */
 
       if (
@@ -668,6 +586,64 @@ const submitMemberPayment =
             recursive: true,
           }
         );
+
+        /*
+          DUPLICATE CHECK:
+          Verify that neither the Transaction ID nor this exact/similar
+          payment proof screenshot has been submitted before.
+        */
+        const dupCheck =
+          await checkDuplicatePaymentProof({
+            filePath:
+              paymentFile.filepath,
+            memberId:
+              normalizedMemberId,
+            transactionId:
+              finalPaymentData.transaction_id,
+            uploadDirectory:
+              PAYMENT_UPLOAD_DIRECTORY,
+            connection,
+          });
+
+        if (
+          dupCheck.isDuplicate
+        ) {
+          await removeFileSafely(
+            paymentFile.filepath
+          );
+
+          throw new ApiError(
+            409,
+            dupCheck.reason ||
+              "Invalid payment proof: Same screenshot cannot be uploaded again. This payment proof has already been submitted."
+          );
+        }
+
+        verifiedHashes =
+          dupCheck.hashes;
+
+        /* =====================================================
+           OCR RECEIPT AMOUNT CHECK:
+           Verify that the payment proof screenshot does not show
+           a mismatched or lower unauthorized amount (e.g. ₹100 instead of ₹299).
+        ===================================================== */
+        const ocrCheck = await verifyPaymentProofAmount({
+          filePath: paymentFile.filepath,
+          expectedAmount: finalPaymentData.amount,
+        });
+
+        if (!ocrCheck.isValid) {
+          await removeFileSafely(paymentFile.filepath);
+          throw new ApiError(
+            422,
+            ocrCheck.reason ||
+              `Invalid payment proof: Uploaded receipt shows ₹${ocrCheck.detectedAmount}, which does not match the required plan amount of ₹${finalPaymentData.amount}.`
+          );
+        }
+
+        if (!finalPaymentData.transaction_id && ocrCheck.extractedTxnId) {
+          finalPaymentData.transaction_id = ocrCheck.extractedTxnId;
+        }
 
         const extension =
           getFileExtension(
@@ -733,6 +709,30 @@ const submitMemberPayment =
           404,
           "Member account not found."
         );
+      }
+
+      /* =========================
+         REGISTER PROOF HASH
+      ========================= */
+
+      if (
+        newFilename &&
+        destinationPath
+      ) {
+        await registerPaymentProof({
+          memberId:
+            normalizedMemberId,
+          filename:
+            newFilename,
+          filePath:
+            destinationPath,
+          transactionId:
+            finalPaymentData.transaction_id,
+          uploadDirectory:
+            PAYMENT_UPLOAD_DIRECTORY,
+          hashes:
+            verifiedHashes,
+        });
       }
 
       /* =========================

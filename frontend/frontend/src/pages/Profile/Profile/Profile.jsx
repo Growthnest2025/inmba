@@ -2644,8 +2644,9 @@ export default function Profile() {
 
               <ProfileInfoRow
                 icon="fas fa-person"
-                label="Father Name"
+                label="Father / Spouse Name"
                 value={
+                  member.father_spouse_name ??
                   member.father_name
                 }
               />
@@ -2655,7 +2656,8 @@ export default function Profile() {
                 label="Date of Birth"
                 value={
                   formatDate(
-                    member.dob
+                    member.dob ??
+                    member.date_of_birth
                   )
                 }
               />
@@ -2665,6 +2667,14 @@ export default function Profile() {
                 label="Gender"
                 value={
                   member.gender
+                }
+              />
+
+              <ProfileInfoRow
+                icon="fas fa-droplet"
+                label="Blood Group"
+                value={
+                  member.blood_group
                 }
               />
 
@@ -2681,6 +2691,24 @@ export default function Profile() {
                 label="Nationality"
                 value={
                   member.nationality
+                }
+              />
+
+              <ProfileInfoRow
+                icon="fas fa-id-card"
+                label="Aadhaar Number"
+                value={
+                  member.aadhaar_number ??
+                  member.aadhar
+                }
+              />
+
+              <ProfileInfoRow
+                icon="fas fa-credit-card"
+                label="PAN Number"
+                value={
+                  member.pan_number ??
+                  member.pan
                 }
               />
             </ProfileCard>
@@ -2730,9 +2758,18 @@ export default function Profile() {
             >
               <ProfileInfoRow
                 icon="fas fa-house"
-                label="Address"
+                label="Current Address"
                 value={
+                  member.current_address ??
                   member.address
+                }
+              />
+
+              <ProfileInfoRow
+                icon="fas fa-building"
+                label="Permanent Address"
+                value={
+                  member.permanent_address
                 }
               />
 
@@ -2784,7 +2821,7 @@ export default function Profile() {
 
             <ProfileCard
               icon="fas fa-briefcase"
-              title="Professional Information"
+              title="Professional & Education"
               subtitle="Your education and career details"
             >
               <ProfileInfoRow
@@ -2798,24 +2835,20 @@ export default function Profile() {
 
               <ProfileInfoRow
                 icon="fas fa-graduation-cap"
-                label="Education"
+                label="Highest Qualification"
                 value={
+                  member.highest_qualification ??
+                  member.educational_qualification ??
                   member.education
                 }
               />
 
               <ProfileInfoRow
-                icon="fas fa-certificate"
-                label="Qualification"
-                value={
-                  member.educational_qualification
-                }
-              />
-
-              <ProfileInfoRow
                 icon="fas fa-school"
-                label="College / School"
+                label="School / College / Institution"
                 value={
+                  member.institution_name ??
+                  member.school_college_name ??
                   member.ug_college ??
                   member.pg_college ??
                   member.school_name
@@ -2823,20 +2856,11 @@ export default function Profile() {
               />
 
               <ProfileInfoRow
-                icon="fas fa-book"
-                label="Course"
+                icon="fas fa-award"
+                label="Certifications & Achievements"
                 value={
-                  member.ug_degree ??
-                  member.pg_degree ??
-                  member.school_class
-                }
-              />
-
-              <ProfileInfoRow
-                icon="fas fa-id-badge"
-                label="Student ID"
-                value={
-                  member.student_id
+                  member.certifications_achievements ??
+                  member.additional_certifications
                 }
               />
             </ProfileCard>
@@ -2906,6 +2930,7 @@ export default function Profile() {
                 icon="fas fa-user"
                 label="Nominee Name"
                 value={
+                  member.nominee_name ??
                   member.nomini_name
                 }
               />
@@ -2915,6 +2940,7 @@ export default function Profile() {
                 label="Nominee DOB"
                 value={
                   formatDate(
+                    member.nominee_dob ??
                     member.nomini_dob
                   )
                 }
@@ -2924,6 +2950,7 @@ export default function Profile() {
                 icon="fas fa-people-arrows"
                 label="Relationship"
                 value={
+                  member.nominee_relationship ??
                   member.nomini_relationship
                 }
               />
@@ -2932,7 +2959,87 @@ export default function Profile() {
                 icon="fas fa-fingerprint"
                 label="Nominee Aadhaar"
                 value={
+                  member.nominee_aadhaar ??
                   member.nomini_aadhar
+                }
+              />
+            </ProfileCard>
+
+            <ProfileCard
+              icon="fas fa-building-columns"
+              title="Financial & Bank Details"
+              subtitle="Private bank and payout information"
+            >
+              <ProfileInfoRow
+                icon="fas fa-building-columns"
+                label="Bank Name"
+                value={
+                  member.bank_name
+                }
+              />
+
+              <ProfileInfoRow
+                icon="fas fa-money-check"
+                label="Account Number"
+                value={
+                  member.bank_account_number ??
+                  member.account_number
+                }
+              />
+
+              <ProfileInfoRow
+                icon="fas fa-barcode"
+                label="IFSC Code"
+                value={
+                  member.ifsc_code ??
+                  member.ifsc
+                }
+              />
+
+              <ProfileInfoRow
+                icon="fas fa-location-dot"
+                label="Bank Branch"
+                value={
+                  member.branch
+                }
+              />
+
+              <ProfileInfoRow
+                icon="fas fa-credit-card"
+                label="PAN Number"
+                value={
+                  member.pan_number ??
+                  member.pan
+                }
+              />
+            </ProfileCard>
+
+            <ProfileCard
+              icon="fas fa-phone-volume"
+              title="Emergency Contact"
+              subtitle="Private emergency contact details"
+            >
+              <ProfileInfoRow
+                icon="fas fa-user"
+                label="Contact Name"
+                value={
+                  member.emergency_contact_name
+                }
+              />
+
+              <ProfileInfoRow
+                icon="fas fa-phone"
+                label="Contact Number"
+                value={
+                  member.emergency_contact_number
+                }
+              />
+
+              <ProfileInfoRow
+                icon="fas fa-people-arrows"
+                label="Relationship"
+                value={
+                  member.emergency_relationship
                 }
               />
             </ProfileCard>

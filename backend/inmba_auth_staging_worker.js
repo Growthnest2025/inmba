@@ -335,11 +335,30 @@ async function handleLogin(request, db, cors) {
     });
   }
 
+  const cleanLoginAadhar = loginId.replace(/\D/g, "");
+  const hasAadharFormat = cleanLoginAadhar.length >= 10 && cleanLoginAadhar.length <= 12;
+
   const member = await db.prepare(`
     SELECT ${MEMBER_FIELDS}, password
     FROM kyc_members
-    WHERE login_id = ?
-  `).bind(loginId).first();
+    WHERE (
+      login_id = ?
+      OR phone = ?
+      OR email = ?
+      OR (? = 1 AND REPLACE(REPLACE(COALESCE(aadhar, ''), ' ', ''), '-', '') = ?)
+      OR (? = 1 AND REPLACE(REPLACE(COALESCE(entity_aadhar_number, ''), ' ', ''), '-', '') = ?)
+    )
+    AND is_deleted = 0
+    LIMIT 1
+  `).bind(
+    loginId,
+    loginId,
+    loginId,
+    hasAadharFormat ? 1 : 0,
+    cleanLoginAadhar,
+    hasAadharFormat ? 1 : 0,
+    cleanLoginAadhar
+  ).first();
 
   let valid = !!member &&
     await verifyPassword(password, member.password);
@@ -677,6 +696,46 @@ async function handleRegistration(request, db, cors) {
     }, 400, cors);
   }
 
+  // Strict Aadhaar uniqueness: 1 Aadhaar number can ONLY be registered once across ALL membership types
+  const cleanAadhar = aadhar.replace(/\D/g, "");
+  if (cleanAadhar.length >= 10) {
+    const existingAadharMember = await db.prepare(`
+      SELECT id, login_id, first_name, last_name, membership_type
+      FROM kyc_members
+      WHERE (
+        REPLACE(REPLACE(COALESCE(aadhar, ''), ' ', ''), '-', '') = ?
+        OR REPLACE(REPLACE(COALESCE(entity_aadhar_number, ''), ' ', ''), '-', '') = ?
+      )
+      AND is_deleted = 0
+      LIMIT 1
+    `).bind(cleanAadhar, cleanAadhar).first();
+
+    if (existingAadharMember) {
+      return json({
+        success: false,
+        code: "AADHAAR_ALREADY_EXISTS",
+        error: "This Aadhaar number is already registered with another membership.",
+        message: "This Aadhaar number is already registered with another membership. An Aadhaar number can only be used once across all memberships.",
+      }, 400, cors);
+    }
+
+    const existingCivilianAadhar = await db.prepare(`
+      SELECT id, member_id
+      FROM civilian_full_kyc
+      WHERE REPLACE(REPLACE(COALESCE(aadhaar_number, ''), ' ', ''), '-', '') = ?
+      LIMIT 1
+    `).bind(cleanAadhar).first();
+
+    if (existingCivilianAadhar) {
+      return json({
+        success: false,
+        code: "AADHAAR_ALREADY_EXISTS",
+        error: "This Aadhaar number is already registered with another membership.",
+        message: "This Aadhaar number is already registered with another membership. An Aadhaar number can only be used once across all memberships.",
+      }, 400, cors);
+    }
+  }
+
   // Check if phone already registered for THIS membership type - if so, allow user to continue smoothly without blocking
   if (phone) {
     let existingPhone = null;
@@ -787,6 +846,35 @@ async function handleRegistration(request, db, cors) {
     referralId += refChars.charAt(Math.floor(Math.random() * refChars.length));
   }
 
+  // Resolve sponsor if referral code/link provided
+  let canonicalReferredBy = referral || null;
+  let sponsorMember = null;
+  if (referral) {
+    const cleanRef = referral.trim();
+    sponsorMember = await db.prepare(`
+      SELECT id, referral_id, login_id, first_name, last_name, membership_type
+      FROM kyc_members
+      WHERE (
+        UPPER(referral_id) = UPPER(?)
+        OR UPPER(login_id) = UPPER(?)
+        OR CAST(id AS TEXT) = ?
+      )
+      AND COALESCE(is_deleted, 0) = 0
+      LIMIT 1
+    `).bind(cleanRef, cleanRef, cleanRef).first();
+
+    if (sponsorMember) {
+      canonicalReferredBy = sponsorMember.referral_id || sponsorMember.login_id || cleanRef;
+      try {
+        await db.prepare(`
+          UPDATE kyc_members_ext_1
+          SET direct_network = COALESCE(direct_network, 0) + 1
+          WHERE member_id = ?
+        `).bind(sponsorMember.id).run();
+      } catch (e) {}
+    }
+  }
+
   const memberToken = randomToken();
   const passwordHash = await sha256(password);
   const nowIso = new Date().toISOString().replace("T", " ").slice(0, 19);
@@ -806,7 +894,7 @@ async function handleRegistration(request, db, cors) {
   `).bind(
     loginId, firstName, lastName || null, fatherName || null, dob || null, email || null, phone,
     pincode || null, gender || null, maritalStatus || null, nationality || "Indian", occupation || null, education || null,
-    membershipType, referral || null, referralId, aadhar || null, pan || null, memberToken, passwordHash,
+    membershipType, canonicalReferredBy || null, referralId, aadhar || null, pan || null, memberToken, passwordHash,
     nowIso
   ).run();
 
@@ -1228,6 +1316,48 @@ async function handleSaveCivilianSection(request, db, cors, section) {
   ].includes(input.completed);
 
   const allowed = CIVILIAN_SECTION_FIELDS[s] || [];
+
+  if (s === "A" && input.aadhaar_number) {
+    const cleanKycAadhar = String(input.aadhaar_number).replace(/\D/g, "");
+    if (cleanKycAadhar.length >= 10) {
+      const duplicateMember = await db.prepare(`
+        SELECT id, login_id FROM kyc_members
+        WHERE (
+          REPLACE(REPLACE(COALESCE(aadhar, ''), ' ', ''), '-', '') = ?
+          OR REPLACE(REPLACE(COALESCE(entity_aadhar_number, ''), ' ', ''), '-', '') = ?
+        )
+        AND id != ?
+        AND is_deleted = 0
+        LIMIT 1
+      `).bind(cleanKycAadhar, cleanKycAadhar, member.id).first();
+
+      if (duplicateMember) {
+        return json({
+          success: false,
+          code: "AADHAAR_ALREADY_EXISTS",
+          message: "This Aadhaar number is already registered with another account.",
+        }, 400, cors);
+      }
+
+      const duplicateCivilian = await db.prepare(`
+        SELECT id, member_id FROM civilian_full_kyc
+        WHERE REPLACE(REPLACE(COALESCE(aadhaar_number, ''), ' ', ''), '-', '') = ?
+        AND member_id != ?
+        LIMIT 1
+      `).bind(cleanKycAadhar, member.id).first();
+
+      if (duplicateCivilian) {
+        return json({
+          success: false,
+          code: "AADHAAR_ALREADY_EXISTS",
+          message: "This Aadhaar number is already registered with another account.",
+        }, 400, cors);
+      }
+
+      await db.prepare(`UPDATE kyc_members SET aadhar = ? WHERE id = ?`).bind(cleanKycAadhar, member.id).run().catch(() => {});
+    }
+  }
+
   const updates = [];
   const bindings = [];
 
@@ -1481,10 +1611,10 @@ async function handleGetAcknowledgement(request, db, cors, token) {
   `).bind(member.id).first()) || {};
 
   const civilian = (await db.prepare(`
-    SELECT selected_plan FROM civilian_full_kyc WHERE member_id = ?
+    SELECT * FROM civilian_full_kyc WHERE member_id = ?
   `).bind(member.id).first()) || {};
 
-  const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "Member";
+  const fullName = civilian.full_legal_name || [member.first_name, member.last_name].filter(Boolean).join(" ") || "Member";
   const planAmount = civilian.selected_plan || ext.amount || "299";
 
   const ackData = {
@@ -1494,8 +1624,8 @@ async function handleGetAcknowledgement(request, db, cors, token) {
     last_name: member.last_name,
     full_name: fullName,
     name: fullName,
-    email: member.email,
-    phone: member.phone,
+    email: member.email || civilian.primary_email,
+    phone: member.phone || civilian.primary_mobile,
     membership_type: member.membership_type || "Civilian Member",
     payment_status: member.payment_status || "pending",
     selected_plan: planAmount,
@@ -1504,6 +1634,18 @@ async function handleGetAcknowledgement(request, db, cors, token) {
     payment_method: ext.payment_method || "UPI",
     payment_proof: ext.payment_proof || null,
     created_at: member.created_at,
+    aadhaar_number: civilian.aadhaar_number || null,
+    pan_number: civilian.pan_number || null,
+    bank_account_number: civilian.bank_account_number || null,
+    ifsc_code: civilian.ifsc_code || null,
+    bank_name: civilian.bank_name || null,
+    bank_branch: civilian.bank_branch_name || null,
+    nominee_name: civilian.nominee_name || null,
+    nominee_relationship: civilian.nominee_relationship || null,
+    district: civilian.district || null,
+    state: civilian.state || null,
+    pincode: civilian.pincode || null,
+    address: civilian.current_address || civilian.permanent_address || null,
   };
 
   return json({
@@ -1771,10 +1913,56 @@ async function handleGetCommercialDashboard(request, db, cors) {
   const ext = (await db.prepare("SELECT * FROM kyc_members_ext_1 WHERE member_id = ?").bind(member.id).first()) || {};
   const paymentRow = await db.prepare("SELECT * FROM commercial_payments WHERE login_id = ? ORDER BY id DESC LIMIT 1").bind(member.login_id).first();
 
-  const directCountRow = await db.prepare(`
-    SELECT COUNT(1) AS count FROM kyc_members WHERE referred_by = ? AND COALESCE(is_deleted, 0) = 0
-  `).bind(member.referral_id || "").first();
-  const directCount = directCountRow ? directCountRow.count : 0;
+  const refId = String(member.referral_id || "").trim();
+  const logId = String(member.login_id || "").trim();
+  const memId = String(member.id || "").trim();
+
+  let directCount = 0;
+  let indirectCount = 0;
+  try {
+    const directCountRow = await db.prepare(`
+      SELECT COUNT(1) AS count FROM kyc_members
+      WHERE (
+        (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+        OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+        OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+      ) AND COALESCE(is_deleted, 0) = 0
+    `).bind(refId, refId, logId, logId, memId, memId).first();
+    directCount = directCountRow ? Number(directCountRow.count || 0) : 0;
+  } catch (e) {}
+
+  try {
+    const indRow = await db.prepare(`
+      SELECT COUNT(1) AS cnt FROM kyc_members
+      WHERE (
+        UPPER(COALESCE(referred_by, '')) IN (
+          SELECT UPPER(referral_id) FROM kyc_members
+          WHERE (
+            (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+          ) AND COALESCE(is_deleted, 0) = 0 AND referral_id IS NOT NULL AND referral_id != ''
+        )
+        OR UPPER(COALESCE(referred_by, '')) IN (
+          SELECT UPPER(login_id) FROM kyc_members
+          WHERE (
+            (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+          ) AND COALESCE(is_deleted, 0) = 0 AND login_id IS NOT NULL AND login_id != ''
+        )
+      ) AND COALESCE(is_deleted, 0) = 0
+    `).bind(refId, refId, logId, logId, memId, memId, refId, refId, logId, logId, memId, memId).first();
+    indirectCount = indRow ? Number(indRow.cnt || 0) : 0;
+  } catch (e) {}
+
+  if (directCount === 0 && Number(member.direct_network || 0) > 0) {
+    directCount = Number(member.direct_network);
+  }
+  if (indirectCount === 0 && Number(member.indirect_network || 0) > 0) {
+    indirectCount = Number(member.indirect_network);
+  }
+  const totalCount = directCount + indirectCount;
 
   const planAmount = paymentRow?.amount || ext.amount || 299;
   const isApproved = String(member.payment_status || "").toLowerCase() === "approved";
@@ -1851,8 +2039,10 @@ async function handleGetCommercialDashboard(request, db, cors) {
     },
     network: {
       direct: directCount,
-      indirect: 0,
-      total: directCount,
+      indirect: indirectCount,
+      total: totalCount,
+      total_network: totalCount,
+      team_size: totalCount,
       levelRank: "Member",
       level_rank: "Member",
       royaltySlab: "None",
@@ -1862,11 +2052,17 @@ async function handleGetCommercialDashboard(request, db, cors) {
     },
     stats: {
       direct_members: directCount,
-      indirect_members: 0,
-      total_team: directCount,
+      indirect_members: indirectCount,
+      total_team: totalCount,
+      total_network: totalCount,
       wallet_balance: 0,
       pending_payout: 0,
     },
+    direct: directCount,
+    indirect: indirectCount,
+    total: totalCount,
+    total_network: totalCount,
+    team_size: totalCount,
     activation: {
       is_active: isFullyApproved,
       requires_action: !isFullyApproved,
@@ -2229,6 +2425,36 @@ async function handleSaveCommercialSection(request, db, cors, section) {
     }
   }
 
+  // Duplicate Aadhaar check for commercial Section A
+  if (normalizedInput.aadhaar_number) {
+    const cleanCommAadhaar = String(normalizedInput.aadhaar_number).replace(/\D/g, "");
+    if (cleanCommAadhaar.length >= 10) {
+      const dupMember = await db.prepare(`
+        SELECT id, login_id FROM kyc_members
+        WHERE (
+          REPLACE(REPLACE(COALESCE(aadhar, ''), ' ', ''), '-', '') = ?
+          OR REPLACE(REPLACE(COALESCE(entity_aadhar_number, ''), ' ', ''), '-', '') = ?
+        )
+        AND id != ?
+        AND is_deleted = 0
+        LIMIT 1
+      `).bind(cleanCommAadhaar, cleanCommAadhaar, member.id).first();
+
+      if (dupMember) {
+        return json({
+          success: false,
+          code: "AADHAAR_ALREADY_EXISTS",
+          message: "This Aadhaar number is already registered with another account.",
+          fieldErrors: {
+            aadhaar_number: "This Aadhaar number is already registered with another account."
+          }
+        }, 400, cors);
+      }
+
+      await db.prepare(`UPDATE kyc_members SET aadhar = ? WHERE id = ?`).bind(cleanCommAadhaar, member.id).run().catch(() => {});
+    }
+  }
+
   const updates = [];
   const bindings = [];
 
@@ -2581,6 +2807,36 @@ async function handleSaveProfessionalSection(request, db, cors, section) {
   const input = await parseRequestBody(request);
   const normalizedSec = String(section || "A").trim().toUpperCase();
 
+  // Duplicate Aadhaar check for professional Section A
+  if (normalizedSec === "A" && (input.aadhar || input.aadhaar_number)) {
+    const cleanProfAadhar = String(input.aadhar || input.aadhaar_number).replace(/\D/g, "");
+    if (cleanProfAadhar.length >= 10) {
+      const dupMember = await db.prepare(`
+        SELECT id, login_id FROM kyc_members
+        WHERE (
+          REPLACE(REPLACE(COALESCE(aadhar, ''), ' ', ''), '-', '') = ?
+          OR REPLACE(REPLACE(COALESCE(entity_aadhar_number, ''), ' ', ''), '-', '') = ?
+        )
+        AND id != ?
+        AND is_deleted = 0
+        LIMIT 1
+      `).bind(cleanProfAadhar, cleanProfAadhar, member.id).first();
+
+      if (dupMember) {
+        return json({
+          success: false,
+          code: "AADHAAR_ALREADY_EXISTS",
+          message: "This Aadhaar number is already registered with another account.",
+          fieldErrors: {
+            aadhar: "This Aadhaar number is already registered with another account."
+          }
+        }, 400, cors);
+      }
+
+      await db.prepare(`UPDATE kyc_members SET aadhar = ? WHERE id = ?`).bind(cleanProfAadhar, member.id).run().catch(() => {});
+    }
+  }
+
   try {
     await db.prepare(`
       CREATE TABLE IF NOT EXISTS professional_kyc_progress (
@@ -2675,24 +2931,77 @@ async function handleSubmitProfessionalKyc(request, db, cors) {
 }
 
 async function getMemberNetworkSummary(db, member) {
-  let directCount = Number(member?.direct_network || 0);
-  if (member?.referral_id) {
-    try {
-      const dirRow = await db.prepare(
-        "SELECT COUNT(1) AS cnt FROM kyc_members WHERE referred_by = ? AND COALESCE(is_deleted, 0) = 0"
-      ).bind(member.referral_id).first();
-      directCount = Number(dirRow?.cnt ?? directCount);
-    } catch {}
+  const refId = String(member?.referral_id || "").trim();
+  const logId = String(member?.login_id || "").trim();
+  const memId = String(member?.id || "").trim();
+
+  let directCount = 0;
+  let indirectCount = 0;
+
+  try {
+    const dirRow = await db.prepare(`
+      SELECT COUNT(1) AS cnt FROM kyc_members
+      WHERE (
+        (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+        OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+        OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+      ) AND COALESCE(is_deleted, 0) = 0
+    `).bind(refId, refId, logId, logId, memId, memId).first();
+
+    directCount = Number(dirRow?.cnt || 0);
+  } catch (err) {
+    directCount = Number(member?.direct_network || 0);
   }
-  const indirectCount = Number(member?.indirect_network || 0);
+
+  try {
+    const indRow = await db.prepare(`
+      SELECT COUNT(1) AS cnt FROM kyc_members
+      WHERE (
+        UPPER(COALESCE(referred_by, '')) IN (
+          SELECT UPPER(referral_id) FROM kyc_members
+          WHERE (
+            (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+          ) AND COALESCE(is_deleted, 0) = 0 AND referral_id IS NOT NULL AND referral_id != ''
+        )
+        OR UPPER(COALESCE(referred_by, '')) IN (
+          SELECT UPPER(login_id) FROM kyc_members
+          WHERE (
+            (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+          ) AND COALESCE(is_deleted, 0) = 0 AND login_id IS NOT NULL AND login_id != ''
+        )
+      ) AND COALESCE(is_deleted, 0) = 0
+    `).bind(refId, refId, logId, logId, memId, memId, refId, refId, logId, logId, memId, memId).first();
+
+    indirectCount = Number(indRow?.cnt || 0);
+  } catch (err) {
+    indirectCount = Number(member?.indirect_network || 0);
+  }
+
+  if (directCount === 0 && Number(member?.direct_network || 0) > 0) {
+    directCount = Number(member.direct_network);
+  }
+  if (indirectCount === 0 && Number(member?.indirect_network || 0) > 0) {
+    indirectCount = Number(member.indirect_network);
+  }
+
   const totalNetwork = directCount + indirectCount;
   const adminRank = String(member?.network_level || "").trim();
   return {
     direct_network: directCount,
     direct_members: directCount,
     direct_members_count: directCount,
+    direct: directCount,
     indirect_network: indirectCount,
+    indirect_members: indirectCount,
+    indirect_members_count: indirectCount,
+    indirect: indirectCount,
     total_network: totalNetwork,
+    network_strength: totalNetwork,
+    team_size: totalNetwork,
     network_level: adminRank,
     network_level_badge: adminRank,
     network_rank: adminRank,
@@ -2784,6 +3093,16 @@ async function handleGetProfessionalProfile(request, db, cors) {
       success: false,
       message: "Authentication required.",
     }, 401, cors);
+  }
+
+  const loginIdUpper = String(member.login_id || "").toUpperCase();
+  const isProfessional = /professional/i.test(member.membership_type || "") || loginIdUpper.startsWith("PRO");
+  if (!isProfessional) {
+    return json({
+      success: false,
+      statusCode: 403,
+      message: "This endpoint is only for Professional members.",
+    }, 403, cors);
   }
 
   const ext1 = (await db.prepare(`
@@ -3008,6 +3327,8 @@ async function handleGetPublicUser(request, db, cors, loginId) {
   };
 
   const profile = {
+    ...(fullKyc?.values || {}),
+    ...(fullKyc?.files || {}),
     id: member.id,
     login_id: member.login_id,
     first_name: member.first_name,
@@ -3045,9 +3366,43 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     city: commBasic.city || member.city || fullKyc?.values?.city || "",
     state: member.state || fullKyc?.values?.state || "",
     district: member.district || fullKyc?.values?.district || "",
+    pincode: fullKyc?.values?.pincode || member.pincode || "",
+    current_address: fullKyc?.values?.current_address || member.current_address || member.address || "",
+    permanent_address: fullKyc?.values?.permanent_address || "",
+    address: fullKyc?.values?.current_address || member.current_address || member.address || "",
     country: "India",
     profession: member.occupation || (isProfessional ? "Professional" : ""),
-    education: member.education || fullKyc?.values?.highest_qualification || "",
+    education: fullKyc?.values?.highest_qualification || member.education || "",
+    highest_qualification: fullKyc?.values?.highest_qualification || member.highest_qualification || member.education || "",
+    educational_qualification: fullKyc?.values?.highest_qualification || member.educational_qualification || member.education || "",
+    institution_name: fullKyc?.values?.institution_name || member.institution_name || "",
+    school_college_name: fullKyc?.values?.institution_name || member.school_college_name || "",
+    certifications_achievements: fullKyc?.values?.certifications_achievements || "",
+    additional_certifications: fullKyc?.values?.certifications_achievements || "",
+    father_spouse_name: fullKyc?.values?.father_spouse_name || member.father_spouse_name || member.father_name || "",
+    father_name: fullKyc?.values?.father_spouse_name || member.father_spouse_name || member.father_name || "",
+    blood_group: fullKyc?.values?.blood_group || member.blood_group || "",
+    aadhaar_number: fullKyc?.values?.aadhaar_number || member.aadhaar_number || member.aadhar || "",
+    aadhar: fullKyc?.values?.aadhaar_number || member.aadhaar_number || member.aadhar || "",
+    pan_number: fullKyc?.values?.pan_number || member.pan_number || member.pan || "",
+    pan: fullKyc?.values?.pan_number || member.pan_number || member.pan || "",
+    nominee_name: fullKyc?.values?.nominee_name || member.nominee_name || member.nomini_name || "",
+    nomini_name: fullKyc?.values?.nominee_name || member.nomini_name || "",
+    nominee_relationship: fullKyc?.values?.nominee_relationship || member.nominee_relationship || member.nomini_relationship || "",
+    nomini_relationship: fullKyc?.values?.nominee_relationship || member.nomini_relationship || "",
+    nominee_dob: fullKyc?.values?.nominee_dob || member.nominee_dob || member.nomini_dob || "",
+    nomini_dob: fullKyc?.values?.nominee_dob || member.nomini_dob || "",
+    nominee_aadhaar: fullKyc?.values?.nominee_aadhaar || member.nominee_aadhaar || member.nomini_aadhar || "",
+    nomini_aadhar: fullKyc?.values?.nominee_aadhaar || member.nomini_aadhar || "",
+    emergency_contact_name: fullKyc?.values?.emergency_contact_name || member.emergency_contact_name || "",
+    emergency_contact_number: fullKyc?.values?.emergency_contact_number || member.emergency_contact_number || "",
+    emergency_relationship: fullKyc?.values?.emergency_relationship || member.emergency_relationship || "",
+    bank_name: fullKyc?.values?.bank_name || member.bank_name || "",
+    bank_account_number: fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || member.bank_account_number || member.account_number || "",
+    account_number: fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || member.account_number || "",
+    ifsc_code: fullKyc?.values?.ifsc_code || member.ifsc_code || "",
+    ifsc: fullKyc?.values?.ifsc_code || member.ifsc_code || "",
+    branch: fullKyc?.values?.branch || member.branch || "",
     skills: fullKyc?.values?.skills || "",
     social_instagram: fullKyc?.values?.instagram_url || "",
     social_linkedin: fullKyc?.values?.linkedin_url || "",
@@ -3079,12 +3434,13 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     business,
     public_profile_fields: [
       "full_name", "first_name", "last_name", "email", "phone", "bio",
-      "profile_pic", "city", "state", "profession", "education", "skills",
-      "social_instagram", "social_linkedin", "social_facebook", "social_youtube",
-      "portfolio_url", "business"
+      "profile_photo", "profile_pic", "city", "state", "district", "location",
+      "profession", "education", "skills", "achievements", "social", "media",
+      "rank", "website", "social_instagram", "social_linkedin", "social_facebook",
+      "social_youtube", "portfolio_url", "business"
     ],
     public_profile_sections: [
-      "about", "contact", "social", "experience", "education", "skills", "business"
+      "about", "contact", "social", "experience", "education", "skills", "achievements", "media", "business"
     ],
     values: {
       ...fullKyc?.values,
@@ -3105,6 +3461,156 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     profile,
     member: profile,
     business,
+  }, 200, cors);
+}
+
+async function handleGetPublicNetwork(request, db, cors, targetId) {
+  let target = null;
+  if (targetId) {
+    target = await db.prepare(`
+      SELECT * FROM kyc_members
+      WHERE UPPER(login_id) = UPPER(?) OR UPPER(referral_id) = UPPER(?) OR CAST(id AS TEXT) = ?
+      LIMIT 1
+    `).bind(targetId, targetId, targetId).first();
+  }
+  if (!target) {
+    target = await getCurrentMember(request, db);
+  }
+  if (!target) {
+    return json({ success: false, message: "Member not found." }, 404, cors);
+  }
+
+  const refId = String(target.referral_id || "").trim();
+  const logId = String(target.login_id || "").trim();
+  const memId = String(target.id || "").trim();
+
+  const directResult = await db.prepare(`
+    SELECT id, login_id, first_name, last_name, payment_status, created_at, referral_id, referred_by
+    FROM kyc_members
+    WHERE (
+      (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+      OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+      OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+    ) AND COALESCE(is_deleted, 0) = 0
+    ORDER BY id DESC
+  `).bind(refId, refId, logId, logId, memId, memId).all();
+
+  const directList = directResult.results || [];
+  const directPaid = directList.filter(m =>
+    ["approved", "paid", "success", "successful", "completed"].includes(String(m.payment_status || "").toLowerCase())
+  ).length;
+  const directUnpaid = directList.length - directPaid;
+
+  let indirectPaid = 0;
+  let indirectUnpaid = 0;
+  let indirectTotal = 0;
+  try {
+    const indResult = await db.prepare(`
+      SELECT id, payment_status FROM kyc_members
+      WHERE (
+        UPPER(COALESCE(referred_by, '')) IN (
+          SELECT UPPER(referral_id) FROM kyc_members
+          WHERE (
+            (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+          ) AND COALESCE(is_deleted, 0) = 0 AND referral_id IS NOT NULL AND referral_id != ''
+        )
+        OR UPPER(COALESCE(referred_by, '')) IN (
+          SELECT UPPER(login_id) FROM kyc_members
+          WHERE (
+            (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+          ) AND COALESCE(is_deleted, 0) = 0 AND login_id IS NOT NULL AND login_id != ''
+        )
+      ) AND COALESCE(is_deleted, 0) = 0
+    `).bind(refId, refId, logId, logId, memId, memId, refId, refId, logId, logId, memId, memId).all();
+
+    const indList = indResult.results || [];
+    indirectTotal = indList.length;
+    indirectPaid = indList.filter(m =>
+      ["approved", "paid", "success", "successful", "completed"].includes(String(m.payment_status || "").toLowerCase())
+    ).length;
+    indirectUnpaid = indirectTotal - indirectPaid;
+  } catch (err) {}
+
+  const responseData = {
+    login_id: target.login_id,
+    referral_id: target.referral_id || "",
+    direct_paid: directPaid,
+    direct_unpaid: directUnpaid,
+    indirect_paid: indirectPaid,
+    indirect_unpaid: indirectUnpaid,
+    direct_total: directList.length,
+    indirect_total: indirectTotal,
+    total_network: directList.length + indirectTotal,
+    tns_points: directPaid * 100,
+  };
+
+  return json({
+    success: true,
+    data: responseData,
+    ...responseData,
+  }, 200, cors);
+}
+
+async function handleGetPublicMembers(request, db, cors, targetId) {
+  let target = null;
+  if (targetId) {
+    target = await db.prepare(`
+      SELECT * FROM kyc_members
+      WHERE UPPER(login_id) = UPPER(?) OR UPPER(referral_id) = UPPER(?) OR CAST(id AS TEXT) = ?
+      LIMIT 1
+    `).bind(targetId, targetId, targetId).first();
+  }
+  if (!target) {
+    target = await getCurrentMember(request, db);
+  }
+  if (!target) {
+    return json({ success: false, message: "Member not found." }, 404, cors);
+  }
+
+  const refId = String(target.referral_id || "").trim();
+  const logId = String(target.login_id || "").trim();
+  const memId = String(target.id || "").trim();
+
+  const directResult = await db.prepare(`
+    SELECT id, login_id, first_name, last_name, email, phone, membership_type, payment_status, created_at, referral_id, referred_by, profile_pic
+    FROM kyc_members
+    WHERE (
+      (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+      OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+      OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+    ) AND COALESCE(is_deleted, 0) = 0
+    ORDER BY id DESC
+  `).bind(refId, refId, logId, logId, memId, memId).all();
+
+  const directList = (directResult.results || []).map(m => {
+    const isPaid = ["approved", "paid", "success", "successful", "completed"].includes(String(m.payment_status || "").toLowerCase());
+    return {
+      ...m,
+      full_name: [m.first_name, m.last_name].filter(Boolean).join(" ") || "Member",
+      name: [m.first_name, m.last_name].filter(Boolean).join(" ") || "Member",
+      paid: isPaid,
+      is_paid: isPaid,
+      isPaid: isPaid,
+      is_active: isPaid,
+    };
+  });
+
+  const responseData = {
+    login_id: target.login_id,
+    direct_members: directList,
+    direct_total: directList.length,
+    indirect_paid: 0,
+    indirect_unpaid: 0,
+  };
+
+  return json({
+    success: true,
+    data: responseData,
+    ...responseData,
   }, 200, cors);
 }
 
@@ -3217,12 +3723,20 @@ async function handleGetDashboard(request, db, cors) {
     SELECT * FROM kyc_members_ext_1 WHERE member_id = ?
   `).bind(member.id).first()) || {};
 
+  const refId = String(member.referral_id || "").trim();
+  const logId = String(member.login_id || "").trim();
+  const memId = String(member.id || "").trim();
+
   const directResult = await db.prepare(`
-    SELECT id, login_id, first_name, last_name, payment_status, created_at
+    SELECT id, login_id, first_name, last_name, email, phone, membership_type, payment_status, created_at, referral_id, referred_by
     FROM kyc_members
-    WHERE referred_by = ? AND COALESCE(is_deleted, 0) = 0
+    WHERE (
+      (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+      OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+      OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+    ) AND COALESCE(is_deleted, 0) = 0
     ORDER BY id DESC
-  `).bind(member.referral_id || "").all();
+  `).bind(refId, refId, logId, logId, memId, memId).all();
 
   const directList = directResult.results || [];
   const directCount = directList.length;
@@ -3230,6 +3744,44 @@ async function handleGetDashboard(request, db, cors) {
     ["approved", "paid", "success", "successful", "completed"].includes(String(m.payment_status || "").toLowerCase())
   ).length;
   const directUnpaid = directCount - directPaid;
+
+  let indirectCount = 0;
+  let indirectPaid = 0;
+  let indirectUnpaid = 0;
+  try {
+    const indirectResult = await db.prepare(`
+      SELECT id, login_id, first_name, last_name, payment_status, created_at, referral_id, referred_by
+      FROM kyc_members
+      WHERE (
+        UPPER(COALESCE(referred_by, '')) IN (
+          SELECT UPPER(referral_id) FROM kyc_members
+          WHERE (
+            (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+          ) AND COALESCE(is_deleted, 0) = 0 AND referral_id IS NOT NULL AND referral_id != ''
+        )
+        OR UPPER(COALESCE(referred_by, '')) IN (
+          SELECT UPPER(login_id) FROM kyc_members
+          WHERE (
+            (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+          ) AND COALESCE(is_deleted, 0) = 0 AND login_id IS NOT NULL AND login_id != ''
+        )
+      ) AND COALESCE(is_deleted, 0) = 0
+      ORDER BY id DESC
+    `).bind(refId, refId, logId, logId, memId, memId, refId, refId, logId, logId, memId, memId).all();
+
+    const indirectList = indirectResult.results || [];
+    indirectCount = indirectList.length;
+    indirectPaid = indirectList.filter(m =>
+      ["approved", "paid", "success", "successful", "completed"].includes(String(m.payment_status || "").toLowerCase())
+    ).length;
+    indirectUnpaid = indirectCount - indirectPaid;
+  } catch (err) {}
+
+  const totalCount = directCount + indirectCount;
 
   let sponsor = null;
   if (member.referred_by) {
@@ -3261,6 +3813,10 @@ async function handleGetDashboard(request, db, cors) {
     paymentStatus: memberPaymentStatus,
     is_approved: isApproved,
     is_payment_approved: isApproved,
+    direct_network: directCount,
+    indirect_network: indirectCount,
+    total_network: totalCount,
+    team_size: totalCount,
     profile_pic: fullMember.profile_pic || fullKyc?.files?.profile_photo || "",
     profile_photo: fullMember.profile_pic || fullKyc?.files?.profile_photo || "",
     profile_photo_url: fullMember.profile_pic || fullKyc?.files?.profile_photo || "",
@@ -3281,27 +3837,36 @@ async function handleGetDashboard(request, db, cors) {
     profile: memberObj,
     network: {
       direct: directCount,
-      indirect: 0,
-      total: directCount,
+      indirect: indirectCount,
+      total: totalCount,
+      total_network: totalCount,
+      team_size: totalCount,
       direct_paid: directPaid,
       direct_unpaid: directUnpaid,
-      indirect_paid: 0,
-      indirect_unpaid: 0,
+      indirect_paid: indirectPaid,
+      indirect_unpaid: indirectUnpaid,
       paid_direct: directPaid,
       unpaid_direct: directUnpaid,
-      paid_indirect: 0,
-      unpaid_indirect: 0,
-      network_strength: directCount,
+      paid_indirect: indirectPaid,
+      unpaid_indirect: indirectUnpaid,
+      network_strength: totalCount,
+      direct_members: directList,
     },
     sponsor,
     referred_user: sponsor,
     direct: directCount,
-    indirect: 0,
+    indirect: indirectCount,
+    total: totalCount,
+    total_network: totalCount,
+    team_size: totalCount,
     paid_direct: directPaid,
     unpaid_direct: directUnpaid,
-    paid_indirect: 0,
-    unpaid_indirect: 0,
-    network_strength: directCount,
+    paid_indirect: indirectPaid,
+    unpaid_indirect: indirectUnpaid,
+    network_strength: totalCount,
+    direct_network: directCount,
+    indirect_network: indirectCount,
+    direct_members: directList,
     referral_id: member.referral_id,
     acknowledgement_url: member.token ? `/acknowledgement/${member.token}` : null,
   };
@@ -3359,10 +3924,56 @@ async function handleGetAdminUser(request, db, cors, id) {
     `).bind(member.referred_by, member.referred_by).first();
   }
 
-  const directCountRow = await db.prepare(`
-    SELECT COUNT(1) AS count FROM kyc_members WHERE referred_by = ? AND COALESCE(is_deleted, 0) = 0
-  `).bind(member.referral_id || "").first();
-  const directCount = directCountRow ? directCountRow.count : 0;
+  const refId = String(member.referral_id || "").trim();
+  const logId = String(member.login_id || "").trim();
+  const memId = String(member.id || "").trim();
+
+  let directCount = 0;
+  let indirectCount = 0;
+  try {
+    const directCountRow = await db.prepare(`
+      SELECT COUNT(1) AS count FROM kyc_members
+      WHERE (
+        (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+        OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+        OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+      ) AND COALESCE(is_deleted, 0) = 0
+    `).bind(refId, refId, logId, logId, memId, memId).first();
+    directCount = directCountRow ? Number(directCountRow.count || 0) : 0;
+  } catch (e) {}
+
+  try {
+    const indRow = await db.prepare(`
+      SELECT COUNT(1) AS cnt FROM kyc_members
+      WHERE (
+        UPPER(COALESCE(referred_by, '')) IN (
+          SELECT UPPER(referral_id) FROM kyc_members
+          WHERE (
+            (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+          ) AND COALESCE(is_deleted, 0) = 0 AND referral_id IS NOT NULL AND referral_id != ''
+        )
+        OR UPPER(COALESCE(referred_by, '')) IN (
+          SELECT UPPER(login_id) FROM kyc_members
+          WHERE (
+            (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+          ) AND COALESCE(is_deleted, 0) = 0 AND login_id IS NOT NULL AND login_id != ''
+        )
+      ) AND COALESCE(is_deleted, 0) = 0
+    `).bind(refId, refId, logId, logId, memId, memId, refId, refId, logId, logId, memId, memId).first();
+    indirectCount = indRow ? Number(indRow.cnt || 0) : 0;
+  } catch (e) {}
+
+  if (directCount === 0 && Number(member.direct_network || 0) > 0) {
+    directCount = Number(member.direct_network);
+  }
+  if (indirectCount === 0 && Number(member.indirect_network || 0) > 0) {
+    indirectCount = Number(member.indirect_network);
+  }
+  const totalCount = directCount + indirectCount;
 
   const hasPayment = Boolean(
     (commPayment?.transaction_id && String(commPayment.transaction_id).trim()) ||
@@ -3624,14 +4235,119 @@ async function handleAdminRestore(request, db, cors, id) {
 }
 
 async function handleAdminPermanentDelete(request, db, cors, id) {
-  await db.prepare(`DELETE FROM civilian_full_kyc WHERE member_id = ?`).bind(id).run();
-  await db.prepare(`DELETE FROM kyc_members_ext_1 WHERE member_id = ?`).bind(id).run();
-  await db.prepare(`DELETE FROM kyc_members WHERE id = ?`).bind(id).run();
-  return json({
-    success: true,
-    statusCode: 200,
-    message: "User permanently deleted.",
-  }, 200, cors);
+  try {
+    let member = null;
+    let memberId = Number(id);
+
+    if (memberId && !isNaN(memberId)) {
+      try {
+        member = await db.prepare("SELECT * FROM kyc_members WHERE id = ?").bind(memberId).first();
+      } catch (e) {
+        console.warn("Could not fetch member by id:", e);
+      }
+    }
+
+    if (!member) {
+      try {
+        member = await db.prepare("SELECT * FROM kyc_members WHERE login_id = ?").bind(String(id)).first();
+        if (member) {
+          memberId = member.id;
+        }
+      } catch (e) {
+        console.warn("Could not fetch member by login_id:", e);
+      }
+    }
+
+    // 1. Insert into deleted_users_backup table if member exists
+    if (member) {
+      try {
+        await db.prepare(`
+          CREATE TABLE IF NOT EXISTS deleted_users_backup (
+            backup_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            original_id INTEGER,
+            first_name TEXT,
+            last_name TEXT,
+            email TEXT,
+            phone TEXT,
+            backup_data TEXT NOT NULL,
+            backed_up_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+          )
+        `).run().catch(() => {});
+
+        await db.prepare(`
+          INSERT INTO deleted_users_backup (
+            original_id, first_name, last_name, email, phone, backup_data, backed_up_at
+          ) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
+        `).bind(
+          member.id,
+          member.first_name || null,
+          member.last_name || null,
+          member.email || null,
+          member.phone || null,
+          JSON.stringify(member)
+        ).run().catch((bInsertErr) => {
+          console.warn("deleted_users_backup insert error:", bInsertErr);
+        });
+      } catch (bErr) {
+        console.warn("deleted_users_backup table error:", bErr);
+      }
+    }
+
+    // 2. Delete all dependent child rows referencing member_id to avoid foreign key failures
+    if (memberId) {
+      await db.prepare(`DELETE FROM worker_auth_sessions WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+      await db.prepare(`DELETE FROM civilian_full_kyc WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+      await db.prepare(`DELETE FROM kyc_members_ext_1 WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+      await db.prepare(`DELETE FROM kyc_members_ext_2 WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+      await db.prepare(`DELETE FROM commercial_kyc WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+      await db.prepare(`DELETE FROM professional_kyc_progress WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+      await db.prepare(`DELETE FROM commercial_kyc_progress WHERE member_id = ?`).bind(memberId).run().catch(() => {});
+    }
+
+    // 3. Delete dependent rows referencing member login_id if present
+    if (member && member.login_id) {
+      await db.prepare(`DELETE FROM commercial_basic_kyc WHERE login_id = ?`).bind(member.login_id).run().catch(() => {});
+      await db.prepare(`DELETE FROM commercial_payments WHERE login_id = ?`).bind(member.login_id).run().catch(() => {});
+      await db.prepare(`DELETE FROM commercial_kyc WHERE login_id = ?`).bind(member.login_id).run().catch(() => {});
+      await db.prepare(`DELETE FROM inmba_sessions WHERE data LIKE ?`).bind(`%${member.login_id}%`).run().catch(() => {});
+    }
+
+    // 4. Clear referral dependencies
+    if (member) {
+      if (member.referral_id) {
+        await db.prepare(`UPDATE kyc_members SET referred_by = NULL WHERE referred_by = ?`).bind(member.referral_id).run().catch(() => {});
+      }
+      if (member.login_id) {
+        await db.prepare(`UPDATE kyc_members SET referred_by = NULL WHERE referred_by = ?`).bind(member.login_id).run().catch(() => {});
+      }
+      await db.prepare(`UPDATE kyc_members SET referred_by = NULL WHERE referred_by = ?`).bind(String(member.id)).run().catch(() => {});
+    }
+
+    // 5. Permanently delete from kyc_members
+    if (memberId) {
+      await db.prepare(`DELETE FROM kyc_members WHERE id = ?`).bind(memberId).run().catch(() => {});
+    } else if (member && member.login_id) {
+      await db.prepare(`DELETE FROM kyc_members WHERE login_id = ?`).bind(member.login_id).run().catch(() => {});
+    }
+
+    return json({
+      success: true,
+      statusCode: 200,
+      message: "User permanently deleted.",
+      data: {
+        id: memberId || id,
+        deleted: true,
+      },
+    }, 200, cors);
+  } catch (error) {
+    console.error("handleAdminPermanentDelete error:", error);
+    return json({
+      success: false,
+      statusCode: 500,
+      error: error?.message || "Failed to permanently delete member.",
+      message: error?.message || "Failed to permanently delete member.",
+    }, 500, cors);
+  }
 }
 
 async function handleAdminRequestUserOtp(request, db, cors, id) {
@@ -3933,8 +4649,8 @@ async function handleRazorpayCreateOrder(request, env, cors) {
       }, 400, cors);
     }
 
-    const keyId = env.RAZORPAY_KEY_ID || "rzp_test_U1AQxKTavMChW2";
-    const keySecret = env.RAZORPAY_KEY_SECRET || "UcqnUwstguJCWGbXPcbl6PGK";
+    const keyId = env.RAZORPAY_KEY_ID || "rzp_live_U22ipTA2hIJrdz";
+    const keySecret = env.RAZORPAY_KEY_SECRET || "MH4dSmqUFSpjZYFzOPVCRUAn";
 
     const orderPayload = {
       amount: Math.round(numericAmount),
@@ -4017,7 +4733,7 @@ async function handleRazorpayVerifyPayment(request, env, cors) {
       }, 400, cors);
     }
 
-    const keySecret = env.RAZORPAY_KEY_SECRET || "UcqnUwstguJCWGbXPcbl6PGK";
+    const keySecret = env.RAZORPAY_KEY_SECRET || "MH4dSmqUFSpjZYFzOPVCRUAn";
     const enc = new TextEncoder();
     const key = await crypto.subtle.importKey(
       "raw",
@@ -4041,6 +4757,50 @@ async function handleRazorpayVerifyPayment(request, env, cors) {
       }, 400, cors);
     }
 
+    // Auto-approve and complete payment in database upon successful verification
+    const memberId = body.member_id || body.memberId;
+    const loginId = body.login_id || body.loginId;
+    const amount = Number(body.amount) || 299;
+    const planName = body.plan_name || body.plan || "Membership";
+
+    try {
+      if (memberId && env.inmba_db) {
+        await env.inmba_db.prepare(`
+          UPDATE kyc_members
+          SET payment_status = 'approved',
+              updated_at = datetime('now')
+          WHERE id = ?
+        `).bind(memberId).run().catch(() => {});
+
+        await env.inmba_db.prepare(`
+          UPDATE kyc_members_ext_1
+          SET payment_status = 'approved',
+              transaction_id = ?,
+              payment_method = 'Razorpay',
+              amount = COALESCE(?, amount),
+              updated_at = datetime('now')
+          WHERE member_id = ?
+        `).bind(effectivePaymentId, amount, memberId).run().catch(() => {});
+      }
+
+      if (loginId && env.inmba_db) {
+        await env.inmba_db.prepare(`
+          UPDATE kyc_members
+          SET payment_status = 'approved',
+              updated_at = datetime('now')
+          WHERE login_id = ?
+        `).bind(loginId).run().catch(() => {});
+
+        await env.inmba_db.prepare(`
+          INSERT INTO commercial_payments (
+            login_id, plan_name, amount, payment_method, transaction_id, payment_status, created_at
+          ) VALUES (?, ?, ?, 'Razorpay', ?, 'approved', datetime('now'))
+        `).bind(loginId, planName, amount, effectivePaymentId).run().catch(() => {});
+      }
+    } catch (dbErr) {
+      console.warn("Could not auto-update member payment status:", dbErr);
+    }
+
     return json({
       statusCode: 200,
       success: true,
@@ -4049,6 +4809,7 @@ async function handleRazorpayVerifyPayment(request, env, cors) {
         order_id: effectiveOrderId,
         payment_id: effectivePaymentId,
         verified: true,
+        payment_status: "approved",
       },
     }, 200, cors);
   } catch (err) {
@@ -4061,7 +4822,7 @@ async function handleRazorpayVerifyPayment(request, env, cors) {
 }
 
 async function handleRazorpayGetKey(request, env, cors) {
-  const keyId = env.RAZORPAY_KEY_ID || "rzp_test_U1AQxKTavMChW2";
+  const keyId = env.RAZORPAY_KEY_ID || "rzp_live_U22ipTA2hIJrdz";
   return json({
     statusCode: 200,
     success: true,
@@ -4145,6 +4906,26 @@ async function handleRazorpayGetKey(request, env, cors) {
       }
 
       // =========================================================
+      // NETWORK ROUTES (FOR DIRECT NETWORK PAGE & SUMMARY)
+      // =========================================================
+
+      const publicNetworkMatch = path.match(/^\/(?:api\/)?public\/network\/([a-zA-Z0-9_-]+)$/) ||
+                                 path.match(/^\/(?:api\/)?network\/([a-zA-Z0-9_-]+)$/);
+      if (publicNetworkMatch && method === "GET") {
+        return await handleGetPublicNetwork(request, db, cors, publicNetworkMatch[1]);
+      }
+
+      const publicMembersMatch = path.match(/^\/(?:api\/)?public\/members\/([a-zA-Z0-9_-]+)$/) ||
+                                 path.match(/^\/(?:api\/)?members\/([a-zA-Z0-9_-]+)$/);
+      if (publicMembersMatch && method === "GET") {
+        return await handleGetPublicMembers(request, db, cors, publicMembersMatch[1]);
+      }
+
+      if ((path === "/api/direct_network" || path === "/direct_network" || path === "/api/network" || path === "/network") && method === "GET") {
+        return await handleGetPublicMembers(request, db, cors, null);
+      }
+
+      // =========================================================
       // ADMIN MEMBER ROUTES
       // =========================================================
 
@@ -4175,8 +4956,9 @@ async function handleRazorpayGetKey(request, env, cors) {
         return await handleAdminRestore(request, db, cors, restoreMatch[1]);
       }
 
-      const permDeleteMatch = path.match(/^\/(?:api\/)?permanent_delete\/(\d+)$/);
-      if (permDeleteMatch && method === "POST") {
+      const permDeleteMatch = path.match(/^\/(?:api\/)?permanent_delete\/([a-zA-Z0-9_-]+)$/) ||
+                              path.match(/^\/(?:api\/)?admin\/user\/([a-zA-Z0-9_-]+)\/permanent$/);
+      if (permDeleteMatch && (method === "POST" || method === "DELETE")) {
         return await handleAdminPermanentDelete(request, db, cors, permDeleteMatch[1]);
       }
 
@@ -4219,6 +5001,15 @@ async function handleRazorpayGetKey(request, env, cors) {
       }
 
       if ((path === "/api/admin/users" || path === "/admin/users") && method === "GET") {
+        const currentAdmin = await getCurrentAdmin(request, db);
+        if (!currentAdmin) {
+          return json({
+            success: false,
+            statusCode: 401,
+            message: "Unauthorized. Admin credentials required.",
+          }, 401, cors);
+        }
+
         const users = await db.prepare(`
           SELECT 
             k.id, k.login_id, k.first_name, k.last_name, k.email, k.phone, 
@@ -4229,7 +5020,7 @@ async function handleRazorpayGetKey(request, env, cors) {
             COALESCE(cp.payment_method, ext.payment_method, '') AS payment_method,
             COALESCE(cp.transaction_id, ext.transaction_id, '') AS transaction_id,
             COALESCE(ext.payment_proof, '') AS payment_proof,
-            (SELECT COUNT(1) FROM kyc_members d WHERE d.referred_by = k.referral_id AND COALESCE(d.is_deleted, 0) = 0) AS direct_members_count,
+            (SELECT COUNT(1) FROM kyc_members d WHERE (d.referred_by = k.referral_id OR d.referred_by = k.login_id OR d.referred_by = CAST(k.id AS TEXT) OR UPPER(COALESCE(d.referred_by, '')) = UPPER(COALESCE(k.referral_id, '')) OR UPPER(COALESCE(d.referred_by, '')) = UPPER(COALESCE(k.login_id, ''))) AND COALESCE(d.is_deleted, 0) = 0) AS direct_members_count,
             0 AS indirect_members_count
           FROM kyc_members k
           LEFT JOIN kyc_members_ext_1 ext ON k.id = ext.member_id
@@ -4318,13 +5109,59 @@ async function handleRazorpayGetKey(request, env, cors) {
         }, 200, cors);
       }
 
+      if ((path === "/deleted_users_backup" || path === "/api/deleted_users_backup" || path === "/api/admin/backups/deleted-users") && method === "GET") {
+        try {
+          await db.prepare(`
+            CREATE TABLE IF NOT EXISTS deleted_users_backup (
+              backup_id INTEGER PRIMARY KEY AUTOINCREMENT,
+              original_id INTEGER,
+              first_name TEXT,
+              last_name TEXT,
+              email TEXT,
+              phone TEXT,
+              backup_data TEXT NOT NULL,
+              backed_up_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+          `).run().catch(() => {});
+
+          const backups = await db.prepare(`
+            SELECT * FROM deleted_users_backup ORDER BY backup_id DESC
+          `).all();
+
+          return json({
+            success: true,
+            backups: backups.results || [],
+            data: {
+              backups: backups.results || [],
+              total: (backups.results || []).length,
+            },
+          }, 200, cors);
+        } catch (backupErr) {
+          return json({
+            success: true,
+            backups: [],
+            data: { backups: [], total: 0 },
+          }, 200, cors);
+        }
+      }
+
       if (path === "/api/auth/admin-me" && method === "GET") {
         const admin = await getCurrentAdmin(request, db);
+        if (!admin) {
+          return json({
+            success: false,
+            statusCode: 200,
+            authenticated: false,
+            admin: null,
+            message: "Admin is not authenticated.",
+          }, 200, cors);
+        }
 
         return json({
           success: true,
-          authenticated: !!admin,
-          admin: admin || null,
+          statusCode: 200,
+          authenticated: true,
+          admin,
         }, 200, cors);
       }
 

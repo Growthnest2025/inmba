@@ -84,19 +84,30 @@ export default function CommercialBasicKyc() {
   ===================================================== */
 
   const referralFromUrl =
-    useMemo(
-      () =>
-        text(
-          searchParams.get("ref") ??
-            searchParams.get(
-              "referral"
-            )
-        )
-          .replace(/\s/g, "")
-          .slice(0, 50)
-          .toUpperCase(),
-      [searchParams]
-    );
+    useMemo(() => {
+      const fromQuery = text(
+        searchParams.get("ref") ??
+          searchParams.get(
+            "referral"
+          )
+      )
+        .replace(/\s/g, "")
+        .slice(0, 50)
+        .toUpperCase();
+
+      if (fromQuery) return fromQuery;
+
+      if (typeof window !== "undefined") {
+        try {
+          const stored = sessionStorage.getItem("inmba_referral_code") || localStorage.getItem("inmba_referral_code");
+          if (stored) {
+            return text(stored).replace(/\s/g, "").slice(0, 50).toUpperCase();
+          }
+        } catch {}
+      }
+
+      return "";
+    }, [searchParams]);
 
   /* =====================================================
      FORM STATE
@@ -861,6 +872,42 @@ const handleContinueMembership = () => {
             </div>
           </div>
 
+          {/* MEMBERSHIP TYPE SWITCHER */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: "10px",
+              padding: "10px 16px",
+              marginBottom: "16px",
+              background: "#f8fafc",
+              border: "1px solid #e2e8f0",
+              borderRadius: "10px",
+              fontSize: "0.88rem",
+              color: "#475569",
+            }}
+          >
+            <span>
+              Registering for: <strong style={{ color: "#991b1b" }}>Commercial Membership</strong>
+            </span>
+            <Link
+              to={referralFromUrl ? `/membership-type?ref=${encodeURIComponent(referralFromUrl)}` : "/membership-type"}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                fontWeight: 600,
+                color: "#b91c1c",
+                textDecoration: "none",
+              }}
+            >
+              <i className="fas fa-layer-group" aria-hidden="true" />
+              Want Civilian or Professional? Change here
+            </Link>
+          </div>
+
           {/* ERROR */}
 
           {formError && (
@@ -1129,8 +1176,9 @@ const handleContinueMembership = () => {
                 fieldErrors.pan_number
               }
               icon="fas fa-credit-card"
-              placeholder="10-character PAN (e.g. ABCDE1234F)"
+              placeholder="10-character PAN (Optional)"
               maxLength={10}
+              required={false}
               disabled={
                 submitting
               }
@@ -1411,6 +1459,7 @@ function Field({
   error,
   icon,
   placeholder,
+  required = true,
   ...props
 }) {
   return (
@@ -1419,9 +1468,15 @@ function Field({
         htmlFor={`commercial-${name}`}
       >
         {label}{" "}
-        <em>
-          *
-        </em>
+        {required ? (
+          <em>
+            *
+          </em>
+        ) : (
+          <span style={{ fontSize: "0.82rem", color: "#64748b", fontWeight: 400, marginLeft: "6px" }}>
+            (Optional)
+          </span>
+        )}
       </label>
 
       <div className="commercial-registration-input">

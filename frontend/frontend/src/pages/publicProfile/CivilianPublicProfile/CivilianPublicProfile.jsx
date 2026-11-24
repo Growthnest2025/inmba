@@ -284,7 +284,7 @@ const normalizePublic = (
     response ??
     {};
 
-  return (
+  const p = (
     root?.profile ||
     root?.member ||
     root?.user ||
@@ -296,6 +296,14 @@ const normalizePublic = (
     root?.data ||
     root
   );
+
+  if (!p || typeof p !== "object") return p;
+  return {
+    ...(p?.values || {}),
+    ...(p?.files || {}),
+    ...(p?.member || {}),
+    ...p,
+  };
 };
 
 const getBaseName = (
@@ -343,6 +351,7 @@ const getDegree = (
     firstValue(
       profile
         ?.educational_qualification,
+      profile?.highest_qualification,
       profile?.ug_degree,
       profile?.pg_degree,
       profile?.education
@@ -3264,7 +3273,7 @@ export default function CivilianPublicProfile({
 
   const isPublic =
     (fieldName) => {
-      if (isOwner) {
+      if (isOwner || publicViewOnly) {
         return true;
       }
 
@@ -3335,7 +3344,7 @@ export default function CivilianPublicProfile({
   );
 
   const referralCode = text(
-    firstValue(p.referral_id, p.referralCode)
+    firstValue(p.referral_id, p.referralCode, p.login_id, p.loginId)
   );
 
   const referralOrigin =
@@ -3344,7 +3353,7 @@ export default function CivilianPublicProfile({
       : "https://inmba.org";
 
   const referralLink = referralCode
-    ? `${referralOrigin}/membership?ref=${encodeURIComponent(referralCode)}`
+    ? `${referralOrigin}/membership-type?ref=${encodeURIComponent(referralCode)}`
     : "";
 
   const location =
@@ -3477,18 +3486,19 @@ export default function CivilianPublicProfile({
       text(p.pincode)
   );
   const hasEducationData = Boolean(
-    text(firstValue(p.educational_qualification, p.education)) ||
-      text(p.school_college_name) ||
-      list(p.additional_certifications).length > 0 ||
+    text(firstValue(p.educational_qualification, p.highest_qualification, p.education)) ||
+      text(firstValue(p.school_college_name, p.institution_name, p.ug_college, p.pg_college, p.school_name, p.college)) ||
+      list(firstValue(p.additional_certifications, p.certifications_achievements)).length > 0 ||
       list(p.language_skills).length > 0
   );
   const hasAchievementsData = Boolean(
-    list(p.awards_recognitions).length > 0 ||
+    list(firstValue(p.awards_recognitions, p.certifications_achievements)).length > 0 ||
       list(p.publications).length > 0 ||
-      list(p.professional_certifications).length > 0 ||
+      list(firstValue(p.professional_certifications, p.certifications_achievements)).length > 0 ||
       list(p.key_milestones).length > 0 ||
       list(p.media_mentions).length > 0 ||
-      list(p.reference_letters).length > 0
+      list(p.reference_letters).length > 0 ||
+      Boolean(text(p.certifications_achievements))
   );
   const hasSkillsData = Boolean(
     list(p.skills).length > 0 ||
@@ -4354,6 +4364,7 @@ export default function CivilianPublicProfile({
                       firstValue(
                         p
                           .educational_qualification,
+                        p.highest_qualification,
                         p.education
                       ),
                       "Not added"
@@ -4368,8 +4379,11 @@ export default function CivilianPublicProfile({
 
                   <strong>
                     {text(
-                      p
-                        .school_college_name,
+                      firstValue(
+                        p
+                          .school_college_name,
+                        p.institution_name
+                      ),
                       "Not added"
                     )}
                   </strong>
@@ -4383,8 +4397,11 @@ export default function CivilianPublicProfile({
 
                 <Tags
                   value={
-                    p
-                      .additional_certifications
+                    firstValue(
+                      p
+                        .additional_certifications,
+                      p.certifications_achievements
+                    )
                   }
                 />
               </div>
@@ -4428,7 +4445,10 @@ export default function CivilianPublicProfile({
 
                 <Tags
                   value={
-                    p.awards_recognitions
+                    firstValue(
+                      p.awards_recognitions,
+                      p.certifications_achievements
+                    )
                   }
                 />
               </div>

@@ -967,21 +967,41 @@ const backendAmount =
   const directNetwork =
     toNumber(
       dashboardData
-        ?.direct
+        ?.direct ??
+      dashboardData
+        ?.network?.direct ??
+      dashboardData
+        ?.stats?.direct_members ??
+      member.direct_network
     );
 
 
   const indirectNetwork =
     toNumber(
       dashboardData
-        ?.indirect
+        ?.indirect ??
+      dashboardData
+        ?.network?.indirect ??
+      dashboardData
+        ?.stats?.indirect_members ??
+      member.indirect_network
     );
 
 
   const totalNetwork =
     toNumber(
       dashboardData
-        ?.total
+        ?.total ??
+      dashboardData
+        ?.total_network ??
+      dashboardData
+        ?.network?.total ??
+      dashboardData
+        ?.stats?.total_team ??
+      dashboardData
+        ?.networkStrength ??
+      (directNetwork +
+        indirectNetwork)
     );
 
 

@@ -5,6 +5,10 @@
 .inmba-payment-page {
   min-height: 100vh;
   padding: var(--page-top-offset, 160px) 22px 70px;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
   background:
     radial-gradient(
       circle at 8% 15%,
@@ -27,6 +31,9 @@
 .inmba-payment-container {
   width: min(100%, 1120px);
   margin: 0 auto;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 /* ========================================
@@ -1318,4 +1325,50 @@
   .inmba-payment-secondary-button {
     width: 100%;
   }
+
+  .inmba-payment-form-card {
+    padding: 14px 10px;
+  }
+}
+
+/* ========================================
+   SECTION DIVIDERS (RESPONSIVE)
+======================================== */
+
+.inmba-payment-section-divider {
+  text-align: center;
+  margin: 24px 0 20px 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.inmba-payment-section-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #cbd5e1;
+  z-index: 1;
+}
+
+.inmba-payment-section-divider-text {
+  position: relative;
+  z-index: 2;
+  background: #f4f8f3;
+  padding: 3px 12px;
+  color: #64748b;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  max-width: 90%;
+  text-align: center;
+  border-radius: 4px;
+  word-break: break-word;
+  line-height: 1.4;
 }

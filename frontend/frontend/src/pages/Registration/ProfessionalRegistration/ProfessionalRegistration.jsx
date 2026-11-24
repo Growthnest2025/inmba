@@ -37,6 +37,8 @@ const INITIAL_FORM_DATA = {
   email: "",
   dob: "",
   password: "",
+  category: "",
+  relationship: "",
   referral: "",
   profile_photo: null,
 };
@@ -115,20 +117,26 @@ export default function ProfessionalRegistration() {
   ======================================================= */
 
   const referralFromUrl =
-    useMemo(
-      () =>
-        toText(
+    useMemo(() => {
+      const fromQuery = toText(
+        searchParams.get(
+          "ref"
+        ) ??
           searchParams.get(
-            "ref"
-          ) ??
-            searchParams.get(
-              "referral"
-            )
-        ),
-      [
-        searchParams,
-      ]
-    );
+            "referral"
+          )
+      );
+      if (fromQuery) return fromQuery;
+
+      if (typeof window !== "undefined") {
+        try {
+          const stored = sessionStorage.getItem("inmba_referral_code") || localStorage.getItem("inmba_referral_code");
+          if (stored) return toText(stored);
+        } catch {}
+      }
+
+      return "";
+    }, [searchParams]);
 
   /* =======================================================
      FORM STATE
@@ -1148,6 +1156,42 @@ export default function ProfessionalRegistration() {
             </div>
           </div>
 
+          {/* MEMBERSHIP TYPE SWITCHER */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: "10px",
+              padding: "10px 16px",
+              marginBottom: "16px",
+              background: "#f8fafc",
+              border: "1px solid #e2e8f0",
+              borderRadius: "10px",
+              fontSize: "0.88rem",
+              color: "#475569",
+            }}
+          >
+            <span>
+              Registering for: <strong style={{ color: "#1d4ed8" }}>Professional Membership</strong>
+            </span>
+            <Link
+              to={referralFromUrl ? `/membership-type?ref=${encodeURIComponent(referralFromUrl)}` : "/membership-type"}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                fontWeight: 600,
+                color: "#2563eb",
+                textDecoration: "none",
+              }}
+            >
+              <i className="fas fa-layer-group" aria-hidden="true" />
+              Want Civilian or Commercial? Change here
+            </Link>
+          </div>
+
           {/* ERROR */}
 
           {formError && (
@@ -1417,6 +1461,130 @@ export default function ProfessionalRegistration() {
                   )}
                 </small>
               )}
+            </div>
+
+            {/* PROFESSIONAL CATEGORY */}
+            <div className="professional-registration-field">
+              <div className="professional-registration-label-row">
+                <label htmlFor="professional-category">
+                  Professional Category
+                </label>
+                <span>Required</span>
+              </div>
+              <div className="professional-registration-input">
+                <i className="fas fa-briefcase" />
+                <select
+                  id="professional-category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleInputChange}
+                  disabled={submitting}
+                  style={{
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    outline: "none",
+                    fontSize: "0.95rem",
+                    color: formData.category ? "#0f172a" : "#94a3b8",
+                    cursor: "pointer",
+                    padding: "8px 0",
+                  }}
+                >
+                  <option value="">Select Professional Category (40+ Categories)</option>
+                  <option value="Information Technology (IT) & Software">Information Technology (IT) & Software</option>
+                  <option value="Web & Mobile App Development">Web & Mobile App Development</option>
+                  <option value="Artificial Intelligence & Data Science">Artificial Intelligence & Data Science</option>
+                  <option value="Cybersecurity & Cloud Computing">Cybersecurity & Cloud Computing</option>
+                  <option value="Healthcare & Medicine (Doctor / Surgeon)">Healthcare & Medicine (Doctor / Surgeon)</option>
+                  <option value="Dental & Oral Health Services">Dental & Oral Health Services</option>
+                  <option value="Nursing & Allied Health Services">Nursing & Allied Health Services</option>
+                  <option value="Pharmacy & Pharmacology">Pharmacy & Pharmacology</option>
+                  <option value="Legal Practice (Advocate / Lawyer)">Legal Practice (Advocate / Lawyer)</option>
+                  <option value="Corporate Law, IPR & Compliance">Corporate Law, IPR & Compliance</option>
+                  <option value="Chartered Accountancy (CA) & Auditing">Chartered Accountancy (CA) & Auditing</option>
+                  <option value="Cost Accounting & Financial Analysis">Cost Accounting & Financial Analysis</option>
+                  <option value="Banking, Investment & Insurance">Banking, Investment & Insurance</option>
+                  <option value="Taxation & GST Consultancy">Taxation & GST Consultancy</option>
+                  <option value="Teaching, Academics & Professorship">Teaching, Academics & Professorship</option>
+                  <option value="School & College Administration">School & College Administration</option>
+                  <option value="Civil & Structural Engineering">Civil & Structural Engineering</option>
+                  <option value="Mechanical & Automobile Engineering">Mechanical & Automobile Engineering</option>
+                  <option value="Electrical & Electronics Engineering">Electrical & Electronics Engineering</option>
+                  <option value="Architecture & Urban Planning">Architecture & Urban Planning</option>
+                  <option value="Interior Design & Space Styling">Interior Design & Space Styling</option>
+                  <option value="Construction & Project Management">Construction & Project Management</option>
+                  <option value="Real Estate Advisory & Broking">Real Estate Advisory & Broking</option>
+                  <option value="Business Consulting & Strategy">Business Consulting & Strategy</option>
+                  <option value="Human Resources (HR) & Staffing">Human Resources (HR) & Staffing</option>
+                  <option value="Digital Marketing, SEO & Ads">Digital Marketing, SEO & Ads</option>
+                  <option value="Branding, Advertising & Public Relations">Branding, Advertising & Public Relations</option>
+                  <option value="Journalism, Media & News Broadcasting">Journalism, Media & News Broadcasting</option>
+                  <option value="Content Creation & Video Production">Content Creation & Video Production</option>
+                  <option value="Photography & Cinematography">Photography & Cinematography</option>
+                  <option value="Graphic Design & UI/UX Design">Graphic Design & UI/UX Design</option>
+                  <option value="Logistics, Freight & Supply Chain">Logistics, Freight & Supply Chain</option>
+                  <option value="Aviation, Aerospace & Marine">Aviation, Aerospace & Marine</option>
+                  <option value="Hospitality, Hotel & Tourism Management">Hospitality, Hotel & Tourism Management</option>
+                  <option value="Culinary Arts, Chef & Catering">Culinary Arts, Chef & Catering</option>
+                  <option value="Agriculture, Horticulture & Agribusiness">Agriculture, Horticulture & Agribusiness</option>
+                  <option value="Manufacturing & Industrial Production">Manufacturing & Industrial Production</option>
+                  <option value="Fashion, Textile & Apparel Design">Fashion, Textile & Apparel Design</option>
+                  <option value="Fitness Training, Yoga & Wellness">Fitness Training, Yoga & Wellness</option>
+                  <option value="Social Work, NGO & Community Development">Social Work, NGO & Community Development</option>
+                  <option value="Government, Civil & Public Administration">Government, Civil & Public Administration</option>
+                  <option value="Scientific Research & Biotechnology">Scientific Research & Biotechnology</option>
+                </select>
+              </div>
+            </div>
+
+            {/* RELATIONSHIP SELECTION */}
+            <div className="professional-registration-field">
+              <div className="professional-registration-label-row">
+                <label htmlFor="professional-relationship">
+                  Nominee / Reference Relationship
+                </label>
+                <span>Optional</span>
+              </div>
+              <div className="professional-registration-input">
+                <i className="fas fa-users" />
+                <select
+                  id="professional-relationship"
+                  name="relationship"
+                  value={formData.relationship}
+                  onChange={handleInputChange}
+                  disabled={submitting}
+                  style={{
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    outline: "none",
+                    fontSize: "0.95rem",
+                    color: formData.relationship ? "#0f172a" : "#94a3b8",
+                    cursor: "pointer",
+                    padding: "8px 0",
+                  }}
+                >
+                  <option value="">Select Relationship (Nominee / Emergency)</option>
+                  <option value="Father">Father</option>
+                  <option value="Mother">Mother</option>
+                  <option value="Spouse">Spouse</option>
+                  <option value="Son">Son</option>
+                  <option value="Daughter">Daughter</option>
+                  <option value="Brother">Brother</option>
+                  <option value="Sister">Sister</option>
+                  <option value="Guardian">Guardian</option>
+                  <option value="Uncle">Uncle</option>
+                  <option value="Aunt">Aunt</option>
+                  <option value="Cousin">Cousin</option>
+                  <option value="Nephew">Nephew</option>
+                  <option value="Niece">Niece</option>
+                  <option value="Grandfather">Grandfather</option>
+                  <option value="Grandmother">Grandmother</option>
+                  <option value="Friend">Friend</option>
+                  <option value="Colleague">Colleague</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
             </div>
 
             {/* REFERRAL */}

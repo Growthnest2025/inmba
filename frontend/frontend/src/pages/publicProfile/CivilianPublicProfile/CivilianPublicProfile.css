@@ -6935,3 +6935,95 @@
   cursor:
     pointer;
 }
+
+/* =========================================================
+   COLLAPSED / EXPANDED SECTION HANDLING
+========================================================= */
+.civ-pro-section-collapsed {
+  display: none;
+}
+
+.civ-pro-section-expanded {
+  display: block;
+}
+
+/* =========================================================
+   PRINT BUTTON STYLES
+========================================================= */
+.civ-print-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background-color: #f1f5f9;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.civ-print-button:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+
+/* =========================================================
+   PRINT STYLES FOR PUBLIC PROFILE
+========================================================= */
+@media print {
+  @page {
+    margin: 12mm;
+    size: auto;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force all profile sections to display in print */
+  .civ-pro-section-collapsed,
+  .civ-pro-section-expanded,
+  .civ-card-body,
+  .civ-pro-section-content {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+
+  /* Keep cards intact and tidy on printed pages */
+  .civ-card,
+  .civ-pro-section {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+    margin-bottom: 16px !important;
+  }
+
+  /* Hide interactive/non-printable buttons and overlays */
+  nav,
+  header.site-header,
+  footer.site-footer,
+  .civ-edit-button,
+  .civ-print-button,
+  .civ-header-action-group,
+  .civ-pro-inline-edit,
+  .civ-pro-section-arrow,
+  .civ-pro-camera-button,
+  .civ-pro-media-button,
+  .civ-modal,
+  .civ-modal-backdrop,
+  .civ-modal-overlay,
+  .civ-pro-upload-button,
+  .civ-toast-container {
+    display: none !important;
+  }
+}

@@ -527,13 +527,14 @@ export default function KycSubmitted() {
             <div>
 
               <strong>
-                Membership Plan Pending
+                Payment Section Pending
               </strong>
 
               <small>
                 Login with your ID and
-                Password / PIN, then choose
-                your ₹299 or ₹2999 plan.
+                Password / PIN to complete
+                your ₹299 membership payment.
+                Full KYC can be completed within 90 days.
               </small>
 
             </div>
@@ -570,7 +571,7 @@ export default function KycSubmitted() {
             ) : (
               <>
                 <span>
-                  Go to Login
+                  Go to Login & Pay
                 </span>
 
                 <i className="fas fa-arrow-right" />
@@ -609,8 +610,8 @@ export default function KycSubmitted() {
           <i className="fas fa-shield-halved" />
 
           <span>
-            Login → Choose Membership Plan
-            → Full KYC → Payment → Admin Approval
+            Basic Registration → Plan & Payment Section
+            → Full KYC (Within 90 Days) → Active Member
           </span>
 
         </div>

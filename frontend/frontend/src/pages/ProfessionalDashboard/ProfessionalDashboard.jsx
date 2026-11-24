@@ -1079,7 +1079,8 @@ export default function ProfessionalDashboard() {
         ?.referral_id ??
       dashboardData
         ?.referralId ??
-      member.referral_id
+      member.referral_id ??
+      member.login_id
     );
 
   const referralLink =
@@ -1157,8 +1158,12 @@ export default function ProfessionalDashboard() {
     toNumber(
       ownerProfile
         ?.direct_network ??
+      ownerProfile
+        ?.direct_members ??
       dashboardData
         ?.direct ??
+      dashboardData
+        ?.network?.direct ??
       member.direct_network
     );
 
@@ -1166,15 +1171,25 @@ export default function ProfessionalDashboard() {
     toNumber(
       ownerProfile
         ?.indirect_network ??
+      ownerProfile
+        ?.indirect_members ??
       dashboardData
         ?.indirect ??
+      dashboardData
+        ?.network?.indirect ??
       member.indirect_network
     );
 
   const totalNetwork =
     toNumber(
       ownerProfile
+        ?.total_network ??
+      ownerProfile
         ?.team_size ??
+      dashboardData
+        ?.total_network ??
+      dashboardData
+        ?.network?.total ??
       dashboardData
         ?.networkStrength ??
       directNetwork +
@@ -1923,11 +1938,19 @@ export default function ProfessionalDashboard() {
             Authenticated owner dashboard only.
         ================================================= */}
 
-        {Object.keys(
-          dashboardData
-            ?.sponsor ||
-          {}
-        ).length > 0 && (
+        {Boolean(
+          toText(
+            dashboardData?.sponsor?.organization_id ??
+              dashboardData?.sponsor?.org_id ??
+              dashboardData?.sponsor?.organization_name ??
+              dashboardData?.sponsor?.organization
+          ) ||
+          (toText(
+            dashboardData?.sponsor?.first_name ?
+              `${toText(dashboardData?.sponsor?.first_name)} ${toText(dashboardData?.sponsor?.last_name)}`.trim() : ""
+          ) &&
+            toText(dashboardData?.sponsor?.first_name).toLowerCase() !== "not available")
+        ) && (
           <section className="member-dashboard-card member-dashboard-sponsor-card">
             <div className="member-dashboard-card-header">
               <div>
@@ -2005,11 +2028,8 @@ export default function ProfessionalDashboard() {
                           .organization_id ??
                         dashboardData
                           .sponsor
-                          .org_id ??
-                        dashboardData
-                          .sponsor
-                          .referral_id,
-                        "Not available"
+                          .org_id,
+                        "INMBA-ORG"
                       )}
                     </strong>
                   </div>
@@ -2032,21 +2052,6 @@ export default function ProfessionalDashboard() {
                           .sponsor
                           .last_name
                       )}`.trim()}
-                    </strong>
-                  </div>
-
-                  <div>
-                    <span>
-                      Introducer ID
-                    </span>
-
-                    <strong>
-                      {toText(
-                        dashboardData
-                          .sponsor
-                          .referral_id,
-                        "Not available"
-                      )}
                     </strong>
                   </div>
                 </>

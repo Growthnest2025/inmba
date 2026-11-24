@@ -10,6 +10,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -406,14 +407,8 @@ function Field({
 
   description = "",
 }) {
-  const requirementLabel =
-    verified
-      ? "Already Verified"
-      : requirement ||
-        (required ? "Required" : "Optional");
-
   return (
-    <div className="civilian-kyc-field">
+    <div className={`civilian-kyc-field ${error ? "has-error" : ""}`}>
       <div className="civilian-kyc-label-row">
         <label
           htmlFor={
@@ -423,22 +418,12 @@ function Field({
           {label}
         </label>
 
-        <span
-          className={[
-            "civilian-kyc-requirement",
-            verified
-              ? "verified"
-              : requirementLabel
-                  .toLowerCase()
-                  .replace(/\s+/g, "-"),
-          ].join(" ")}
-        >
-          {verified && (
+        {verified ? (
+          <span className="civilian-kyc-requirement verified">
             <i className="fa-solid fa-circle-check" />
-          )}
-
-          {requirementLabel}
-        </span>
+            Already Verified
+          </span>
+        ) : null}
       </div>
 
       {options ? (
@@ -452,6 +437,8 @@ function Field({
           disabled={
             readOnly
           }
+          className={error ? "civilian-kyc-input-error" : ""}
+          style={error ? { borderColor: "#dc2626", backgroundColor: "#fef2f2", boxShadow: "0 0 0 3px rgba(220, 38, 38, 0.15)" } : {}}
           onChange={(
             event
           ) =>
@@ -499,6 +486,8 @@ function Field({
           readOnly={
             readOnly
           }
+          className={error ? "civilian-kyc-input-error" : ""}
+          style={error ? { borderColor: "#dc2626", backgroundColor: "#fef2f2", boxShadow: "0 0 0 3px rgba(220, 38, 38, 0.15)" } : {}}
           onChange={(
             event
           ) =>
@@ -517,7 +506,19 @@ function Field({
       )}
 
       {error && (
-        <small className="civilian-kyc-field-error">
+        <small
+          className="civilian-kyc-field-error"
+          style={{
+            color: "#dc2626",
+            fontWeight: 700,
+            display: "flex",
+            alignItems: "center",
+            gap: "5px",
+            marginTop: "5px",
+            fontSize: "0.82rem",
+          }}
+        >
+          <i className="fa-solid fa-circle-exclamation" style={{ color: "#dc2626" }} />
           {error}
         </small>
       )}
@@ -545,12 +546,8 @@ function TextAreaField({
 
   description = "",
 }) {
-  const requirementLabel =
-    requirement ||
-    (required ? "Required" : "Optional");
-
   return (
-    <div className="civilian-kyc-field civilian-kyc-field-full">
+    <div className={`civilian-kyc-field civilian-kyc-field-full ${error ? "has-error" : ""}`}>
       <div className="civilian-kyc-label-row">
         <label
           htmlFor={
@@ -559,17 +556,6 @@ function TextAreaField({
         >
           {label}
         </label>
-
-        <span
-          className={[
-            "civilian-kyc-requirement",
-            requirementLabel
-              .toLowerCase()
-              .replace(/\s+/g, "-"),
-          ].join(" ")}
-        >
-          {requirementLabel}
-        </span>
       </div>
 
       <textarea
@@ -582,6 +568,8 @@ function TextAreaField({
         placeholder={
           placeholder
         }
+        className={error ? "civilian-kyc-input-error" : ""}
+        style={error ? { borderColor: "#dc2626", backgroundColor: "#fef2f2", boxShadow: "0 0 0 3px rgba(220, 38, 38, 0.15)" } : {}}
         onChange={(
           event
         ) =>
@@ -599,7 +587,19 @@ function TextAreaField({
       )}
 
       {error && (
-        <small className="civilian-kyc-field-error">
+        <small
+          className="civilian-kyc-field-error"
+          style={{
+            color: "#dc2626",
+            fontWeight: 700,
+            display: "flex",
+            alignItems: "center",
+            gap: "5px",
+            marginTop: "5px",
+            fontSize: "0.82rem",
+          }}
+        >
+          <i className="fa-solid fa-circle-exclamation" style={{ color: "#dc2626" }} />
           {error}
         </small>
       )}
@@ -652,17 +652,6 @@ function FileField({
         <label>
           {label}
         </label>
-
-        <span
-          className={[
-            "civilian-kyc-requirement",
-            required
-              ? "required"
-              : "optional",
-          ].join(" ")}
-        >
-          {required ? "Required" : "Optional"}
-        </span>
       </div>
 
       <input
@@ -1026,8 +1015,6 @@ export default function CivilianKyc() {
     useState(
       {}
     );
-
-  const [optionalInterest, setOptionalInterest] = useState({});
 
   const [
     memberSummary,
@@ -1528,8 +1515,25 @@ export default function CivilianKyc() {
   const updateValue =
     (
       name,
-      value
+      rawValue
     ) => {
+      let value = rawValue;
+      if (name === "aadhaar_number") {
+        value = String(rawValue || "").replace(/\D/g, "").slice(0, 12);
+      } else if (name === "pan_number") {
+        value = String(rawValue || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
+      } else if (name === "pincode") {
+        value = String(rawValue || "").replace(/\D/g, "").slice(0, 6);
+      } else if (name === "bank_account_number") {
+        value = String(rawValue || "").replace(/\D/g, "").slice(0, 18);
+      } else if (name === "ifsc_code") {
+        value = String(rawValue || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 11);
+      } else if (["primary_mobile", "secondary_mobile", "whatsapp_number", "emergency_contact_number"].includes(name)) {
+        value = String(rawValue || "").replace(/\D/g, "").slice(0, 10);
+      } else if (name === "gst_number") {
+        value = String(rawValue || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 15);
+      }
+
       setForm(
         (
           previous
@@ -1654,7 +1658,7 @@ export default function CivilianKyc() {
           )
         ) {
           errors.aadhaar_number =
-            "Enter valid 12 digit Aadhaar Number.";
+            "Enter valid 12-digit Aadhaar Number.";
         }
 
         if (
@@ -1664,7 +1668,7 @@ export default function CivilianKyc() {
           )
         ) {
           errors.pan_number =
-            "Enter valid PAN Number.";
+            "Enter valid 10-character PAN (e.g. ABCDE1234F).";
         }
       }
 
@@ -1676,7 +1680,6 @@ export default function CivilianKyc() {
           Primary Mobile and Primary Email belong to Civilian Basic KYC.
           They are intentionally not validated again in Full KYC.
         */
-
 
         if (
           !values.current_address?.trim()
@@ -1711,10 +1714,35 @@ export default function CivilianKyc() {
         ) {
           errors.pincode =
             "Pincode is required.";
+        } else if (
+          !/^\d{6}$/.test(values.pincode.trim())
+        ) {
+          errors.pincode = "Enter valid 6-digit Pincode.";
+        }
+
+        if (
+          values.secondary_mobile &&
+          !/^[6-9]\d{9}$/.test(values.secondary_mobile.trim())
+        ) {
+          errors.secondary_mobile = "Secondary Mobile Number must be a valid 10-digit number.";
+        }
+
+        if (
+          values.whatsapp_number &&
+          !/^[6-9]\d{9}$/.test(values.whatsapp_number.trim())
+        ) {
+          errors.whatsapp_number = "WhatsApp Number must be a valid 10-digit number.";
         }
       }
 
       if (activeSection === "C") {
+        if (
+          values.bank_account_number &&
+          !/^\d{9,18}$/.test(values.bank_account_number.trim())
+        ) {
+          errors.bank_account_number =
+            "Bank Account Number must be between 9 and 18 digits.";
+        }
         if (
           values.ifsc_code &&
           !/^[A-Z]{4}0[A-Z0-9]{6}$/i.test(
@@ -1722,7 +1750,7 @@ export default function CivilianKyc() {
           )
         ) {
           errors.ifsc_code =
-            "Enter valid IFSC Code.";
+            "Enter valid 11-character IFSC Code (e.g. SBIN0001234).";
         }
         if (!values.nominee_name?.trim()) {
           errors.nominee_name = "Nominee Name is required.";
@@ -1757,6 +1785,11 @@ export default function CivilianKyc() {
         ) {
           errors.emergency_contact_number =
             "Emergency Contact Number is required.";
+        } else if (
+          !/^[6-9]\d{9}$/.test(values.emergency_contact_number.replace(/\D/g, ""))
+        ) {
+          errors.emergency_contact_number =
+            "Enter valid 10-digit mobile number.";
         }
 
         if (
@@ -1767,16 +1800,18 @@ export default function CivilianKyc() {
         }
       }
 
-      setFieldErrors(
-        errors
-      );
+      setFieldErrors(errors);
 
-      return (
-        Object.keys(
-          errors
-        ).length ===
-        0
-      );
+      const errKeys = Object.keys(errors);
+      if (errKeys.length > 0) {
+        const firstErrMsg = errors[errKeys[0]];
+        setError(
+          `Please correct Section ${activeSection}: ${firstErrMsg}`
+        );
+        return false;
+      }
+
+      return true;
     };
 
   /* =======================================================
@@ -1791,10 +1826,6 @@ export default function CivilianKyc() {
         completed &&
         !validateCurrentSection()
       ) {
-        setError(
-          `Please complete Section ${activeSection} correctly before continuing.`
-        );
-
         window.scrollTo({
           top:
             0,
@@ -1991,28 +2022,17 @@ export default function CivilianKyc() {
 
     // 2. Then submit Full KYC
     await submitCivilianKyc();
+    toast.success("Civilian Full KYC submitted successfully!");
 
-    if (!selectedPlan) {
-      setError(
-        "Please select the ₹299 or ₹2999 Civilian membership plan before reviewing Full KYC."
-      );
-      return;
-    }
-
-    // 3. Go to Civilian Review
-    navigate(
-      `/civilian-review?plan=${encodeURIComponent(
-        selectedPlan
-      )}`,
-      {
-        replace: true,
-        state: {
-          civilianKycSubmitted: true,
-          selectedPlan,
-          selected_plan: selectedPlan,
-        },
-      }
-    );
+    // 3. User flow: Registration -> Payment -> KYC -> Dashboard
+    navigate("/dashboard", {
+      replace: true,
+      state: {
+        civilianKycSubmitted: true,
+        selectedPlan: selectedPlan || "299",
+        selected_plan: selectedPlan || "299",
+      },
+    });
   } catch (requestError) {
     setError(
       requestError?.apiMessage ||
@@ -2065,39 +2085,20 @@ export default function CivilianKyc() {
         );
 
         await submitCivilianKyc();
-
-        if (!selectedPlan) {
-          setError(
-            "Please select the ₹299 or ₹2999 Civilian membership plan before reviewing Full KYC."
-          );
-
-          return;
-        }
+        toast.success("Civilian Full KYC submitted successfully!");
 
         /*
           Full KYC submitted successfully.
-          Civilian now follows the same review-first pattern:
-
-          Full KYC
-            ↓
-          Review
-            ↓
-          Payment
+          User flow: Registration -> Payment -> KYC -> Dashboard
         */
-        navigate(
-          `/civilian-review?plan=${encodeURIComponent(
-            selectedPlan
-          )}`,
-          {
-            replace: true,
-
-            state: {
-              civilianKycSubmitted: true,
-              selectedPlan,
-              selected_plan: selectedPlan,
-            },
-          }
-        );
+        navigate("/dashboard", {
+          replace: true,
+          state: {
+            civilianKycSubmitted: true,
+            selectedPlan: selectedPlan || "299",
+            selected_plan: selectedPlan || "299",
+          },
+        });
       } catch (
         requestError
       ) {
@@ -2189,7 +2190,6 @@ export default function CivilianKyc() {
                 onChange={
                   updateValue
                 }
-                requirement="Optional"
                 error={
                   fieldErrors.father_spouse_name
                 }
@@ -2220,7 +2220,6 @@ export default function CivilianKyc() {
                   "Female",
                   "Other",
                 ]}
-                requirement="Optional"
                 error={
                   fieldErrors.gender
                 }
@@ -2344,7 +2343,6 @@ export default function CivilianKyc() {
               <Field
                 label="Passport Number"
                 name="passport_number"
-                requirement="Optional"
                 value={
                   values.passport_number
                 }
@@ -2356,7 +2354,6 @@ export default function CivilianKyc() {
               <Field
                 label="Voter ID"
                 name="voter_id"
-                requirement="Optional"
                 value={
                   values.voter_id
                 }
@@ -2368,7 +2365,6 @@ export default function CivilianKyc() {
               <Field
                 label="Driving License"
                 name="driving_license"
-                requirement="Optional"
                 value={
                   values.driving_license
                 }
@@ -2489,6 +2485,9 @@ export default function CivilianKyc() {
                 onChange={
                   updateValue
                 }
+                error={
+                  fieldErrors.secondary_mobile
+                }
               />
 
 
@@ -2500,6 +2499,9 @@ export default function CivilianKyc() {
                 }
                 onChange={
                   updateValue
+                }
+                error={
+                  fieldErrors.whatsapp_number
                 }
                 readOnly={
                   isBasicVerified(
@@ -2695,6 +2697,9 @@ export default function CivilianKyc() {
                 onChange={
                   updateValue
                 }
+                error={
+                  fieldErrors.bank_account_number
+                }
               />
 
               <Field
@@ -2736,7 +2741,6 @@ export default function CivilianKyc() {
               <Field
                 label="GST Number"
                 name="gst_number"
-                requirement="If applicable"
                 value={
                   values.gst_number
                 }
@@ -2748,7 +2752,6 @@ export default function CivilianKyc() {
               <Field
                 label="Income Tax Slab / 15G-15H"
                 name="income_tax_slab"
-                requirement="If applicable"
                 value={
                   values.income_tax_slab
                 }
@@ -3802,71 +3805,45 @@ export default function CivilianKyc() {
                 </div>
               </div>
 
-              <div className="civilian-kyc-field-legend">
-                <span className="required">
-                  Required
-                </span>
-
-                <span className="optional">
-                  Optional
-                </span>
-
-                <span className="if-applicable">
-                  If applicable
-                </span>
-
-                <span className="verified">
-                  <i className="fa-solid fa-circle-check" />
-                  Already Verified
-                </span>
-              </div>
-
-
-              {["D", "E", "G"].includes(activeSection) && optionalInterest[activeSection] !== true && (
+              {/* ALL DETAILS MANDATORY NOTICE */}
+              <div
+                style={{
+                  background: "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)",
+                  border: "1.5px solid #86efac",
+                  borderRadius: "10px",
+                  padding: "12px 18px",
+                  margin: "12px 0 18px 0",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  boxShadow: "0 2px 6px rgba(21, 128, 61, 0.08)",
+                }}
+              >
                 <div
                   style={{
-                    background: "#eff6ff",
-                    border: "1px solid #bfdbfe",
-                    borderRadius: "12px",
-                    padding: "14px 16px",
-                    marginBottom: "16px",
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    background: "#15803d",
+                    color: "#ffffff",
                     display: "flex",
-                    flexWrap: "wrap",
                     alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: "12px",
+                    justifyContent: "center",
+                    fontSize: "0.95rem",
+                    flexShrink: 0,
                   }}
                 >
-                  <div>
-                    <strong style={{ display: "block", color: "#1e3a8a", marginBottom: "4px" }}>
-                      Are you interested in filling out Section {activeSection} ({activeMeta.title})?
-                    </strong>
-                    <span style={{ fontSize: "0.9rem", color: "#334155" }}>
-                      This section has no required fields. Choose &quot;No, Move to Next Form&quot; to skip ahead.
-                    </span>
-                  </div>
-                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                    <button
-                      type="button"
-                      className="civilian-kyc-save-draft"
-                      style={{ margin: 0 }}
-                      disabled={saving}
-                      onClick={() => setOptionalInterest((prev) => ({ ...prev, [activeSection]: true }))}
-                    >
-                      Yes, I&apos;m Interested
-                    </button>
-                    <button
-                      type="button"
-                      className="civilian-kyc-next"
-                      style={{ margin: 0 }}
-                      disabled={saving}
-                      onClick={() => { setOptionalInterest((prev) => ({ ...prev, [activeSection]: false })); handleSave(true); }}
-                    >
-                      No, Move to Next Form <i className="fa-solid fa-arrow-right" />
-                    </button>
-                  </div>
+                  <i className="fa-solid fa-clipboard-check" />
                 </div>
-              )}
+                <div>
+                  <strong style={{ display: "block", color: "#14532d", fontSize: "0.92rem", fontWeight: 700, marginBottom: "2px" }}>
+                    முக்கிய குறிப்பு: படிவத்தில் உள்ள அனைத்து விவரங்களையும் கட்டாயமாக பதிவு செய்ய வேண்டும்.
+                  </strong>
+                  <span style={{ fontSize: "0.82rem", color: "#166534" }}>
+                    All details are strictly mandatory. Please fill in complete and accurate information across all sections.
+                  </span>
+                </div>
+              </div>
 
               {renderSection()}
 

@@ -4,7 +4,7 @@ import "./PaymentDetailsCard.css";
 
 export default function PaymentDetailsCard({
   amount,
-  upiId = "robertsonraja@barodampay",
+  upiId = "hprabha785@oksbi",
   accountName = "INMBA ORGANIZATION",
   accountNumber = "70340200001467",
   ifsc = "BARB0VJPACO",
@@ -45,7 +45,7 @@ export default function PaymentDetailsCard({
         {amount && (
           <div className="inmba-open-payment-amount-badge">
             <span>Payable Amount</span>
-            <strong>₹{amount}</strong>
+            <strong>₹{Number(amount || 299).toLocaleString("en-IN")}</strong>
           </div>
         )}
       </div>
@@ -60,7 +60,7 @@ export default function PaymentDetailsCard({
               <span>UPI Payment (Any UPI App)</span>
             </div>
             <div className="inmba-open-payment-upi-row">
-              <div>
+              <div className="inmba-open-payment-upi-text-wrap">
                 <small>UPI ID (VPA)</small>
                 <strong>{upiId}</strong>
               </div>
@@ -77,6 +77,25 @@ export default function PaymentDetailsCard({
             <small className="inmba-open-payment-subtext">
               Beneficiary Name: <b>{accountName}</b>
             </small>
+
+            {/* DYNAMIC PAYABLE AMOUNT VIA UPI */}
+            <div className="inmba-open-payment-sub-amount-badge">
+              <span className="inmba-open-payment-sub-amount-label">
+                Amount to Pay via UPI:
+              </span>
+              <strong className="inmba-open-payment-sub-amount-val">
+                ₹{Number(amount || 299).toLocaleString("en-IN")}
+              </strong>
+            </div>
+
+            <a
+              href={`upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(accountName)}&am=${Number(amount || 299)}&cu=INR&tn=${encodeURIComponent("INMBA Membership Fee")}`}
+              className="inmba-upi-pay-direct-btn"
+              title="Click to launch your UPI app and pay"
+            >
+              <i className="fa-solid fa-bolt" aria-hidden="true" />
+              <span>Click to Pay ₹{Number(amount || 299).toLocaleString("en-IN")} via UPI App</span>
+            </a>
           </div>
 
           {/* BANK ACCOUNT SECTION */}
@@ -86,6 +105,12 @@ export default function PaymentDetailsCard({
               <span>Direct Bank Transfer (NEFT / IMPS / RTGS)</span>
             </div>
             <div className="inmba-open-payment-bank-details">
+              <div className="inmba-bank-detail-row inmba-bank-amount-highlight">
+                <span style={{ fontWeight: 700, color: "#166534" }}>Required Transfer Amount:</span>
+                <strong style={{ fontSize: "1.05rem", color: "#15803d" }}>
+                  ₹{Number(amount || 299).toLocaleString("en-IN")}
+                </strong>
+              </div>
               <div className="inmba-bank-detail-row">
                 <span>Beneficiary:</span>
                 <strong>{accountName}</strong>
@@ -96,7 +121,7 @@ export default function PaymentDetailsCard({
               </div>
               <div className="inmba-bank-detail-row">
                 <span>Account Number:</span>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <div className="inmba-bank-acc-wrap">
                   <strong>{accountNumber}</strong>
                   <button
                     type="button"
@@ -136,6 +161,19 @@ export default function PaymentDetailsCard({
                 e.target.src = "/inmba-qr.png";
               }}
             />
+          </div>
+
+          {/* DYNAMIC PAYABLE AMOUNT AFTER SCANNER */}
+          <div className="inmba-open-payment-scanner-amount-card">
+            <span className="inmba-open-payment-scanner-amount-label">
+              Payable Amount
+            </span>
+            <div className="inmba-open-payment-scanner-amount-val">
+              ₹{Number(amount || 299).toLocaleString("en-IN")}
+            </div>
+            <small className="inmba-open-payment-scanner-amount-note">
+              Scan &amp; pay exactly ₹{Number(amount || 299).toLocaleString("en-IN")} using Google Pay / PhonePe / Any UPI app
+            </small>
           </div>
         </div>
       </div>

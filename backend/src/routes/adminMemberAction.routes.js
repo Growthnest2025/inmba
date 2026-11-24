@@ -141,7 +141,8 @@ apiAdminMemberActionRoutes.delete(
   "/admin/user/:id/permanent",
 
   requireAdminRole(
-    "super_admin"
+    "super_admin",
+    "admin"
   ),
 
   validateActionMemberId,
@@ -153,7 +154,8 @@ apiAdminMemberActionRoutes.post(
   "/admin/user/:id/permanent",
 
   requireAdminRole(
-    "super_admin"
+    "super_admin",
+    "admin"
   ),
 
   validateActionMemberId,
@@ -253,7 +255,8 @@ legacyAdminMemberActionRoutes.post(
   "/permanent_delete/:id",
 
   requireAdminRole(
-    "super_admin"
+    "super_admin",
+    "admin"
   ),
 
   validateActionMemberId,

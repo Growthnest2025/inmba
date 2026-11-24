@@ -868,17 +868,11 @@ const findAdminMemberFullDetails =
       !isProfessional &&
       !isCommercial;
 
-    let civilianKyc = null;
-    let professionalKyc = null;
-    let commercialKyc = null;
-
-    if (isCivilian) {
-      civilianKyc =
-        await findCivilianFullKycByMemberId(
-          member.id,
-          connection
-        );
-    }
+    let civilianKyc =
+      await findCivilianFullKycByMemberId(
+        member.id,
+        connection
+      );
 
     if (isProfessional) {
       professionalKyc =

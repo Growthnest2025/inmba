@@ -6,33 +6,35 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 14px 26px;
+  gap: 10px;
+  padding: 13px 22px;
   border-radius: 999px;
   font-family: inherit;
-  font-size: 1.02rem;
+  font-size: 0.98rem;
   font-weight: 700;
   color: #ffffff;
-  background: linear-gradient(135deg, #0f4d0f 0%, #157321 50%, #0c3d0c 100%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 10px 24px rgba(15, 77, 15, 0.28);
+  background: linear-gradient(135deg, #0f4d0f 0%, #15803d 50%, #0f4d0f 100%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 20px rgba(15, 77, 15, 0.25);
   cursor: pointer;
-  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
   width: 100%;
   max-width: 100%;
+  box-sizing: border-box;
+  outline: none;
 }
 
 .razorpay-checkout-button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #135d13 0%, #1a8728 50%, #0f4d0f 100%);
+  background: linear-gradient(135deg, #135d13 0%, #16a34a 50%, #0f4d0f 100%);
   transform: translateY(-2px);
-  box-shadow: 0 14px 32px rgba(15, 77, 15, 0.35);
+  box-shadow: 0 12px 26px rgba(15, 77, 15, 0.32);
   color: #ffffff;
 }
 
 .razorpay-checkout-button:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 6px 16px rgba(15, 77, 15, 0.24);
+  box-shadow: 0 4px 12px rgba(15, 77, 15, 0.2);
 }
 
 .razorpay-checkout-button:disabled,
@@ -40,24 +42,28 @@
   opacity: 0.72;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 .razorpay-btn-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
   color: #86efac;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
+  flex-shrink: 0;
 }
 
 .razorpay-btn-text {
   flex: 1;
   text-align: center;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.25;
 }
 
 .razorpay-badge {
@@ -65,18 +71,19 @@
   align-items: center;
   padding: 3px 8px;
   border-radius: 999px;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.68rem;
+  font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  background: rgba(255, 255, 255, 0.18);
-  color: #dae7c7;
+  background: rgba(255, 255, 255, 0.2);
+  color: #dcfce7;
+  flex-shrink: 0;
 }
 
 @media (max-width: 575px) {
   .razorpay-checkout-button {
-    padding: 12px 18px;
-    font-size: 0.94rem;
+    padding: 12px 16px;
+    font-size: 0.92rem;
     gap: 8px;
   }
 

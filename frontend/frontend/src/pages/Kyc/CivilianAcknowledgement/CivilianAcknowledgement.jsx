@@ -527,6 +527,93 @@ export default function CivilianAcknowledgement() {
 
           </div>
 
+          {/* MEMBER & KYC DETAILS (PRINTABLE & VISIBLE IN PDF) */}
+          <div className="civilian-ack-details-card" style={{ marginTop: "24px", padding: "20px", background: "#f8fafc", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
+            <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#1e293b", marginBottom: "16px", borderBottom: "1px solid #cbd5e1", paddingBottom: "8px" }}>
+              Member & KYC Submission Summary
+            </h3>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px" }}>
+              <div>
+                <small style={{ color: "#64748b", display: "block" }}>Full Name</small>
+                <strong style={{ color: "#0f172a" }}>{toText(member.full_name || member.name || acknowledgement.full_name, "Member")}</strong>
+              </div>
+              <div>
+                <small style={{ color: "#64748b", display: "block" }}>Primary Mobile</small>
+                <strong style={{ color: "#0f172a" }}>{toText(member.phone || acknowledgement.phone, "—")}</strong>
+              </div>
+              <div>
+                <small style={{ color: "#64748b", display: "block" }}>Primary Email</small>
+                <strong style={{ color: "#0f172a" }}>{toText(member.email || acknowledgement.email, "—")}</strong>
+              </div>
+              {(member.aadhaar_number || acknowledgement.aadhaar_number || member.aadhaar) && (
+                <div>
+                  <small style={{ color: "#64748b", display: "block" }}>Aadhaar Number</small>
+                  <strong style={{ color: "#0f172a" }}>
+                    {(() => {
+                      const a = String(member.aadhaar_number || acknowledgement.aadhaar_number || member.aadhaar);
+                      return a.length === 12 ? `•••• •••• ${a.slice(8)}` : a;
+                    })()}
+                  </strong>
+                </div>
+              )}
+              {(member.pan_number || acknowledgement.pan_number || member.pan) && (
+                <div>
+                  <small style={{ color: "#64748b", display: "block" }}>PAN Number</small>
+                  <strong style={{ color: "#0f172a" }}>{toText(member.pan_number || acknowledgement.pan_number || member.pan)}</strong>
+                </div>
+              )}
+              {(member.bank_account_number || acknowledgement.bank_account_number) && (
+                <div>
+                  <small style={{ color: "#64748b", display: "block" }}>Bank Account Number</small>
+                  <strong style={{ color: "#0f172a" }}>
+                    {(() => {
+                      const b = String(member.bank_account_number || acknowledgement.bank_account_number);
+                      return b.length > 4 ? `•••• •••• ${b.slice(-4)}` : b;
+                    })()}
+                  </strong>
+                </div>
+              )}
+              {(member.ifsc_code || acknowledgement.ifsc_code) && (
+                <div>
+                  <small style={{ color: "#64748b", display: "block" }}>Bank IFSC Code</small>
+                  <strong style={{ color: "#0f172a" }}>{toText(member.ifsc_code || acknowledgement.ifsc_code)}</strong>
+                </div>
+              )}
+              {(member.nominee_name || acknowledgement.nominee_name) && (
+                <div>
+                  <small style={{ color: "#64748b", display: "block" }}>Nominee</small>
+                  <strong style={{ color: "#0f172a" }}>
+                    {member.nominee_name || acknowledgement.nominee_name}
+                    {(member.nominee_relationship || acknowledgement.nominee_relationship) ? ` (${member.nominee_relationship || acknowledgement.nominee_relationship})` : ""}
+                  </strong>
+                </div>
+              )}
+              {(member.district || acknowledgement.district) && (
+                <div>
+                  <small style={{ color: "#64748b", display: "block" }}>District / State</small>
+                  <strong style={{ color: "#0f172a" }}>
+                    {[member.district || acknowledgement.district, member.state || acknowledgement.state].filter(Boolean).join(", ")}
+                    {(member.pincode || acknowledgement.pincode) ? ` - ${member.pincode || acknowledgement.pincode}` : ""}
+                  </strong>
+                </div>
+              )}
+              <div>
+                <small style={{ color: "#64748b", display: "block" }}>Payment Mode</small>
+                <strong style={{ color: "#0f172a" }}>{toText(acknowledgement.payment_method || member.payment_method, "Online")}</strong>
+              </div>
+              {(acknowledgement.transaction_id || member.transaction_id) && (
+                <div>
+                  <small style={{ color: "#64748b", display: "block" }}>Transaction / UTR ID</small>
+                  <strong style={{ color: "#0f172a" }}>{toText(acknowledgement.transaction_id || member.transaction_id)}</strong>
+                </div>
+              )}
+              <div>
+                <small style={{ color: "#64748b", display: "block" }}>Plan Amount</small>
+                <strong style={{ color: "#166534" }}>₹{toText(acknowledgement.amount || member.amount || acknowledgement.selected_plan, "299")}</strong>
+              </div>
+            </div>
+          </div>
+
         </section>
 
 
@@ -593,11 +680,61 @@ export default function CivilianAcknowledgement() {
         </section>
 
 
+        {/* NOTICE: ALL DETAILS MANDATORY BEFORE GOING TO FULL KYC */}
+        <div
+          style={{
+            background: "#f0fdf4",
+            border: "1px solid #86efac",
+            borderRadius: "12px",
+            padding: "12px 18px",
+            margin: "0 auto 20px auto",
+            maxWidth: "760px",
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            textAlign: "left",
+          }}
+        >
+          <span style={{ fontSize: "1.2rem" }}>📋</span>
+          <div>
+            <strong style={{ display: "block", color: "#14532d", fontSize: "0.92rem", fontWeight: 700 }}>
+              முக்கிய தகவல்: Full KYC ஃபார்மில் உள்ள அனைத்து விவரங்களையும் கட்டாயமாக பதிவு செய்ய வேண்டும்.
+            </strong>
+            <span style={{ fontSize: "0.82rem", color: "#166534" }}>
+              All details in the Full KYC form must be strictly filled. Please complete within 90 days.
+            </span>
+          </div>
+        </div>
+
         {/* ==================================
             ACTION BUTTONS
         ================================== */}
 
         <section className="civilian-ack-actions">
+
+
+          {/* COMPLETE FULL KYC */}
+
+          <button
+            type="button"
+            className="civilian-ack-primary"
+            style={{
+              background: "linear-gradient(135deg, #0f766e 0%, #15803d 100%)",
+              color: "#ffffff",
+              fontWeight: 700,
+            }}
+            onClick={() =>
+              navigate(
+                "/civilian-kyc"
+              )
+            }
+          >
+            <span>
+              📋
+            </span>
+
+            Complete Full KYC (Within 90 Days)
+          </button>
 
 
           {/* VIEW PROFILE */}

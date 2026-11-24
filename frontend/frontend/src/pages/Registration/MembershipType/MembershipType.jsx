@@ -34,7 +34,7 @@ const MEMBERSHIP_TYPES = [
     id: "commercial",
     title: "Commercial Member",
     icon: "fas fa-store",
-    route: "/commercial-basic-kyc",
+    route: "/commercial-registration",
     status: "available",
     badge: "Available",
     theme: "red",
@@ -438,10 +438,24 @@ export default function MembershipType() {
   const [searchParams] = useSearchParams();
   const [showHero, setShowHero] = React.useState(false);
 
-  const referralId = useMemo(
-    () => toText(searchParams.get("ref"), ""),
-    [searchParams]
-  );
+  const referralId = useMemo(() => {
+    const fromUrl = toText(searchParams.get("ref") || searchParams.get("referral"), "");
+    if (fromUrl) {
+      if (typeof window !== "undefined") {
+        try {
+          sessionStorage.setItem("inmba_referral_code", fromUrl);
+          localStorage.setItem("inmba_referral_code", fromUrl);
+        } catch {}
+      }
+      return fromUrl;
+    }
+    if (typeof window !== "undefined") {
+      try {
+        return toText(sessionStorage.getItem("inmba_referral_code") || localStorage.getItem("inmba_referral_code"), "");
+      } catch {}
+    }
+    return "";
+  }, [searchParams]);
 
   /* scroll-reveal animation for the process section */
   useEffect(() => {

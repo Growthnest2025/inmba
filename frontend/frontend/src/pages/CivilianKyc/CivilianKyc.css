@@ -719,8 +719,22 @@
 }
 
 .civilian-kyc-field-error {
-  color: #b33c33 !important;
+  color: #dc2626 !important;
   font-weight: 700;
+  font-size: 0.82rem;
+  margin-top: 5px;
+}
+
+.civilian-kyc-input-error {
+  border-color: #dc2626 !important;
+  background-color: #fef2f2 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.18) !important;
+  outline: none !important;
+}
+
+.civilian-kyc-field.has-error label {
+  color: #dc2626 !important;
+  font-weight: 700 !important;
 }
 
 .civilian-kyc-file-field {

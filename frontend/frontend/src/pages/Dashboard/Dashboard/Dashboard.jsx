@@ -1070,7 +1070,14 @@ export default function Dashboard() {
   */
   const hasCivilianPayment =
     civilianMember &&
-    civilianPaidAmount > 0;
+    (civilianPaidAmount > 0 ||
+      member.payment_status === "approved" ||
+      member.payment_status === "paid" ||
+      member.payment_status === "pending" ||
+      Boolean(member.payment_proof) ||
+      Boolean(member.utr_number) ||
+      Boolean(member.transaction_id) ||
+      Boolean(member.payment_method));
 
   /*
      Before payment:
@@ -1154,7 +1161,7 @@ export default function Dashboard() {
         );
 
         navigate(
-          `/civilian-kyc?plan=${encodeURIComponent(
+          `/payment?plan=${encodeURIComponent(
             selectedPlan
           )}`
         );
@@ -1272,12 +1279,13 @@ export default function Dashboard() {
         ?.referral_id ??
       dashboardData
         ?.referralId ??
-      member.referral_id
+      member.referral_id ??
+      member.login_id
     );
 
   const referralLink =
     referralId
-      ? `${frontendBaseUrl}/membership?ref=${encodeURIComponent(
+      ? `${frontendBaseUrl}/membership-type?ref=${encodeURIComponent(
           referralId
         )}`
       : "";
@@ -1350,8 +1358,12 @@ export default function Dashboard() {
     toNumber(
       ownerProfile
         ?.direct_network ??
+      ownerProfile
+        ?.direct_members ??
       dashboardData
         ?.direct ??
+      dashboardData
+        ?.network?.direct ??
       member.direct_network
     );
 
@@ -1359,15 +1371,25 @@ export default function Dashboard() {
     toNumber(
       ownerProfile
         ?.indirect_network ??
+      ownerProfile
+        ?.indirect_members ??
       dashboardData
         ?.indirect ??
+      dashboardData
+        ?.network?.indirect ??
       member.indirect_network
     );
 
   const totalNetwork =
     toNumber(
       ownerProfile
+        ?.total_network ??
+      ownerProfile
         ?.team_size ??
+      dashboardData
+        ?.total_network ??
+      dashboardData
+        ?.network?.total ??
       dashboardData
         ?.networkStrength ??
       directNetwork +
@@ -1719,8 +1741,8 @@ export default function Dashboard() {
             </div>
 
             <p className="member-dashboard-plan-description">
-              Choose ₹299 or ₹2999. Both plans require Civilian
-              Full KYC before payment and activation.
+              Choose ₹299 or ₹2999 to proceed directly to Payment.
+              Civilian Full KYC can be completed within 90 days.
             </p>
 
             <div className="member-dashboard-plan-grid">
@@ -2458,22 +2480,29 @@ export default function Dashboard() {
             Authenticated owner dashboard only.
         ================================================= */}
 
-        {(toText(
-          member?.referred_by ??
-            member?.referrer_id ??
-            member?.introducer_id ??
-            dashboardData?.sponsor?.referral_id
-        ) ||
-          toText(
-            member?.organization_id ??
-              member?.org_id ??
-              dashboardData?.sponsor?.organization_id ??
-              dashboardData?.sponsor?.org_id
-          ) ||
-          Object.keys(
-            dashboardData?.sponsor ||
-              {}
-          ).length > 0) && (
+        {(joinedViaOrganization ||
+          (Boolean(
+            toText(
+              member?.introducer_name ??
+                member?.referrer_name ??
+                dashboardData?.sponsor?.full_name ??
+                `${toText(
+                  dashboardData?.sponsor?.first_name
+                )} ${toText(
+                  dashboardData?.sponsor?.last_name
+                )}`.trim()
+            ) &&
+            toText(
+              member?.introducer_name ??
+                member?.referrer_name ??
+                dashboardData?.sponsor?.full_name ??
+                `${toText(
+                  dashboardData?.sponsor?.first_name
+                )} ${toText(
+                  dashboardData?.sponsor?.last_name
+                )}`.trim()
+            ).toLowerCase() !== "not available"
+          ))) && (
           <section className="member-dashboard-card member-dashboard-sponsor-card">
             <div className="member-dashboard-card-header">
               <div>
@@ -2486,11 +2515,11 @@ export default function Dashboard() {
 
                 <div>
                   <p>
-                    Your Introducer
+                    {joinedViaOrganization ? "Organization" : "Your Introducer"}
                   </p>
 
                   <h2>
-                    Introducer Details
+                    {joinedViaOrganization ? "Organization Details" : "Introducer Details"}
                   </h2>
                 </div>
               </div>
@@ -2519,7 +2548,7 @@ export default function Dashboard() {
                       {organizationId ||
                         (introducerId === "7777777"
                           ? "7777777"
-                          : "Not available")}
+                          : "INMBA-ORG")}
                     </strong>
                   </div>
                 </>
@@ -2539,20 +2568,8 @@ export default function Dashboard() {
                             dashboardData?.sponsor?.first_name
                           )} ${toText(
                             dashboardData?.sponsor?.last_name
-                          )}`.trim(),
-                        "Not available"
+                          )}`.trim()
                       )}
-                    </strong>
-                  </div>
-
-                  <div>
-                    <span>
-                      Introducer ID
-                    </span>
-
-                    <strong>
-                      {introducerId ||
-                        "Not available"}
                     </strong>
                   </div>
                 </>

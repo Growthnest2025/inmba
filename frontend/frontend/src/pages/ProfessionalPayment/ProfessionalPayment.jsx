@@ -20,7 +20,7 @@ import {
 import "./ProfessionalPayment.css";
 import { toText, asObject } from "../../utils/commonHelpers";
 import PaymentDetailsCard from "../../components/PaymentDetailsCard/PaymentDetailsCard";
-import RazorpayButton from "../../components/RazorpayCheckout/RazorpayButton";
+import RazorpayCard from "../../components/RazorpayCheckout/RazorpayCard";
 
 /* =========================================================
    PAYMENT CONSTANTS
@@ -1135,6 +1135,70 @@ export default function ProfessionalPayment() {
     };
 
   /* =======================================================
+     RAZORPAY SUCCESS HANDLER (AUTO-SUBMIT & COMPLETE)
+  ======================================================= */
+  const handleRazorpaySuccess = async (verifyResult, rzpResponse) => {
+    const paymentId = rzpResponse?.razorpay_payment_id || transactionId;
+    setTransactionId(paymentId);
+    setPaymentMethod("Razorpay");
+    setPageError("");
+
+    setSubmitting(true);
+    try {
+      const result = await submitPayment({
+        payment_method: "Razorpay",
+        subscription_year: subscriptionYear || 1,
+        amount: paymentAmount || 299,
+        selected_plan: validSelectedPlan,
+        transaction_id: paymentId,
+        payment_proof: null,
+      });
+
+      const resultToken = toText(
+        result?.token || result?.data?.token || paymentToken
+      );
+      if (resultToken) {
+        setPaymentToken(resultToken);
+      }
+
+      const paymentResult = {
+        success: true,
+        planId: isRoyaltyPlan ? "network_royalty_member" : "network_member",
+        selectedPlan: validSelectedPlan,
+        selected_plan: validSelectedPlan,
+        membershipLevel,
+        planName,
+        amount: paymentAmount || 299,
+        loginId,
+        memberName,
+        membershipType: "Professional Member",
+        professionalFlow: professionalFlow,
+        paymentMethod: "Razorpay",
+        subscriptionYear: subscriptionYear || 1,
+        transactionId: paymentId,
+        token: resultToken,
+        message: "Razorpay payment verified and approved successfully!",
+        paymentStatus: "approved",
+        submittedAt: new Date().toISOString(),
+      };
+
+      sessionStorage.setItem(PAYMENT_STATUS_STORAGE_KEY, "approved");
+      sessionStorage.setItem(PAYMENT_RESULT_STORAGE_KEY, JSON.stringify(paymentResult));
+      if (resultToken) {
+        sessionStorage.setItem(NEXT_ROUTE_STORAGE_KEY, `/acknowledgement/${resultToken}`);
+      }
+
+      setSuccessMessage("Payment verified and completed successfully!");
+      setPaymentCompleted(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      setPageError(getErrorText(err, "Payment verified, but error completing registration record."));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  /* =======================================================
      BACK
   ======================================================= */
 
@@ -1794,85 +1858,15 @@ export default function ProfessionalPayment() {
               }
               noValidate
             >
-              {/* OPEN PAYMENT DETAILS CARD */}
-              <PaymentDetailsCard
-                amount={paymentAmount || 299}
-                upiId="robertsonraja@barodampay"
-                accountName="INMBA ORGANIZATION"
-                accountNumber="70340200001467"
-                ifsc="BARB0VJPACO"
-                bankName="Bank of Baroda"
-                branch="Chitlapakkam Branch, Chennai"
-                qrUrl="/inmba-qr.png"
-              />
-
-              {/* RAZORPAY INSTANT PAYMENT */}
-              <div
-                style={{
-                  background: "#f0fdf4",
-                  border: "1.5px solid #86efac",
-                  borderRadius: "14px",
-                  padding: "20px",
-                  marginBottom: "24px",
-                  boxShadow: "0 4px 14px rgba(22, 163, 74, 0.08)",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", marginBottom: "14px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <div style={{ width: "42px", height: "42px", borderRadius: "10px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.25rem" }}>
-                      <i className="fa-solid fa-bolt" />
-                    </div>
-                    <div>
-                      <h4 style={{ margin: "0 0 2px 0", fontSize: "1.05rem", fontWeight: 700, color: "#14532d" }}>
-                        Instant Online Payment (Razorpay)
-                      </h4>
-                      <p style={{ margin: 0, fontSize: "0.84rem", color: "#166534" }}>
-                        Pay instantly with UPI (GPay, PhonePe, Paytm), All Debit/Credit Cards & NetBanking. Auto-verified immediately!
-                      </p>
-                    </div>
-                  </div>
-                  <div style={{ background: "#dcfce7", padding: "6px 14px", borderRadius: "8px", fontWeight: 800, color: "#15803d", fontSize: "1.1rem" }}>
-                    ₹{paymentAmount || 299}
-                  </div>
-                </div>
-
-                <div style={{ maxWidth: "360px" }}>
-                  <RazorpayButton
-                    amountInRupees={paymentAmount || 299}
-                    name="INMBA Professional Membership"
-                    description={`Professional Plan: ${planName} (₹${paymentAmount || 299})`}
-                    prefill={{
-                      name: member?.name || member?.full_name || "",
-                      email: member?.email || "",
-                      contact: member?.phone || member?.mobile || "",
-                    }}
-                    onSuccess={(verifyResult, rzpResponse) => {
-                      setTransactionId(rzpResponse.razorpay_payment_id);
-                      setPaymentMethod("Razorpay");
-                      setPageError("");
-                    }}
-                    onFailure={(err) => {
-                      setPageError(err.message || "Payment cancelled or failed.");
-                    }}
-                    buttonText={
-                      transactionId && transactionId.startsWith("pay_")
-                        ? `Paid via Razorpay (${transactionId})`
-                        : `Pay ₹${paymentAmount || 299} Instantly with Razorpay`
-                    }
-                    disabled={submitting || !paymentAmount}
-                  />
-                </div>
-              </div>
-
-              {/* DIVIDER */}
-              <div style={{ textAlign: "center", margin: "24px 0 28px 0", position: "relative" }}>
+              {/* ========================================================
+                  1. SUBMIT PAYMENT PROOF (TOP)
+                  ======================================================== */}
+              <div style={{ textAlign: "center", margin: "16px 0 24px 0", position: "relative" }}>
                 <hr style={{ border: "none", borderTop: "1px solid #cbd5e1", margin: 0 }} />
-                <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#64748b", fontSize: "0.8rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                  OR Submit Payment Proof (After Bank / UPI / QR Transfer)
+                <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#166534", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
+                  SUBMIT PAYMENT PROOF (AFTER BANK / UPI / QR TRANSFER)
                 </span>
               </div>
-
-
 
               {/* =========================================
                   YEAR + AMOUNT
@@ -2051,6 +2045,53 @@ export default function ProfessionalPayment() {
                   </small>
                 )}
               </div>
+
+              {/* ========================================================
+                  2. PAYMENT METHODS (FOLLOWING THE PROOF PART)
+                  ======================================================== */}
+              {/* DIVIDER: OFFICIAL PAYMENT METHODS */}
+              <div className="inmba-payment-section-divider">
+                <span className="inmba-payment-section-divider-text">
+                  OFFICIAL PAYMENT DETAILS (BANK / UPI / QR CODE)
+                </span>
+              </div>
+
+              {/* 1. OFFICIAL PAYMENT DETAILS CARD (NEXT) */}
+              <PaymentDetailsCard
+                amount={paymentAmount || 299}
+                upiId="hprabha785@oksbi"
+                accountName="INMBA ORGANIZATION"
+                accountNumber="70340200001467"
+                ifsc="BARB0VJPACO"
+                bankName="Bank of Baroda"
+                branch="Chitlapakkam Branch, Chennai"
+                qrUrl="/inmba-qr.png"
+              />
+
+              {/* DIVIDER: OR PAY VIA RAZORPAY */}
+              <div className="inmba-payment-section-divider">
+                <span className="inmba-payment-section-divider-text">
+                  OR PAY INSTANTLY ONLINE (RAZORPAY)
+                </span>
+              </div>
+
+              {/* 2. RAZORPAY INSTANT ONLINE PAYMENT */}
+              <RazorpayCard
+                amount={paymentAmount || 299}
+                name="INMBA Professional Membership"
+                description={`Professional Plan: ${planName} (₹${paymentAmount || 299})`}
+                prefill={{
+                  name: member?.name || member?.full_name || "",
+                  email: member?.email || "",
+                  contact: member?.phone || member?.mobile || "",
+                }}
+                onSuccess={handleRazorpaySuccess}
+                onFailure={(err) => {
+                  setPageError(err.message || "Payment cancelled or failed.");
+                }}
+                transactionId={transactionId}
+                disabled={submitting || !paymentAmount}
+              />
 
               {/* =========================================
                   SECURITY

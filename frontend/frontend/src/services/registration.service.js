@@ -322,7 +322,7 @@ export const validateRegistrationPincode = (
 
 export const validateRegistrationAadhaar = (
   value,
-  required = true
+  required = false
 ) => {
   const aadhar =
     normalizeDigits(

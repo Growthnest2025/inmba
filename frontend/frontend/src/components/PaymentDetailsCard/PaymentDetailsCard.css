@@ -1,3 +1,7 @@
+/* =========================================================
+   OFFICIAL PAYMENT DETAILS CARD - RESPONSIVE STYLES
+========================================================= */
+
 .inmba-open-payment-card {
   background: #ffffff;
   border: 1px solid #d1e2cf;
@@ -5,6 +9,10 @@
   padding: 24px;
   margin-bottom: 24px;
   box-shadow: 0 4px 18px rgba(15, 77, 15, 0.06);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .inmba-open-payment-header {
@@ -16,12 +24,16 @@
   border-bottom: 1px solid #e8f0e6;
   margin-bottom: 20px;
   flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .inmba-open-payment-header-left {
   display: flex;
   align-items: center;
   gap: 14px;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .inmba-open-payment-header-icon {
@@ -42,12 +54,14 @@
   font-size: 1.15rem;
   font-weight: 700;
   color: #1b3d1b;
+  word-break: break-word;
 }
 
 .inmba-open-payment-header-left p {
   margin: 0;
   font-size: 0.86rem;
   color: #556b55;
+  word-break: break-word;
 }
 
 .inmba-open-payment-amount-badge {
@@ -58,6 +72,8 @@
   text-align: right;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .inmba-open-payment-amount-badge span {
@@ -76,12 +92,14 @@
   display: grid;
   grid-template-columns: 1.3fr 1fr;
   gap: 22px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-@media (max-width: 768px) {
-  .inmba-open-payment-grid {
-    grid-template-columns: 1fr;
-  }
+.inmba-open-payment-info-box {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .inmba-open-payment-section-title {
@@ -92,11 +110,17 @@
   font-weight: 700;
   color: #245724;
   margin-bottom: 12px;
+  word-break: break-word;
 }
 
 .inmba-open-payment-section-title i {
   color: #1e7e34;
+  flex-shrink: 0;
 }
+
+/* =========================================================
+   UPI BOX
+========================================================= */
 
 .inmba-open-payment-upi-box {
   background: #f7faf7;
@@ -104,20 +128,32 @@
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .inmba-open-payment-upi-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   background: #ffffff;
   border: 1px solid #cce5cb;
   border-radius: 8px;
   padding: 10px 14px;
   margin-bottom: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.inmba-open-payment-upi-row small {
+.inmba-open-payment-upi-text-wrap {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.inmba-open-payment-upi-text-wrap small {
   display: block;
   font-size: 0.72rem;
   color: #64748b;
@@ -125,26 +161,32 @@
   font-weight: 600;
 }
 
-.inmba-open-payment-upi-row strong {
-  font-size: 0.98rem;
+.inmba-open-payment-upi-text-wrap strong {
+  display: block;
+  font-size: 0.96rem;
   color: #174d17;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
   font-family: monospace, sans-serif;
+  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
 .inmba-open-payment-copy-btn {
   background: #1e7e34;
   color: #ffffff;
   border: none;
-  padding: 6px 14px;
+  padding: 7px 14px;
   border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   transition: background 0.2s;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .inmba-open-payment-copy-btn:hover {
@@ -155,19 +197,83 @@
   display: block;
   font-size: 0.78rem;
   color: #4b634b;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  margin-top: 4px;
 }
+
+.inmba-open-payment-sub-amount-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f0fdf4;
+  border: 1px dashed #86efac;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-top: 10px;
+  margin-bottom: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.inmba-open-payment-sub-amount-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #166534;
+}
+
+.inmba-open-payment-sub-amount-val {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #15803d;
+}
+
+.inmba-upi-pay-direct-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 14px;
+  background: #166534;
+  color: #ffffff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: background 0.2s;
+  box-sizing: border-box;
+  text-align: center;
+  word-break: break-word;
+}
+
+.inmba-upi-pay-direct-btn:hover {
+  background: #14532d;
+  color: #ffffff;
+}
+
+/* =========================================================
+   BANK ACCOUNT SECTION
+========================================================= */
 
 .inmba-open-payment-bank-box {
   background: #f7faf7;
   border: 1px solid #d8ebd6;
   border-radius: 12px;
   padding: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .inmba-open-payment-bank-details {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .inmba-bank-detail-row {
@@ -177,6 +283,11 @@
   font-size: 0.84rem;
   border-bottom: 1px dashed #e2ede0;
   padding-bottom: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  gap: 8px;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .inmba-bank-detail-row:last-child {
@@ -184,13 +295,34 @@
   padding-bottom: 0;
 }
 
-.inmba-bank-detail-row span {
+.inmba-bank-detail-row > span:first-child {
   color: #556b55;
+  flex-shrink: 0;
 }
 
-.inmba-bank-detail-row strong {
+.inmba-bank-detail-row > strong,
+.inmba-bank-detail-row > span:last-child {
   color: #174d17;
   font-weight: 700;
+  text-align: right;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.inmba-bank-acc-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.inmba-bank-amount-highlight {
+  background: #f0fdf4;
+  border: 1px dashed #86efac !important;
+  border-radius: 8px;
+  padding: 8px 12px !important;
+  margin-bottom: 4px;
 }
 
 .inmba-copy-mini-btn {
@@ -198,13 +330,18 @@
   border: none;
   color: #1e7e34;
   cursor: pointer;
-  padding: 2px 4px;
+  padding: 2px 5px;
   font-size: 0.85rem;
+  flex-shrink: 0;
 }
 
 .inmba-copy-mini-btn:hover {
   color: #155724;
 }
+
+/* =========================================================
+   QR SCANNER BOX
+========================================================= */
 
 .inmba-open-payment-qr-box {
   background: #f7faf7;
@@ -216,6 +353,9 @@
   align-items: center;
   text-align: center;
   justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .inmba-open-payment-qr-frame {
@@ -226,6 +366,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  max-width: 260px;
+  box-sizing: border-box;
 }
 
 .inmba-open-payment-qr-img {
@@ -235,4 +378,189 @@
   object-fit: contain;
   display: block;
   border-radius: 6px;
+}
+
+.inmba-open-payment-scanner-amount-card {
+  margin-top: 14px;
+  width: 100%;
+  max-width: 260px;
+  background: linear-gradient(135deg, #14532d 0%, #166534 100%);
+  color: #ffffff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(22, 101, 52, 0.25);
+  border: 1px solid #22c55e;
+  box-sizing: border-box;
+}
+
+.inmba-open-payment-scanner-amount-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+  color: #86efac;
+  margin-bottom: 2px;
+}
+
+.inmba-open-payment-scanner-amount-val {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  line-height: 1.15;
+  color: #ffffff;
+}
+
+.inmba-open-payment-scanner-amount-note {
+  display: block;
+  font-size: 0.72rem;
+  color: #bbf7d0;
+  margin-top: 4px;
+  line-height: 1.35;
+}
+
+/* =========================================================
+   MEDIA QUERIES - FULL MOBILE RESPONSIVENESS
+========================================================= */
+
+@media (max-width: 768px) {
+  .inmba-open-payment-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .inmba-open-payment-card {
+    padding: 14px 12px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+  }
+
+  .inmba-open-payment-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+  }
+
+  .inmba-open-payment-header-left {
+    gap: 10px;
+  }
+
+  .inmba-open-payment-header-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+  }
+
+  .inmba-open-payment-header-left h3 {
+    font-size: 1rem;
+  }
+
+  .inmba-open-payment-header-left p {
+    font-size: 0.78rem;
+  }
+
+  .inmba-open-payment-amount-badge {
+    text-align: center;
+    align-items: center;
+    padding: 8px 12px;
+    width: 100%;
+  }
+
+  .inmba-open-payment-amount-badge strong {
+    font-size: 1.3rem;
+  }
+
+  .inmba-open-payment-upi-box,
+  .inmba-open-payment-bank-box,
+  .inmba-open-payment-qr-box {
+    padding: 12px 10px;
+    border-radius: 10px;
+  }
+
+  .inmba-open-payment-upi-row {
+    padding: 8px 10px;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .inmba-open-payment-upi-text-wrap small {
+    font-size: 0.68rem;
+  }
+
+  .inmba-open-payment-upi-text-wrap strong {
+    font-size: 0.82rem;
+  }
+
+  .inmba-open-payment-copy-btn {
+    padding: 6px 10px;
+    font-size: 0.74rem;
+  }
+
+  .inmba-bank-detail-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 3px 6px;
+    padding-bottom: 6px;
+  }
+
+  .inmba-bank-detail-row > span:first-child {
+    font-size: 0.78rem;
+    min-width: 90px;
+  }
+
+  .inmba-bank-detail-row > strong,
+  .inmba-bank-detail-row > span:last-child {
+    font-size: 0.82rem;
+    text-align: right;
+    max-width: 100%;
+  }
+
+  .inmba-bank-amount-highlight {
+    padding: 8px 10px !important;
+  }
+
+  .inmba-open-payment-sub-amount-badge {
+    padding: 8px 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .inmba-open-payment-sub-amount-label {
+    font-size: 0.76rem;
+  }
+
+  .inmba-open-payment-sub-amount-val {
+    font-size: 1.05rem;
+  }
+
+  .inmba-upi-pay-direct-btn {
+    font-size: 0.78rem;
+    padding: 8px 10px;
+  }
+
+  .inmba-open-payment-qr-frame {
+    max-width: 220px;
+  }
+
+  .inmba-open-payment-qr-img {
+    max-width: 200px;
+  }
+
+  .inmba-open-payment-scanner-amount-card {
+    padding: 10px 12px;
+    max-width: 100%;
+  }
+
+  .inmba-open-payment-scanner-amount-val {
+    font-size: 1.45rem;
+  }
 }

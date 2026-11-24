@@ -53,6 +53,11 @@ const MAIN_FLOW_STEPS = [
     icon: "fa-solid fa-id-card",
   },
   {
+    key: "payment",
+    label: "Payment",
+    icon: "fa-solid fa-credit-card",
+  },
+  {
     key: "full-kyc",
     label: "Full KYC",
     icon: "fa-solid fa-file-shield",
@@ -61,11 +66,6 @@ const MAIN_FLOW_STEPS = [
     key: "review",
     label: "Review",
     icon: "fa-solid fa-clipboard-check",
-  },
-  {
-    key: "payment",
-    label: "Payment",
-    icon: "fa-solid fa-credit-card",
   },
   {
     key: "complete",
@@ -832,23 +832,17 @@ export default function CivilianReview() {
           // Optional storage only.
         }
 
-        navigate(
-          `/payment?plan=${encodeURIComponent(
-            effectivePlan
-          )}`,
-          {
-            replace: true,
-            state: {
-              civilianKycSubmitted:
-                true,
-              civilianKycReviewed:
-                true,
-              selectedPlan,
-              selected_plan:
-                selectedPlan,
-            },
-          }
-        );
+        // Required flow: Registration -> Payment -> KYC -> Dashboard
+        navigate("/dashboard", {
+          replace: true,
+          state: {
+            civilianKycSubmitted: true,
+            civilianKycReviewed: true,
+            selectedPlan,
+            selected_plan: selectedPlan,
+          },
+        });
+        return;
       } finally {
         setConfirming(false);
       }
@@ -1561,11 +1555,11 @@ export default function CivilianReview() {
             {confirming ? (
               <>
                 <i className="fa-solid fa-spinner fa-spin" />
-                Opening Payment...
+                Saving KYC...
               </>
             ) : (
               <>
-                Confirm & Continue to Payment
+                Confirm & Go to Dashboard
                 <i className="fa-solid fa-arrow-right" />
               </>
             )}

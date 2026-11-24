@@ -11,10 +11,11 @@ import {
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import "./CommercialPayment.css";
+import { toast } from "react-toastify";
 import api from "../../../api/api";
 import { useAuth } from "../../../context/AuthContext";
 import PaymentDetailsCard from "../../../components/PaymentDetailsCard/PaymentDetailsCard";
-import RazorpayButton from "../../../components/RazorpayCheckout/RazorpayButton";
+import RazorpayCard from "../../../components/RazorpayCheckout/RazorpayCard";
 
 /* =========================================================
    DEFAULT BASIC PLAN
@@ -500,6 +501,64 @@ const handleSubmit = async (event) => {
     "Upgrade Later",
   ];
 
+  const handleRazorpaySuccess = async (verifyResult, rzpResponse) => {
+    const pId = rzpResponse.razorpay_payment_id;
+    setTransactionId(pId);
+    setPaymentMethod("Razorpay");
+    setError("");
+
+    const currentLoginId =
+      sessionStorage.getItem("commercial_login_id") ||
+      localStorage.getItem("commercial_login_id") ||
+      sessionStorage.getItem("inmba_commercial_login_id") ||
+      localStorage.getItem("inmba_commercial_login_id") ||
+      sessionStorage.getItem("inmba_member_login_id") ||
+      localStorage.getItem("inmba_member_login_id") ||
+      sessionStorage.getItem("inmba_login_id") ||
+      localStorage.getItem("inmba_login_id") ||
+      authMember?.login_id ||
+      location?.state?.loginId ||
+      location?.state?.login_id ||
+      "";
+
+    if (!currentLoginId) {
+      toast.success("Payment verified via Razorpay! Transaction ID: " + pId);
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      const endpoint = `/commercial-payment?login_id=${encodeURIComponent(currentLoginId)}`;
+      const headers = {
+        "X-Login-Id": currentLoginId,
+        "X-Commercial-Login-Id": currentLoginId,
+      };
+      const payload = {
+        login_id: currentLoginId,
+        plan_id: plan.id,
+        plan_name: plan.name,
+        amount: Number(plan.amount),
+        payment_method: "Razorpay",
+        transaction_id: pId,
+      };
+
+      await api.post(endpoint, payload, { headers });
+      toast.success("Commercial payment completed and approved!");
+      navigate("/commercial/qr", {
+        replace: true,
+        state: {
+          loginId: currentLoginId,
+          paymentSuccess: true,
+        },
+      });
+    } catch (e) {
+      console.warn("Auto submit after commercial razorpay error:", e);
+      toast.success("Payment verified via Razorpay! Transaction ID: " + pId);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   /* =======================================================
      UI
   ======================================================= */
@@ -713,80 +772,15 @@ const handleSubmit = async (event) => {
                 </div>
               </div>
 
-              {/* OPEN PAYMENT DETAILS CARD */}
-              <PaymentDetailsCard
-                amount={plan.amount}
-                upiId="robertsonraja@barodampay"
-                accountName="INMBA ORGANIZATION"
-                accountNumber="70340200001467"
-                ifsc="BARB0VJPACO"
-                bankName="Bank of Baroda"
-                branch="Chitlapakkam Branch, Chennai"
-                qrUrl="/inmba-qr.png"
-              />
-
-              {/* RAZORPAY INSTANT PAYMENT */}
-              <div
-                style={{
-                  background: "#f0fdf4",
-                  border: "1.5px solid #86efac",
-                  borderRadius: "14px",
-                  padding: "20px",
-                  marginBottom: "24px",
-                  boxShadow: "0 4px 14px rgba(22, 163, 74, 0.08)",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", marginBottom: "14px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <div style={{ width: "42px", height: "42px", borderRadius: "10px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.25rem" }}>
-                      <i className="fa-solid fa-bolt" />
-                    </div>
-                    <div>
-                      <h4 style={{ margin: "0 0 2px 0", fontSize: "1.05rem", fontWeight: 700, color: "#14532d" }}>
-                        Instant Online Payment (Razorpay)
-                      </h4>
-                      <p style={{ margin: 0, fontSize: "0.84rem", color: "#166534" }}>
-                        Pay instantly with UPI (GPay, PhonePe, Paytm), All Debit/Credit Cards & NetBanking. Auto-verified immediately!
-                      </p>
-                    </div>
-                  </div>
-                  <div style={{ background: "#dcfce7", padding: "6px 14px", borderRadius: "8px", fontWeight: 800, color: "#15803d", fontSize: "1.1rem" }}>
-                    ₹{plan.amount}
-                  </div>
-                </div>
-
-                <div style={{ maxWidth: "360px" }}>
-                  <RazorpayButton
-                    amountInRupees={plan.amount}
-                    name="INMBA Commercial Membership"
-                    description={`Commercial Plan: ${plan.name} (₹${plan.amount})`}
-                    onSuccess={(verifyResult, rzpResponse) => {
-                      setTransactionId(rzpResponse.razorpay_payment_id);
-                      setPaymentMethod("Razorpay");
-                      setError("");
-                    }}
-                    onFailure={(err) => {
-                      setError(err.message || "Payment cancelled or failed.");
-                    }}
-                    buttonText={
-                      transactionId && transactionId.startsWith("pay_")
-                        ? `Paid via Razorpay (${transactionId})`
-                        : `Pay ₹${plan.amount} Instantly with Razorpay`
-                    }
-                    disabled={submitting}
-                  />
-                </div>
-              </div>
-
-              {/* DIVIDER */}
-              <div style={{ textAlign: "center", margin: "24px 0 28px 0", position: "relative" }}>
+              {/* ========================================================
+                  1. SUBMIT PAYMENT PROOF (TOP)
+                  ======================================================== */}
+              <div style={{ textAlign: "center", margin: "16px 0 24px 0", position: "relative" }}>
                 <hr style={{ border: "none", borderTop: "1px solid #cbd5e1", margin: 0 }} />
-                <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#64748b", fontSize: "0.8rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                  OR Submit Payment Proof (After Bank / UPI / QR Transfer)
+                <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#166534", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
+                  SUBMIT PAYMENT PROOF (AFTER BANK / UPI / QR TRANSFER)
                 </span>
               </div>
-
-
 
               {/* ===========================================
                   AMOUNT
@@ -949,6 +943,55 @@ const handleSubmit = async (event) => {
                   </div>
                 )}
               </div>
+
+              {/* ========================================================
+                  2. PAYMENT METHODS (FOLLOWING THE PROOF PART)
+                  ======================================================== */}
+              {/* DIVIDER: OFFICIAL PAYMENT METHODS */}
+              <div className="inmba-payment-section-divider">
+                <span className="inmba-payment-section-divider-text">
+                  OFFICIAL PAYMENT DETAILS (BANK / UPI / QR CODE)
+                </span>
+              </div>
+
+              {/* 1. OFFICIAL PAYMENT DETAILS CARD (BANK & QR) */}
+              <PaymentDetailsCard
+                amount={plan.amount}
+                upiId="hprabha785@oksbi"
+                accountName="INMBA ORGANIZATION"
+                accountNumber="70340200001467"
+                ifsc="BARB0VJPACO"
+                bankName="Bank of Baroda"
+                branch="Chitlapakkam Branch, Chennai"
+                qrUrl="/inmba-qr.png"
+              />
+
+              {/* DIVIDER: OR PAY VIA RAZORPAY */}
+              <div className="inmba-payment-section-divider">
+                <span className="inmba-payment-section-divider-text">
+                  OR PAY INSTANTLY ONLINE (RAZORPAY)
+                </span>
+              </div>
+
+              {/* 2. RAZORPAY INSTANT ONLINE PAYMENT */}
+              <RazorpayCard
+                amount={plan.amount}
+                name="INMBA Commercial Membership"
+                description={`Commercial Plan: ${plan.name} (₹${plan.amount})`}
+                notes={{
+                  login_id:
+                    sessionStorage.getItem("commercial_login_id") ||
+                    localStorage.getItem("commercial_login_id") ||
+                    "",
+                  plan_name: plan.name,
+                }}
+                onSuccess={handleRazorpaySuccess}
+                onFailure={(err) => {
+                  setError(err.message || "Payment cancelled or failed.");
+                }}
+                transactionId={transactionId}
+                disabled={submitting}
+              />
 
               {/* ===========================================
                   INFO

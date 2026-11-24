@@ -38,16 +38,17 @@ import {
 import "./Payment.css";
 import { toText, asObject, toNumber } from "../../../utils/commonHelpers";
 import PaymentDetailsCard from "../../../components/PaymentDetailsCard/PaymentDetailsCard";
-import RazorpayButton from "../../../components/RazorpayCheckout/RazorpayButton";
+import RazorpayCard from "../../../components/RazorpayCheckout/RazorpayCard";
 
 /* =========================
    FORM INITIAL STATE
 ========================= */
 
 const INITIAL_FORM_DATA = {
-  payment_method: "",
-  subscription_year: "",
-  amount: "",
+  payment_method: "QR",
+  subscription_year: "1",
+  selected_plan_option: "299_1",
+  amount: "299",
   transaction_id: "",
   payment_proof: null,
 };
@@ -83,16 +84,40 @@ const PAYMENT_METHODS = [
 
 const SUBSCRIPTION_OPTIONS = [
   {
-    value: "1",
-    label: "1 Year",
+    value: "299_1",
+    label: "₹299 — 1 Year (Network Member)",
+    amount: "299",
+    years: "1",
   },
   {
-    value: "2",
-    label: "2 Years",
+    value: "299_2",
+    label: "₹598 — 2 Years (Network Member)",
+    amount: "598",
+    years: "2",
   },
   {
-    value: "3",
-    label: "3 Years",
+    value: "299_3",
+    label: "₹897 — 3 Years (Network Member)",
+    amount: "897",
+    years: "3",
+  },
+  {
+    value: "2999_1",
+    label: "₹2,999 — 1 Year (Royalty Member)",
+    amount: "2999",
+    years: "1",
+  },
+  {
+    value: "2999_2",
+    label: "₹5,998 — 2 Years (Royalty Member)",
+    amount: "5998",
+    years: "2",
+  },
+  {
+    value: "2999_3",
+    label: "₹8,997 — 3 Years (Royalty Member)",
+    amount: "8997",
+    years: "3",
   },
 ];
 
@@ -493,9 +518,12 @@ export default function Payment() {
     formData,
     setFormData,
   ] =
-    useState({
+    useState(() => ({
       ...INITIAL_FORM_DATA,
-    });
+      subscription_year: "1",
+      selected_plan_option: civilianPlan === "2999" ? "2999_1" : "299_1",
+      amount: civilianPlan === "2999" ? "2999" : "299",
+    }));
 
   const [
     loading,
@@ -582,34 +610,44 @@ export default function Payment() {
             paymentConfig,
           });
 
+          const existingYear = toText(
+            payment.subscription_year ??
+              payment.subscriptionYear,
+            ""
+          ) || "1";
+
+          let defaultPlan = "299_1";
+          let defaultAmount = "299";
+          let defaultYear = ["1", "2", "3"].includes(existingYear) ? existingYear : "1";
+
+          if (civilianPlan === "2999") {
+            defaultPlan = `2999_${defaultYear}`;
+            defaultAmount = String(2999 * Number(defaultYear));
+          } else if (civilianPlan === "299") {
+            defaultPlan = `299_${defaultYear}`;
+            defaultAmount = String(299 * Number(defaultYear));
+          } else if (payment.amount) {
+            defaultAmount = String(payment.amount);
+            const match = SUBSCRIPTION_OPTIONS.find((o) => o.amount === defaultAmount);
+            if (match) {
+              defaultPlan = match.value;
+              defaultYear = match.years;
+            }
+          }
+
           setFormData({
             payment_method:
               toText(
                 payment.payment_method ??
                   payment.paymentMethod,
-                ""
-              ),
+                "QR"
+              ) || "QR",
 
-            subscription_year:
-              toText(
-                payment.subscription_year ??
-                  payment.subscriptionYear,
-                ""
-              ),
+            subscription_year: defaultYear,
 
-            amount:
-              civilianPlan
-                ? getCivilianAmountForYears(
-                    toText(
-                      payment.subscription_year ??
-                        payment.subscriptionYear,
-                      ""
-                    )
-                  )
-                : toText(
-                    payment.amount,
-                    ""
-                  ),
+            selected_plan_option: defaultPlan,
+
+            amount: defaultAmount,
 
             transaction_id:
               toText(
@@ -845,7 +883,7 @@ export default function Payment() {
     toText(
       paymentConfig.upi_id ??
         paymentConfig.upiId,
-      "robertsonraja@barodampay"
+      "hprabha785@oksbi"
     );
 
   const paymentQrUrl =
@@ -879,14 +917,35 @@ export default function Payment() {
         };
 
         if (
-          civilianPlan &&
-          name ===
-            "subscription_year"
+          name === "subscription_year" ||
+          name === "selected_plan_option"
         ) {
-          nextData.amount =
-            getCivilianAmountForYears(
-              value
-            );
+          const selected = SUBSCRIPTION_OPTIONS.find(
+            (opt) => opt.value === value || opt.amount === value
+          );
+          if (selected) {
+            nextData.selected_plan_option = selected.value;
+            nextData.subscription_year = selected.years;
+            nextData.amount = selected.amount;
+          } else if (value === "1" || value === "2" || value === "3") {
+            nextData.subscription_year = value;
+            const isRoyalty =
+              civilianPlan === "2999" ||
+              nextData.selected_plan_option?.startsWith("2999") ||
+              Number(nextData.amount) >= 2999;
+            const baseRate = isRoyalty ? 2999 : 299;
+            nextData.amount = String(baseRate * Number(value));
+            nextData.selected_plan_option = `${baseRate}_${value}`;
+          }
+        } else if (name === "amount") {
+          const cleanAmt = String(value).trim();
+          const match = SUBSCRIPTION_OPTIONS.find(
+            (opt) => opt.amount === cleanAmt
+          );
+          if (match) {
+            nextData.selected_plan_option = match.value;
+            nextData.subscription_year = match.years;
+          }
         }
 
         return nextData;
@@ -901,6 +960,8 @@ export default function Payment() {
       ) => ({
         ...previousErrors,
         [name]: "",
+        subscription_year: "",
+        amount: "",
       })
     );
   };
@@ -953,7 +1014,7 @@ export default function Payment() {
      PAYMENT PROOF CHANGE
   ========================= */
 
-  const handleProofChange = (
+  const handleProofChange = async (
     event
   ) => {
     const file =
@@ -988,6 +1049,31 @@ export default function Payment() {
       );
 
       return;
+    }
+
+    // Instant client-side check if same screenshot file was already submitted
+    if (window.crypto && window.crypto.subtle) {
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const hashBuffer = await window.crypto.subtle.digest("SHA-256", arrayBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const fileHashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+
+        const storedHashes = JSON.parse(
+          sessionStorage.getItem("inmba_submitted_proof_hashes") || "[]"
+        );
+        if (storedHashes.includes(fileHashHex)) {
+          const errorMsg =
+            "Invalid payment proof: Same screenshot cannot be uploaded again. This payment proof has already been submitted.";
+          toast.error(errorMsg);
+          setFieldErrors((prev) => ({
+            ...prev,
+            payment_proof: errorMsg,
+          }));
+          setFormError(errorMsg);
+          return;
+        }
+      } catch {}
     }
 
     if (
@@ -1075,65 +1161,36 @@ export default function Payment() {
   const validateForm = () => {
     const errors = {};
 
-    if (
-      !formData.payment_method
-    ) {
-      errors.payment_method =
-        "Select a payment method.";
+    if (!formData.payment_method) {
+      formData.payment_method = "QR";
     }
 
-    if (
-      !formData.subscription_year
-    ) {
-      errors.subscription_year =
-        "Select a subscription plan.";
+    if (!formData.subscription_year) {
+      formData.subscription_year = "1";
     }
 
-    const amount =
-      Number(
-        formData.amount
+    const VALID_PLAN_AMOUNTS = [299, 598, 897, 2999, 5998, 8997];
+    const numAmt = Number(formData.amount);
+    if (!formData.amount || !VALID_PLAN_AMOUNTS.includes(numAmt)) {
+      errors.amount =
+        "Invalid payment amount. Only official membership plan fees (₹299, ₹598, ₹897 for Network Member or ₹2,999, ₹5,998, ₹8,997 for Royalty Member) are accepted.";
+    }
+
+    if (formData.payment_proof) {
+      const proofValidation = validatePaymentProof(
+        formData.payment_proof
       );
 
-    if (
-      !formData.amount
-    ) {
-      errors.amount =
-        "Payment amount is required.";
-    } else if (
-      !Number.isFinite(amount) ||
-      amount <= 0
-    ) {
-      errors.amount =
-        "Enter a valid amount greater than zero.";
-    }
-
-    if (
-      formData.payment_proof
-    ) {
-      const proofValidation =
-        validatePaymentProof(
-          formData.payment_proof
-        );
-
-      if (
-        !proofValidation.valid
-      ) {
-        errors.payment_proof =
-          proofValidation.error;
+      if (!proofValidation.valid) {
+        errors.payment_proof = proofValidation.error;
       }
     }
 
-    setFieldErrors(
-      errors
-    );
+    setFieldErrors(errors);
 
-    if (
-      Object.keys(
-        errors
-      ).length > 0
-    ) {
+    if (Object.keys(errors).length > 0) {
       setFormError(
-        "Please complete the required payment information."
+        Object.values(errors).join(" ") || "Please complete the required payment information."
       );
 
       return false;
@@ -1181,13 +1238,13 @@ export default function Payment() {
         const result =
           await submitMemberPayment({
             payment_method:
-              formData.payment_method,
+              formData.payment_method || "QR",
 
             subscription_year:
-              formData.subscription_year,
+              formData.subscription_year || "1",
 
             amount:
-              formData.amount,
+              formData.amount || "299",
 
             transaction_id:
               formData.transaction_id,
@@ -1198,6 +1255,23 @@ export default function Payment() {
 
         if (!civilianPlan) {
           await checkMemberSession();
+        }
+
+        // Cache submitted proof hash in sessionStorage so re-uploading the same file immediately shows invalid
+        if (formData.payment_proof && window.crypto && window.crypto.subtle) {
+          try {
+            const arrayBuffer = await formData.payment_proof.arrayBuffer();
+            const hashBuffer = await window.crypto.subtle.digest("SHA-256", arrayBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const fileHashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+            const stored = JSON.parse(
+              sessionStorage.getItem("inmba_submitted_proof_hashes") || "[]"
+            );
+            if (!stored.includes(fileHashHex)) {
+              stored.push(fileHashHex);
+              sessionStorage.setItem("inmba_submitted_proof_hashes", JSON.stringify(stored));
+            }
+          } catch {}
         }
 
         toast.success(
@@ -1348,6 +1422,34 @@ export default function Payment() {
           return;
         }
 
+        const rawErrorMessage = getApiErrorMessage(
+          submitError,
+          "Unable to submit payment."
+        );
+
+        if (
+          statusCode === 409 ||
+          statusCode === 422 ||
+          rawErrorMessage.toLowerCase().includes("same screenshot") ||
+          rawErrorMessage.toLowerCase().includes("duplicate") ||
+          rawErrorMessage.toLowerCase().includes("already been submitted") ||
+          rawErrorMessage.toLowerCase().includes("payment verification failed") ||
+          rawErrorMessage.toLowerCase().includes("mismatch") ||
+          rawErrorMessage.toLowerCase().includes("requires ₹")
+        ) {
+          setFieldErrors((prev) => ({
+            ...prev,
+            payment_proof: rawErrorMessage,
+          }));
+          setFormError(rawErrorMessage);
+          toast.error(rawErrorMessage);
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+          return;
+        }
+
         const apiFieldErrors =
           getFieldErrors(
             submitError
@@ -1451,6 +1553,49 @@ export default function Payment() {
       </main>
     );
   }
+
+  const handleRazorpaySuccess = async (verifyResult, rzpResponse) => {
+    const paymentId = rzpResponse.razorpay_payment_id;
+    setFormData((prev) => ({
+      ...prev,
+      payment_method: "Razorpay",
+      transaction_id: paymentId,
+    }));
+
+    try {
+      setSubmitting(true);
+      const result = await submitMemberPayment({
+        payment_method: "Razorpay",
+        subscription_year: formData.subscription_year || 1,
+        amount: formData.amount || 299,
+        transaction_id: paymentId,
+        payment_proof: null,
+      });
+
+      if (!civilianPlan) {
+        await checkMemberSession();
+      }
+
+      toast.success(result?.response?.message || "Payment completed and verified via Razorpay!");
+
+      const acknowledgementToken = toText(
+        result?.token ?? result?.response?.token ?? result?.data?.token ?? result?.response?.data?.token,
+        sessionStorage.getItem("inmba_civilian_token") || ""
+      );
+
+      if (civilianPlan && acknowledgementToken) {
+        navigate(`/civilian-acknowledgement/${encodeURIComponent(acknowledgementToken)}`, { replace: true });
+        return;
+      }
+
+      navigate("/dashboard", { replace: true });
+    } catch (err) {
+      console.warn("Auto submit after razorpay error:", err);
+      toast.success("Payment verified! Transaction ID: " + paymentId);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <main className="inmba-payment-page">
@@ -1724,85 +1869,13 @@ export default function Payment() {
               </div>
             </header>
 
-            {/* OPEN PAYMENT DETAILS CARD */}
-            <PaymentDetailsCard
-              amount={formData.amount || (civilianPlan ? 299 : "")}
-              upiId={upiId}
-              accountNumber={bankAccountNumber}
-              ifsc={bankIfsc}
-              accountName="INMBA ORGANIZATION"
-              bankName="Bank of Baroda"
-              branch="Chitlapakkam Branch, Chennai"
-              qrUrl="/inmba-qr.png"
-            />
-
-            {/* RAZORPAY INSTANT PAYMENT */}
-            <div
-              className="inmba-payment-instant-box"
-              style={{
-                background: "#f0fdf4",
-                border: "1.5px solid #86efac",
-                borderRadius: "14px",
-                padding: "20px",
-                marginBottom: "24px",
-                boxShadow: "0 4px 14px rgba(22, 163, 74, 0.08)",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", marginBottom: "14px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <div style={{ width: "42px", height: "42px", borderRadius: "10px", background: "#dcfce7", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.25rem" }}>
-                    <i className="fa-solid fa-bolt" />
-                  </div>
-                  <div>
-                    <h4 style={{ margin: "0 0 2px 0", fontSize: "1.05rem", fontWeight: 700, color: "#14532d" }}>
-                      Instant Online Payment (Razorpay)
-                    </h4>
-                    <p style={{ margin: 0, fontSize: "0.84rem", color: "#166534" }}>
-                      Pay instantly with UPI (GPay, PhonePe, Paytm), All Debit/Credit Cards & NetBanking. Auto-verified immediately!
-                    </p>
-                  </div>
-                </div>
-                <div style={{ background: "#dcfce7", padding: "6px 14px", borderRadius: "8px", fontWeight: 800, color: "#15803d", fontSize: "1.1rem" }}>
-                  ₹{Number(formData.amount) || 299}
-                </div>
-              </div>
-
-              <div style={{ maxWidth: "360px" }}>
-                <RazorpayButton
-                  amountInRupees={Number(formData.amount) || 299}
-                  name="INMBA Membership"
-                  description={`INMBA Membership Plan - ${formData.subscription_year || 1} Year`}
-                  prefill={{
-                    name: fullName,
-                    email: member?.email || "",
-                    contact: member?.phone || member?.mobile || "",
-                  }}
-                  onSuccess={(verifyResult, rzpResponse) => {
-                    toast.success("Payment verified successfully via Razorpay!");
-                    setFormData((prev) => ({
-                      ...prev,
-                      payment_method: "Razorpay",
-                      transaction_id: rzpResponse.razorpay_payment_id,
-                    }));
-                  }}
-                  onFailure={(err) => {
-                    toast.error(err.message || "Payment cancelled or failed.");
-                  }}
-                  buttonText={
-                    formData.transaction_id && formData.transaction_id.startsWith("pay_")
-                      ? `Paid via Razorpay (${formData.transaction_id})`
-                      : `Pay ₹${formData.amount || 299} Instantly with Razorpay`
-                  }
-                  disabled={submitting || isApproved || !Number(formData.amount)}
-                />
-              </div>
-            </div>
-
-            {/* DIVIDER */}
-            <div style={{ textAlign: "center", margin: "24px 0 28px 0", position: "relative" }}>
+            {/* ========================================================
+                1. SUBMIT PAYMENT PROOF (IMG PART MOVED TO TOP)
+                ======================================================== */}
+            <div style={{ textAlign: "center", margin: "16px 0 24px 0", position: "relative" }}>
               <hr style={{ border: "none", borderTop: "1px solid #cbd5e1", margin: 0 }} />
-              <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#64748b", fontSize: "0.8rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                OR Submit Payment Proof (After Bank / UPI / QR Transfer)
+              <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#166534", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
+                SUBMIT PAYMENT PROOF (AFTER BANK / UPI / QR TRANSFER)
               </span>
             </div>
 
@@ -1821,7 +1894,8 @@ export default function Payment() {
                   id="payment-subscription-year"
                   name="subscription_year"
                   value={
-                    formData.subscription_year
+                    formData.selected_plan_option ||
+                    (Number(formData.amount) >= 2999 ? "2999_1" : "299_1")
                   }
                   onChange={
                     handleInputChange
@@ -1842,22 +1916,17 @@ export default function Payment() {
                     Select Plan
                   </option>
 
-                  {SUBSCRIPTION_OPTIONS.map(
-                    (
-                      option
-                    ) => (
-                      <option
-                        key={
-                          option.value
-                        }
-                        value={
-                          option.value
-                        }
-                      >
-                        {option.label}
-                      </option>
-                    )
-                  )}
+                  <optgroup label="INMBA Network Member Plans (₹299/yr)">
+                    <option value="299_1">₹299 — 1 Year (Network Member)</option>
+                    <option value="299_2">₹598 — 2 Years (Network Member)</option>
+                    <option value="299_3">₹897 — 3 Years (Network Member)</option>
+                  </optgroup>
+
+                  <optgroup label="INMBA Royalty Member Plans (₹2,999/yr)">
+                    <option value="2999_1">₹2,999 — 1 Year (Royalty Member)</option>
+                    <option value="2999_2">₹5,998 — 2 Years (Royalty Member)</option>
+                    <option value="2999_3">₹8,997 — 3 Years (Royalty Member)</option>
+                  </optgroup>
                 </select>
 
                 {getErrorText(
@@ -1886,23 +1955,22 @@ export default function Payment() {
 
                   <input
                     id="payment-amount"
-                    type="number"
+                    type="text"
                     name="amount"
                     value={
                       formData.amount
+                        ? Number(formData.amount).toLocaleString("en-IN")
+                        : "299"
                     }
-                    onChange={
-                      handleInputChange
-                    }
-                    readOnly={
-                      Boolean(
-                        civilianPlan
-                      )
-                    }
-                    min="1"
-                    step="0.01"
-                    placeholder="Enter amount"
-                    inputMode="decimal"
+                    readOnly
+                    tabIndex="-1"
+                    style={{
+                      backgroundColor: "#f8fafc",
+                      fontWeight: 700,
+                      color: "#166534",
+                      cursor: "not-allowed",
+                      border: "1px solid #cbd5e1",
+                    }}
                     disabled={
                       submitting ||
                       isApproved
@@ -1916,6 +1984,11 @@ export default function Payment() {
                     }
                   />
                 </div>
+
+                <small style={{ display: "block", marginTop: "5px", fontSize: "0.76rem", color: "#64748b" }}>
+                  <i className="fa-solid fa-lock" style={{ marginRight: "4px", color: "#166534" }} />
+                  Amount is locked to the selected membership plan ({formData.subscription_year || 1} Year).
+                </small>
 
                 {getErrorText(
                   fieldErrors.amount
@@ -2089,6 +2162,146 @@ export default function Payment() {
                 </small>
               )}
             </div>
+
+            {/* ========================================================
+                2. PAYMENT METHODS (FOLLOWING THE IMG PART)
+                ======================================================== */}
+            {/* PAYMENT METHOD SELECTION */}
+            <div className="inmba-payment-form-group" style={{ marginBottom: "20px" }}>
+              <label style={{ fontSize: "0.85rem", fontWeight: 700, color: "#1e3a1e", marginBottom: "10px" }}>
+                Select Payment Method Used <span>*</span>
+              </label>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                  gap: "10px",
+                }}
+              >
+                {PAYMENT_METHODS.map((method) => {
+                  const isSelected = (formData.payment_method || "QR") === method.value;
+                  return (
+                    <button
+                      key={method.value}
+                      type="button"
+                      className={`inmba-payment-method ${
+                        isSelected ? "inmba-payment-method-selected" : ""
+                      }`}
+                      onClick={() => handlePaymentMethodChange(method.value)}
+                      disabled={submitting || isApproved}
+                      style={{
+                        cursor: "pointer",
+                        border: isSelected ? "2px solid #166534" : "1px solid #d1d5db",
+                        backgroundColor: isSelected ? "#f0fdf4" : "#ffffff",
+                        borderRadius: "12px",
+                        padding: "12px 14px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        textAlign: "left",
+                        transition: "all 0.2s ease",
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: "36px",
+                          height: "36px",
+                          borderRadius: "8px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          backgroundColor: isSelected ? "#166534" : "#f1f5f9",
+                          color: isSelected ? "#ffffff" : "#166534",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <i className={method.icon} aria-hidden="true" />
+                      </span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <strong
+                          style={{
+                            display: "block",
+                            fontSize: "0.85rem",
+                            color: isSelected ? "#14532d" : "#1f2937",
+                          }}
+                        >
+                          {method.label}
+                        </strong>
+                        <small
+                          style={{
+                            display: "block",
+                            fontSize: "0.72rem",
+                            color: "#6b7280",
+                            lineHeight: 1.2,
+                            marginTop: "2px",
+                          }}
+                        >
+                          {method.description}
+                        </small>
+                      </div>
+                      <i
+                        className={isSelected ? "fas fa-circle-check" : "far fa-circle"}
+                        style={{
+                          color: isSelected ? "#166534" : "#9ca3af",
+                          fontSize: "1rem",
+                        }}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* DIVIDER: OFFICIAL PAYMENT METHODS */}
+            <div className="inmba-payment-section-divider">
+              <span className="inmba-payment-section-divider-text">
+                OFFICIAL PAYMENT DETAILS (BANK / UPI / QR CODE)
+              </span>
+            </div>
+
+            {/* 1. OFFICIAL PAYMENT DETAILS CARD (BANK & QR) */}
+            <PaymentDetailsCard
+              amount={formData.amount || 299}
+              upiId={upiId}
+              accountNumber={bankAccountNumber}
+              ifsc={bankIfsc}
+              accountName="INMBA ORGANIZATION"
+              bankName="Bank of Baroda"
+              branch="Chitlapakkam Branch, Chennai"
+              qrUrl="/inmba-qr.png"
+            />
+
+            {/* DIVIDER: OR PAY VIA RAZORPAY */}
+            <div className="inmba-payment-section-divider">
+              <span className="inmba-payment-section-divider-text">
+                OR PAY INSTANTLY ONLINE (RAZORPAY)
+              </span>
+            </div>
+
+            {/* 2. RAZORPAY INSTANT ONLINE PAYMENT */}
+            <RazorpayCard
+              amount={formData.amount || (civilianPlan ? 299 : 299)}
+              name="INMBA Membership"
+              description={`INMBA Membership Plan - ${formData.subscription_year || 1} Year`}
+              prefill={{
+                name: fullName,
+                email: member?.email || "",
+                contact: member?.phone || member?.mobile || "",
+              }}
+              notes={{
+                member_id: member?.id || "",
+                login_id: loginId || "",
+                plan_name: "INMBA Membership",
+              }}
+              onSuccess={handleRazorpaySuccess}
+              onFailure={(err) => {
+                toast.error(err.message || "Payment cancelled or failed.");
+              }}
+              transactionId={formData.transaction_id}
+              disabled={submitting || isApproved || !Number(formData.amount)}
+            />
 
             {/* DISCLAIMER */}
 

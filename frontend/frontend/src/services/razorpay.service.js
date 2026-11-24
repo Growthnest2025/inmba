@@ -51,7 +51,7 @@ export const getRazorpayKeyId = async () => {
     return process.env.REACT_APP_RAZORPAY_KEY_ID;
   }
 
-  return "rzp_test_U1AQxKTavMChW2";
+  return "rzp_live_U22ipTA2hIJrdz";
 };
 
 /**
@@ -115,6 +115,10 @@ export const verifyRazorpayPayment = async ({
   razorpay_order_id,
   razorpay_payment_id,
   razorpay_signature,
+  login_id,
+  member_id,
+  amount,
+  plan_name,
 }) => {
   if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
     throw new Error("Missing required fields for payment signature verification.");
@@ -125,6 +129,10 @@ export const verifyRazorpayPayment = async ({
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
+      login_id,
+      member_id,
+      amount,
+      plan_name,
     });
 
     return response.data;
@@ -247,6 +255,10 @@ export const initiateRazorpayCheckout = async ({
             razorpay_order_id: response.razorpay_order_id,
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,
+            login_id: notes.login_id || notes.loginId || "",
+            member_id: notes.member_id || notes.memberId || "",
+            amount: finalAmountInPaise / 100,
+            plan_name: notes.plan_name || notes.plan || name || "Membership",
           });
 
           toast.dismiss(verifyToastId);

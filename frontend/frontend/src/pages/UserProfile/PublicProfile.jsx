@@ -664,7 +664,10 @@ function ProfessionalPublicGrid({
           let locked =
             false;
 
-          if (
+          if (row.value !== undefined && row.value !== null && String(row.value).trim() !== "") {
+            displayValue = toText(row.value);
+            locked = false;
+          } else if (
             status ===
             "private"
           ) {
@@ -672,7 +675,7 @@ function ProfessionalPublicGrid({
               true;
 
             displayValue =
-              "Access Restricted";
+              "Not Provided";
           } else if (
             status ===
             "optional-private"
@@ -681,7 +684,7 @@ function ProfessionalPublicGrid({
               true;
 
             displayValue =
-              "Private by Member";
+              "Not Provided";
           } else {
             displayValue =
               toText(
@@ -1181,7 +1184,7 @@ function ProfessionalPublicHero({
 
         <ProfileHeroReferralBar
           referralCode={toText(profile?.referral_id)}
-          referralLink={toText(profile?.referral_id) && typeof window !== "undefined" ? `${window.location.origin}/membership?ref=${encodeURIComponent(toText(profile?.referral_id))}` : ""}
+          referralLink={toText(profile?.referral_id) && typeof window !== "undefined" ? `${window.location.origin}/membership-type?ref=${encodeURIComponent(toText(profile?.referral_id))}` : ""}
           copied={""}
           onCopy={async (kind, val) => {
             if (!val) return;
@@ -1404,7 +1407,7 @@ function PublicProfilePage({
 
         <ProfileHeroReferralBar
           referralCode={toText(profile?.referral_id)}
-          referralLink={toText(profile?.referral_id) && typeof window !== "undefined" ? `${window.location.origin}/membership?ref=${encodeURIComponent(toText(profile?.referral_id))}` : ""}
+          referralLink={toText(profile?.referral_id) && typeof window !== "undefined" ? `${window.location.origin}/membership-type?ref=${encodeURIComponent(toText(profile?.referral_id))}` : ""}
           copied={""}
           onCopy={async (kind, val) => {
             if (!val) return;
@@ -1611,96 +1614,111 @@ function ProfessionalPublicSections({
               label:
                 "Full Legal Name",
 
-              status:
-                "private",
+              value:
+                profile.full_name ||
+                profile.name ||
+                profile.first_name,
             },
 
             {
               label:
                 "Father / Spouse Name",
 
-              status:
-                "private",
+              value:
+                profile.father_spouse_name ||
+                profile.father_name,
             },
 
             {
               label:
                 "Date of Birth",
 
-              status:
-                "private",
+              value:
+                profile.dob ||
+                profile.date_of_birth,
             },
 
             {
               label:
                 "Gender",
 
-              status:
-                "private",
+              value:
+                profile.gender,
             },
 
             {
               label:
                 "Marital Status",
 
-              status:
-                "private",
+              value:
+                profile.marital_status,
             },
 
             {
               label:
                 "Nationality",
 
-              status:
-                "private",
+              value:
+                profile.nationality ||
+                "Indian",
             },
 
             {
               label:
                 "Aadhaar Number / Card",
 
-              status:
-                "private",
+              value:
+                profile.aadhaar_number
+                  ? (profile.aadhaar_number.length === 12
+                      ? `•••• •••• ${profile.aadhaar_number.slice(8)}`
+                      : profile.aadhaar_number)
+                  : (profile.aadhaar
+                      ? (profile.aadhaar.length === 12
+                          ? `•••• •••• ${profile.aadhaar.slice(8)}`
+                          : profile.aadhaar)
+                      : null),
             },
 
             {
               label:
                 "PAN Number / Card",
 
-              status:
-                "private",
+              value:
+                profile.pan_number ||
+                profile.pan,
             },
 
             {
               label:
                 "Passport Number",
 
-              status:
-                "private",
+              value:
+                profile.passport_number ||
+                profile.passport,
             },
 
             {
               label:
                 "Voter ID",
 
-              status:
-                "private",
+              value:
+                profile.voter_id,
             },
 
             {
               label:
                 "Driving License",
 
-              status:
-                "private",
+              value:
+                profile.driving_license,
             },
 
             {
               label:
                 "Blood Group",
 
-              status:
-                "private",
+              value:
+                profile.blood_group,
             },
           ]}
         />
@@ -1742,48 +1760,54 @@ function ProfessionalPublicSections({
               label:
                 "Secondary Mobile",
 
-              status:
-                "private",
+              value:
+                profile.secondary_mobile ||
+                profile.alternate_mobile,
             },
 
             {
               label:
                 "Email Address",
 
-              status:
-                "private",
+              value:
+                profile.email ||
+                profile.primary_email,
             },
 
             {
               label:
                 "WhatsApp Number",
 
-              status:
-                "private",
+              value:
+                profile.whatsapp_number ||
+                profile.whatsapp,
             },
 
             {
               label:
                 "Current Address",
 
-              status:
-                "private",
+              value:
+                profile.current_address ||
+                profile.address,
             },
 
             {
               label:
                 "Permanent Address",
 
-              status:
-                "private",
+              value:
+                profile.permanent_address ||
+                profile.address,
             },
 
             {
               label:
                 "Address Proof",
 
-              status:
-                "private",
+              value:
+                profile.address_proof_type ||
+                profile.address_proof,
             },
 
             {

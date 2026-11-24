@@ -504,15 +504,25 @@ export const validatePaymentProof =
     const allowedTypes = [
       "image/jpeg",
       "image/jpg",
+      "image/pjpeg",
       "image/png",
       "image/webp",
       "application/pdf",
     ];
 
+    const fileName = String(file.name || "").toLowerCase();
+    const isExtensionValid =
+      fileName.endsWith(".jpg") ||
+      fileName.endsWith(".jpeg") ||
+      fileName.endsWith(".png") ||
+      fileName.endsWith(".webp") ||
+      fileName.endsWith(".pdf");
+
     if (
       !allowedTypes.includes(
         file.type
-      )
+      ) &&
+      !isExtensionValid
     ) {
       return {
         valid:
@@ -529,7 +539,7 @@ export const validatePaymentProof =
 
     const safeMaxSizeMb =
       Number(
-        maxSizeMb
+        maxSizeMb || 10
       );
 
     const maximumSize =

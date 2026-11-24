@@ -518,7 +518,8 @@ export default function OrganizationMemberRegistration() {
 
     const aadhaarValidation =
       validateRegistrationAadhaar(
-        formData.aadhar
+        formData.aadhar,
+        false
       );
 
     if (!aadhaarValidation.valid) {
@@ -1094,7 +1095,7 @@ export default function OrganizationMemberRegistration() {
               <OrganizationField
                 id="organization-aadhaar"
                 name="aadhar"
-                label="Aadhaar Number"
+                label="Aadhaar Number (Optional)"
                 value={
                   formData.aadhar
                 }
@@ -1106,10 +1107,10 @@ export default function OrganizationMemberRegistration() {
                     fieldErrors.aadhar
                   )
                 }
-                placeholder="12-digit Aadhaar number"
+                placeholder="12-digit Aadhaar number (Optional)"
                 inputMode="numeric"
                 maxLength={12}
-                required
+                required={false}
                 disabled={
                   submitting
                 }

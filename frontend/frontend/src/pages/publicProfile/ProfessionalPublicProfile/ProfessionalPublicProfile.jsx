@@ -1133,7 +1133,7 @@ export default function ProfessionalPublicProfile({
       localProfile?.member_id
   );
   const referralLink = referralCode
-    ? `${typeof window !== "undefined" ? window.location.origin : ""}/membership?ref=${encodeURIComponent(referralCode)}`
+    ? `${typeof window !== "undefined" ? window.location.origin : ""}/membership-type?ref=${encodeURIComponent(referralCode)}`
     : "";
 
   const copyReferralText = async (kind, value) => {

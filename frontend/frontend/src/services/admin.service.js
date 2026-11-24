@@ -1235,6 +1235,7 @@ export const verifyAdminMember =
     {
       status,
       referralId = "",
+      referred_by = "",
       sendMethod = "email",
     }
   ) => {
@@ -1325,6 +1326,15 @@ export const verifyAdminMember =
         referralId
       )
     );
+
+    if (referred_by) {
+      body.append(
+        "referred_by",
+        toText(
+          referred_by
+        )
+      );
+    }
 
     body.append(
       "send_method",

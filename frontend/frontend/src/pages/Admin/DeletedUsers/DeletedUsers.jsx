@@ -462,17 +462,6 @@ export default function DeletedUsers() {
         return;
       }
 
-      if (
-        deleteConfirmation !==
-        "DELETE"
-      ) {
-        setActionError(
-          'Type "DELETE" to confirm permanent deletion.'
-        );
-
-        return;
-      }
-
       try {
         setProcessing(
           true
@@ -1098,44 +1087,6 @@ export default function DeletedUsers() {
                 </div>
               </div>
 
-              <div className="inmba-deleted-user-confirm-field">
-                <label htmlFor="permanent-delete-confirmation">
-                  Type{" "}
-                  <strong>
-                    DELETE
-                  </strong>{" "}
-                  to confirm
-                </label>
-
-                <input
-                  id="permanent-delete-confirmation"
-                  type="text"
-                  value={
-                    deleteConfirmation
-                  }
-                  onChange={(
-                    event
-                  ) => {
-                    setDeleteConfirmation(
-                      event.target
-                        .value
-                        .toUpperCase()
-                        .slice(
-                          0,
-                          6
-                        )
-                    );
-
-                    setActionError("");
-                  }}
-                  placeholder="DELETE"
-                  autoComplete="off"
-                  disabled={
-                    processing
-                  }
-                />
-              </div>
-
               {actionError && (
                 <ActionError
                   message={
@@ -1164,9 +1115,7 @@ export default function DeletedUsers() {
                     handlePermanentDelete
                   }
                   disabled={
-                    processing ||
-                    deleteConfirmation !==
-                      "DELETE"
+                    processing
                   }
                 >
                   {processing ? (
@@ -1185,7 +1134,7 @@ export default function DeletedUsers() {
                         aria-hidden="true"
                       ></i>
 
-                      Permanently Delete
+                      Yes, Permanently Delete
                     </>
                   )}
                 </button>

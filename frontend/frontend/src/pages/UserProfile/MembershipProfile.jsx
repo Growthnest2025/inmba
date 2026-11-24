@@ -1162,6 +1162,49 @@ export default function MembershipProfile({
                 safeProfile.state ??
                 safeProfile.entity_state,
             },
+
+            {
+              key:
+                "pincode",
+
+              label:
+                "Pincode",
+
+              value:
+                safeProfile.pincode ??
+                safeProfile.entity_pincode,
+            },
+
+            {
+              key:
+                "aadhaar",
+
+              label:
+                "Aadhaar Number",
+
+              value:
+                safeProfile.aadhaar_number
+                  ? (safeProfile.aadhaar_number.length === 12
+                      ? `•••• •••• ${safeProfile.aadhaar_number.slice(8)}`
+                      : safeProfile.aadhaar_number)
+                  : (safeProfile.aadhaar
+                      ? (safeProfile.aadhaar.length === 12
+                          ? `•••• •••• ${safeProfile.aadhaar.slice(8)}`
+                          : safeProfile.aadhaar)
+                      : null),
+            },
+
+            {
+              key:
+                "pan",
+
+              label:
+                "PAN Number",
+
+              value:
+                safeProfile.pan_number ||
+                safeProfile.pan,
+            },
           ]}
         />
       </Section>

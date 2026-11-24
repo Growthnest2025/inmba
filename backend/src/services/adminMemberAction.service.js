@@ -957,15 +957,17 @@ const permanentlyDeleteAdminMember =
     connection =
       null
   ) => {
+    const role = normalizeRole(
+      admin.role
+    );
+
     if (
-      normalizeRole(
-        admin.role
-      ) !==
-      "super_admin"
+      role !== "super_admin" &&
+      role !== "admin"
     ) {
       throw new ApiError(
         403,
-        "Only Super Admin can permanently delete a member."
+        "You do not have permission to permanently delete a member."
       );
     }
 
@@ -1010,6 +1012,18 @@ const permanentlyDeleteAdminMember =
           ?.insertId ??
         0
       );
+
+    // Clean up dependent tables to avoid foreign key failures
+    await executeQuery(`DELETE FROM worker_auth_sessions WHERE member_id = ?`, [member.id], connection).catch(() => {});
+    await executeQuery(`DELETE FROM civilian_full_kyc WHERE member_id = ?`, [member.id], connection).catch(() => {});
+    await executeQuery(`DELETE FROM kyc_members_ext_1 WHERE member_id = ?`, [member.id], connection).catch(() => {});
+    await executeQuery(`DELETE FROM kyc_members_ext_2 WHERE member_id = ?`, [member.id], connection).catch(() => {});
+    await executeQuery(`DELETE FROM commercial_kyc WHERE member_id = ?`, [member.id], connection).catch(() => {});
+
+    if (member.login_id) {
+      await executeQuery(`DELETE FROM commercial_basic_kyc WHERE login_id = ?`, [member.login_id], connection).catch(() => {});
+      await executeQuery(`DELETE FROM commercial_payments WHERE login_id = ?`, [member.login_id], connection).catch(() => {});
+    }
 
     const deleteResult =
       await permanentlyDeleteMemberById(

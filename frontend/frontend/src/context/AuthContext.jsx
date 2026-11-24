@@ -422,6 +422,19 @@ export function AuthProvider({
   const checkAdminSession =
     useCallback(
       async () => {
+        let hasToken = false;
+        try {
+          if (typeof localStorage !== "undefined") {
+            hasToken = Boolean(localStorage.getItem("inmba_session_token"));
+          }
+        } catch {}
+
+        if (!hasToken) {
+          setAdmin(null);
+          setAdminLoading(false);
+          return null;
+        }
+
         setAdminLoading(
           true
         );
@@ -448,26 +461,6 @@ export function AuthProvider({
           return currentAdmin;
         } catch (error) {
           setAdmin(null);
-
-          const statusCode =
-            Number(
-              error?.response
-                ?.status ||
-              error?.statusCode ||
-              0
-            );
-
-          if (
-            statusCode !== 401
-          ) {
-            setAuthError(
-              getApiErrorMessage(
-                error,
-                "Unable to check admin session."
-              )
-            );
-          }
-
           return null;
         } finally {
           setAdminLoading(

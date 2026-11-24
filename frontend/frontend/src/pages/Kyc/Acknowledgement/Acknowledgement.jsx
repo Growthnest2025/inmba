@@ -978,6 +978,71 @@ export default function Acknowledgement() {
 
           </div>
 
+          {/* PROFESSIONAL KYC SUBMISSION DETAILS (PRINTABLE & VISIBLE IN PDF) */}
+          <div style={{ marginTop: "20px", marginBottom: "20px", padding: "18px", background: "#f8fafc", borderRadius: "10px", border: "1px solid #e2e8f0" }}>
+            <h4 style={{ fontSize: "0.95rem", fontWeight: 700, color: "#1e293b", marginBottom: "14px", borderBottom: "1px solid #cbd5e1", paddingBottom: "6px" }}>
+              Member Details & Submitted Data
+            </h4>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "14px", textAlign: "left" }}>
+              <div>
+                <small style={{ color: "#64748b", display: "block" }}>Member Name</small>
+                <strong style={{ color: "#0f172a" }}>{toText(member.name || member.full_name || paymentDetails.memberName, "Professional Member")}</strong>
+              </div>
+              <div>
+                <small style={{ color: "#64748b", display: "block" }}>Contact Mobile</small>
+                <strong style={{ color: "#0f172a" }}>{toText(member.phone || paymentDetails.contact, "—")}</strong>
+              </div>
+              <div>
+                <small style={{ color: "#64748b", display: "block" }}>Contact Email</small>
+                <strong style={{ color: "#0f172a" }}>{toText(member.email || paymentDetails.email, "—")}</strong>
+              </div>
+              {(member.aadhar || member.aadhaar_number) && (
+                <div>
+                  <small style={{ color: "#64748b", display: "block" }}>Aadhaar Number</small>
+                  <strong style={{ color: "#0f172a" }}>
+                    {(() => {
+                      const a = String(member.aadhar || member.aadhaar_number);
+                      return a.length === 12 ? `•••• •••• ${a.slice(8)}` : a;
+                    })()}
+                  </strong>
+                </div>
+              )}
+              {(member.pan_number || member.pan) && (
+                <div>
+                  <small style={{ color: "#64748b", display: "block" }}>PAN Number</small>
+                  <strong style={{ color: "#0f172a" }}>{toText(member.pan_number || member.pan)}</strong>
+                </div>
+              )}
+              {(member.account_number || member.bank_account_number) && (
+                <div>
+                  <small style={{ color: "#64748b", display: "block" }}>Bank Account Number</small>
+                  <strong style={{ color: "#0f172a" }}>
+                    {(() => {
+                      const b = String(member.account_number || member.bank_account_number);
+                      return b.length > 4 ? `•••• •••• ${b.slice(-4)}` : b;
+                    })()}
+                  </strong>
+                </div>
+              )}
+              {(member.ifsc || member.ifsc_code) && (
+                <div>
+                  <small style={{ color: "#64748b", display: "block" }}>IFSC Code</small>
+                  <strong style={{ color: "#0f172a" }}>{toText(member.ifsc || member.ifsc_code)}</strong>
+                </div>
+              )}
+              <div>
+                <small style={{ color: "#64748b", display: "block" }}>Payment Method</small>
+                <strong style={{ color: "#0f172a" }}>{toText(paymentDetails.paymentMethod || member.payment_method, "Online")}</strong>
+              </div>
+              {(paymentDetails.transactionId || member.transaction_id) && (
+                <div>
+                  <small style={{ color: "#64748b", display: "block" }}>Transaction ID</small>
+                  <strong style={{ color: "#0f172a" }}>{toText(paymentDetails.transactionId || member.transaction_id)}</strong>
+                </div>
+              )}
+            </div>
+          </div>
+
 
           <div className="professional-ack-notice">
 

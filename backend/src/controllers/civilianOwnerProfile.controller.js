@@ -15,6 +15,8 @@ const {
   "../services/profile.service"
 );
 
+const civilianKycRepository = require("../repositories/civilianKyc.repository");
+
 /* =========================================================
    HELPERS
 ========================================================= */
@@ -624,9 +626,157 @@ const getOwnCivilianProfileController =
         );
       }
 
+      let fullKyc = null;
+      try {
+        fullKyc = await civilianKycRepository.getByMemberId(memberId);
+      } catch (err) {
+        // non-blocking
+      }
+
+      const combinedMember = {
+        ...(fullKyc || {}),
+        ...member,
+        highest_qualification:
+          fullKyc?.highest_qualification ||
+          member.educational_qualification ||
+          member.highest_qualification ||
+          member.education ||
+          null,
+        school_college_name:
+          fullKyc?.school_college_name ||
+          member.school_college_name ||
+          member.ug_college ||
+          member.school_name ||
+          null,
+        degree_year:
+          fullKyc?.degree_year ||
+          member.degree_year ||
+          member.ug_year ||
+          null,
+        additional_certifications:
+          fullKyc?.additional_certifications ||
+          member.additional_certifications ||
+          null,
+        language_skills:
+          fullKyc?.language_skills ||
+          member.language_skills ||
+          null,
+        current_address:
+          fullKyc?.current_address ||
+          member.current_address ||
+          member.entity_city ||
+          member.city ||
+          member.address ||
+          null,
+        permanent_address:
+          fullKyc?.permanent_address ||
+          member.permanent_address ||
+          null,
+        district:
+          fullKyc?.district ||
+          member.district ||
+          member.entity_district ||
+          null,
+        state:
+          fullKyc?.state ||
+          member.state ||
+          member.entity_state ||
+          null,
+        pincode:
+          fullKyc?.pincode ||
+          member.pincode ||
+          member.entity_pincode ||
+          null,
+        skills:
+          fullKyc?.skills ||
+          member.skills ||
+          null,
+        interest_categories:
+          fullKyc?.interest_categories ||
+          member.interest_categories ||
+          null,
+        hobbies:
+          fullKyc?.hobbies ||
+          member.hobbies ||
+          null,
+        preferred_industry:
+          fullKyc?.preferred_industry ||
+          member.preferred_industry ||
+          null,
+        awards_recognitions:
+          fullKyc?.awards_recognitions ||
+          member.awards_recognitions ||
+          null,
+        publications:
+          fullKyc?.publications ||
+          member.publications ||
+          null,
+        professional_certifications:
+          fullKyc?.professional_certifications ||
+          member.professional_certifications ||
+          null,
+        key_milestones:
+          fullKyc?.key_milestones ||
+          member.key_milestones ||
+          null,
+        media_mentions:
+          fullKyc?.media_mentions ||
+          member.media_mentions ||
+          null,
+        testimonials:
+          fullKyc?.testimonials ||
+          member.testimonials ||
+          null,
+        facebook_url:
+          fullKyc?.facebook_url ||
+          member.facebook_url ||
+          null,
+        instagram_url:
+          fullKyc?.instagram_url ||
+          member.instagram_url ||
+          null,
+        linkedin_url:
+          fullKyc?.linkedin_url ||
+          member.linkedin_url ||
+          null,
+        youtube_url:
+          fullKyc?.youtube_url ||
+          member.youtube_url ||
+          null,
+        website_portfolio:
+          fullKyc?.website_portfolio ||
+          member.website_portfolio ||
+          null,
+        bio:
+          fullKyc?.bio ||
+          member.bio ||
+          null,
+        profile_photo:
+          fullKyc?.profile_photo ||
+          member.profile_pic ||
+          member.profile_photo ||
+          null,
+        cover_photo:
+          fullKyc?.cover_photo ||
+          member.cover_photo ||
+          null,
+        emergency_contact_name:
+          fullKyc?.emergency_contact_name ||
+          member.emergency_contact_name ||
+          null,
+        emergency_contact_number:
+          fullKyc?.emergency_contact_number ||
+          member.emergency_contact_number ||
+          null,
+        emergency_relationship:
+          fullKyc?.emergency_relationship ||
+          member.emergency_relationship ||
+          null,
+      };
+
       const profile =
         normalizeCivilianOwnerProfile(
-          member
+          combinedMember
         );
 
       return response

@@ -40,6 +40,8 @@ const MAX_PAYMENT_FILE_SIZE =
 const ALLOWED_PAYMENT_TYPES =
   new Set([
     "image/jpeg",
+    "image/jpg",
+    "image/pjpeg",
     "image/png",
     "image/webp",
     "application/pdf",
@@ -195,11 +197,15 @@ const parsePaymentForm =
             .payment_proof
         );
 
+      const uploadedFileExt = path.extname(uploadedFile?.originalFilename || "").toLowerCase();
+      const isExtValid = [".jpg", ".jpeg", ".png", ".webp", ".pdf"].includes(uploadedFileExt);
+
       if (
         uploadedFile &&
         !ALLOWED_PAYMENT_TYPES.has(
           uploadedFile.mimetype
-        )
+        ) &&
+        !isExtValid
       ) {
         throw new ApiError(
           415,

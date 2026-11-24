@@ -401,8 +401,18 @@ export default function Navbar() {
           </ul>
 
           {/* =====================
-              JOIN NOW BUTTON
+              ADMIN & ACTION BUTTONS
           ===================== */}
+
+          <Link
+            to="/admin"
+            className="btn-admin-nav"
+            onClick={closeMenu}
+            title="Admin Portal"
+          >
+            <i className="fas fa-user-shield" aria-hidden="true"></i>
+            <span>Admin</span>
+          </Link>
 
           {!initializing && !isMemberAuthenticated && (
             <Link
