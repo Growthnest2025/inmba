@@ -4,6 +4,14 @@
   "installCommand": "cd frontend && npm install",
   "rewrites": [
     {
+      "source": "/reelmark",
+      "destination": "/reelmark.html"
+    },
+    {
+      "source": "/reelmark.html",
+      "destination": "/reelmark.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
