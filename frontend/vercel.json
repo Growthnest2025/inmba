@@ -1,6 +1,6 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build",
-  "outputDirectory": "frontend/build",
+  "buildCommand": "cd frontend && npm run build && node -e \"const fs=require('fs'); fs.cpSync('build', '../build', {recursive:true}); fs.cpSync('build', '../../build', {recursive:true});\"",
+  "outputDirectory": "build",
   "installCommand": "cd frontend && npm install",
   "rewrites": [
     {
