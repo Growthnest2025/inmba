@@ -105,6 +105,13 @@
   line-height: 1.7;
 }
 
+.member-dashboard-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
 .member-dashboard-refresh-button {
   display: inline-flex;
   align-items: center;
@@ -117,6 +124,7 @@
   color: #ffffff;
   background: rgba(255, 255, 255, 0.12);
   font-weight: 700;
+  cursor: pointer;
   transition:
     transform 0.25s ease,
     background 0.25s ease;
@@ -125,6 +133,50 @@
 .member-dashboard-refresh-button:hover {
   transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.22);
+}
+
+.member-dashboard-logout-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1px solid rgba(255, 120, 120, 0.45);
+  border-radius: 999px;
+  color: #ffffff;
+  background: rgba(220, 53, 69, 0.3);
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.member-dashboard-logout-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: rgba(220, 53, 69, 0.6);
+  border-color: rgba(255, 150, 150, 0.8);
+}
+
+.member-dashboard-logout-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.member-dashboard-network-royalty-hint {
+  margin-top: 12px;
+  text-align: center;
+  color: #64748b;
+}
+
+.member-dashboard-network-royalty-hint small {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
 }
 
 /* ========================================
@@ -850,15 +902,23 @@
     align-items: flex-start;
   }
 
-  .member-dashboard-refresh-button {
-    width: 44px;
-    min-width: 44px;
-    padding: 0;
-    font-size: 0;
+  .member-dashboard-hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
   }
 
-  .member-dashboard-refresh-button i {
-    font-size: 0.9rem;
+  .member-dashboard-refresh-button,
+  .member-dashboard-logout-button {
+    min-height: 40px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+
+  .member-dashboard-refresh-button i,
+  .member-dashboard-logout-button i {
+    font-size: 0.88rem;
   }
 
   .member-dashboard-alert {
@@ -907,9 +967,19 @@
     flex-basis: 67px;
   }
 
-  .member-dashboard-refresh-button {
+  .member-dashboard-hero-actions {
     width: 100%;
-    font-size: 0.8rem;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .member-dashboard-refresh-button,
+  .member-dashboard-logout-button {
+    flex: 1;
+    width: 100%;
+    font-size: 0.82rem;
   }
 
   .member-dashboard-summary-grid {

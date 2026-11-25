@@ -601,8 +601,32 @@ export default function Dashboard() {
       sessionMember,
 
     clearMemberSession,
+    memberLogout,
   } =
     useAuth();
+
+  const [
+    isLoggingOut,
+    setIsLoggingOut,
+  ] =
+    useState(
+      false
+    );
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+    try {
+      setIsLoggingOut(true);
+      await memberLogout();
+      toast.success("Logged out successfully.");
+      navigate("/member_login", { replace: true });
+    } catch {
+      clearMemberSession();
+      navigate("/member_login", { replace: true });
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   const [
     dashboardData,
@@ -1610,20 +1634,38 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <button
-            type="button"
-            className="member-dashboard-refresh-button"
-            onClick={() =>
-              loadDashboard()
-            }
-          >
-            <i
-              className="fas fa-rotate"
-              aria-hidden="true"
-            ></i>
+          <div className="member-dashboard-hero-actions">
+            <button
+              type="button"
+              className="member-dashboard-refresh-button"
+              onClick={() =>
+                loadDashboard()
+              }
+              title="Refresh Dashboard"
+            >
+              <i
+                className="fas fa-rotate"
+                aria-hidden="true"
+              ></i>
 
-            Refresh
-          </button>
+              Refresh
+            </button>
+
+            <button
+              type="button"
+              className="member-dashboard-logout-button"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              title="Logout from Account"
+            >
+              <i
+                className="fas fa-arrow-right-from-bracket"
+                aria-hidden="true"
+              ></i>
+
+              {isLoggingOut ? "Logging out..." : "Logout"}
+            </button>
+          </div>
         </section>
 
         {/* =================================================
@@ -2136,8 +2178,6 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {hasNetworkRoyaltyAccess ? (
-              <>
             <div className="member-dashboard-network-grid">
               <article className="member-dashboard-network-stat member-dashboard-network-green">
                 <span>
@@ -2209,18 +2249,19 @@ export default function Dashboard() {
               className="member-dashboard-full-button"
             >
               <i
-                className="fas fa-user-group"
+                className="fas fa-sitemap"
                 aria-hidden="true"
               ></i>
 
-              View Network Members
+              View Direct Network &amp; Structure
             </Link>
-              </>
-            ) : (
-              <div className="member-dashboard-locked">
-                <p>
-                  Network &amp; Royalty features are locked on the ?299 plan. Upgrade to the ?2,999 Royalty plan to unlock Network &amp; Royalty access.
-                </p>
+
+            {!hasNetworkRoyaltyAccess && (
+              <div className="member-dashboard-network-royalty-hint">
+                <small>
+                  <i className="fas fa-crown" aria-hidden="true"></i>
+                  Royalty pool bonus earnings unlock with ₹2,999 Royalty plan.
+                </small>
               </div>
             )}
           </section>

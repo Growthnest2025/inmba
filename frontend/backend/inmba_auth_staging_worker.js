@@ -3041,10 +3041,20 @@ async function handleGetCivilianProfile(request, db, cors) {
     ...networkSummary,
     id: member.id,
     login_id: member.login_id,
-    first_name: member.first_name,
-    last_name: member.last_name,
-    full_name: [member.first_name, member.last_name].filter(Boolean).join(" ") || "Civilian Member",
-    name: [member.first_name, member.last_name].filter(Boolean).join(" ") || "Civilian Member",
+    first_name: (fullMember.first_name || member.first_name || "").replace(/\s+org$/i, "").trim() || "Civilian",
+    last_name: ((fullMember.last_name !== undefined ? fullMember.last_name : member.last_name) || "").trim().toLowerCase() === "org" ? "" : ((fullMember.last_name !== undefined ? fullMember.last_name : member.last_name) || ""),
+    full_name: [(fullMember.first_name || member.first_name || "").replace(/\s+org$/i, "").trim(), ((fullMember.last_name !== undefined ? fullMember.last_name : member.last_name) || "").trim().toLowerCase() === "org" ? "" : ((fullMember.last_name !== undefined ? fullMember.last_name : member.last_name) || "")].filter(Boolean).join(" ") || "Civilian Member",
+    name: [(fullMember.first_name || member.first_name || "").replace(/\s+org$/i, "").trim(), ((fullMember.last_name !== undefined ? fullMember.last_name : member.last_name) || "").trim().toLowerCase() === "org" ? "" : ((fullMember.last_name !== undefined ? fullMember.last_name : member.last_name) || "")].filter(Boolean).join(" ") || "Civilian Member",
+    father_name: fullMember.father_name || fullKyc?.values?.father_spouse_name || "",
+    father_spouse_name: fullMember.father_name || fullKyc?.values?.father_spouse_name || "",
+    dob: fullMember.dob || fullKyc?.values?.dob || "",
+    date_of_birth: fullMember.dob || fullKyc?.values?.dob || "",
+    gender: fullMember.gender || fullKyc?.values?.gender || "",
+    blood_group: fullMember.blood_group || fullKyc?.values?.blood_group || "",
+    marital_status: fullMember.marital_status || fullKyc?.values?.marital_status || "",
+    nationality: fullMember.nationality || fullKyc?.values?.nationality || "Indian",
+    aadhaar_number: fullMember.aadhar || fullMember.aadhaar_number || fullKyc?.values?.aadhaar_number || "",
+    pan_number: fullMember.pan_number || fullKyc?.values?.pan_number || "",
     email: member.email,
     phone: member.phone,
     profile_pic: activePhoto,
@@ -3185,32 +3195,76 @@ async function handleProfileUpdate(request, db, cors) {
     }, 401, cors);
   }
 
-  const firstName = input.first_name || input.name;
-  const lastName = input.last_name;
-  const email = input.email;
-  const phone = input.phone;
-  const bio = input.bio || input.profile_bio;
-  const occupation = input.occupation || input.profession || input.professional_role;
-  const education = input.education || input.educational_qualification || input.highest_qualification;
-  const city = input.city;
-  const state = input.state;
-  const district = input.district;
-  const pincode = input.pincode;
-  const address = input.address || input.current_address;
+  const cleanFirstName = String(input.first_name || input.name || "").replace(/\s+org$/i, "").trim();
+  const lastNameProvided = input.last_name !== undefined ? 1 : 0;
+  const rawLastName = String(input.last_name ?? "").trim();
+  const cleanLastName = rawLastName.toLowerCase() === "org" ? "" : rawLastName;
+
+  const fatherName = input.father_name || input.father_spouse_name || "";
+  const dob = input.dob || input.date_of_birth || "";
+  const gender = input.gender || "";
+  const bloodGroup = input.blood_group || "";
+  const maritalStatus = input.marital_status || "";
+  const nationality = input.nationality || "";
+
+  const email = input.email || "";
+  const phone = input.phone || "";
+  const whatsapp = input.whatsapp_number || input.whatsapp || "";
+  const contactNumber = input.contact_number || input.secondary_mobile || "";
+  const bio = input.bio || input.profile_bio || "";
+  const occupation = input.occupation || input.profession || input.professional_role || "";
+  const education = input.education || input.educational_qualification || input.highest_qualification || "";
+  const city = input.city || "";
+  const state = input.state || "";
+  const district = input.district || "";
+  const pincode = input.pincode || "";
+  const address = input.address || input.current_address || "";
+
+  const schoolName = input.school_name || "";
+  const schoolClass = input.school_class || "";
+  const board = input.board || "";
+  const schoolCity = input.school_city || "";
+
+  const ugCollege = input.ug_college || "";
+  const ugDegree = input.ug_degree || "";
+  const ugDepartment = input.ug_department || "";
+  const ugYear = input.ug_year || "";
+
+  const pgCollege = input.pg_college || "";
+  const pgDegree = input.pg_degree || "";
+  const pgSpecialization = input.pg_specialization || "";
+
+  const skills = input.skills || "";
+  const studentId = input.student_id || "";
+
+  const nominiName = input.nomini_name || "";
+  const nominiDob = input.nomini_dob || "";
+  const nominiRelationship = input.nomini_relationship || "";
+  const nominiAadhar = input.nomini_aadhar || "";
+
   const photoUrl = input.photo || input.photo_data || input.photo_url || input.photoUrl || input.profile_photo || input.profile_pic || input.profile_image_url || "";
-  const instagram = input.social_instagram || input.instagram_url;
-  const linkedin = input.social_linkedin || input.linkedin_url;
-  const facebook = input.social_facebook || input.facebook_url;
-  const youtube = input.social_youtube || input.youtube_url;
-  const twitter = input.social_twitter;
-  const website = input.website || input.portfolio_url;
+  const instagram = input.social_instagram || input.instagram_url || "";
+  const linkedin = input.social_linkedin || input.linkedin_url || "";
+  const facebook = input.social_facebook || input.facebook_url || "";
+  const youtube = input.social_youtube || input.youtube_url || "";
+  const twitter = input.social_twitter || "";
+  const website = input.website || input.portfolio_url || "";
 
   await db.prepare(`
     UPDATE kyc_members
-    SET first_name = COALESCE(NULLIF(?, ''), first_name),
-        last_name = COALESCE(NULLIF(?, ''), last_name),
+    SET first_name = CASE WHEN ? != '' THEN ? ELSE first_name END,
+        last_name = CASE WHEN ? = 1 THEN ? ELSE last_name END,
+        father_name = COALESCE(NULLIF(?, ''), father_name),
+        dob = COALESCE(NULLIF(?, ''), dob),
+        gender = COALESCE(NULLIF(?, ''), gender),
+        blood_group = COALESCE(NULLIF(?, ''), blood_group),
+        marital_status = COALESCE(NULLIF(?, ''), marital_status),
+        nationality = COALESCE(NULLIF(?, ''), nationality),
         email = COALESCE(NULLIF(?, ''), email),
         phone = COALESCE(NULLIF(?, ''), phone),
+        whatsapp_number = COALESCE(NULLIF(?, ''), whatsapp_number),
+        contact_number = COALESCE(NULLIF(?, ''), contact_number),
+        secondary_mobile = COALESCE(NULLIF(?, ''), secondary_mobile),
         bio = COALESCE(NULLIF(?, ''), bio),
         occupation = COALESCE(NULLIF(?, ''), occupation),
         profession = COALESCE(NULLIF(?, ''), profession),
@@ -3220,6 +3274,23 @@ async function handleProfileUpdate(request, db, cors) {
         district = COALESCE(NULLIF(?, ''), district),
         pincode = COALESCE(NULLIF(?, ''), pincode),
         address = COALESCE(NULLIF(?, ''), address),
+        school_name = COALESCE(NULLIF(?, ''), school_name),
+        school_class = COALESCE(NULLIF(?, ''), school_class),
+        board = COALESCE(NULLIF(?, ''), board),
+        school_city = COALESCE(NULLIF(?, ''), school_city),
+        ug_college = COALESCE(NULLIF(?, ''), ug_college),
+        ug_degree = COALESCE(NULLIF(?, ''), ug_degree),
+        ug_department = COALESCE(NULLIF(?, ''), ug_department),
+        ug_year = COALESCE(NULLIF(?, ''), ug_year),
+        pg_college = COALESCE(NULLIF(?, ''), pg_college),
+        pg_degree = COALESCE(NULLIF(?, ''), pg_degree),
+        pg_specialization = COALESCE(NULLIF(?, ''), pg_specialization),
+        skills = COALESCE(NULLIF(?, ''), skills),
+        student_id = COALESCE(NULLIF(?, ''), student_id),
+        nomini_name = COALESCE(NULLIF(?, ''), nomini_name),
+        nomini_dob = COALESCE(NULLIF(?, ''), nomini_dob),
+        nomini_relationship = COALESCE(NULLIF(?, ''), nomini_relationship),
+        nomini_aadhar = COALESCE(NULLIF(?, ''), nomini_aadhar),
         profile_pic = COALESCE(NULLIF(?, ''), profile_pic),
         social_instagram = COALESCE(NULLIF(?, ''), social_instagram),
         social_linkedin = COALESCE(NULLIF(?, ''), social_linkedin),
@@ -3230,17 +3301,32 @@ async function handleProfileUpdate(request, db, cors) {
         updated_at = datetime('now')
     WHERE id = ?
   `).bind(
-    firstName || "", lastName || "", email || "", phone || "", bio || "",
-    occupation || "", occupation || "", education || "", city || "", state || "",
-    district || "", pincode || "", address || "", photoUrl || "",
-    instagram || "", linkedin || "", facebook || "", youtube || "", twitter || "", website || "",
+    cleanFirstName, cleanFirstName,
+    lastNameProvided, cleanLastName,
+    fatherName, dob, gender, bloodGroup, maritalStatus, nationality,
+    email, phone, whatsapp, contactNumber, contactNumber,
+    bio, occupation, occupation, education, city, state,
+    district, pincode, address,
+    schoolName, schoolClass, board, schoolCity,
+    ugCollege, ugDegree, ugDepartment, ugYear,
+    pgCollege, pgDegree, pgSpecialization,
+    skills, studentId,
+    nominiName, nominiDob, nominiRelationship, nominiAadhar,
+    photoUrl, instagram, linkedin, facebook, youtube, twitter, website,
     member.id
   ).run();
 
   try {
     await db.prepare(`
       UPDATE civilian_full_kyc
-      SET profile_photo = COALESCE(NULLIF(?, ''), profile_photo),
+      SET father_spouse_name = COALESCE(NULLIF(?, ''), father_spouse_name),
+          dob = COALESCE(NULLIF(?, ''), dob),
+          gender = COALESCE(NULLIF(?, ''), gender),
+          blood_group = COALESCE(NULLIF(?, ''), blood_group),
+          marital_status = COALESCE(NULLIF(?, ''), marital_status),
+          nationality = COALESCE(NULLIF(?, ''), nationality),
+          skills = COALESCE(NULLIF(?, ''), skills),
+          profile_photo = COALESCE(NULLIF(?, ''), profile_photo),
           bio = COALESCE(NULLIF(?, ''), bio),
           current_address = COALESCE(NULLIF(?, ''), current_address),
           district = COALESCE(NULLIF(?, ''), district),
@@ -3254,10 +3340,14 @@ async function handleProfileUpdate(request, db, cors) {
           updated_at = datetime('now')
       WHERE member_id = ?
     `).bind(
-      photoUrl || "", bio || "", address || "", district || "", state || "", pincode || "",
-      instagram || "", linkedin || "", facebook || "", youtube || "", website || "",
+      fatherName, dob, gender, bloodGroup, maritalStatus, nationality,
+      skills, photoUrl, bio, address, district, state, pincode,
+      instagram, linkedin, facebook, youtube, website,
       member.id
     ).run();
+  } catch (civErr) {
+    console.error("Civilian KYC update warning:", civErr);
+  }
   } catch (civErr) {
     console.error("Civilian KYC update warning:", civErr);
   }

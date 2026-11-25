@@ -289,20 +289,15 @@ export default function DirectNetwork() {
       ]
     );
 
+  const [
+    viewMode,
+    setViewMode,
+  ] =
+    useState("structure");
+
   const isNetworkRoyaltyLocked = useMemo(() => {
-    const plan = String(
-      sessionMember?.selected_plan ??
-        sessionMember?.selectedPlan ??
-        sessionMember?.civilian_selected_plan ??
-        sessionMember?.professional_selected_plan ??
-        sessionMember?.commercial_selected_plan ??
-        ""
-    ).trim();
-    const amt = Number(sessionMember?.amount ?? sessionMember?.payment_amount ?? 0);
-    const isUpgradeAmt = amt === 1500 || amt >= 2999;
-    if (isUpgradeAmt || ["2999", "1500"].includes(plan)) return false;
-    return ["299", "300"].includes(plan) || (amt > 0 && amt <= 300);
-  }, [sessionMember]);
+    return false;
+  }, []);
 
   /* =========================
      LOAD NETWORK DATA
@@ -321,11 +316,6 @@ export default function DirectNetwork() {
           refresh = false,
         } = {}
       ) => {
-        if (isNetworkRoyaltyLocked) {
-          setLoading(false);
-          return;
-        }
-
         if (!memberLoginId) {
           setPageError(
             "Member login ID is unavailable."
@@ -1254,7 +1244,7 @@ export default function DirectNetwork() {
 
               <div>
                 <h2>
-                  Direct Network Members
+                  Direct Network &amp; Structure
                 </h2>
 
                 <p>
@@ -1274,6 +1264,27 @@ export default function DirectNetwork() {
               )}
             </strong>
           </header>
+
+          {/* VIEW SWITCHER TABS */}
+          <div className="inmba-network-view-tabs">
+            <button
+              type="button"
+              className={`inmba-network-tab-button ${viewMode === "structure" ? "active" : ""}`}
+              onClick={() => setViewMode("structure")}
+            >
+              <i className="fas fa-sitemap" aria-hidden="true"></i>
+              Network Structure (Tree View)
+            </button>
+
+            <button
+              type="button"
+              className={`inmba-network-tab-button ${viewMode === "table" ? "active" : ""}`}
+              onClick={() => setViewMode("table")}
+            >
+              <i className="fas fa-table-list" aria-hidden="true"></i>
+              Member Table (List View)
+            </button>
+          </div>
 
           {/* FILTERS */}
 
@@ -1408,99 +1419,190 @@ export default function DirectNetwork() {
             )}
           </div>
 
-          {/* MEMBER TABLE */}
+          {/* VIEW CONTENT */}
 
-          {filteredMembers.length >
-          0 ? (
-            <div className="inmba-network-table-wrapper">
-              <table className="inmba-network-table">
-                <thead>
-                  <tr>
-                    <th>
-                      Member
-                    </th>
+          {viewMode === "structure" ? (
+            <div className="inmba-network-structure-container">
+              {/* Root Sponsor Node */}
+              <div className="inmba-tree-sponsor-wrapper">
+                <div className="inmba-tree-node-card inmba-tree-root-card">
+                  <div className="inmba-tree-card-badge">
+                    <i className="fas fa-crown" aria-hidden="true"></i> Root Sponsor (You)
+                  </div>
 
-                    <th>
-                      Login ID
-                    </th>
+                  <div className="inmba-tree-avatar root-avatar">
+                    {memberName.charAt(0).toUpperCase()}
+                  </div>
 
-                    <th>
-                      Membership
-                    </th>
+                  <h3 className="inmba-tree-name">{memberName}</h3>
 
-                    <th>
-                      Payment
-                    </th>
+                  <div className="inmba-tree-meta-row">
+                    <span className="inmba-tree-meta-pill">
+                      <i className="fas fa-id-card" aria-hidden="true"></i> ID: {networkData.login_id || memberLoginId}
+                    </span>
+                    <span className="inmba-tree-meta-pill">
+                      <i className="fas fa-share-nodes" aria-hidden="true"></i> Ref: {networkData.referral_id || "Active"}
+                    </span>
+                  </div>
 
-                    <th>
-                      Profile
-                    </th>
-                  </tr>
-                </thead>
+                  <div className="inmba-tree-stats-row">
+                    <div className="inmba-tree-stat-item">
+                      <span className="inmba-tree-stat-num">{networkData.direct_paid}</span>
+                      <span className="inmba-tree-stat-label">Direct Paid</span>
+                    </div>
+                    <div className="inmba-tree-stat-item">
+                      <span className="inmba-tree-stat-num">{networkData.direct_unpaid}</span>
+                      <span className="inmba-tree-stat-label">Pending</span>
+                    </div>
+                    <div className="inmba-tree-stat-item">
+                      <span className="inmba-tree-stat-num">{networkData.indirect_total}</span>
+                      <span className="inmba-tree-stat-label">Indirect</span>
+                    </div>
+                    <div className="inmba-tree-stat-item">
+                      <span className="inmba-tree-stat-num">{networkData.tns_points}</span>
+                      <span className="inmba-tree-stat-label">TNS Pts</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                <tbody>
-                  {filteredMembers.map(
-                    (
-                      networkMember,
-                      index
-                    ) => {
-                      const name =
-                        toText(
-                          networkMember.name,
-                          "INMBA Member"
-                        );
+              {/* Connecting Trunk Line */}
+              <div className="inmba-tree-trunk-line">
+                <span className="inmba-tree-connector-point"></span>
+              </div>
 
-                      const loginId =
-                        toText(
-                          networkMember.login_id
-                        );
+              {/* Level 1 Header */}
+              <div className="inmba-tree-level-banner">
+                <i className="fas fa-diagram-project" aria-hidden="true"></i>
+                <span>Level 1 — Direct Referrals ({filteredMembers.length} members)</span>
+              </div>
 
-                      const membershipType =
-                        toText(
-                          networkMember.membership_type,
-                          "Civilian"
-                        );
+              {/* Direct Downline Grid */}
+              {filteredMembers.length > 0 ? (
+                <div className="inmba-tree-downline-grid">
+                  {filteredMembers.map((networkMember, index) => {
+                    const name = toText(networkMember.name, "INMBA Member");
+                    const loginId = toText(networkMember.login_id);
+                    const membershipType = toText(networkMember.membership_type, "Civilian");
+                    const isPaid = Boolean(networkMember.paid);
+
+                    return (
+                      <div
+                        key={loginId || `${name}-${index}`}
+                        className={`inmba-tree-node-card inmba-tree-member-card ${isPaid ? "paid" : "unpaid"}`}
+                      >
+                        <div className="inmba-tree-card-top">
+                          <span className={`inmba-tree-status-badge ${isPaid ? "paid" : "unpaid"}`}>
+                            <i className={isPaid ? "fas fa-circle-check" : "fas fa-clock"} aria-hidden="true"></i>
+                            {isPaid ? "Paid" : "Pending"}
+                          </span>
+                          <span className="inmba-tree-type-badge">{membershipType}</span>
+                        </div>
+
+                        <div className="inmba-tree-avatar member-avatar">
+                          {name.charAt(0).toUpperCase()}
+                        </div>
+
+                        <h4 className="inmba-tree-name">{name}</h4>
+
+                        <div className="inmba-tree-details">
+                          <div className="inmba-tree-detail-item">
+                            <span>Login ID</span>
+                            <code>{loginId || "—"}</code>
+                          </div>
+                          {networkMember.referral_id && (
+                            <div className="inmba-tree-detail-item">
+                              <span>Referral Code</span>
+                              <code>{networkMember.referral_id}</code>
+                            </div>
+                          )}
+                          <div className="inmba-tree-detail-item">
+                            <span>Sponsor</span>
+                            <strong>You ({networkData.referral_id || memberLoginId})</strong>
+                          </div>
+                        </div>
+
+                        <div className="inmba-tree-card-footer">
+                          {loginId ? (
+                            <Link
+                              to={`/user-profile/${encodeURIComponent(loginId)}`}
+                              className="inmba-tree-profile-link"
+                            >
+                              <i className="fas fa-user" aria-hidden="true"></i> View Profile
+                            </Link>
+                          ) : (
+                            <span className="inmba-tree-profile-disabled">Profile Unavailable</span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="inmba-network-empty-state">
+                  <span>
+                    <i className="fas fa-users" aria-hidden="true"></i>
+                  </span>
+                  <h3>
+                    {networkData.direct_members.length === 0
+                      ? "No Direct Members in Your Structure Yet"
+                      : "No Members Found Matching Filter"}
+                  </h3>
+                  <p>
+                    {networkData.direct_members.length === 0
+                      ? `When people register using your Referral ID (${networkData.referral_id || memberLoginId}), they will automatically join your Level 1 direct network tree.`
+                      : "No direct members match the selected search and filters."}
+                  </p>
+                  {networkData.direct_members.length === 0 && (
+                    <button
+                      type="button"
+                      className="inmba-network-primary-button"
+                      onClick={handleCopyReferralId}
+                    >
+                      <i className="fas fa-copy" aria-hidden="true"></i> Copy Referral ID
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          ) : (
+            filteredMembers.length > 0 ? (
+              <div className="inmba-network-table-wrapper">
+                <table className="inmba-network-table">
+                  <thead>
+                    <tr>
+                      <th>Member</th>
+                      <th>Login ID</th>
+                      <th>Membership</th>
+                      <th>Payment</th>
+                      <th>Profile</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredMembers.map((networkMember, index) => {
+                      const name = toText(networkMember.name, "INMBA Member");
+                      const loginId = toText(networkMember.login_id);
+                      const membershipType = toText(networkMember.membership_type, "Civilian");
 
                       return (
-                        <tr
-                          key={
-                            loginId ||
-                            `${name}-${index}`
-                          }
-                        >
+                        <tr key={loginId || `${name}-${index}`}>
                           <td>
                             <div className="inmba-network-table-member">
-                              <span>
-                                {name
-                                  .charAt(0)
-                                  .toUpperCase()}
-                              </span>
-
+                              <span>{name.charAt(0).toUpperCase()}</span>
                               <div>
-                                <strong>
-                                  {name}
-                                </strong>
-
-                                <small>
-                                  Direct member
-                                </small>
+                                <strong>{name}</strong>
+                                <small>Direct member</small>
                               </div>
                             </div>
                           </td>
-
                           <td>
-                            <code>
-                              {loginId ||
-                                "Not available"}
-                            </code>
+                            <code>{loginId || "Not available"}</code>
                           </td>
-
                           <td>
                             <span className="inmba-network-membership-badge">
                               {membershipType}
                             </span>
                           </td>
-
                           <td>
                             <span
                               className={`inmba-network-payment-badge ${
@@ -1517,23 +1619,16 @@ export default function DirectNetwork() {
                                 }
                                 aria-hidden="true"
                               ></i>
-
-                              {networkMember.paid
-                                ? "Paid"
-                                : "Pending"}
+                              {networkMember.paid ? "Paid" : "Pending"}
                             </span>
                           </td>
-
                           <td>
                             {loginId ? (
                               <Link
-                                to={`/user-profile/${encodeURIComponent(
-                                  loginId
-                                )}`}
+                                to={`/user-profile/${encodeURIComponent(loginId)}`}
                                 className="inmba-network-view-button"
                               >
                                 View
-
                                 <i
                                   className="fas fa-arrow-up-right-from-square"
                                   aria-hidden="true"
@@ -1547,45 +1642,35 @@ export default function DirectNetwork() {
                           </td>
                         </tr>
                       );
-                    }
-                  )}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="inmba-network-empty-state">
-              <span>
-                <i
-                  className="fas fa-users"
-                  aria-hidden="true"
-                ></i>
-              </span>
-
-              <h3>
-                {networkData.direct_members
-                  .length === 0
-                  ? "No Direct Members Yet"
-                  : "No Members Found"}
-              </h3>
-
-              <p>
-                {networkData.direct_members
-                  .length === 0
-                  ? "Members registered with your referral ID will appear here."
-                  : "No direct members match the selected search and filters."}
-              </p>
-
-              {filtersActive && (
-                <button
-                  type="button"
-                  onClick={
-                    handleResetFilters
-                  }
-                >
-                  Clear Filters
-                </button>
-              )}
-            </div>
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="inmba-network-empty-state">
+                <span>
+                  <i className="fas fa-users" aria-hidden="true"></i>
+                </span>
+                <h3>
+                  {networkData.direct_members.length === 0
+                    ? "No Direct Members Yet"
+                    : "No Members Found"}
+                </h3>
+                <p>
+                  {networkData.direct_members.length === 0
+                    ? "Members registered with your referral ID will appear here."
+                    : "No direct members match the selected search and filters."}
+                </p>
+                {filtersActive && (
+                  <button
+                    type="button"
+                    onClick={handleResetFilters}
+                  >
+                    Clear Filters
+                  </button>
+                )}
+              </div>
+            )
           )}
         </section>
 

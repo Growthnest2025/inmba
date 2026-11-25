@@ -347,6 +347,16 @@ export default function Navbar() {
                 </li>
 
                 <li className="nav-item">
+                  <NavLink
+                    className={getNavLinkClass}
+                    to="/direct_network"
+                    onClick={closeMenu}
+                  >
+                    My Network
+                  </NavLink>
+                </li>
+
+                <li className="nav-item">
                   <button
                     type="button"
                     className="nav-link logout-link navbar-logout-button"

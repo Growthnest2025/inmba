@@ -947,6 +947,371 @@
 }
 
 /* ========================================
+   VIEW SWITCHER TABS
+======================================== */
+
+.inmba-network-view-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 22px;
+  padding: 6px;
+  background: #f1f7ee;
+  border-radius: 14px;
+  border: 1px solid #d4e8ce;
+  width: fit-content;
+}
+
+.inmba-network-tab-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #3b5038;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.inmba-network-tab-button:hover {
+  color: #0f4d0f;
+  background: rgba(15, 77, 15, 0.08);
+}
+
+.inmba-network-tab-button.active {
+  background: linear-gradient(135deg, #0f4d0f, #196719);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(15, 77, 15, 0.25);
+}
+
+.inmba-network-tab-button i {
+  font-size: 1rem;
+}
+
+/* ========================================
+   TREE STRUCTURE SECTION
+======================================== */
+
+.inmba-network-structure-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 8px 8px;
+}
+
+/* Sponsor Root */
+.inmba-tree-sponsor-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.inmba-tree-node-card {
+  position: relative;
+  border-radius: 20px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.inmba-tree-root-card {
+  width: min(100%, 460px);
+  padding: 26px 24px 22px;
+  background: linear-gradient(145deg, #ffffff, #f4f9f2);
+  border: 2px solid #287a28;
+  box-shadow: 0 14px 34px rgba(15, 77, 15, 0.15);
+  text-align: center;
+}
+
+.inmba-tree-root-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(15, 77, 15, 0.22);
+}
+
+.inmba-tree-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #d49e1f, #f5bc38);
+  color: #2b1f02;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 14px;
+}
+
+.inmba-tree-avatar {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.inmba-tree-avatar.root-avatar {
+  background: linear-gradient(135deg, #0f4d0f, #1e7e1e);
+  color: #ffffff;
+  border: 3px solid #ffcc33;
+  box-shadow: 0 6px 16px rgba(15, 77, 15, 0.3);
+}
+
+.inmba-tree-avatar.member-avatar {
+  background: #eaf3e7;
+  color: #0f4d0f;
+  border: 2px solid #a3d49b;
+}
+
+.inmba-tree-name {
+  margin: 0 0 10px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1a2f1a;
+}
+
+.inmba-tree-meta-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.inmba-tree-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 8px;
+  background: #e9f2e7;
+  color: #244622;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.inmba-tree-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px dashed #cde2ca;
+}
+
+.inmba-tree-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inmba-tree-stat-num {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f4d0f;
+}
+
+.inmba-tree-stat-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #557252;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* Connecting Stem Lines */
+.inmba-tree-trunk-line {
+  position: relative;
+  width: 3px;
+  height: 48px;
+  background: linear-gradient(to bottom, #287a28, #48bb78);
+  margin: 0 auto;
+}
+
+.inmba-tree-connector-point {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #287a28;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 2px #48bb78;
+}
+
+.inmba-tree-level-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px auto 26px;
+  padding: 7px 18px;
+  background: #e3efe0;
+  border: 1px solid #bddbb7;
+  border-radius: 999px;
+  color: #1e5a1b;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+/* Downline Members Grid */
+.inmba-tree-downline-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.inmba-tree-member-card {
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #dbe8d8;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.inmba-tree-member-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(15, 77, 15, 0.12);
+  border-color: #72b86a;
+}
+
+.inmba-tree-member-card.paid {
+  border-top: 4px solid #16a34a;
+}
+
+.inmba-tree-member-card.unpaid {
+  border-top: 4px solid #f59e0b;
+}
+
+.inmba-tree-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.inmba-tree-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.inmba-tree-status-badge.paid {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.inmba-tree-status-badge.unpaid {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.inmba-tree-type-badge {
+  display: inline-flex;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.inmba-tree-member-card .inmba-tree-name {
+  font-size: 1.05rem;
+  margin: 0 0 12px;
+  color: #1e293b;
+}
+
+.inmba-tree-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background: #f8faf7;
+  border-radius: 10px;
+  border: 1px solid #edf4eb;
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.inmba-tree-detail-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.inmba-tree-detail-item span {
+  color: #64748b;
+  font-weight: 600;
+}
+
+.inmba-tree-detail-item code {
+  color: #0f4d0f;
+  background: #eaf5e8;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.inmba-tree-detail-item strong {
+  color: #1e3a1d;
+  font-size: 0.78rem;
+}
+
+.inmba-tree-card-footer {
+  width: 100%;
+  margin-top: auto;
+}
+
+.inmba-tree-profile-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 36px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: #eef6ec;
+  color: #0f4d0f;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.inmba-tree-profile-link:hover {
+  background: #0f4d0f;
+  color: #ffffff;
+}
+
+.inmba-tree-profile-disabled {
+  display: inline-block;
+  font-size: 0.78rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* ========================================
    RESPONSIVE
 ======================================== */
 
@@ -1034,6 +1399,31 @@
   .inmba-network-members-card {
     padding: 17px;
     border-radius: 20px;
+  }
+
+  .inmba-network-view-tabs {
+    width: 100%;
+  }
+
+  .inmba-network-tab-button {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.8rem;
+    padding: 9px 8px;
+  }
+
+  .inmba-tree-root-card {
+    width: 100%;
+    padding: 20px 16px;
+  }
+
+  .inmba-tree-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .inmba-tree-downline-grid {
+    grid-template-columns: 1fr;
   }
 
   .inmba-network-members-header {

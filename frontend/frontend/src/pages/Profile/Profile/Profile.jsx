@@ -981,19 +981,27 @@ export default function Profile() {
      NAME
   ======================================================= */
 
-  const firstName =
+  const rawFirstName =
     toText(
       member.first_name ??
         member.firstName,
       "Member"
     );
 
-  const lastName =
+  const rawLastName =
     toText(
       member.last_name ??
         member.lastName,
       ""
     );
+
+  const lastName =
+    rawLastName.trim().toLowerCase() === "org"
+      ? ""
+      : rawLastName;
+
+  const firstName =
+    rawFirstName.replace(/\s+org$/i, "").trim() || "Member";
 
   const fullName =
     `${firstName} ${lastName}`

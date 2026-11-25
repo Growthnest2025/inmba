@@ -41,6 +41,7 @@ const EDITABLE_FIELDS = [
   "father_name",
   "dob",
   "gender",
+  "blood_group",
   "marital_status",
   "nationality",
   "email",
@@ -64,11 +65,8 @@ const EDITABLE_FIELDS = [
   "entity_pincode",
 
   "occupation",
-  "education",
-  "educational_qualification",
   "profession",
 
-  "education_level",
   "school_name",
   "school_class",
   "board",
@@ -82,7 +80,6 @@ const EDITABLE_FIELDS = [
   "pg_college",
   "pg_degree",
   "pg_specialization",
-  "pg_semester",
 
   "skills",
   "student_id",
@@ -212,7 +209,7 @@ const createFormDataFromProfile = (
       profile
     );
 
-  return EDITABLE_FIELDS.reduce(
+  const initial = EDITABLE_FIELDS.reduce(
     (
       result,
       field
@@ -237,6 +234,16 @@ const createFormDataFromProfile = (
     },
     {}
   );
+
+  // Clean unintended "org" suffix in name
+  if ((initial.last_name || "").trim().toLowerCase() === "org") {
+    initial.last_name = "";
+  }
+  if ((initial.first_name || "").match(/\s+org$/i)) {
+    initial.first_name = initial.first_name.replace(/\s+org$/i, "").trim();
+  }
+
+  return initial;
 };
 
 /* =========================
@@ -555,43 +562,42 @@ const MARITAL_OPTIONS = [
   },
 ];
 
-const EDUCATION_LEVEL_OPTIONS = [
-  {
-    value:
-      "School",
-    label:
-      "School",
-  },
-  {
-    value:
-      "UG",
-    label:
-      "Undergraduate",
-  },
-  {
-    value:
-      "PG",
-    label:
-      "Postgraduate",
-  },
-  {
-    value:
-      "Diploma",
-    label:
-      "Diploma",
-  },
-  {
-    value:
-      "Doctorate",
-    label:
-      "Doctorate",
-  },
-  {
-    value:
-      "Other",
-    label:
-      "Other",
-  },
+const BLOOD_GROUP_OPTIONS = [
+  { value: "A+", label: "A+" },
+  { value: "A-", label: "A-" },
+  { value: "B+", label: "B+" },
+  { value: "B-", label: "B-" },
+  { value: "O+", label: "O+" },
+  { value: "O-", label: "O-" },
+  { value: "AB+", label: "AB+" },
+  { value: "AB-", label: "AB-" },
+];
+
+const CLASS_OPTIONS = [
+  { value: "Class 1", label: "Class 1 (1st Std)" },
+  { value: "Class 2", label: "Class 2 (2nd Std)" },
+  { value: "Class 3", label: "Class 3 (3rd Std)" },
+  { value: "Class 4", label: "Class 4 (4th Std)" },
+  { value: "Class 5", label: "Class 5 (5th Std)" },
+  { value: "Class 6", label: "Class 6 (6th Std)" },
+  { value: "Class 7", label: "Class 7 (7th Std)" },
+  { value: "Class 8", label: "Class 8 (8th Std)" },
+  { value: "Class 9", label: "Class 9 (9th Std)" },
+  { value: "Class 10", label: "Class 10 (10th Std / SSLC)" },
+  { value: "Class 11", label: "Class 11 (11th Std / +1)" },
+  { value: "Class 12", label: "Class 12 (12th Std / +2 / HSC)" },
+];
+
+const BOARD_OPTIONS = [
+  { value: "State Board", label: "State Board" },
+  { value: "CBSE", label: "CBSE (Central Board of Secondary Education)" },
+  { value: "ICSE / ISC", label: "ICSE / ISC" },
+  { value: "Matriculation", label: "Matriculation" },
+  { value: "IGCSE / Cambridge", label: "IGCSE / Cambridge" },
+  { value: "IB", label: "IB (International Baccalaureate)" },
+  { value: "NIOS", label: "NIOS (Open School)" },
+  { value: "Anglo-Indian", label: "Anglo-Indian Board" },
+  { value: "Other", label: "Other" },
 ];
 
 /* =========================
@@ -814,7 +820,9 @@ export default function EditProfile() {
   const fullName =
     useMemo(
       () => {
-        return `${formData.first_name} ${formData.last_name}`
+        const cleanLastName = (formData.last_name || "").trim().toLowerCase() === "org" ? "" : formData.last_name;
+        const cleanFirstName = (formData.first_name || "").replace(/\s+org$/i, "").trim();
+        return `${cleanFirstName} ${cleanLastName}`
           .trim() ||
           "INMBA Member";
       },
@@ -1049,12 +1057,12 @@ export default function EditProfile() {
 
   const createUpdatePayload =
     () => {
-      return EDITABLE_FIELDS.reduce(
+      const payload = EDITABLE_FIELDS.reduce(
         (
           result,
           field
         ) => {
-          const currentValue =
+          let currentValue =
             toInputValue(
               formData[field]
             ).trim();
@@ -1065,6 +1073,13 @@ export default function EditProfile() {
                 field
               ]
             ).trim();
+
+          if (field === "last_name" && currentValue.toLowerCase() === "org") {
+            currentValue = "";
+          }
+          if (field === "first_name") {
+            currentValue = currentValue.replace(/\s+org$/i, "").trim();
+          }
 
           if (
             currentValue !==
@@ -1078,6 +1093,14 @@ export default function EditProfile() {
         },
         {}
       );
+
+      // If original had "org" in last_name, ensure last_name is explicitly cleared in payload
+      const origLastName = toInputValue(originalData.last_name).trim();
+      if (origLastName.toLowerCase() === "org" && !payload.last_name) {
+        payload.last_name = "";
+      }
+
+      return payload;
     };
 
   /* =========================
@@ -1504,6 +1527,24 @@ export default function EditProfile() {
             />
 
             <FormField
+              label="Blood Group"
+              name="blood_group"
+              type="select"
+              options={
+                BLOOD_GROUP_OPTIONS
+              }
+              value={
+                formData.blood_group
+              }
+              onChange={
+                handleChange
+              }
+              error={
+                fieldErrors.blood_group
+              }
+            />
+
+            <FormField
               label="Marital Status"
               name="marital_status"
               type="select"
@@ -1857,52 +1898,6 @@ export default function EditProfile() {
             />
 
             <FormField
-              label="Education"
-              name="education"
-              value={
-                formData.education
-              }
-              onChange={
-                handleChange
-              }
-              error={
-                fieldErrors.education
-              }
-            />
-
-            <FormField
-              label="Educational Qualification"
-              name="educational_qualification"
-              value={
-                formData.educational_qualification
-              }
-              onChange={
-                handleChange
-              }
-              error={
-                fieldErrors.educational_qualification
-              }
-            />
-
-            <FormField
-              label="Education Level"
-              name="education_level"
-              type="select"
-              options={
-                EDUCATION_LEVEL_OPTIONS
-              }
-              value={
-                formData.education_level
-              }
-              onChange={
-                handleChange
-              }
-              error={
-                fieldErrors.education_level
-              }
-            />
-
-            <FormField
               label="Student ID"
               name="student_id"
               value={
@@ -1960,6 +1955,10 @@ export default function EditProfile() {
             <FormField
               label="Class"
               name="school_class"
+              type="select"
+              options={
+                CLASS_OPTIONS
+              }
               value={
                 formData.school_class
               }
@@ -1974,6 +1973,10 @@ export default function EditProfile() {
             <FormField
               label="Board"
               name="board"
+              type="select"
+              options={
+                BOARD_OPTIONS
+              }
               value={
                 formData.board
               }
@@ -2115,20 +2118,6 @@ export default function EditProfile() {
               }
               error={
                 fieldErrors.pg_specialization
-              }
-            />
-
-            <FormField
-              label="Semester"
-              name="pg_semester"
-              value={
-                formData.pg_semester
-              }
-              onChange={
-                handleChange
-              }
-              error={
-                fieldErrors.pg_semester
               }
             />
           </FormSection>

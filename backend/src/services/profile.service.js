@@ -65,6 +65,7 @@ const PROFILE_EDITABLE_FIELDS =
 
     "dob",
     "gender",
+    "blood_group",
     "marital_status",
     "nationality",
 
@@ -96,11 +97,6 @@ const PROFILE_EDITABLE_FIELDS =
 
     /* EDUCATION */
 
-    "education",
-    "educational_qualification",
-
-    "education_level",
-
     "school_name",
     "school_class",
     "board",
@@ -114,7 +110,6 @@ const PROFILE_EDITABLE_FIELDS =
     "pg_college",
     "pg_degree",
     "pg_specialization",
-    "pg_semester",
 
     /* PROFESSIONAL */
 

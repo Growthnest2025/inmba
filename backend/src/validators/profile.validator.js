@@ -36,6 +36,7 @@ const PROFILE_UPDATE_ALLOWED_FIELDS =
     "father_name",
     "dob",
     "gender",
+    "blood_group",
     "marital_status",
     "nationality",
 
@@ -76,15 +77,11 @@ const PROFILE_UPDATE_ALLOWED_FIELDS =
     ===================================================== */
 
     "occupation",
-    "education",
-    "educational_qualification",
     "profession",
 
     /* =====================================================
        EDUCATION
     ===================================================== */
-
-    "education_level",
 
     "school_name",
     "school_class",
@@ -99,7 +96,6 @@ const PROFILE_UPDATE_ALLOWED_FIELDS =
     "pg_college",
     "pg_degree",
     "pg_specialization",
-    "pg_semester",
 
     /* =====================================================
        SKILLS / STUDENT
