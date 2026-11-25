@@ -957,7 +957,7 @@ const handleSubmit = async (event) => {
               {/* 1. OFFICIAL PAYMENT DETAILS CARD (BANK & QR) */}
               <PaymentDetailsCard
                 amount={plan.amount}
-                upiId="hprabha785@oksbi"
+                upiId="robertsonraja@barodampay"
                 accountName="INMBA ORGANIZATION"
                 accountNumber="70340200001467"
                 ifsc="BARB0VJPACO"

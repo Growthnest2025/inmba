@@ -883,7 +883,7 @@ export default function Payment() {
     toText(
       paymentConfig.upi_id ??
         paymentConfig.upiId,
-      "hprabha785@oksbi"
+      "robertsonraja@barodampay"
     );
 
   const paymentQrUrl =

@@ -4,7 +4,7 @@ import "./PaymentDetailsCard.css";
 
 export default function PaymentDetailsCard({
   amount,
-  upiId = "hprabha785@oksbi",
+  upiId = "robertsonraja@barodampay",
   accountName = "INMBA ORGANIZATION",
   accountNumber = "70340200001467",
   ifsc = "BARB0VJPACO",

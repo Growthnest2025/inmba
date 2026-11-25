@@ -2059,7 +2059,7 @@ export default function ProfessionalPayment() {
               {/* 1. OFFICIAL PAYMENT DETAILS CARD (NEXT) */}
               <PaymentDetailsCard
                 amount={paymentAmount || 299}
-                upiId="hprabha785@oksbi"
+                upiId="robertsonraja@barodampay"
                 accountName="INMBA ORGANIZATION"
                 accountNumber="70340200001467"
                 ifsc="BARB0VJPACO"
