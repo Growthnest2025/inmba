@@ -696,6 +696,65 @@
   background: #fff0c7;
 }
 
+.inmba-network-contact-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inmba-network-email-link {
+  color: #0f4d0f;
+  text-decoration: none;
+  font-size: 0.69rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.inmba-network-email-link:hover {
+  text-decoration: underline;
+  color: #15803d;
+}
+
+.inmba-network-phone-span {
+  color: #4b634b;
+  font-size: 0.68rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.inmba-network-downline-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inmba-downline-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.inmba-downline-badge.direct {
+  background: #eef7ed;
+  color: #166534;
+  border: 1px solid #cce5cb;
+}
+
+.inmba-downline-badge.indirect {
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
 .inmba-network-view-button {
   display: inline-flex;
   align-items: center;
@@ -1275,6 +1334,78 @@
 .inmba-tree-detail-item strong {
   color: #1e3a1d;
   font-size: 0.78rem;
+}
+
+.inmba-tree-contact-link {
+  color: #0f4d0f;
+  text-decoration: none;
+  font-size: 0.76rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inmba-tree-contact-link:hover {
+  text-decoration: underline;
+  color: #15803d;
+}
+
+.inmba-tree-downline-counts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed #d1e2ce;
+}
+
+.inmba-tree-downline-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 0.74rem;
+}
+
+.inmba-tree-downline-pill.direct {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+}
+
+.inmba-tree-downline-pill.indirect {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+}
+
+.inmba-tree-downline-pill i {
+  font-size: 0.85rem;
+}
+
+.inmba-tree-downline-pill div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  text-align: left;
+}
+
+.inmba-tree-downline-pill strong {
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.inmba-tree-downline-pill small {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  opacity: 0.85;
 }
 
 .inmba-tree-card-footer {

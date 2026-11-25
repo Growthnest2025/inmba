@@ -85,15 +85,13 @@ export default function CommercialBasicKyc() {
 
   const referralFromUrl =
     useMemo(() => {
-      const fromQuery = text(
+      const clean = (val) => text(val).replace(/copy\s*code/gi, "").replace(/copy/gi, "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 50).toUpperCase();
+      const fromQuery = clean(
         searchParams.get("ref") ??
           searchParams.get(
             "referral"
           )
-      )
-        .replace(/\s/g, "")
-        .slice(0, 50)
-        .toUpperCase();
+      );
 
       if (fromQuery) return fromQuery;
 
@@ -101,7 +99,7 @@ export default function CommercialBasicKyc() {
         try {
           const stored = sessionStorage.getItem("inmba_referral_code") || localStorage.getItem("inmba_referral_code");
           if (stored) {
-            return text(stored).replace(/\s/g, "").slice(0, 50).toUpperCase();
+            return clean(stored);
           }
         } catch {}
       }

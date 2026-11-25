@@ -242,6 +242,35 @@ const toText = (
   );
 };
 
+const toDateInputString = (val) => {
+  if (!val) return "";
+  const s = String(val).trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  const isoPrefix = s.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (isoPrefix) return isoPrefix[1];
+  const dmy = s.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+  if (dmy) {
+    return `${dmy[3]}-${dmy[2].padStart(2, '0')}-${dmy[1].padStart(2, '0')}`;
+  }
+  const months = { jan: "01", feb: "02", mar: "03", apr: "04", may: "05", jun: "06", jul: "07", aug: "08", sep: "09", oct: "10", nov: "11", dec: "12" };
+  const worded = s.match(/^(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})$/);
+  if (worded) {
+    const day = worded[1].padStart(2, '0');
+    const monKey = worded[2].slice(0, 3).toLowerCase();
+    const mon = months[monKey];
+    const yr = worded[3];
+    if (mon) return `${yr}-${mon}-${day}`;
+  }
+  const d = new Date(s);
+  if (!Number.isNaN(d.getTime())) {
+    const yr = d.getFullYear();
+    const mon = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${yr}-${mon}-${day}`;
+  }
+  return "";
+};
+
 const unwrapServiceResult = (
   result
 ) => {
@@ -1089,86 +1118,102 @@ export default function CivilianKyc() {
 
           values: {
             A: {
-              full_legal_name:
-                fullName,
-
-              father_spouse_name:
-                member?.father_name ||
-                member?.father_spouse_name ||
-                "",
-
-              dob:
-                member?.dob ||
-                "",
-
-              gender:
-                member?.gender ||
-                "",
-
-              marital_status:
-                member?.marital_status ||
-                "",
-
-              nationality:
-                member?.nationality ||
-                "",
-
-              aadhaar_number:
-                member?.aadhar ||
-                member?.aadhaar ||
-                member?.aadhaar_number ||
-                "",
-
-              pan_number:
-                member?.pan_number ||
-                "",
-
-              blood_group:
-                member?.blood_group ||
-                "",
+              full_legal_name: fullName,
+              father_spouse_name: member?.father_name || member?.father_spouse_name || "",
+              dob: toDateInputString(member?.dob || member?.date_of_birth || ""),
+              gender: member?.gender || "",
+              marital_status: member?.marital_status || "",
+              nationality: member?.nationality || "Indian",
+              aadhaar_number: member?.aadhar || member?.aadhaar || member?.aadhaar_number || "",
+              pan_number: member?.pan_number || member?.pan || "",
+              blood_group: member?.blood_group || "",
             },
 
             B: {
-              primary_mobile:
-                member?.phone ||
-                member?.mobile ||
-                "",
+              primary_mobile: member?.phone || member?.mobile || "",
+              secondary_mobile: member?.secondary_mobile || member?.contact_number || "",
+              primary_email: member?.email || "",
+              whatsapp_number: member?.whatsapp_number || "",
+              current_address: member?.current_address || member?.address || "",
+              permanent_address: member?.permanent_address || "",
+              district: member?.district || member?.entity_district || "",
+              state: member?.state || member?.entity_state || "",
+              pincode: member?.pincode || member?.entity_pincode || "",
+              google_map_location: member?.google_map_location || "",
+            },
 
-              primary_email:
-                member?.email ||
-                "",
-
-              whatsapp_number:
-                member?.whatsapp_number ||
-                "",
-
-              district:
-                member?.district ||
-                member?.entity_district ||
-                "",
-
-              state:
-                member?.state ||
-                member?.entity_state ||
-                "",
-
-              pincode:
-                member?.pincode ||
-                member?.entity_pincode ||
-                "",
+            C: {
+              account_holder_name: member?.account_holder || fullName,
+              bank_name: member?.bank_name || "",
+              bank_account_number: member?.account_number || member?.bank_account_number || "",
+              ifsc_code: member?.ifsc_code || member?.ifsc || "",
+              bank_branch_name: member?.branch || member?.bank_branch_name || member?.bank_branch || "",
+              upi_id: member?.upi_id || "",
+              gst_number: member?.gst_number || "",
+              income_tax_slab: member?.income_tax_slab || "",
+              nominee_name: member?.nominee_name || member?.nomini_name || "",
+              nominee_relationship: member?.nominee_relationship || "",
             },
 
             D: {
               highest_qualification:
+                member?.highest_qualification ||
                 member?.educational_qualification ||
                 member?.education ||
                 "",
+              school_college_name:
+                member?.school_college_name ||
+                member?.school_name ||
+                member?.ug_college ||
+                member?.pg_college ||
+                member?.institution_name ||
+                "",
+              degree_year:
+                member?.degree_year ||
+                member?.ug_year ||
+                "",
+              additional_certifications:
+                member?.additional_certifications ||
+                "",
+              language_skills:
+                member?.language_skills ||
+                "",
+            },
+
+            E: {
+              awards_recognitions: member?.awards_recognitions || "",
+              publications: member?.publications || "",
+              professional_certifications: member?.professional_certifications || "",
+              key_milestones: member?.key_milestones || "",
+              media_mentions: member?.media_mentions || "",
+              testimonials: member?.testimonials || "",
             },
 
             F: {
-              skills:
-                member?.skills ||
-                "",
+              bio: member?.bio || "",
+              interest_categories: member?.interest_categories || "",
+              skills: member?.skills || "",
+              hobbies: member?.hobbies || "",
+              preferred_industry: member?.preferred_industry || "",
+              facebook_url: member?.social_facebook || member?.facebook || "",
+              instagram_url: member?.social_instagram || member?.instagram || "",
+              linkedin_url: member?.social_linkedin || member?.linkedin || "",
+              youtube_url: member?.social_youtube || member?.youtube || "",
+              website_portfolio: member?.social_website || member?.website || "",
+            },
+
+            G: {
+              sponsor_referral_id: member?.referred_by || "",
+              network_level_rank: member?.network_level || "",
+              team_size: member?.team_size ? String(member.team_size) : "",
+              royalty_slab_category: member?.royalty_slab_category || "",
+              preferred_payout_cycle: member?.preferred_payout_cycle || "",
+            },
+
+            H: {
+              emergency_contact_name: member?.emergency_contact_name || "",
+              emergency_contact_number: member?.emergency_contact_number || "",
+              emergency_relationship: member?.emergency_relationship || "",
             },
           },
         };
@@ -2205,6 +2250,30 @@ export default function CivilianKyc() {
                 }
               />
 
+              <Field
+                label="Date of Birth"
+                name="dob"
+                type="date"
+                value={
+                  toDateInputString(values.dob)
+                }
+                onChange={
+                  updateValue
+                }
+                error={
+                  fieldErrors.dob
+                }
+                readOnly={
+                  isBasicVerified(
+                    "dob"
+                  )
+                }
+                verified={
+                  isBasicVerified(
+                    "dob"
+                  )
+                }
+              />
 
               <Field
                 label="Gender"
@@ -2936,73 +3005,95 @@ export default function CivilianKyc() {
         "E"
       ) {
         return (
-          <div className="civilian-kyc-form-grid">
-            <TextAreaField
-              label="Awards / Recognitions"
-              name="awards_recognitions"
-              value={
-                values.awards_recognitions
-              }
-              onChange={
-                updateValue
-              }
-            />
+          <>
+            <div className="civilian-kyc-form-grid">
+              <TextAreaField
+                label="Awards / Recognitions"
+                name="awards_recognitions"
+                value={
+                  values.awards_recognitions
+                }
+                onChange={
+                  updateValue
+                }
+              />
 
-            <TextAreaField
-              label="Publications / Published Work"
-              name="publications"
-              value={
-                values.publications
-              }
-              onChange={
-                updateValue
-              }
-            />
+              <TextAreaField
+                label="Publications / Published Work"
+                name="publications"
+                value={
+                  values.publications
+                }
+                onChange={
+                  updateValue
+                }
+              />
 
-            <TextAreaField
-              label="Professional Certifications"
-              name="professional_certifications"
-              value={
-                values.professional_certifications
-              }
-              onChange={
-                updateValue
-              }
-            />
+              <TextAreaField
+                label="Professional Certifications"
+                name="professional_certifications"
+                value={
+                  values.professional_certifications
+                }
+                onChange={
+                  updateValue
+                }
+              />
 
-            <TextAreaField
-              label="Key Milestones / Achievements"
-              name="key_milestones"
-              value={
-                values.key_milestones
-              }
-              onChange={
-                updateValue
-              }
-            />
+              <TextAreaField
+                label="Key Milestones / Achievements"
+                name="key_milestones"
+                value={
+                  values.key_milestones
+                }
+                onChange={
+                  updateValue
+                }
+              />
 
-            <TextAreaField
-              label="Media Mentions / Press Coverage"
-              name="media_mentions"
-              value={
-                values.media_mentions
-              }
-              onChange={
-                updateValue
-              }
-            />
+              <TextAreaField
+                label="Media Mentions / Press Coverage"
+                name="media_mentions"
+                value={
+                  values.media_mentions
+                }
+                onChange={
+                  updateValue
+                }
+              />
 
-            <TextAreaField
-              label="Testimonials / Reference Letters"
-              name="testimonials"
-              value={
-                values.testimonials
-              }
-              onChange={
-                updateValue
-              }
-            />
-          </div>
+              <TextAreaField
+                label="Testimonials / Reference Letters"
+                name="testimonials"
+                value={
+                  values.testimonials
+                }
+                onChange={
+                  updateValue
+                }
+              />
+            </div>
+
+            <div className="civilian-kyc-upload-grid">
+              <FileField
+                label="Achievement / Award Certificate Scan"
+                name="achievement_certificate"
+                accept={
+                  DOCUMENT_ACCEPT
+                }
+                selected={
+                  sectionFiles.achievement_certificate
+                }
+                existing={
+                  existing.achievement_certificate
+                }
+                onChange={
+                  updateFile
+                }
+                description="PDF, JPG or PNG · Max 5 MB"
+              />
+            </div>
+          </>
         );
       }
 
@@ -3358,6 +3449,18 @@ export default function CivilianKyc() {
             onChange={
               updateValue
             }
+            options={[
+              "Father",
+              "Mother",
+              "Spouse",
+              "Brother",
+              "Sister",
+              "Son",
+              "Daughter",
+              "Friend",
+              "Guardian",
+              "Other",
+            ]}
             required
             error={
               fieldErrors.emergency_relationship

@@ -148,6 +148,84 @@
 }
 
 /* =========================================================
+   NETWORK OVERVIEW
+========================================================= */
+
+.inmba-admin-network-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.inmba-admin-overview-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #d9e6d7;
+  box-shadow: 0 4px 16px rgba(15, 77, 15, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inmba-admin-overview-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 77, 15, 0.1);
+}
+
+.inmba-admin-overview-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.inmba-admin-overview-icon.members {
+  background: #eef6ec;
+  color: #176520;
+}
+
+.inmba-admin-overview-icon.direct {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.inmba-admin-overview-icon.indirect {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.inmba-admin-overview-icon.paid {
+  background: #fefce8;
+  color: #ca8a04;
+}
+
+.inmba-admin-overview-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.inmba-admin-overview-value {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #1c361e;
+  line-height: 1.1;
+}
+
+.inmba-admin-overview-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #617760;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* =========================================================
    STATUS GRID
 ========================================================= */
 
@@ -1238,6 +1316,17 @@
 @media (
   max-width: 1120px
 ) {
+  .inmba-admin-network-overview {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      );
+  }
+
   .inmba-admin-status-grid {
     grid-template-columns:
       repeat(
@@ -1305,6 +1394,10 @@
 ) {
   .inmba-admin-dashboard-page {
     gap: 15px;
+  }
+
+  .inmba-admin-network-overview {
+    grid-template-columns: 1fr;
   }
 
   .inmba-admin-dashboard-intro {

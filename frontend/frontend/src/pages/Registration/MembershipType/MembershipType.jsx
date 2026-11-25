@@ -438,8 +438,18 @@ export default function MembershipType() {
   const [searchParams] = useSearchParams();
   const [showHero, setShowHero] = React.useState(false);
 
+  const sanitizeReferral = (raw) => {
+    if (!raw) return "";
+    return toText(raw)
+      .replace(/copy\s*code/gi, "")
+      .replace(/copy/gi, "")
+      .replace(/[^a-zA-Z0-9_-]/g, "")
+      .trim()
+      .slice(0, 50);
+  };
+
   const referralId = useMemo(() => {
-    const fromUrl = toText(searchParams.get("ref") || searchParams.get("referral"), "");
+    const fromUrl = sanitizeReferral(searchParams.get("ref") || searchParams.get("referral"));
     if (fromUrl) {
       if (typeof window !== "undefined") {
         try {
@@ -451,7 +461,8 @@ export default function MembershipType() {
     }
     if (typeof window !== "undefined") {
       try {
-        return toText(sessionStorage.getItem("inmba_referral_code") || localStorage.getItem("inmba_referral_code"), "");
+        const stored = sessionStorage.getItem("inmba_referral_code") || localStorage.getItem("inmba_referral_code");
+        return sanitizeReferral(stored);
       } catch {}
     }
     return "";

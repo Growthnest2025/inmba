@@ -66,9 +66,38 @@ profileApi.interceptors.request.use((config) => {
   config.withCredentials = true;
   try {
     if (typeof localStorage !== "undefined") {
-      const token = localStorage.getItem("inmba_session_token");
+      const token =
+        localStorage.getItem("inmba_session_token") ||
+        localStorage.getItem("inmba_auth_token") ||
+        localStorage.getItem("token");
       if (token && !config.headers.Authorization) {
         config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    if (typeof sessionStorage !== "undefined" || typeof localStorage !== "undefined") {
+      const loginId =
+        (typeof sessionStorage !== "undefined" && (
+          sessionStorage.getItem("inmba_member_login_id") ||
+          sessionStorage.getItem("inmba_professional_login_id") ||
+          sessionStorage.getItem("professional_login_id") ||
+          sessionStorage.getItem("commercial_login_id") ||
+          sessionStorage.getItem("inmba_commercial_login_id") ||
+          sessionStorage.getItem("inmba_login_id") ||
+          sessionStorage.getItem("civilian_login_id") ||
+          sessionStorage.getItem("login_id")
+        )) ||
+        (typeof localStorage !== "undefined" && (
+          localStorage.getItem("inmba_member_login_id") ||
+          localStorage.getItem("inmba_professional_login_id") ||
+          localStorage.getItem("professional_login_id") ||
+          localStorage.getItem("commercial_login_id") ||
+          localStorage.getItem("inmba_commercial_login_id") ||
+          localStorage.getItem("inmba_login_id") ||
+          localStorage.getItem("civilian_login_id") ||
+          localStorage.getItem("login_id")
+        ));
+      if (loginId && !config.headers["X-Login-Id"]) {
+        config.headers["X-Login-Id"] = String(loginId).trim();
       }
     }
   } catch {}
@@ -1233,6 +1262,47 @@ export const MEMBER_PROFILE_EDITABLE_FIELDS =
     "emergency_contact_phone",
     "emergency_contact_number",
     "emergency_contact_relation",
+    "emergency_relationship",
+
+    "school_name",
+    "school_class",
+    "board",
+    "school_city",
+
+    "ug_college",
+    "ug_degree",
+    "ug_department",
+    "ug_year",
+
+    "pg_college",
+    "pg_degree",
+    "pg_specialization",
+
+    "student_id",
+    "occupation",
+    "profession",
+
+    "bank_name",
+    "bank_account_number",
+    "account_number",
+    "ifsc_code",
+    "ifsc",
+    "branch",
+    "bank_branch",
+    "bank_branch_name",
+
+    "cover_photo",
+    "banner",
+    "profile_photo",
+    "profile_pic",
+
+    "entity_house_no",
+    "entity_street",
+    "entity_area",
+    "entity_city",
+    "entity_district",
+    "entity_state",
+    "entity_pincode",
 
     "public_profile_fields",
     "public_profile_sections",
@@ -1254,6 +1324,13 @@ export const updateMyProfile =
       );
 
     const payload = {};
+
+    // Copy all direct key-values provided in source
+    Object.entries(source).forEach(([k, v]) => {
+      if (v !== undefined && typeof v !== "function") {
+        payload[k] = typeof v === "string" ? v.trim() : v;
+      }
+    });
 
     MEMBER_PROFILE_EDITABLE_FIELDS
       .forEach(
@@ -1662,6 +1739,77 @@ export const uploadMyProfilePhoto =
   };
 
 /* =========================================================
+   UPLOAD COVER BANNER PHOTO
+========================================================= */
+
+export const uploadMyCoverPhoto =
+  async (
+    file
+  ) => {
+    if (!file) {
+      const error =
+        new Error(
+          "Select a cover banner photo."
+        );
+      error.statusCode = 400;
+      throw error;
+    }
+
+    let uploadFile = file;
+    let dataUrl = "";
+    try {
+      const compressed = await compressImageFile(file);
+      uploadFile = compressed.file || file;
+      dataUrl = compressed.dataUrl || "";
+    } catch {
+      // fallback to original
+    }
+
+    if (!dataUrl) {
+      dataUrl = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.readAsDataURL(uploadFile);
+      });
+    }
+
+    try {
+      const response =
+        await profileApi.post(
+          "/profile/upload-banner",
+          {
+            photo: dataUrl,
+            photo_data: dataUrl,
+            cover_photo: dataUrl,
+            banner: dataUrl,
+          },
+          {
+            headers: {
+              Accept: "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+            },
+          }
+        );
+
+      const responseData = asObject(response.data);
+      const bannerUrl = toText(responseData.cover_photo || responseData.banner || responseData.photo_url || dataUrl);
+
+      return {
+        cover_photo: bannerUrl,
+        banner: bannerUrl,
+        photo_url: bannerUrl,
+        message: toText(responseData.message, "Banner updated successfully."),
+        raw: response.data,
+      };
+    } catch (error) {
+      throw normalizeProfileError(error, "Unable to upload cover banner.");
+    }
+  };
+
+export const uploadCoverPhoto = uploadMyCoverPhoto;
+export const uploadOwnCoverPhoto = uploadMyCoverPhoto;
+
+/* =========================================================
    PUBLIC MEMBER PROFILE
 ========================================================= */
 
@@ -1745,6 +1893,12 @@ const profileService = {
   uploadProfilePhoto,
 
   uploadOwnProfilePhoto,
+
+  uploadMyCoverPhoto,
+
+  uploadCoverPhoto,
+
+  uploadOwnCoverPhoto,
 
   getPublicMemberProfile,
 

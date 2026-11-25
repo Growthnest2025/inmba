@@ -1522,19 +1522,8 @@ export default function AdminMemberEdit() {
         <EditSection
           icon="fas fa-location-dot"
           title="General Address"
-          description="Basic city, district, state and pincode."
+          description="Basic district, state and pincode."
         >
-          <EditField
-            label="City"
-            name="city"
-            value={
-              formData.city
-            }
-            onChange={
-              handleChange
-            }
-          />
-
           <EditField
             label="District"
             name="district"
@@ -1605,17 +1594,6 @@ export default function AdminMemberEdit() {
             name="entity_area"
             value={
               formData.entity_area
-            }
-            onChange={
-              handleChange
-            }
-          />
-
-          <EditField
-            label="City"
-            name="entity_city"
-            value={
-              formData.entity_city
             }
             onChange={
               handleChange
@@ -1971,33 +1949,10 @@ export default function AdminMemberEdit() {
           />
 
           <EditField
-            label="Nominee DOB"
-            name="nomini_dob"
-            type="date"
-            value={
-              formData.nomini_dob
-            }
-            onChange={
-              handleChange
-            }
-          />
-
-          <EditField
             label="Relationship"
             name="nomini_relationship"
             value={
               formData.nomini_relationship
-            }
-            onChange={
-              handleChange
-            }
-          />
-
-          <EditField
-            label="Nominee Aadhaar"
-            name="nomini_aadhar"
-            value={
-              formData.nomini_aadhar
             }
             onChange={
               handleChange

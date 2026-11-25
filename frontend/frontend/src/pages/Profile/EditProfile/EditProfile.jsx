@@ -21,6 +21,8 @@ import {
 import {
   getOwnProfile,
   updateOwnProfile,
+  uploadMyProfilePhoto,
+  uploadMyCoverPhoto,
 } from "../../../services/profile.service";
 
 import {
@@ -50,7 +52,6 @@ const EDITABLE_FIELDS = [
   "contact_number",
 
   "address",
-  "city",
   "district",
   "state",
   "pincode",
@@ -59,7 +60,6 @@ const EDITABLE_FIELDS = [
   "entity_house_no",
   "entity_street",
   "entity_area",
-  "entity_city",
   "entity_district",
   "entity_state",
   "entity_pincode",
@@ -92,10 +92,30 @@ const EDITABLE_FIELDS = [
   "social_facebook",
   "social_youtube",
 
+  "bank_name",
+  "bank_account_number",
+  "account_number",
+  "ifsc_code",
+  "ifsc",
+  "branch",
+  "bank_branch",
+  "bank_branch_name",
+
+  "cover_photo",
+  "banner",
+  "profile_photo",
+  "profile_pic",
+
   "nomini_name",
-  "nomini_dob",
   "nomini_relationship",
-  "nomini_aadhar",
+  "nominee_name",
+  "nominee_relationship",
+  "emergency_contact_name",
+  "emergency_contact_number",
+  "emergency_relationship",
+  "school_college_name",
+  "highest_qualification",
+  "degree_year",
 ];
 
 /* =========================
@@ -160,41 +180,40 @@ const toDateInputValue = (
     return "";
   }
 
-  const normalizedValue =
-    String(
-      value
-    ).trim();
+  const s = String(value).trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  const isoMatch = s.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (isoMatch) return isoMatch[1];
 
-  const dateOnlyMatch =
-    normalizedValue.match(
-      /^\d{4}-\d{2}-\d{2}/
-    );
-
-  if (
-    dateOnlyMatch
-  ) {
-    return dateOnlyMatch[0];
+  // DD-MM-YYYY or DD/MM/YYYY
+  const dmy = s.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+  if (dmy) {
+    const day = dmy[1].padStart(2, '0');
+    const mon = dmy[2].padStart(2, '0');
+    const yr = dmy[3];
+    return `${yr}-${mon}-${day}`;
   }
 
-  const date =
-    new Date(
-      normalizedValue
-    );
-
-  if (
-    Number.isNaN(
-      date.getTime()
-    )
-  ) {
-    return "";
+  // DD Mon YYYY e.g. "02 Jan 2022" or "2 Jan 2022"
+  const months = { jan: "01", feb: "02", mar: "03", apr: "04", may: "05", jun: "06", jul: "07", aug: "08", sep: "09", oct: "10", nov: "11", dec: "12" };
+  const worded = s.match(/^(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})$/);
+  if (worded) {
+    const day = worded[1].padStart(2, '0');
+    const monKey = worded[2].slice(0, 3).toLowerCase();
+    const mon = months[monKey];
+    const yr = worded[3];
+    if (mon) return `${yr}-${mon}-${day}`;
   }
 
-  return date
-    .toISOString()
-    .slice(
-      0,
-      10
-    );
+  const date = new Date(s);
+  if (!Number.isNaN(date.getTime())) {
+    const yr = date.getFullYear();
+    const mon = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${yr}-${mon}-${day}`;
+  }
+
+  return "";
 };
 
 /* =========================
@@ -242,6 +261,39 @@ const createFormDataFromProfile = (
   if ((initial.first_name || "").match(/\s+org$/i)) {
     initial.first_name = initial.first_name.replace(/\s+org$/i, "").trim();
   }
+
+  // Ensure date of birth is preserved
+  initial.dob = toDateInputValue(source.dob || source.date_of_birth || initial.dob || "");
+  initial.father_name = source.father_name || source.father_spouse_name || initial.father_name || "";
+
+  // Education fallbacks
+  initial.school_college_name = source.school_college_name || source.school_name || source.ug_college || source.pg_college || source.institution_name || initial.school_college_name || "";
+  initial.school_name = initial.school_name || initial.school_college_name;
+  initial.ug_college = initial.ug_college || initial.school_college_name;
+  initial.highest_qualification = source.highest_qualification || source.educational_qualification || source.education || initial.highest_qualification || "";
+  initial.degree_year = source.degree_year || source.ug_year || initial.degree_year || "";
+  initial.ug_year = initial.ug_year || initial.degree_year;
+
+  // Emergency contact fallbacks
+  initial.emergency_contact_name = source.emergency_contact_name || initial.emergency_contact_name || "";
+  initial.emergency_contact_number = source.emergency_contact_number || initial.emergency_contact_number || "";
+  initial.emergency_relationship = source.emergency_relationship || initial.emergency_relationship || "";
+
+  // Ensure bank, banner, photo, and nominee fields are mapped cleanly
+  initial.branch = source.branch || source.bank_branch || source.bank_branch_name || initial.branch || "";
+  initial.bank_branch = initial.branch;
+  initial.bank_branch_name = initial.branch;
+  initial.bank_name = source.bank_name || initial.bank_name || "";
+  initial.account_number = source.bank_account_number || source.account_number || initial.account_number || "";
+  initial.ifsc_code = source.ifsc_code || source.ifsc || initial.ifsc_code || "";
+  initial.cover_photo = source.cover_photo || source.banner || initial.cover_photo || "";
+  initial.banner = initial.cover_photo;
+  initial.profile_photo = source.profile_photo || source.profile_pic || source.profile_image_url || initial.profile_photo || "";
+  initial.profile_pic = initial.profile_photo;
+  initial.nomini_name = source.nominee_name || source.nomini_name || initial.nomini_name || "";
+  initial.nomini_relationship = source.nominee_relationship || source.nomini_relationship || initial.nomini_relationship || "";
+  initial.nominee_name = initial.nomini_name;
+  initial.nominee_relationship = initial.nomini_relationship;
 
   return initial;
 };
@@ -1009,28 +1061,6 @@ export default function EditProfile() {
       }
     }
 
-    if (
-      formData
-        .nomini_dob
-    ) {
-      const nomineeDob =
-        new Date(
-          formData
-            .nomini_dob
-        );
-
-      const today =
-        new Date();
-
-      if (
-        nomineeDob >
-        today
-      ) {
-        errors.nomini_dob =
-          "Nominee date of birth cannot be in the future.";
-      }
-    }
-
     setFieldErrors(
       errors
     );
@@ -1057,44 +1087,23 @@ export default function EditProfile() {
 
   const createUpdatePayload =
     () => {
-      const payload = EDITABLE_FIELDS.reduce(
-        (
-          result,
-          field
-        ) => {
-          let currentValue =
-            toInputValue(
-              formData[field]
-            ).trim();
+      const payload = {};
+      for (const field of EDITABLE_FIELDS) {
+        let currentValue =
+          toInputValue(
+            formData[field]
+          ).trim();
 
-          const previousValue =
-            toInputValue(
-              originalData[
-                field
-              ]
-            ).trim();
+        if (field === "last_name" && currentValue.toLowerCase() === "org") {
+          currentValue = "";
+        }
+        if (field === "first_name") {
+          currentValue = currentValue.replace(/\s+org$/i, "").trim();
+        }
 
-          if (field === "last_name" && currentValue.toLowerCase() === "org") {
-            currentValue = "";
-          }
-          if (field === "first_name") {
-            currentValue = currentValue.replace(/\s+org$/i, "").trim();
-          }
+        payload[field] = currentValue;
+      }
 
-          if (
-            currentValue !==
-            previousValue
-          ) {
-            result[field] =
-              currentValue;
-          }
-
-          return result;
-        },
-        {}
-      );
-
-      // If original had "org" in last_name, ensure last_name is explicitly cleared in payload
       const origLastName = toInputValue(originalData.last_name).trim();
       if (origLastName.toLowerCase() === "org" && !payload.last_name) {
         payload.last_name = "";
@@ -1440,6 +1449,87 @@ export default function EditProfile() {
           noValidate
         >
           {/* =====================
+              PROFILE & BANNER PHOTO
+          ===================== */}
+          <FormSection
+            icon="fas fa-image"
+            title="Profile & Banner Photo"
+            description="Update your public profile photo and cover banner."
+          >
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <label style={{ fontWeight: 600, color: "#1e293b", fontSize: "0.9rem" }}>
+                  Profile Photo
+                </label>
+                {formData.profile_photo || formData.profile_pic ? (
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
+                    <img
+                      src={formData.profile_photo || formData.profile_pic}
+                      alt="Profile preview"
+                      style={{ width: "60px", height: "60px", borderRadius: "50%", objectFit: "cover", border: "2px solid #22c55e" }}
+                    />
+                    <span style={{ fontSize: "0.82rem", color: "#64748b" }}>Photo uploaded</span>
+                  </div>
+                ) : null}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    try {
+                      const res = await uploadMyProfilePhoto(file);
+                      const photoUrl = res.photo_url || res.profile_pic || res.profile_photo;
+                      if (photoUrl) {
+                        setFormData((prev) => ({ ...prev, profile_photo: photoUrl, profile_pic: photoUrl }));
+                        toast.success("Profile photo updated!");
+                      }
+                    } catch {
+                      toast.error("Failed to upload profile photo.");
+                    }
+                  }}
+                  style={{ padding: "8px", border: "1px solid #cbd5e1", borderRadius: "8px", background: "#f8fafc" }}
+                />
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <label style={{ fontWeight: 600, color: "#1e293b", fontSize: "0.9rem" }}>
+                  Cover Banner Image
+                </label>
+                {formData.cover_photo || formData.banner ? (
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
+                    <img
+                      src={formData.cover_photo || formData.banner}
+                      alt="Banner preview"
+                      style={{ width: "120px", height: "50px", borderRadius: "8px", objectFit: "cover", border: "2px solid #22c55e" }}
+                    />
+                    <span style={{ fontSize: "0.82rem", color: "#64748b" }}>Banner uploaded</span>
+                  </div>
+                ) : null}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    try {
+                      const res = await uploadMyCoverPhoto(file);
+                      const bannerUrl = res.cover_photo || res.banner || res.photo_url;
+                      if (bannerUrl) {
+                        setFormData((prev) => ({ ...prev, cover_photo: bannerUrl, banner: bannerUrl }));
+                        toast.success("Cover banner updated!");
+                      }
+                    } catch {
+                      toast.error("Failed to upload cover banner.");
+                    }
+                  }}
+                  style={{ padding: "8px", border: "1px solid #cbd5e1", borderRadius: "8px", background: "#f8fafc" }}
+                />
+              </div>
+            </div>
+          </FormSection>
+
+          {/* =====================
               PERSONAL INFORMATION
           ===================== */}
 
@@ -1680,20 +1770,6 @@ export default function EditProfile() {
             />
 
             <FormField
-              label="City"
-              name="city"
-              value={
-                formData.city
-              }
-              onChange={
-                handleChange
-              }
-              error={
-                fieldErrors.city
-              }
-            />
-
-            <FormField
               label="District"
               name="district"
               value={
@@ -1799,20 +1875,6 @@ export default function EditProfile() {
               }
               error={
                 fieldErrors.entity_area
-              }
-            />
-
-            <FormField
-              label="City"
-              name="entity_city"
-              value={
-                formData.entity_city
-              }
-              onChange={
-                handleChange
-              }
-              error={
-                fieldErrors.entity_city
               }
             />
 
@@ -2269,21 +2331,6 @@ export default function EditProfile() {
             />
 
             <FormField
-              label="Nominee Date of Birth"
-              name="nomini_dob"
-              type="date"
-              value={
-                formData.nomini_dob
-              }
-              onChange={
-                handleChange
-              }
-              error={
-                fieldErrors.nomini_dob
-              }
-            />
-
-            <FormField
               label="Relationship"
               name="nomini_relationship"
               value={
@@ -2296,21 +2343,123 @@ export default function EditProfile() {
                 fieldErrors.nomini_relationship
               }
             />
+          </FormSection>
 
+          {/* =====================
+              EMERGENCY CONTACT
+          ===================== */}
+
+          <FormSection
+            icon="fas fa-phone-volume"
+            title="Emergency Contact"
+            description="Update your emergency contact information."
+          >
             <FormField
-              label="Nominee Aadhaar"
-              name="nomini_aadhar"
+              label="Emergency Contact Name"
+              name="emergency_contact_name"
               value={
-                formData.nomini_aadhar
+                formData.emergency_contact_name
               }
               onChange={
                 handleChange
               }
               error={
-                fieldErrors.nomini_aadhar
+                fieldErrors.emergency_contact_name
               }
-              inputMode="numeric"
-              maxLength={16}
+              placeholder="Full name of emergency contact"
+            />
+
+            <FormField
+              label="Emergency Contact Number"
+              name="emergency_contact_number"
+              type="tel"
+              value={
+                formData.emergency_contact_number
+              }
+              onChange={
+                handleChange
+              }
+              error={
+                fieldErrors.emergency_contact_number
+              }
+              placeholder="10-digit mobile number"
+            />
+
+            <FormField
+              label="Relationship"
+              name="emergency_relationship"
+              value={
+                formData.emergency_relationship
+              }
+              onChange={
+                handleChange
+              }
+              error={
+                fieldErrors.emergency_relationship
+              }
+              placeholder="Select or enter relationship"
+              options={[
+                "Father",
+                "Mother",
+                "Spouse",
+                "Brother",
+                "Sister",
+                "Son",
+                "Daughter",
+                "Friend",
+                "Other",
+              ]}
+            />
+          </FormSection>
+
+          {/* =====================
+              BANK DETAILS
+          ===================== */}
+
+          <FormSection
+            icon="fas fa-building-columns"
+            title="Financial & Bank Details"
+            description="Update your bank branch and payout details."
+          >
+            <FormField
+              label="Bank Name"
+              name="bank_name"
+              value={formData.bank_name || ""}
+              onChange={handleChange}
+              error={fieldErrors.bank_name}
+            />
+
+            <FormField
+              label="Account Number"
+              name="account_number"
+              value={formData.account_number || formData.bank_account_number || ""}
+              onChange={handleChange}
+              error={fieldErrors.account_number}
+            />
+
+            <FormField
+              label="IFSC Code"
+              name="ifsc_code"
+              value={formData.ifsc_code || formData.ifsc || ""}
+              onChange={handleChange}
+              error={fieldErrors.ifsc_code}
+            />
+
+            <FormField
+              label="Bank Branch"
+              name="branch"
+              value={formData.branch || formData.bank_branch || formData.bank_branch_name || ""}
+              onChange={(e) => {
+                const val = e.target.value;
+                setFormData(prev => ({
+                  ...prev,
+                  branch: val,
+                  bank_branch: val,
+                  bank_branch_name: val,
+                }));
+              }}
+              error={fieldErrors.branch}
+              placeholder="Enter bank branch name"
             />
           </FormSection>
 

@@ -80,44 +80,53 @@ const formatDate = (
   value,
   fallback = "Not provided"
 ) => {
-  if (
-    !value
-  ) {
+  if (!value) {
     return fallback;
   }
 
-  const normalizedValue =
-    typeof value === "string"
-      ? value.replace(
-          " ",
-          "T"
-        )
-      : value;
-
-  const date =
-    new Date(
-      normalizedValue
-    );
-
-  if (
-    Number.isNaN(
-      date.getTime()
-    )
-  ) {
-    return toText(
-      value,
-      fallback
-    );
+  const s = String(value).trim();
+  if (!s || s === "null" || s === "undefined") {
+    return fallback;
   }
 
-  return date.toLocaleDateString(
-    "en-IN",
-    {
+  // YYYY-MM-DD
+  const isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (isoMatch) {
+    const yr = parseInt(isoMatch[1], 10);
+    const mon = parseInt(isoMatch[2], 10) - 1;
+    const day = parseInt(isoMatch[3], 10);
+    const d = new Date(yr, mon, day);
+    return d.toLocaleDateString("en-IN", {
       day: "2-digit",
-      month: "long",
+      month: "short",
       year: "numeric",
-    }
-  );
+    });
+  }
+
+  // DD-MM-YYYY or DD/MM/YYYY
+  const dmyMatch = s.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+  if (dmyMatch) {
+    const day = parseInt(dmyMatch[1], 10);
+    const mon = parseInt(dmyMatch[2], 10) - 1;
+    const yr = parseInt(dmyMatch[3], 10);
+    const d = new Date(yr, mon, day);
+    return d.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  }
+
+  const date = new Date(s);
+  if (!Number.isNaN(date.getTime())) {
+    return date.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  }
+
+  return toText(value, fallback);
 };
 
 /* =========================================================
@@ -1583,7 +1592,8 @@ export default function Profile() {
                   icon="fas fa-person"
                   label="Father / Spouse Name"
                   value={
-                    member.father_name
+                    member.father_name ||
+                    member.father_spouse_name
                   }
                 />
 
@@ -1592,7 +1602,8 @@ export default function Profile() {
                   label="Date of Birth"
                   value={
                     formatDate(
-                      member.dob
+                      member.dob ||
+                      member.date_of_birth
                     )
                   }
                 />
@@ -1758,15 +1769,6 @@ export default function Profile() {
                 />
 
                 <ProfileInfoRow
-                  icon="fas fa-city"
-                  label="City"
-                  value={
-                    member.city ??
-                    member.entity_city
-                  }
-                />
-
-                <ProfileInfoRow
                   icon="fas fa-map"
                   label="District"
                   value={
@@ -1811,14 +1813,6 @@ export default function Profile() {
                 title="C. Legal & Professional Compliance"
                 subtitle="Professional registrations and compliance documents"
               >
-                <ProfileInfoRow
-                  icon="fas fa-briefcase"
-                  label="Occupation"
-                  value={
-                    member.occupation
-                  }
-                />
-
                 <ProfileInfoRow
                   icon="fas fa-certificate"
                   label="Professional License Number"
@@ -1908,7 +1902,8 @@ export default function Profile() {
                   icon="fas fa-graduation-cap"
                   label="Highest Qualification"
                   value={
-                    member.educational_qualification ??
+                    member.highest_qualification ||
+                    member.educational_qualification ||
                     member.education
                   }
                 />
@@ -1917,7 +1912,11 @@ export default function Profile() {
                   icon="fas fa-building-columns"
                   label="School / College"
                   value={
-                    member.school_college_name
+                    member.school_college_name ||
+                    member.institution_name ||
+                    member.ug_college ||
+                    member.pg_college ||
+                    member.school_name
                   }
                 />
 
@@ -1925,7 +1924,9 @@ export default function Profile() {
                   icon="fas fa-calendar"
                   label="Degree / Certificate Year"
                   value={
-                    member.degree_certificate_year
+                    member.degree_certificate_year ||
+                    member.degree_year ||
+                    member.ug_year
                   }
                 />
 
@@ -2199,7 +2200,9 @@ export default function Profile() {
                   icon="fas fa-location-dot"
                   label="Bank Branch"
                   value={
-                    member.branch
+                    member.branch ||
+                    member.bank_branch ||
+                    member.bank_branch_name
                   }
                 />
 
@@ -2238,21 +2241,6 @@ export default function Profile() {
                   label="Nominee Relationship"
                   value={
                     member.nomini_relationship
-                  }
-                />
-
-                <ProfileInfoRow
-                  icon="fas fa-fingerprint"
-                  label="Nominee Aadhaar / ID"
-                  value={
-                    member.nomini_aadhar
-                  }
-                />
-
-                <ProfileDocumentRow
-                  label="Nominee ID Document"
-                  value={
-                    member.nomini_id_document
                   }
                 />
               </ProfileCard>
@@ -2782,15 +2770,6 @@ export default function Profile() {
               />
 
               <ProfileInfoRow
-                icon="fas fa-city"
-                label="City"
-                value={
-                  member.city ??
-                  member.entity_city
-                }
-              />
-
-              <ProfileInfoRow
                 icon="fas fa-map"
                 label="District"
                 value={
@@ -2832,15 +2811,6 @@ export default function Profile() {
               title="Professional & Education"
               subtitle="Your education and career details"
             >
-              <ProfileInfoRow
-                icon="fas fa-briefcase"
-                label="Occupation"
-                value={
-                  member.occupation ??
-                  member.profession
-                }
-              />
-
               <ProfileInfoRow
                 icon="fas fa-graduation-cap"
                 label="Highest Qualification"
@@ -2944,31 +2914,11 @@ export default function Profile() {
               />
 
               <ProfileInfoRow
-                icon="fas fa-cake-candles"
-                label="Nominee DOB"
-                value={
-                  formatDate(
-                    member.nominee_dob ??
-                    member.nomini_dob
-                  )
-                }
-              />
-
-              <ProfileInfoRow
                 icon="fas fa-people-arrows"
                 label="Relationship"
                 value={
                   member.nominee_relationship ??
                   member.nomini_relationship
-                }
-              />
-
-              <ProfileInfoRow
-                icon="fas fa-fingerprint"
-                label="Nominee Aadhaar"
-                value={
-                  member.nominee_aadhaar ??
-                  member.nomini_aadhar
                 }
               />
             </ProfileCard>
@@ -3008,7 +2958,9 @@ export default function Profile() {
                 icon="fas fa-location-dot"
                 label="Bank Branch"
                 value={
-                  member.branch
+                  member.branch ||
+                  member.bank_branch ||
+                  member.bank_branch_name
                 }
               />
 

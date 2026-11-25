@@ -118,7 +118,8 @@ export default function ProfessionalRegistration() {
 
   const referralFromUrl =
     useMemo(() => {
-      const fromQuery = toText(
+      const clean = (val) => toText(val).replace(/copy\s*code/gi, "").replace(/copy/gi, "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 50);
+      const fromQuery = clean(
         searchParams.get(
           "ref"
         ) ??
@@ -131,7 +132,7 @@ export default function ProfessionalRegistration() {
       if (typeof window !== "undefined") {
         try {
           const stored = sessionStorage.getItem("inmba_referral_code") || localStorage.getItem("inmba_referral_code");
-          if (stored) return toText(stored);
+          if (stored) return clean(stored);
         } catch {}
       }
 

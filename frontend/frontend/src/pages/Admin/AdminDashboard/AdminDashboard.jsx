@@ -716,6 +716,31 @@ export default function AdminDashboard() {
     );
 
   /* =======================================================
+     NETWORK TOTALS
+  ======================================================= */
+
+  const networkTotals = useMemo(() => {
+    let directTotal = 0;
+    let indirectTotal = 0;
+
+    dashboardMembers.forEach((member) => {
+      directTotal += Number(
+        member.direct_members_count ?? member.direct_network ?? 0
+      );
+      indirectTotal += Number(
+        member.indirect_members_count ?? member.indirect_network ?? 0
+      );
+    });
+
+    return {
+      totalMembers: dashboardMembers.length,
+      totalDirectReferrals: directTotal,
+      totalIndirectNetwork: indirectTotal,
+      totalPaid: paidMemberIds.size,
+    };
+  }, [dashboardMembers, paidMemberIds]);
+
+  /* =======================================================
      STATUS FILTER
   ======================================================= */
 
@@ -997,6 +1022,52 @@ export default function AdminDashboard() {
             Refresh
           </span>
         </button>
+      </div>
+
+      {/* =================================================
+          NETWORK & MEMBER TOTALS OVERVIEW
+      ================================================= */}
+
+      <div className="inmba-admin-network-overview">
+        <div className="inmba-admin-overview-card">
+          <div className="inmba-admin-overview-icon members">
+            <i className="fas fa-users" aria-hidden="true"></i>
+          </div>
+          <div className="inmba-admin-overview-info">
+            <span className="inmba-admin-overview-value">{networkTotals.totalMembers}</span>
+            <span className="inmba-admin-overview-label">Total Registered Members</span>
+          </div>
+        </div>
+
+        <div className="inmba-admin-overview-card">
+          <div className="inmba-admin-overview-icon direct">
+            <i className="fas fa-user-group" aria-hidden="true"></i>
+          </div>
+          <div className="inmba-admin-overview-info">
+            <span className="inmba-admin-overview-value">{networkTotals.totalDirectReferrals}</span>
+            <span className="inmba-admin-overview-label">Total Direct Referrals</span>
+          </div>
+        </div>
+
+        <div className="inmba-admin-overview-card">
+          <div className="inmba-admin-overview-icon indirect">
+            <i className="fas fa-sitemap" aria-hidden="true"></i>
+          </div>
+          <div className="inmba-admin-overview-info">
+            <span className="inmba-admin-overview-value">{networkTotals.totalIndirectNetwork}</span>
+            <span className="inmba-admin-overview-label">Total Indirect Network</span>
+          </div>
+        </div>
+
+        <div className="inmba-admin-overview-card">
+          <div className="inmba-admin-overview-icon paid">
+            <i className="fas fa-circle-check" aria-hidden="true"></i>
+          </div>
+          <div className="inmba-admin-overview-info">
+            <span className="inmba-admin-overview-value">{networkTotals.totalPaid}</span>
+            <span className="inmba-admin-overview-label">Total Paid Members</span>
+          </div>
+        </div>
       </div>
 
       {/* =================================================

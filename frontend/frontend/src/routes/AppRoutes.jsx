@@ -806,6 +806,8 @@ export default function AppRoutes() {
 
           <Route path="/profile/edit" element={<EditProfile />} />
 
+          <Route path="/edit" element={<Navigate to="/profile/edit" replace />} />
+
           {/* QR CODE */}
 
           <Route path="/qr-code" element={<QRCode />} />

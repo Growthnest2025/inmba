@@ -64,17 +64,35 @@ export default function MembershipRegistration() {
      REFERRAL FROM URL
   ======================================================= */
 
+  const sanitizeReferral = (raw) => {
+    if (!raw) return "";
+    return toText(raw)
+      .replace(/copy\s*code/gi, "")
+      .replace(/copy/gi, "")
+      .replace(/[^a-zA-Z0-9_-]/g, "")
+      .trim()
+      .slice(0, 50);
+  };
+
   const referralFromUrl = useMemo(() => {
     const ref = searchParams.get("ref") ?? searchParams.get("referral");
-    if (ref) return toText(ref).replace(/\s/g, "").slice(0, 50);
+    if (ref) {
+      const clean = sanitizeReferral(ref);
+      if (clean) return clean;
+    }
     if (typeof window !== "undefined") {
       try {
         const stored = sessionStorage.getItem("inmba_referral_code") || localStorage.getItem("inmba_referral_code");
-        if (stored) return toText(stored).replace(/\s/g, "").slice(0, 50);
+        if (stored) {
+          const clean = sanitizeReferral(stored);
+          if (clean) return clean;
+        }
       } catch {}
     }
     return "";
   }, [searchParams]);
+
+  const initialReferral = referralFromUrl || "7777777";
 
   /* =======================================================
      FORM STATE
@@ -82,8 +100,16 @@ export default function MembershipRegistration() {
 
   const [formData, setFormData] = useState({
     ...INITIAL_FORM_DATA,
-    referral: referralFromUrl,
+    referral: initialReferral,
   });
+
+  useEffect(() => {
+    const resolved = referralFromUrl || "7777777";
+    setFormData((prev) => ({
+      ...prev,
+      referral: resolved,
+    }));
+  }, [referralFromUrl]);
 
   const [fieldErrors, setFieldErrors] = useState({});
   const [formError, setFormError] = useState("");
@@ -588,18 +614,23 @@ export default function MembershipRegistration() {
             </div>
 
             {/* REFERRAL NOTICE */}
-            {referralFromUrl && (
-              <div className="civilian-registration-referral-notice">
-                <i className="fas fa-user-plus" aria-hidden="true" />
-                <div>
-                  <strong>Referral Applied</strong>
-                  <span>
-                    Referral ID <b>{referralFromUrl}</b> was added from your
-                    membership link.
-                  </span>
-                </div>
+            <div className="civilian-registration-referral-notice">
+              <i className="fas fa-user-plus" aria-hidden="true" />
+              <div>
+                <strong>{referralFromUrl ? "Referral Applied" : "Organization Referral"}</strong>
+                <span>
+                  {referralFromUrl ? (
+                    <>
+                      Referral ID <b>{referralFromUrl}</b> was applied from your membership link.
+                    </>
+                  ) : (
+                    <>
+                      Default referral ID <b>7777777</b> is assigned via INMBA Organization.
+                    </>
+                  )}
+                </span>
               </div>
-            )}
+            </div>
 
             {/* FORM ERROR */}
             {formError && (
@@ -812,11 +843,11 @@ export default function MembershipRegistration() {
                 )}
               </div>
 
-              {/* REFERRAL ID - OPTIONAL */}
+              {/* REFERRAL ID - LOCKED */}
               <div className="civilian-registration-field">
                 <div className="civilian-registration-label-row">
                   <label htmlFor="civilian-referral">Referral ID</label>
-                  <span>Optional</span>
+                  <span>{formData.referral === "7777777" ? "Organization Default" : "Referral Applied"}</span>
                 </div>
                 <div className="civilian-registration-input">
                   <i className="fas fa-user-plus" aria-hidden="true" />
@@ -824,10 +855,11 @@ export default function MembershipRegistration() {
                     id="civilian-referral"
                     name="referral"
                     type="text"
-                    value={formData.referral}
-                    onChange={handleInputChange}
-                    placeholder="Enter Referral ID"
-                    disabled={submitting}
+                    value={formData.referral || "7777777"}
+                    readOnly
+                    tabIndex={-1}
+                    style={{ backgroundColor: "#f8fafc", cursor: "not-allowed", color: "#334155", fontWeight: 600 }}
+                    placeholder="Referral ID"
                   />
                 </div>
               </div>

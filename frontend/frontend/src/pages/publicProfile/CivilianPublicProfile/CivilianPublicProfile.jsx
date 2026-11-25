@@ -10,6 +10,8 @@ import {
   useParams,
 } from "react-router-dom";
 
+import { toast } from "react-toastify";
+
 import api from "../../../api/api";
 
 import {
@@ -21,6 +23,7 @@ import {
 import {
   updateMyProfile,
   uploadOwnProfilePhoto,
+  uploadOwnCoverPhoto,
 } from "../../../services/profile.service";
 
 import "./CivilianPublicProfile.css";
@@ -309,15 +312,16 @@ const normalizePublic = (
 const getBaseName = (
   profile
 ) => {
+  const fn = text(profile?.first_name).replace(/\s+org$/i, "").trim();
+  const ln = text(profile?.last_name).toLowerCase() === "org" ? "" : text(profile?.last_name).trim();
+  const full = [fn, ln].filter(Boolean).join(" ");
+  const disp = text(profile?.display_name).replace(/\s+org$/i, "").trim();
+  const fullRaw = text(profile?.full_name).replace(/\s+org$/i, "").trim();
   return text(
     firstValue(
-      profile?.display_name,
-
-      `${text(
-        profile?.first_name
-      )} ${text(
-        profile?.last_name
-      )}`.trim()
+      disp,
+      full,
+      fullRaw
     ),
     "Civilian Member"
   );
@@ -2062,13 +2066,17 @@ export default function CivilianPublicProfile({
   const [copiedReferral, setCopiedReferral] = useState("");
 
   const copyReferralText = async (value, key) => {
-    const clean = text(value);
+    let clean = text(value);
+    if (key === "code" || key === "hero-code") {
+      clean = clean.replace(/copy\s*code/gi, "").replace(/copy/gi, "").trim();
+    }
     if (!clean) return;
     try {
       if (navigator?.clipboard?.writeText) {
         await navigator.clipboard.writeText(clean);
       }
       setCopiedReferral(key);
+      toast.success(key === "link" || key === "hero-link" ? "Referral link copied!" : "Referral code copied!");
       setTimeout(() => {
         setCopiedReferral((prev) => (prev === key ? "" : prev));
       }, 2000);
@@ -3117,6 +3125,34 @@ export default function CivilianPublicProfile({
     };
 
   /* =========================================================
+     COVER BANNER PHOTO
+  ========================================================= */
+
+  const handleBannerUpload = async (event) => {
+    const file = event.target?.files?.[0];
+    if (!file) return;
+    try {
+      setSaving(true);
+      setSaveError("");
+      const res = await uploadOwnCoverPhoto(file);
+      const bannerUrl = res.cover_photo || res.banner || res.photo_url;
+      if (bannerUrl) {
+        setProfile((prev) => ({
+          ...prev,
+          cover_photo: bannerUrl,
+          banner: bannerUrl,
+        }));
+        toast.success("Cover banner updated successfully!");
+      }
+    } catch (err) {
+      toast.error(err?.message || "Failed to upload cover banner.");
+    } finally {
+      setSaving(false);
+      if (event.target) event.target.value = "";
+    }
+  };
+
+  /* =========================================================
      LOADING
   ========================================================= */
 
@@ -3314,7 +3350,11 @@ export default function CivilianPublicProfile({
     assetUrl(
       firstValue(
         p.cover_photo,
-        p.cover_photo_url
+        p.cover_photo_url,
+        p.banner,
+        p.banner_url,
+        p.coverPhoto,
+        p.cover_image
       )
     );
 
@@ -3486,9 +3526,10 @@ export default function CivilianPublicProfile({
       text(p.pincode)
   );
   const hasEducationData = Boolean(
-    text(firstValue(p.educational_qualification, p.highest_qualification, p.education)) ||
+    text(firstValue(p.educational_qualification, p.highest_qualification, p.education_level, p.ug_degree, p.education)) ||
       text(firstValue(p.school_college_name, p.institution_name, p.ug_college, p.pg_college, p.school_name, p.college)) ||
-      list(firstValue(p.additional_certifications, p.certifications_achievements)).length > 0 ||
+      list(firstValue(p.additional_certifications, p.professional_certifications, p.certifications_achievements, p.awards_recognitions)).length > 0 ||
+      Boolean(p.education_certificate || p.achievement_certificate) ||
       list(p.language_skills).length > 0
   );
   const hasAchievementsData = Boolean(
@@ -3579,20 +3620,54 @@ export default function CivilianPublicProfile({
             style={
               coverPhoto
                 ? {
-                    backgroundImage:
-                      `linear-gradient(
-                        130deg,
-                        rgba(15,77,15,.94) 0%,
-                        rgba(44,138,44,.84) 55%,
-                        rgba(72,168,72,.72) 100%
-                      ),
-                      url("${coverPhoto}")`,
+                    background: `url("${coverPhoto}") center/cover no-repeat`,
                   }
-                : isPro ? { background: "linear-gradient(130deg, #062759 0%, #0754b8 50%, #247af0 100%)" } : undefined
+                : {
+                    background: isPro
+                      ? "linear-gradient(130deg, #062759 0%, #0754b8 50%, #247af0 100%)"
+                      : "linear-gradient(130deg, #14532d 0%, #166534 50%, #15803d 100%)",
+                  }
             }
           >
-            <span />
-            <span />
+            {isOwner && (
+              <label
+                className="civ-pro-banner-edit-btn"
+                title="Change Cover Banner"
+                style={{
+                  position: "absolute",
+                  top: "16px",
+                  right: "16px",
+                  background: "rgba(0,0,0,0.6)",
+                  color: "#ffffff",
+                  padding: "6px 14px",
+                  borderRadius: "20px",
+                  cursor: "pointer",
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  backdropFilter: "blur(4px)",
+                  border: "1px solid rgba(255,255,255,0.3)",
+                  zIndex: 10,
+                }}
+              >
+                <i className="fas fa-camera" aria-hidden="true" />
+                <span>Change Banner</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={handleBannerUpload}
+                />
+              </label>
+            )}
+            {!coverPhoto && (
+              <>
+                <span />
+                <span />
+              </>
+            )}
           </div>
 
           <div className="civ-pro-hero-body">
@@ -3712,16 +3787,6 @@ export default function CivilianPublicProfile({
             >
               {getMembershipTitle(p, isPro ? "INMBA Professional Member" : "INMBA Member")}
             </div>
-
-            {text(
-              p.preferred_industry
-            ) && (
-              <p className="civ-pro-bio">
-                {text(
-                  p.preferred_industry
-                )}
-              </p>
-            )}
 
             <div className="civ-pro-chips">
               {location &&
@@ -4362,9 +4427,10 @@ export default function CivilianPublicProfile({
                   <strong>
                     {text(
                       firstValue(
-                        p
-                          .educational_qualification,
+                        p.educational_qualification,
                         p.highest_qualification,
+                        p.education_level,
+                        p.ug_degree,
                         p.education
                       ),
                       "Not added"
@@ -4380,30 +4446,106 @@ export default function CivilianPublicProfile({
                   <strong>
                     {text(
                       firstValue(
-                        p
-                          .school_college_name,
+                        p.ug_college,
+                        p.school_college_name,
+                        p.school_name,
+                        p.pg_college,
                         p.institution_name
                       ),
                       "Not added"
                     )}
                   </strong>
                 </div>
+
+                {text(p.school_name) && (
+                  <div>
+                    <span>School Details</span>
+                    <strong>
+                      {text(p.school_name)}
+                      {p.school_class ? ` (${p.school_class}${p.board ? `, ${p.board}` : ""})` : ""}
+                    </strong>
+                  </div>
+                )}
+
+                {text(p.ug_college) && (
+                  <div>
+                    <span>College Details</span>
+                    <strong>
+                      {text(p.ug_college)}
+                      {p.ug_degree ? ` (${p.ug_degree}${p.ug_department ? ` - ${p.ug_department}` : ""})` : ""}
+                    </strong>
+                  </div>
+                )}
               </div>
 
               <div className="civ-subsection">
                 <h4>
-                  Additional Certifications
+                  Additional Certifications & Achievements
                 </h4>
 
                 <Tags
                   value={
                     firstValue(
-                      p
-                        .additional_certifications,
-                      p.certifications_achievements
+                      p.additional_certifications,
+                      p.professional_certifications,
+                      p.certifications_achievements,
+                      p.awards_recognitions
                     )
                   }
                 />
+
+                {(p.education_certificate || p.achievement_certificate) && (
+                  <div style={{ display: "flex", gap: "10px", marginTop: "10px", flexWrap: "wrap" }}>
+                    {p.education_certificate && (
+                      <a
+                        href={createPublicAssetUrl(p.education_certificate)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="civ-cert-link"
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          padding: "6px 12px",
+                          borderRadius: "6px",
+                          background: "#ecfdf5",
+                          color: "#166534",
+                          fontSize: "0.82rem",
+                          fontWeight: 600,
+                          textDecoration: "none",
+                          border: "1px solid #a7f3d0",
+                        }}
+                      >
+                        <i className="fas fa-file-lines" />
+                        <span>Education Certificate</span>
+                      </a>
+                    )}
+                    {p.achievement_certificate && (
+                      <a
+                        href={createPublicAssetUrl(p.achievement_certificate)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="civ-cert-link"
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          padding: "6px 12px",
+                          borderRadius: "6px",
+                          background: "#eff6ff",
+                          color: "#1d4ed8",
+                          fontSize: "0.82rem",
+                          fontWeight: 600,
+                          textDecoration: "none",
+                          border: "1px solid #bfdbfe",
+                        }}
+                      >
+                        <i className="fas fa-award" />
+                        <span>Achievement Certificate</span>
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="civ-subsection">

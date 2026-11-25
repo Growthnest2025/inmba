@@ -87,38 +87,49 @@ const formatDate = (
     return "—";
   }
 
-  const normalized =
-    typeof value ===
-    "string"
-      ? value.replace(
-          " ",
-          "T"
-        )
-      : value;
-
-  const date =
-    new Date(
-      normalized
-    );
-
-  if (
-    Number.isNaN(
-      date.getTime()
-    )
-  ) {
-    return displayValue(
-      value
-    );
+  const s = String(value).trim();
+  if (!s || s === "—" || s === "null" || s === "undefined") {
+    return "—";
   }
 
-  return date.toLocaleDateString(
-    "en-IN",
-    {
+  // YYYY-MM-DD
+  const isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (isoMatch) {
+    const yr = parseInt(isoMatch[1], 10);
+    const mon = parseInt(isoMatch[2], 10) - 1;
+    const day = parseInt(isoMatch[3], 10);
+    const d = new Date(yr, mon, day);
+    return d.toLocaleDateString("en-IN", {
       day: "2-digit",
       month: "short",
       year: "numeric",
-    }
-  );
+    });
+  }
+
+  // DD-MM-YYYY or DD/MM/YYYY
+  const dmyMatch = s.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+  if (dmyMatch) {
+    const day = parseInt(dmyMatch[1], 10);
+    const mon = parseInt(dmyMatch[2], 10) - 1;
+    const yr = parseInt(dmyMatch[3], 10);
+    const d = new Date(yr, mon, day);
+    return d.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  }
+
+  const date = new Date(s);
+  if (!Number.isNaN(date.getTime())) {
+    return date.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  }
+
+  return displayValue(value);
 };
 
 /* =========================================================
@@ -1674,7 +1685,9 @@ export default function AdminMemberDetails() {
                 value={
                   formatDate(
                     civilianKyc?.dob ||
-                    member.dob
+                    civilianKyc?.date_of_birth ||
+                    member.dob ||
+                    member.date_of_birth
                   )
                 }
               />
@@ -1897,7 +1910,10 @@ export default function AdminMemberDetails() {
                     label="Bank Branch Name"
                     value={
                       civilianKyc?.bank_branch_name ||
+                      civilianKyc?.branch ||
+                      civilianKyc?.bank_branch ||
                       member.branch_name ||
+                      member.bank_branch ||
                       member.branch
                     }
                   />
@@ -1954,6 +1970,7 @@ export default function AdminMemberDetails() {
                 label="Highest Qualification"
                 value={
                   civilianKyc?.highest_qualification ||
+                  member.highest_qualification ||
                   member.educational_qualification ||
                   member.education
                 }
@@ -1963,9 +1980,14 @@ export default function AdminMemberDetails() {
                 label="School / College Name"
                 value={
                   civilianKyc?.school_college_name ||
+                  civilianKyc?.school_name ||
+                  civilianKyc?.ug_college ||
+                  civilianKyc?.institution_name ||
+                  member.school_college_name ||
                   member.school_name ||
                   member.ug_college ||
-                  member.pg_college
+                  member.pg_college ||
+                  member.institution_name
                 }
               />
 
@@ -1973,6 +1995,8 @@ export default function AdminMemberDetails() {
                 label="Degree Year"
                 value={
                   civilianKyc?.degree_year ||
+                  civilianKyc?.ug_year ||
+                  member.degree_year ||
                   member.ug_year
                 }
               />
@@ -1980,14 +2004,16 @@ export default function AdminMemberDetails() {
               <InfoRow
                 label="Additional Certifications"
                 value={
-                  civilianKyc?.additional_certifications
+                  civilianKyc?.additional_certifications ||
+                  member.additional_certifications
                 }
               />
 
               <InfoRow
                 label="Language Skills"
                 value={
-                  civilianKyc?.language_skills
+                  civilianKyc?.language_skills ||
+                  member.language_skills
                 }
               />
             </DetailCard>
@@ -2003,42 +2029,48 @@ export default function AdminMemberDetails() {
               <InfoRow
                 label="Awards & Recognitions"
                 value={
-                  civilianKyc?.awards_recognitions
+                  civilianKyc?.awards_recognitions ||
+                  member.awards_recognitions
                 }
               />
 
               <InfoRow
                 label="Publications"
                 value={
-                  civilianKyc?.publications
+                  civilianKyc?.publications ||
+                  member.publications
                 }
               />
 
               <InfoRow
                 label="Professional Certifications"
                 value={
-                  civilianKyc?.professional_certifications
+                  civilianKyc?.professional_certifications ||
+                  member.professional_certifications
                 }
               />
 
               <InfoRow
                 label="Key Milestones"
                 value={
-                  civilianKyc?.key_milestones
+                  civilianKyc?.key_milestones ||
+                  member.key_milestones
                 }
               />
 
               <InfoRow
                 label="Media Mentions"
                 value={
-                  civilianKyc?.media_mentions
+                  civilianKyc?.media_mentions ||
+                  member.media_mentions
                 }
               />
 
               <InfoRow
                 label="Testimonials"
                 value={
-                  civilianKyc?.testimonials
+                  civilianKyc?.testimonials ||
+                  member.testimonials
                 }
               />
             </DetailCard>
@@ -2054,14 +2086,16 @@ export default function AdminMemberDetails() {
               <InfoRow
                 label="Bio"
                 value={
-                  civilianKyc?.bio
+                  civilianKyc?.bio ||
+                  member.bio
                 }
               />
 
               <InfoRow
                 label="Interest Categories"
                 value={
-                  civilianKyc?.interest_categories
+                  civilianKyc?.interest_categories ||
+                  member.interest_categories
                 }
               />
 
@@ -2076,49 +2110,66 @@ export default function AdminMemberDetails() {
               <InfoRow
                 label="Hobbies"
                 value={
-                  civilianKyc?.hobbies
+                  civilianKyc?.hobbies ||
+                  member.hobbies
                 }
               />
 
               <InfoRow
                 label="Preferred Industry"
                 value={
-                  civilianKyc?.preferred_industry
+                  civilianKyc?.preferred_industry ||
+                  member.preferred_industry
                 }
               />
 
               <InfoRow
                 label="Facebook"
                 value={
-                  civilianKyc?.facebook_url
+                  civilianKyc?.facebook_url ||
+                  civilianKyc?.social_facebook ||
+                  member.social_facebook ||
+                  member.facebook
                 }
               />
 
               <InfoRow
                 label="Instagram"
                 value={
-                  civilianKyc?.instagram_url
+                  civilianKyc?.instagram_url ||
+                  civilianKyc?.social_instagram ||
+                  member.social_instagram ||
+                  member.instagram
                 }
               />
 
               <InfoRow
                 label="LinkedIn"
                 value={
-                  civilianKyc?.linkedin_url
+                  civilianKyc?.linkedin_url ||
+                  civilianKyc?.social_linkedin ||
+                  member.social_linkedin ||
+                  member.linkedin
                 }
               />
 
               <InfoRow
                 label="YouTube"
                 value={
-                  civilianKyc?.youtube_url
+                  civilianKyc?.youtube_url ||
+                  civilianKyc?.social_youtube ||
+                  member.social_youtube ||
+                  member.youtube
                 }
               />
 
               <InfoRow
                 label="Website / Portfolio"
                 value={
-                  civilianKyc?.website_portfolio
+                  civilianKyc?.website_portfolio ||
+                  civilianKyc?.social_website ||
+                  member.social_website ||
+                  member.website
                 }
               />
             </DetailCard>
@@ -2149,21 +2200,24 @@ export default function AdminMemberDetails() {
               <InfoRow
                 label="Team Size"
                 value={
-                  civilianKyc?.team_size
+                  civilianKyc?.team_size ||
+                  member.team_size
                 }
               />
 
               <InfoRow
                 label="Royalty Slab Category"
                 value={
-                  civilianKyc?.royalty_slab_category
+                  civilianKyc?.royalty_slab_category ||
+                  member.royalty_slab_category
                 }
               />
 
               <InfoRow
                 label="Preferred Payout Cycle"
                 value={
-                  civilianKyc?.preferred_payout_cycle
+                  civilianKyc?.preferred_payout_cycle ||
+                  member.preferred_payout_cycle
                 }
               />
 
@@ -2195,21 +2249,24 @@ export default function AdminMemberDetails() {
               <InfoRow
                 label="Emergency Contact Name"
                 value={
-                  civilianKyc?.emergency_contact_name
+                  civilianKyc?.emergency_contact_name ||
+                  member.emergency_contact_name
                 }
               />
 
               <InfoRow
                 label="Emergency Contact Number"
                 value={
-                  civilianKyc?.emergency_contact_number
+                  civilianKyc?.emergency_contact_number ||
+                  member.emergency_contact_number
                 }
               />
 
               <InfoRow
                 label="Relationship"
                 value={
-                  civilianKyc?.emergency_relationship
+                  civilianKyc?.emergency_relationship ||
+                  member.emergency_relationship
                 }
               />
             </DetailCard>

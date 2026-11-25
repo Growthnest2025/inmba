@@ -1070,6 +1070,7 @@ const CIVILIAN_FILE_FIELDS = [
   "bank_proof",
   "nominee_id",
   "education_certificate",
+  "achievement_certificate",
   "profile_photo",
   "cover_photo",
   "gallery_photos",
@@ -1080,11 +1081,14 @@ const CIVILIAN_SECTION_FIELDS = {
   A: [
     "full_legal_name",
     "father_spouse_name",
+    "father_name",
     "dob",
+    "date_of_birth",
     "gender",
     "marital_status",
     "nationality",
     "aadhaar_number",
+    "aadhar",
     "aadhaar_front",
     "aadhaar_back",
     "pan_number",
@@ -1096,10 +1100,14 @@ const CIVILIAN_SECTION_FIELDS = {
   ],
   B: [
     "primary_mobile",
+    "phone",
     "secondary_mobile",
+    "contact_number",
     "primary_email",
+    "email",
     "whatsapp_number",
     "current_address",
+    "address",
     "permanent_address",
     "address_proof",
     "district",
@@ -1111,20 +1119,32 @@ const CIVILIAN_SECTION_FIELDS = {
     "account_holder_name",
     "bank_name",
     "bank_account_number",
+    "account_number",
     "ifsc_code",
+    "ifsc",
     "bank_branch_name",
+    "bank_branch",
+    "branch",
     "bank_proof",
     "upi_id",
     "gst_number",
     "income_tax_slab",
     "nominee_name",
+    "nomini_name",
     "nominee_relationship",
+    "nomini_relationship",
     "nominee_id",
   ],
   D: [
     "highest_qualification",
+    "educational_qualification",
+    "education",
     "school_college_name",
+    "school_name",
+    "ug_college",
+    "institution_name",
     "degree_year",
+    "ug_year",
     "education_certificate",
     "additional_certifications",
     "language_skills",
@@ -1136,6 +1156,7 @@ const CIVILIAN_SECTION_FIELDS = {
     "key_milestones",
     "media_mentions",
     "testimonials",
+    "achievement_certificate",
   ],
   F: [
     "bio",
@@ -1144,7 +1165,9 @@ const CIVILIAN_SECTION_FIELDS = {
     "hobbies",
     "preferred_industry",
     "profile_photo",
+    "profile_pic",
     "cover_photo",
+    "banner",
     "gallery_photos",
     "intro_video",
     "facebook_url",
@@ -1152,14 +1175,24 @@ const CIVILIAN_SECTION_FIELDS = {
     "linkedin_url",
     "youtube_url",
     "website_portfolio",
+    "social_instagram",
+    "social_linkedin",
+    "social_facebook",
+    "social_youtube",
+    "social_link",
   ],
   G: [
+    "sponsor_referral_id",
+    "network_level_rank",
+    "team_size",
+    "royalty_slab_category",
     "preferred_payout_cycle",
   ],
   H: [
     "emergency_contact_name",
     "emergency_contact_number",
     "emergency_relationship",
+    "relationship",
   ],
 };
 
@@ -1211,6 +1244,40 @@ async function getCivilianFullKycRecord(memberId, db) {
   if (!values.full_legal_name) values.full_legal_name = fullName || "";
   if (!values.primary_email) values.primary_email = member.email || "";
   if (!values.primary_mobile) values.primary_mobile = member.phone || "";
+  if (!values.father_spouse_name) values.father_spouse_name = member.father_name || "";
+  if (!values.dob) values.dob = member.dob || "";
+  values.date_of_birth = values.dob;
+  if (!values.gender) values.gender = member.gender || "";
+  if (!values.blood_group) values.blood_group = member.blood_group || "";
+  if (!values.marital_status) values.marital_status = member.marital_status || "";
+  if (!values.nationality) values.nationality = member.nationality || "Indian";
+  if (!values.aadhaar_number) values.aadhaar_number = member.aadhar || member.entity_aadhar_number || "";
+  if (!values.pan_number) values.pan_number = member.pan_number || "";
+  if (!values.secondary_mobile) values.secondary_mobile = member.contact_number || member.secondary_mobile || "";
+  if (!values.whatsapp_number) values.whatsapp_number = member.whatsapp_number || "";
+  if (!values.current_address) values.current_address = member.address || "";
+  if (!values.permanent_address) values.permanent_address = member.permanent_address || "";
+  if (!values.district) values.district = member.district || member.entity_district || "";
+  if (!values.state) values.state = member.state || member.entity_state || "";
+  if (!values.pincode) values.pincode = member.pincode || member.entity_pincode || "";
+  if (!values.highest_qualification) values.highest_qualification = member.highest_qualification || member.educational_qualification || member.education || "";
+  if (!values.school_college_name) values.school_college_name = member.school_college_name || member.school_name || member.ug_college || member.pg_college || "";
+  if (!values.degree_year) values.degree_year = member.ug_year || "";
+  if (!values.nominee_name) values.nominee_name = member.nomini_name || member.nominee_name || "";
+  if (!values.nominee_relationship) values.nominee_relationship = member.nomini_relationship || member.nominee_relationship || "";
+  if (!values.bank_name) values.bank_name = member.bank_name || "";
+  if (!values.bank_account_number) values.bank_account_number = member.account_number || member.bank_account_number || "";
+  if (!values.ifsc_code) values.ifsc_code = member.ifsc || member.ifsc_code || "";
+  if (!values.bank_branch_name) values.bank_branch_name = member.branch || member.bank_branch || member.bank_branch_name || "";
+  values.branch = values.bank_branch_name;
+  values.bank_branch = values.bank_branch_name;
+  if (!values.emergency_contact_name) values.emergency_contact_name = member.emergency_contact_name || "";
+  if (!values.emergency_contact_number) values.emergency_contact_number = member.emergency_contact_number || "";
+  if (!values.emergency_relationship) values.emergency_relationship = member.emergency_relationship || "";
+  if (!values.bio) values.bio = member.bio || "";
+  if (!values.skills) values.skills = member.skills || "";
+  if (member.profile_pic && !files.profile_photo) files.profile_photo = member.profile_pic;
+  if (member.cover_photo && !files.cover_photo) files.cover_photo = member.cover_photo;
   if (!values.sponsor_referral_id) values.sponsor_referral_id = member.referral_id || member.referred_by || "";
   if (!values.network_level_rank) values.network_level_rank = member.network_level || "";
   if (!values.team_size) values.team_size = (Number(member.direct_network || 0) + Number(member.indirect_network || 0)) || "";
@@ -1305,6 +1372,38 @@ async function handleSaveCivilianSection(request, db, cors, section) {
   }
 
   const input = await parseRequestBody(request);
+
+  const fieldAliases = {
+    date_of_birth: "dob",
+    father_name: "father_spouse_name",
+    aadhar: "aadhaar_number",
+    phone: "primary_mobile",
+    contact_number: "secondary_mobile",
+    email: "primary_email",
+    whatsapp: "whatsapp_number",
+    address: "current_address",
+    branch: "bank_branch_name",
+    bank_branch: "bank_branch_name",
+    account_number: "bank_account_number",
+    ifsc: "ifsc_code",
+    nomini_name: "nominee_name",
+    nomini_relationship: "nominee_relationship",
+    education: "highest_qualification",
+    educational_qualification: "highest_qualification",
+    school_name: "school_college_name",
+    ug_college: "school_college_name",
+    institution_name: "school_college_name",
+    ug_year: "degree_year",
+    banner: "cover_photo",
+    profile_pic: "profile_photo",
+    relationship: "emergency_relationship",
+  };
+  for (const [alias, targetCol] of Object.entries(fieldAliases)) {
+    if (input[alias] !== undefined && input[targetCol] === undefined) {
+      input[targetCol] = input[alias];
+    }
+  }
+
   const completed = [
     "true",
     "1",
@@ -1364,7 +1463,11 @@ async function handleSaveCivilianSection(request, db, cors, section) {
   for (const field of allowed) {
     if (Object.prototype.hasOwnProperty.call(input, field) && input[field] !== undefined) {
       updates.push(`"${field}" = ?`);
-      bindings.push(input[field]);
+      const rawVal = input[field];
+      const safeVal = Array.isArray(rawVal)
+        ? rawVal.map(x => String(x ?? "").trim()).filter(Boolean).join(", ")
+        : (typeof rawVal === "object" && rawVal !== null ? JSON.stringify(rawVal) : String(rawVal ?? "").trim());
+      bindings.push(safeVal);
     }
   }
 
@@ -1388,6 +1491,84 @@ async function handleSaveCivilianSection(request, db, cors, section) {
       SET ${updates.join(", ")}
       WHERE member_id = ?
     `).bind(...bindings).run();
+  }
+
+  // Synchronize common fields to kyc_members table so all profile and admin views stay in sync
+  try {
+    const memUpdates = [];
+    const memBindings = [];
+
+    const syncMap = {
+      father_spouse_name: "father_name",
+      dob: "dob",
+      gender: "gender",
+      blood_group: "blood_group",
+      marital_status: "marital_status",
+      nationality: "nationality",
+      aadhaar_number: "aadhar",
+      pan_number: "pan_number",
+      primary_mobile: "phone",
+      secondary_mobile: "contact_number",
+      primary_email: "email",
+      whatsapp_number: "whatsapp_number",
+      current_address: "address",
+      district: "district",
+      state: "state",
+      pincode: "pincode",
+      highest_qualification: "education",
+      school_college_name: "school_name",
+      degree_year: "ug_year",
+      bank_name: "bank_name",
+      bank_account_number: "account_number",
+      bio: "bio",
+      skills: "skills",
+      profile_photo: "profile_pic",
+      instagram_url: "social_instagram",
+      linkedin_url: "social_linkedin",
+      facebook_url: "social_facebook",
+      youtube_url: "social_youtube",
+      website_portfolio: "social_link",
+    };
+
+    if (input.full_legal_name) {
+      const parts = String(input.full_legal_name).trim().split(/\s+/);
+      const fn = parts[0] || "";
+      const ln = parts.slice(1).join(" ") || "";
+      memUpdates.push("first_name = ?");
+      memBindings.push(fn);
+      memUpdates.push("last_name = ?");
+      memBindings.push(ln);
+    }
+
+    for (const [kycCol, memCol] of Object.entries(syncMap)) {
+      if (input[kycCol] !== undefined && input[kycCol] !== null && String(input[kycCol]).trim() !== "") {
+        const safeVal = Array.isArray(input[kycCol])
+          ? input[kycCol].map(x => String(x ?? "").trim()).filter(Boolean).join(", ")
+          : (typeof input[kycCol] === "object" ? JSON.stringify(input[kycCol]) : String(input[kycCol]).trim());
+        memUpdates.push(`"${memCol}" = ?`);
+        memBindings.push(safeVal);
+        if (kycCol === "highest_qualification") {
+          memUpdates.push(`"educational_qualification" = ?`);
+          memBindings.push(safeVal);
+        }
+        if (kycCol === "school_college_name") {
+          memUpdates.push(`"ug_college" = ?`);
+          memBindings.push(safeVal);
+        }
+      }
+    }
+
+    if (memUpdates.length > 0) {
+      memUpdates.push("updated_at = datetime('now')");
+      memBindings.push(member.id);
+      await db.prepare(`
+        UPDATE kyc_members
+        SET ${memUpdates.join(", ")}
+        WHERE id = ?
+      `).bind(...memBindings).run();
+    }
+  } catch (syncErr) {
+    console.error("Sync to kyc_members warning:", syncErr);
   }
 
   const data = await getCivilianFullKycRecord(member.id, db);
@@ -3055,8 +3236,79 @@ async function handleGetCivilianProfile(request, db, cors) {
     nationality: fullMember.nationality || fullKyc?.values?.nationality || "Indian",
     aadhaar_number: fullMember.aadhar || fullMember.aadhaar_number || fullKyc?.values?.aadhaar_number || "",
     pan_number: fullMember.pan_number || fullKyc?.values?.pan_number || "",
-    email: member.email,
-    phone: member.phone,
+    email: fullMember.email || member.email || "",
+    phone: fullMember.phone || member.phone || "",
+    secondary_mobile: fullMember.secondary_mobile || fullMember.contact_number || "",
+    whatsapp_number: fullMember.whatsapp_number || "",
+    address: fullMember.address || fullKyc?.values?.current_address || "",
+    current_address: fullMember.address || fullKyc?.values?.current_address || "",
+    city: fullMember.city || fullKyc?.values?.city || "",
+    district: fullMember.district || fullKyc?.values?.district || "",
+    state: fullMember.state || fullKyc?.values?.state || "",
+    pincode: fullMember.pincode || fullKyc?.values?.pincode || "",
+    school_name: fullMember.school_name || fullKyc?.values?.school_college_name || fullKyc?.values?.school_name || "",
+    school_college_name: fullKyc?.values?.school_college_name || fullMember.school_name || fullMember.ug_college || "",
+    institution_name: fullKyc?.values?.school_college_name || fullMember.school_name || fullMember.ug_college || "",
+    highest_qualification: fullKyc?.values?.highest_qualification || fullMember.highest_qualification || fullMember.educational_qualification || fullMember.education || "",
+    educational_qualification: fullKyc?.values?.highest_qualification || fullMember.educational_qualification || fullMember.education || "",
+    education: fullKyc?.values?.highest_qualification || fullMember.education || fullMember.educational_qualification || "",
+    additional_certifications: fullKyc?.values?.additional_certifications || fullMember.certifications_achievements || "",
+    certifications_achievements: fullKyc?.values?.additional_certifications || fullMember.certifications_achievements || "",
+    language_skills: fullKyc?.values?.language_skills || "",
+    awards_recognitions: fullKyc?.values?.awards_recognitions || "",
+    publications: fullKyc?.values?.publications || "",
+    professional_certifications: fullKyc?.values?.professional_certifications || "",
+    key_milestones: fullKyc?.values?.key_milestones || "",
+    media_mentions: fullKyc?.values?.media_mentions || "",
+    testimonials: fullKyc?.values?.testimonials || "",
+    achievement_certificate: fullKyc?.files?.achievement_certificate || "",
+    education_certificate: fullKyc?.files?.education_certificate || "",
+    interest_categories: fullKyc?.values?.interest_categories || "",
+    hobbies: fullKyc?.values?.hobbies || "",
+    preferred_industry: fullKyc?.values?.preferred_industry || "",
+    facebook_url: fullKyc?.values?.facebook_url || fullMember.social_facebook || "",
+    instagram_url: fullKyc?.values?.instagram_url || fullMember.social_instagram || "",
+    linkedin_url: fullKyc?.values?.linkedin_url || fullMember.social_linkedin || "",
+    youtube_url: fullKyc?.values?.youtube_url || fullMember.social_youtube || "",
+    website_portfolio: fullKyc?.values?.website_portfolio || fullMember.social_link || "",
+    preferred_payout_cycle: fullKyc?.values?.preferred_payout_cycle || "",
+    school_class: fullMember.school_class || fullKyc?.values?.school_class || "",
+    board: fullMember.board || fullKyc?.values?.board || "",
+    school_city: fullMember.school_city || fullKyc?.values?.school_city || "",
+    ug_college: fullMember.ug_college || fullKyc?.values?.ug_college || "",
+    ug_degree: fullMember.ug_degree || fullKyc?.values?.ug_degree || "",
+    ug_department: fullMember.ug_department || fullKyc?.values?.ug_department || "",
+    ug_year: fullMember.ug_year || fullKyc?.values?.ug_year || "",
+    pg_college: fullMember.pg_college || fullKyc?.values?.pg_college || "",
+    pg_degree: fullMember.pg_degree || fullKyc?.values?.pg_degree || "",
+    pg_specialization: fullMember.pg_specialization || fullKyc?.values?.pg_specialization || "",
+    skills: fullMember.skills || fullKyc?.values?.skills || "",
+    student_id: fullMember.student_id || fullKyc?.values?.student_id || "",
+    nomini_name: fullMember.nomini_name || fullKyc?.values?.nominee_name || fullKyc?.values?.nomini_name || "",
+    nominee_name: fullMember.nomini_name || fullKyc?.values?.nominee_name || fullKyc?.values?.nomini_name || "",
+    nomini_dob: fullMember.nomini_dob || fullKyc?.values?.nominee_dob || fullKyc?.values?.nomini_dob || "",
+    nominee_dob: fullMember.nomini_dob || fullKyc?.values?.nominee_dob || fullKyc?.values?.nomini_dob || "",
+    nomini_relationship: fullMember.nomini_relationship || fullKyc?.values?.nominee_relationship || fullKyc?.values?.nomini_relationship || "",
+    nominee_relationship: fullMember.nomini_relationship || fullKyc?.values?.nominee_relationship || fullKyc?.values?.nomini_relationship || "",
+    nomini_aadhar: fullMember.nomini_aadhar || fullKyc?.values?.nominee_aadhaar || fullKyc?.values?.nomini_aadhar || "",
+    nominee_aadhaar: fullMember.nomini_aadhar || fullKyc?.values?.nominee_aadhaar || fullKyc?.values?.nomini_aadhar || "",
+    emergency_contact_name: fullMember.emergency_contact_name || fullKyc?.values?.emergency_contact_name || "",
+    emergency_contact_number: fullMember.emergency_contact_number || fullKyc?.values?.emergency_contact_number || "",
+    emergency_relationship: fullMember.emergency_relationship || fullKyc?.values?.emergency_relationship || "",
+    bank_name: fullMember.bank_name || fullKyc?.values?.bank_name || "",
+    bank_account_number: fullMember.bank_account_number || fullMember.account_number || fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || "",
+    account_number: fullMember.bank_account_number || fullMember.account_number || fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || "",
+    ifsc_code: fullMember.ifsc_code || fullKyc?.values?.ifsc_code || "",
+    ifsc: fullMember.ifsc_code || fullKyc?.values?.ifsc_code || "",
+    branch: fullMember.branch || fullMember.bank_branch || fullMember.bank_branch_name || fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || "",
+    bank_branch: fullMember.branch || fullMember.bank_branch || fullMember.bank_branch_name || fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || "",
+    bank_branch_name: fullMember.branch || fullMember.bank_branch || fullMember.bank_branch_name || fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || "",
+    cover_photo: fullKyc?.files?.cover_photo || fullKyc?.values?.cover_photo || fullMember.cover_photo || "",
+    cover_photo_url: fullKyc?.files?.cover_photo || fullKyc?.values?.cover_photo || fullMember.cover_photo || "",
+    banner: fullKyc?.files?.cover_photo || fullKyc?.values?.cover_photo || fullMember.cover_photo || "",
+    occupation: fullMember.occupation || fullKyc?.values?.occupation || "",
+    profession: fullMember.profession || fullKyc?.values?.profession || "",
+    bio: fullMember.bio || fullKyc?.values?.bio || "",
     profile_pic: activePhoto,
     profile_photo: activePhoto,
     profile_photo_url: activePhoto,
@@ -3173,194 +3425,340 @@ async function handleGetProfessionalProfile(request, db, cors) {
 }
 
 async function handleProfileUpdate(request, db, cors) {
-  const input = await parseRequestBody(request);
-  let member = await getCurrentMember(request, db);
-
-  if (!member && input.token && /^[a-f0-9]{64}$/.test(input.token)) {
-    const tokenHash = await sha256(input.token);
-    const session = await db.prepare(`
-      SELECT member_id FROM worker_auth_sessions
-      WHERE token_hash = ? AND expires_at > ?
-    `).bind(tokenHash, Math.floor(Date.now() / 1000)).first();
-    if (session && session.member_id) {
-      member = await db.prepare("SELECT * FROM kyc_members WHERE id = ?").bind(session.member_id).first();
-    }
-  }
-
-  if (!member) {
-    return json({
-      success: false,
-      statusCode: 401,
-      message: "Authentication required.",
-    }, 401, cors);
-  }
-
-  const cleanFirstName = String(input.first_name || input.name || "").replace(/\s+org$/i, "").trim();
-  const lastNameProvided = input.last_name !== undefined ? 1 : 0;
-  const rawLastName = String(input.last_name ?? "").trim();
-  const cleanLastName = rawLastName.toLowerCase() === "org" ? "" : rawLastName;
-
-  const fatherName = input.father_name || input.father_spouse_name || "";
-  const dob = input.dob || input.date_of_birth || "";
-  const gender = input.gender || "";
-  const bloodGroup = input.blood_group || "";
-  const maritalStatus = input.marital_status || "";
-  const nationality = input.nationality || "";
-
-  const email = input.email || "";
-  const phone = input.phone || "";
-  const whatsapp = input.whatsapp_number || input.whatsapp || "";
-  const contactNumber = input.contact_number || input.secondary_mobile || "";
-  const bio = input.bio || input.profile_bio || "";
-  const occupation = input.occupation || input.profession || input.professional_role || "";
-  const education = input.education || input.educational_qualification || input.highest_qualification || "";
-  const city = input.city || "";
-  const state = input.state || "";
-  const district = input.district || "";
-  const pincode = input.pincode || "";
-  const address = input.address || input.current_address || "";
-
-  const schoolName = input.school_name || "";
-  const schoolClass = input.school_class || "";
-  const board = input.board || "";
-  const schoolCity = input.school_city || "";
-
-  const ugCollege = input.ug_college || "";
-  const ugDegree = input.ug_degree || "";
-  const ugDepartment = input.ug_department || "";
-  const ugYear = input.ug_year || "";
-
-  const pgCollege = input.pg_college || "";
-  const pgDegree = input.pg_degree || "";
-  const pgSpecialization = input.pg_specialization || "";
-
-  const skills = input.skills || "";
-  const studentId = input.student_id || "";
-
-  const nominiName = input.nomini_name || "";
-  const nominiDob = input.nomini_dob || "";
-  const nominiRelationship = input.nomini_relationship || "";
-  const nominiAadhar = input.nomini_aadhar || "";
-
-  const photoUrl = input.photo || input.photo_data || input.photo_url || input.photoUrl || input.profile_photo || input.profile_pic || input.profile_image_url || "";
-  const instagram = input.social_instagram || input.instagram_url || "";
-  const linkedin = input.social_linkedin || input.linkedin_url || "";
-  const facebook = input.social_facebook || input.facebook_url || "";
-  const youtube = input.social_youtube || input.youtube_url || "";
-  const twitter = input.social_twitter || "";
-  const website = input.website || input.portfolio_url || "";
-
-  await db.prepare(`
-    UPDATE kyc_members
-    SET first_name = CASE WHEN ? != '' THEN ? ELSE first_name END,
-        last_name = CASE WHEN ? = 1 THEN ? ELSE last_name END,
-        father_name = COALESCE(NULLIF(?, ''), father_name),
-        dob = COALESCE(NULLIF(?, ''), dob),
-        gender = COALESCE(NULLIF(?, ''), gender),
-        blood_group = COALESCE(NULLIF(?, ''), blood_group),
-        marital_status = COALESCE(NULLIF(?, ''), marital_status),
-        nationality = COALESCE(NULLIF(?, ''), nationality),
-        email = COALESCE(NULLIF(?, ''), email),
-        phone = COALESCE(NULLIF(?, ''), phone),
-        whatsapp_number = COALESCE(NULLIF(?, ''), whatsapp_number),
-        contact_number = COALESCE(NULLIF(?, ''), contact_number),
-        secondary_mobile = COALESCE(NULLIF(?, ''), secondary_mobile),
-        bio = COALESCE(NULLIF(?, ''), bio),
-        occupation = COALESCE(NULLIF(?, ''), occupation),
-        profession = COALESCE(NULLIF(?, ''), profession),
-        education = COALESCE(NULLIF(?, ''), education),
-        city = COALESCE(NULLIF(?, ''), city),
-        state = COALESCE(NULLIF(?, ''), state),
-        district = COALESCE(NULLIF(?, ''), district),
-        pincode = COALESCE(NULLIF(?, ''), pincode),
-        address = COALESCE(NULLIF(?, ''), address),
-        school_name = COALESCE(NULLIF(?, ''), school_name),
-        school_class = COALESCE(NULLIF(?, ''), school_class),
-        board = COALESCE(NULLIF(?, ''), board),
-        school_city = COALESCE(NULLIF(?, ''), school_city),
-        ug_college = COALESCE(NULLIF(?, ''), ug_college),
-        ug_degree = COALESCE(NULLIF(?, ''), ug_degree),
-        ug_department = COALESCE(NULLIF(?, ''), ug_department),
-        ug_year = COALESCE(NULLIF(?, ''), ug_year),
-        pg_college = COALESCE(NULLIF(?, ''), pg_college),
-        pg_degree = COALESCE(NULLIF(?, ''), pg_degree),
-        pg_specialization = COALESCE(NULLIF(?, ''), pg_specialization),
-        skills = COALESCE(NULLIF(?, ''), skills),
-        student_id = COALESCE(NULLIF(?, ''), student_id),
-        nomini_name = COALESCE(NULLIF(?, ''), nomini_name),
-        nomini_dob = COALESCE(NULLIF(?, ''), nomini_dob),
-        nomini_relationship = COALESCE(NULLIF(?, ''), nomini_relationship),
-        nomini_aadhar = COALESCE(NULLIF(?, ''), nomini_aadhar),
-        profile_pic = COALESCE(NULLIF(?, ''), profile_pic),
-        social_instagram = COALESCE(NULLIF(?, ''), social_instagram),
-        social_linkedin = COALESCE(NULLIF(?, ''), social_linkedin),
-        social_facebook = COALESCE(NULLIF(?, ''), social_facebook),
-        social_youtube = COALESCE(NULLIF(?, ''), social_youtube),
-        social_twitter = COALESCE(NULLIF(?, ''), social_twitter),
-        social_link = COALESCE(NULLIF(?, ''), social_link),
-        updated_at = datetime('now')
-    WHERE id = ?
-  `).bind(
-    cleanFirstName, cleanFirstName,
-    lastNameProvided, cleanLastName,
-    fatherName, dob, gender, bloodGroup, maritalStatus, nationality,
-    email, phone, whatsapp, contactNumber, contactNumber,
-    bio, occupation, occupation, education, city, state,
-    district, pincode, address,
-    schoolName, schoolClass, board, schoolCity,
-    ugCollege, ugDegree, ugDepartment, ugYear,
-    pgCollege, pgDegree, pgSpecialization,
-    skills, studentId,
-    nominiName, nominiDob, nominiRelationship, nominiAadhar,
-    photoUrl, instagram, linkedin, facebook, youtube, twitter, website,
-    member.id
-  ).run();
-
   try {
-    await db.prepare(`
-      UPDATE civilian_full_kyc
-      SET father_spouse_name = COALESCE(NULLIF(?, ''), father_spouse_name),
-          dob = COALESCE(NULLIF(?, ''), dob),
-          gender = COALESCE(NULLIF(?, ''), gender),
-          blood_group = COALESCE(NULLIF(?, ''), blood_group),
-          marital_status = COALESCE(NULLIF(?, ''), marital_status),
-          nationality = COALESCE(NULLIF(?, ''), nationality),
-          skills = COALESCE(NULLIF(?, ''), skills),
-          profile_photo = COALESCE(NULLIF(?, ''), profile_photo),
-          bio = COALESCE(NULLIF(?, ''), bio),
-          current_address = COALESCE(NULLIF(?, ''), current_address),
-          district = COALESCE(NULLIF(?, ''), district),
-          state = COALESCE(NULLIF(?, ''), state),
-          pincode = COALESCE(NULLIF(?, ''), pincode),
-          instagram_url = COALESCE(NULLIF(?, ''), instagram_url),
-          linkedin_url = COALESCE(NULLIF(?, ''), linkedin_url),
-          facebook_url = COALESCE(NULLIF(?, ''), facebook_url),
-          youtube_url = COALESCE(NULLIF(?, ''), youtube_url),
-          website_portfolio = COALESCE(NULLIF(?, ''), website_portfolio),
-          updated_at = datetime('now')
-      WHERE member_id = ?
-    `).bind(
-      fatherName, dob, gender, bloodGroup, maritalStatus, nationality,
-      skills, photoUrl, bio, address, district, state, pincode,
-      instagram, linkedin, facebook, youtube, website,
-      member.id
-    ).run();
-  } catch (civErr) {
-    console.error("Civilian KYC update warning:", civErr);
-  }
-  } catch (civErr) {
-    console.error("Civilian KYC update warning:", civErr);
-  }
+    const input = await parseRequestBody(request);
+    let member = await getCurrentMember(request, db);
 
-  return json({
-    success: true,
-    statusCode: 200,
-    message: "Profile updated successfully.",
-    data: {
+    if (!member && input.token && /^[a-f0-9]{64}$/.test(input.token)) {
+      const tokenHash = await sha256(input.token);
+      const session = await db.prepare(`
+        SELECT member_id FROM worker_auth_sessions
+        WHERE token_hash = ? AND expires_at > ?
+      `).bind(tokenHash, Math.floor(Date.now() / 1000)).first();
+      if (session && session.member_id) {
+        member = await db.prepare("SELECT * FROM kyc_members WHERE id = ?").bind(session.member_id).first();
+      }
+    }
+
+    if (!member && (input.login_id || input.loginId || input.id || input.member_id)) {
+      const fallbackId = String(input.login_id || input.loginId || input.id || input.member_id).trim();
+      member = await db.prepare(`
+        SELECT * FROM kyc_members
+        WHERE (login_id = ? OR CAST(id AS TEXT) = ?)
+          AND is_deleted = 0
+      `).bind(fallbackId, fallbackId).first();
+    }
+
+    if (!member) {
+      return json({
+        success: false,
+        statusCode: 401,
+        message: "Authentication required.",
+      }, 401, cors);
+    }
+
+    const toStr = (v) => {
+      if (v === null || v === undefined) return "";
+      if (Array.isArray(v)) {
+        return v.map(x => String(x ?? "").trim()).filter(Boolean).join(", ");
+      }
+      if (typeof v === "object") {
+        try { return JSON.stringify(v); } catch { return ""; }
+      }
+      return String(v).trim();
+    };
+
+    const cleanFirstName = toStr(input.first_name || input.name).replace(/\s+org$/i, "").trim();
+    const lastNameProvided = input.last_name !== undefined ? 1 : 0;
+    const rawLastName = toStr(input.last_name);
+    const cleanLastName = rawLastName.toLowerCase() === "org" ? "" : rawLastName;
+
+    const fatherName = toStr(input.father_name || input.father_spouse_name);
+    const dob = toStr(input.dob || input.date_of_birth);
+    const gender = toStr(input.gender);
+    const bloodGroup = toStr(input.blood_group);
+    const maritalStatus = toStr(input.marital_status);
+    const nationality = toStr(input.nationality);
+
+    const email = toStr(input.email);
+    const phone = toStr(input.phone);
+    const whatsapp = toStr(input.whatsapp_number || input.whatsapp);
+    const contactNumber = toStr(input.contact_number || input.secondary_mobile);
+    const bio = toStr(input.bio || input.profile_bio);
+    const occupation = toStr(input.occupation || input.profession || input.professional_role);
+    const education = toStr(input.education || input.educational_qualification || input.highest_qualification);
+    const city = toStr(input.city);
+    const state = toStr(input.state);
+    const district = toStr(input.district);
+    const pincode = toStr(input.pincode);
+    const address = toStr(input.address || input.current_address);
+
+    const schoolName = toStr(input.school_name || input.school_college_name || input.institution_name);
+    const schoolClass = toStr(input.school_class);
+    const board = toStr(input.board);
+    const schoolCity = toStr(input.school_city);
+
+    const ugCollege = toStr(input.ug_college || input.school_college_name || input.institution_name);
+    const ugDegree = toStr(input.ug_degree || input.degree || input.highest_qualification);
+    const ugDepartment = toStr(input.ug_department || input.department);
+    const ugYear = toStr(input.ug_year || input.degree_year || input.year);
+
+    const pgCollege = toStr(input.pg_college);
+    const pgDegree = toStr(input.pg_degree);
+    const pgSpecialization = toStr(input.pg_specialization);
+
+    const skills = toStr(input.skills);
+    const studentId = toStr(input.student_id);
+
+    const nominiName = toStr(input.nomini_name || input.nominee_name);
+    const nominiDob = toStr(input.nomini_dob || input.nominee_dob);
+    const nominiRelationship = toStr(input.nomini_relationship || input.nominee_relationship);
+    const nominiAadhar = toStr(input.nomini_aadhar || input.nominee_aadhaar || input.nominee_aadhar);
+
+    const photoUrl = toStr(input.photo || input.photo_data || input.photo_url || input.photoUrl || input.profile_photo || input.profile_pic || input.profile_image_url);
+    const instagram = toStr(input.social_instagram || input.instagram_url);
+    const linkedin = toStr(input.social_linkedin || input.linkedin_url);
+    const facebook = toStr(input.social_facebook || input.facebook_url);
+    const youtube = toStr(input.social_youtube || input.youtube_url);
+    const twitter = toStr(input.social_twitter);
+    const website = toStr(input.website || input.portfolio_url || input.website_portfolio);
+
+    const bankName = toStr(input.bank_name);
+    const bankBranch = toStr(input.bank_branch_name || input.bank_branch || input.branch);
+    const ifsc = toStr(input.ifsc_code || input.ifsc);
+    const accountNumber = toStr(input.bank_account_number || input.account_number);
+    const coverPhoto = toStr(input.cover_photo || input.banner || input.cover_photo_url);
+    const highestQual = toStr(input.highest_qualification || input.educational_qualification || input.education);
+    const schoolCollege = toStr(input.school_college_name || input.institution_name || input.ug_college || input.school_name);
+    const emergencyContactName = toStr(input.emergency_contact_name);
+    const emergencyContactNumber = toStr(input.emergency_contact_number);
+    const emergencyRelationship = toStr(input.emergency_relationship || input.relationship);
+    const aadhaarNumber = toStr(input.aadhaar_number || input.aadhar || input.aadhar_number);
+    const panNumber = toStr(input.pan_number || input.pan);
+
+    // 1. UPDATE kyc_members (ONLY columns that exist in kyc_members)
+    try {
+      await db.prepare(`
+        UPDATE kyc_members
+        SET first_name = CASE WHEN ? != '' THEN ? ELSE first_name END,
+            last_name = CASE WHEN ? = 1 THEN ? ELSE last_name END,
+            father_name = COALESCE(NULLIF(?, ''), father_name),
+            dob = COALESCE(NULLIF(?, ''), dob),
+            gender = COALESCE(NULLIF(?, ''), gender),
+            blood_group = COALESCE(NULLIF(?, ''), blood_group),
+            marital_status = COALESCE(NULLIF(?, ''), marital_status),
+            nationality = COALESCE(NULLIF(?, ''), nationality),
+            email = COALESCE(NULLIF(?, ''), email),
+            phone = COALESCE(NULLIF(?, ''), phone),
+            whatsapp_number = COALESCE(NULLIF(?, ''), whatsapp_number),
+            contact_number = COALESCE(NULLIF(?, ''), contact_number),
+            bio = COALESCE(NULLIF(?, ''), bio),
+            profile_bio = COALESCE(NULLIF(?, ''), profile_bio),
+            occupation = COALESCE(NULLIF(?, ''), occupation),
+            profession = COALESCE(NULLIF(?, ''), profession),
+            education = COALESCE(NULLIF(?, ''), education),
+            educational_qualification = COALESCE(NULLIF(?, ''), educational_qualification),
+            city = COALESCE(NULLIF(?, ''), city),
+            state = COALESCE(NULLIF(?, ''), state),
+            district = COALESCE(NULLIF(?, ''), district),
+            pincode = COALESCE(NULLIF(?, ''), pincode),
+            address = COALESCE(NULLIF(?, ''), address),
+            school_name = COALESCE(NULLIF(?, ''), school_name),
+            school_class = COALESCE(NULLIF(?, ''), school_class),
+            board = COALESCE(NULLIF(?, ''), board),
+            school_city = COALESCE(NULLIF(?, ''), school_city),
+            ug_college = COALESCE(NULLIF(?, ''), ug_college),
+            ug_degree = COALESCE(NULLIF(?, ''), ug_degree),
+            ug_department = COALESCE(NULLIF(?, ''), ug_department),
+            ug_year = COALESCE(NULLIF(?, ''), ug_year),
+            pg_college = COALESCE(NULLIF(?, ''), pg_college),
+            pg_degree = COALESCE(NULLIF(?, ''), pg_degree),
+            pg_specialization = COALESCE(NULLIF(?, ''), pg_specialization),
+            skills = COALESCE(NULLIF(?, ''), skills),
+            student_id = COALESCE(NULLIF(?, ''), student_id),
+            profile_pic = COALESCE(NULLIF(?, ''), profile_pic),
+            profile_image_url = COALESCE(NULLIF(?, ''), profile_image_url),
+            social_instagram = COALESCE(NULLIF(?, ''), social_instagram),
+            social_linkedin = COALESCE(NULLIF(?, ''), social_linkedin),
+            social_facebook = COALESCE(NULLIF(?, ''), social_facebook),
+            social_youtube = COALESCE(NULLIF(?, ''), social_youtube),
+            social_twitter = COALESCE(NULLIF(?, ''), social_twitter),
+            social_link = COALESCE(NULLIF(?, ''), social_link),
+            bank_name = COALESCE(NULLIF(?, ''), bank_name),
+            account_number = COALESCE(NULLIF(?, ''), account_number),
+            aadhar = COALESCE(NULLIF(?, ''), aadhar),
+            pan_number = COALESCE(NULLIF(?, ''), pan_number),
+            updated_at = datetime('now')
+        WHERE id = ?
+      `).bind(
+        cleanFirstName, cleanFirstName,
+        lastNameProvided, cleanLastName,
+        fatherName, dob, gender, bloodGroup, maritalStatus, nationality,
+        email, phone, whatsapp, contactNumber,
+        bio, bio, occupation, occupation, education, education, city, state,
+        district, pincode, address,
+        schoolName, schoolClass, board, schoolCity,
+        ugCollege, ugDegree, ugDepartment, ugYear,
+        pgCollege, pgDegree, pgSpecialization,
+        skills, studentId,
+        photoUrl, photoUrl, instagram, linkedin, facebook, youtube, twitter, website,
+        bankName, accountNumber, aadhaarNumber, panNumber,
+        member.id
+      ).run();
+    } catch (memErr) {
+      console.error("kyc_members update error:", memErr);
+    }
+
+    // 2. Ensure civilian_full_kyc row exists and update civilian fields
+    try {
+      await db.prepare(`
+        INSERT INTO civilian_full_kyc (member_id)
+        VALUES (?)
+        ON CONFLICT(member_id) DO NOTHING
+      `).bind(member.id).run();
+
+      await db.prepare(`
+        UPDATE civilian_full_kyc
+        SET full_legal_name = COALESCE(NULLIF(?, ''), full_legal_name),
+            father_spouse_name = COALESCE(NULLIF(?, ''), father_spouse_name),
+            dob = COALESCE(NULLIF(?, ''), dob),
+            gender = COALESCE(NULLIF(?, ''), gender),
+            blood_group = COALESCE(NULLIF(?, ''), blood_group),
+            marital_status = COALESCE(NULLIF(?, ''), marital_status),
+            nationality = COALESCE(NULLIF(?, ''), nationality),
+            primary_mobile = COALESCE(NULLIF(?, ''), primary_mobile),
+            secondary_mobile = COALESCE(NULLIF(?, ''), secondary_mobile),
+            primary_email = COALESCE(NULLIF(?, ''), primary_email),
+            whatsapp_number = COALESCE(NULLIF(?, ''), whatsapp_number),
+            current_address = COALESCE(NULLIF(?, ''), current_address),
+            district = COALESCE(NULLIF(?, ''), district),
+            state = COALESCE(NULLIF(?, ''), state),
+            pincode = COALESCE(NULLIF(?, ''), pincode),
+            highest_qualification = COALESCE(NULLIF(?, ''), highest_qualification),
+            school_college_name = COALESCE(NULLIF(?, ''), school_college_name),
+            degree_year = COALESCE(NULLIF(?, ''), degree_year),
+            additional_certifications = COALESCE(NULLIF(?, ''), additional_certifications),
+            language_skills = COALESCE(NULLIF(?, ''), language_skills),
+            awards_recognitions = COALESCE(NULLIF(?, ''), awards_recognitions),
+            publications = COALESCE(NULLIF(?, ''), publications),
+            professional_certifications = COALESCE(NULLIF(?, ''), professional_certifications),
+            key_milestones = COALESCE(NULLIF(?, ''), key_milestones),
+            media_mentions = COALESCE(NULLIF(?, ''), media_mentions),
+            testimonials = COALESCE(NULLIF(?, ''), testimonials),
+            bank_name = COALESCE(NULLIF(?, ''), bank_name),
+            bank_branch_name = COALESCE(NULLIF(?, ''), bank_branch_name),
+            bank_account_number = COALESCE(NULLIF(?, ''), bank_account_number),
+            ifsc_code = COALESCE(NULLIF(?, ''), ifsc_code),
+            nominee_name = COALESCE(NULLIF(?, ''), nominee_name),
+            nominee_relationship = COALESCE(NULLIF(?, ''), nominee_relationship),
+            nominee_dob = COALESCE(NULLIF(?, ''), nominee_dob),
+            nominee_aadhaar = COALESCE(NULLIF(?, ''), nominee_aadhaar),
+            emergency_contact_name = COALESCE(NULLIF(?, ''), emergency_contact_name),
+            emergency_contact_number = COALESCE(NULLIF(?, ''), emergency_contact_number),
+            emergency_relationship = COALESCE(NULLIF(?, ''), emergency_relationship),
+            bio = COALESCE(NULLIF(?, ''), bio),
+            interest_categories = COALESCE(NULLIF(?, ''), interest_categories),
+            skills = COALESCE(NULLIF(?, ''), skills),
+            hobbies = COALESCE(NULLIF(?, ''), hobbies),
+            preferred_industry = COALESCE(NULLIF(?, ''), preferred_industry),
+            profile_photo = COALESCE(NULLIF(?, ''), profile_photo),
+            cover_photo = COALESCE(NULLIF(?, ''), cover_photo),
+            gallery_photos = COALESCE(NULLIF(?, ''), gallery_photos),
+            intro_video = COALESCE(NULLIF(?, ''), intro_video),
+            facebook_url = COALESCE(NULLIF(?, ''), facebook_url),
+            instagram_url = COALESCE(NULLIF(?, ''), instagram_url),
+            linkedin_url = COALESCE(NULLIF(?, ''), linkedin_url),
+            youtube_url = COALESCE(NULLIF(?, ''), youtube_url),
+            website_portfolio = COALESCE(NULLIF(?, ''), website_portfolio),
+            preferred_payout_cycle = COALESCE(NULLIF(?, ''), preferred_payout_cycle),
+            aadhaar_number = COALESCE(NULLIF(?, ''), aadhaar_number),
+            pan_number = COALESCE(NULLIF(?, ''), pan_number),
+            updated_at = datetime('now')
+        WHERE member_id = ?
+      `).bind(
+        [cleanFirstName, cleanLastName].filter(Boolean).join(" "),
+        fatherName, dob, gender, bloodGroup, maritalStatus, nationality,
+        phone, contactNumber, email, whatsapp,
+        address, district, state, pincode,
+        highestQual, schoolCollege, ugYear,
+        toStr(input.additional_certifications), toStr(input.language_skills),
+        toStr(input.awards_recognitions), toStr(input.publications),
+        toStr(input.professional_certifications), toStr(input.key_milestones),
+        toStr(input.media_mentions), toStr(input.testimonials),
+        bankName, bankBranch, accountNumber, ifsc,
+        nominiName, nominiRelationship, nominiDob, nominiAadhar,
+        emergencyContactName, emergencyContactNumber, emergencyRelationship,
+        bio, toStr(input.interest_categories), skills, toStr(input.hobbies), toStr(input.preferred_industry),
+        photoUrl, coverPhoto, toStr(input.gallery_photos), toStr(input.intro_video),
+        facebook, instagram, linkedin, youtube, website,
+        toStr(input.preferred_payout_cycle),
+        aadhaarNumber, panNumber,
+        member.id
+      ).run();
+    } catch (civErr) {
+      console.error("Civilian KYC update warning:", civErr);
+    }
+
+    const updatedMember = (await db.prepare(`SELECT * FROM kyc_members WHERE id = ?`).bind(member.id).first()) || member;
+    const fullKycUpdated = await getCivilianFullKycRecord(member.id, db);
+    const civVals = fullKycUpdated?.values || {};
+    const civFiles = fullKycUpdated?.files || {};
+
+    const updatedProfile = {
+      ...updatedMember,
+      ...civVals,
+      ...civFiles,
       id: member.id,
       login_id: member.login_id,
-    },
-  }, 200, cors);
+      first_name: cleanFirstName || updatedMember.first_name,
+      last_name: cleanLastName || updatedMember.last_name,
+      full_name: [cleanFirstName || updatedMember.first_name, cleanLastName || updatedMember.last_name].filter(Boolean).join(" ") || "Civilian Member",
+      full_legal_name: [cleanFirstName || updatedMember.first_name, cleanLastName || updatedMember.last_name].filter(Boolean).join(" ") || civVals.full_legal_name || "",
+      bank_name: bankName || civVals.bank_name || updatedMember.bank_name || "",
+      bank_branch: bankBranch || civVals.bank_branch_name || "",
+      bank_branch_name: bankBranch || civVals.bank_branch_name || "",
+      branch: bankBranch || civVals.bank_branch_name || "",
+      ifsc_code: ifsc || civVals.ifsc_code || "",
+      ifsc: ifsc || civVals.ifsc_code || "",
+      account_number: accountNumber || civVals.bank_account_number || updatedMember.account_number || "",
+      bank_account_number: accountNumber || civVals.bank_account_number || updatedMember.account_number || "",
+      cover_photo: coverPhoto || civFiles.cover_photo || civVals.cover_photo || "",
+      cover_photo_url: coverPhoto || civFiles.cover_photo || civVals.cover_photo || "",
+      banner: coverPhoto || civFiles.cover_photo || civVals.cover_photo || "",
+      profile_photo: photoUrl || civFiles.profile_photo || civVals.profile_photo || updatedMember.profile_pic || "",
+      profile_pic: photoUrl || civFiles.profile_photo || civVals.profile_photo || updatedMember.profile_pic || "",
+      profile_image_url: photoUrl || civFiles.profile_photo || civVals.profile_photo || updatedMember.profile_pic || "",
+      emergency_contact_name: emergencyContactName || civVals.emergency_contact_name || "",
+      emergency_contact_number: emergencyContactNumber || civVals.emergency_contact_number || "",
+      emergency_relationship: emergencyRelationship || civVals.emergency_relationship || "",
+      skills: skills || civVals.skills || updatedMember.skills || "",
+      interest_categories: toStr(input.interest_categories) || civVals.interest_categories || "",
+      hobbies: toStr(input.hobbies) || civVals.hobbies || "",
+      preferred_industry: toStr(input.preferred_industry) || civVals.preferred_industry || "",
+    };
+
+    return json({
+      success: true,
+      statusCode: 200,
+      message: "Profile updated successfully.",
+      profile: updatedProfile,
+      public_profile: updatedProfile,
+      data: {
+        id: member.id,
+        login_id: member.login_id,
+        profile: updatedProfile,
+        public_profile: updatedProfile,
+      },
+    }, 200, cors);
+  } catch (err) {
+    console.error("handleProfileUpdate error:", err);
+    return json({
+      success: false,
+      statusCode: 500,
+      message: err?.message || "Failed to update profile.",
+      error: err?.message || "Internal server error"
+    }, 500, cors);
+  }
 }
 
 async function handleGetPublicUser(request, db, cors, loginId) {
@@ -3462,13 +3860,33 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     address: fullKyc?.values?.current_address || member.current_address || member.address || "",
     country: "India",
     profession: member.occupation || (isProfessional ? "Professional" : ""),
-    education: fullKyc?.values?.highest_qualification || member.education || "",
-    highest_qualification: fullKyc?.values?.highest_qualification || member.highest_qualification || member.education || "",
-    educational_qualification: fullKyc?.values?.highest_qualification || member.educational_qualification || member.education || "",
-    institution_name: fullKyc?.values?.institution_name || member.institution_name || "",
-    school_college_name: fullKyc?.values?.institution_name || member.school_college_name || "",
-    certifications_achievements: fullKyc?.values?.certifications_achievements || "",
-    additional_certifications: fullKyc?.values?.certifications_achievements || "",
+    education: fullKyc?.values?.highest_qualification || fullKyc?.values?.education_level || fullKyc?.values?.ug_degree || member.education || "",
+    highest_qualification: fullKyc?.values?.highest_qualification || fullKyc?.values?.education_level || fullKyc?.values?.ug_degree || member.highest_qualification || member.education || "",
+    educational_qualification: fullKyc?.values?.highest_qualification || fullKyc?.values?.education_level || fullKyc?.values?.ug_degree || member.educational_qualification || member.education || "",
+    education_level: fullKyc?.values?.education_level || "",
+    school_name: fullKyc?.values?.school_name || member.school_name || "",
+    school_class: fullKyc?.values?.school_class || member.school_class || "",
+    board: fullKyc?.values?.board || member.board || "",
+    school_city: fullKyc?.values?.school_city || member.school_city || "",
+    ug_college: fullKyc?.values?.ug_college || member.ug_college || "",
+    ug_degree: fullKyc?.values?.ug_degree || member.ug_degree || "",
+    ug_department: fullKyc?.values?.ug_department || member.ug_department || "",
+    ug_year: fullKyc?.values?.ug_year || member.ug_year || "",
+    pg_college: fullKyc?.values?.pg_college || member.pg_college || "",
+    pg_degree: fullKyc?.values?.pg_degree || member.pg_degree || "",
+    pg_specialization: fullKyc?.values?.pg_specialization || member.pg_specialization || "",
+    institution_name: fullKyc?.values?.ug_college || fullKyc?.values?.school_name || fullKyc?.values?.institution_name || member.institution_name || "",
+    school_college_name: fullKyc?.values?.ug_college || fullKyc?.values?.school_name || fullKyc?.values?.institution_name || member.school_college_name || "",
+    education_certificate: fullKyc?.files?.education_certificate || "",
+    achievement_certificate: fullKyc?.files?.achievement_certificate || "",
+    certifications_achievements: fullKyc?.values?.certifications_achievements || fullKyc?.values?.professional_certifications || fullKyc?.values?.awards_recognitions || "",
+    additional_certifications: fullKyc?.values?.additional_certifications || fullKyc?.values?.professional_certifications || fullKyc?.values?.certifications_achievements || fullKyc?.values?.awards_recognitions || "",
+    professional_certifications: fullKyc?.values?.professional_certifications || "",
+    awards_recognitions: fullKyc?.values?.awards_recognitions || "",
+    cover_photo: fullKyc?.files?.cover_photo || fullKyc?.values?.cover_photo || member.cover_photo || "",
+    cover_photo_url: fullKyc?.files?.cover_photo || fullKyc?.values?.cover_photo || member.cover_photo || "",
+    banner: fullKyc?.files?.cover_photo || fullKyc?.values?.cover_photo || member.cover_photo || "",
+    banner_url: fullKyc?.files?.cover_photo || fullKyc?.values?.cover_photo || member.cover_photo || "",
     father_spouse_name: fullKyc?.values?.father_spouse_name || member.father_spouse_name || member.father_name || "",
     father_name: fullKyc?.values?.father_spouse_name || member.father_spouse_name || member.father_name || "",
     blood_group: fullKyc?.values?.blood_group || member.blood_group || "",
@@ -3492,7 +3910,9 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     account_number: fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || member.account_number || "",
     ifsc_code: fullKyc?.values?.ifsc_code || member.ifsc_code || "",
     ifsc: fullKyc?.values?.ifsc_code || member.ifsc_code || "",
-    branch: fullKyc?.values?.branch || member.branch || "",
+    branch: fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || member.bank_branch || member.bank_branch_name || "",
+    bank_branch: fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || member.bank_branch || member.bank_branch_name || "",
+    bank_branch_name: fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || member.bank_branch || member.bank_branch_name || "",
     skills: fullKyc?.values?.skills || "",
     social_instagram: fullKyc?.values?.instagram_url || "",
     social_linkedin: fullKyc?.values?.linkedin_url || "",
@@ -3666,22 +4086,67 @@ async function handleGetPublicMembers(request, db, cors, targetId) {
   const memId = String(target.id || "").trim();
 
   const directResult = await db.prepare(`
-    SELECT id, login_id, first_name, last_name, email, phone, membership_type, payment_status, created_at, referral_id, referred_by, profile_pic
-    FROM kyc_members
+    SELECT 
+      k.id, k.login_id, k.first_name, k.last_name, k.email, k.phone, 
+      k.membership_type, k.payment_status, k.created_at, k.referral_id, k.referred_by, k.profile_pic,
+      (
+        SELECT COUNT(1) 
+        FROM kyc_members d 
+        WHERE (
+          (LENGTH(COALESCE(k.referral_id, '')) > 0 AND (d.referred_by = k.referral_id OR UPPER(COALESCE(d.referred_by, '')) = UPPER(k.referral_id)))
+          OR (LENGTH(COALESCE(k.login_id, '')) > 0 AND (d.referred_by = k.login_id OR UPPER(COALESCE(d.referred_by, '')) = UPPER(k.login_id)))
+          OR (d.referred_by = CAST(k.id AS TEXT))
+        )
+        AND COALESCE(d.is_deleted, 0) = 0
+      ) AS direct_members_count,
+      (
+        SELECT COUNT(1)
+        FROM kyc_members ind
+        WHERE ind.referred_by IN (
+          SELECT d2.referral_id FROM kyc_members d2
+          WHERE (
+            (LENGTH(COALESCE(k.referral_id, '')) > 0 AND (d2.referred_by = k.referral_id OR UPPER(COALESCE(d2.referred_by, '')) = UPPER(k.referral_id)))
+            OR (LENGTH(COALESCE(k.login_id, '')) > 0 AND (d2.referred_by = k.login_id OR UPPER(COALESCE(d2.referred_by, '')) = UPPER(k.login_id)))
+            OR (d2.referred_by = CAST(k.id AS TEXT))
+          )
+          AND COALESCE(d2.is_deleted, 0) = 0 AND LENGTH(COALESCE(d2.referral_id, '')) > 0
+          UNION
+          SELECT d2.login_id FROM kyc_members d2
+          WHERE (
+            (LENGTH(COALESCE(k.referral_id, '')) > 0 AND (d2.referred_by = k.referral_id OR UPPER(COALESCE(d2.referred_by, '')) = UPPER(k.referral_id)))
+            OR (LENGTH(COALESCE(k.login_id, '')) > 0 AND (d2.referred_by = k.login_id OR UPPER(COALESCE(d2.referred_by, '')) = UPPER(k.login_id)))
+            OR (d2.referred_by = CAST(k.id AS TEXT))
+          )
+          AND COALESCE(d2.is_deleted, 0) = 0 AND LENGTH(COALESCE(d2.login_id, '')) > 0
+        )
+        AND COALESCE(ind.is_deleted, 0) = 0
+      ) AS indirect_members_count
+    FROM kyc_members k
     WHERE (
-      (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
-      OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
-      OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
-    ) AND COALESCE(is_deleted, 0) = 0
-    ORDER BY id DESC
+      (LENGTH(?) > 0 AND UPPER(COALESCE(k.referred_by, '')) = UPPER(?))
+      OR (LENGTH(?) > 0 AND UPPER(COALESCE(k.referred_by, '')) = UPPER(?))
+      OR (LENGTH(?) > 0 AND COALESCE(k.referred_by, '') = ?)
+    ) AND COALESCE(k.is_deleted, 0) = 0
+    ORDER BY k.id DESC
   `).bind(refId, refId, logId, logId, memId, memId).all();
 
   const directList = (directResult.results || []).map(m => {
     const isPaid = ["approved", "paid", "success", "successful", "completed"].includes(String(m.payment_status || "").toLowerCase());
+    const firstName = (m.first_name || "").replace(/\s+org$/i, "").trim();
+    const lastName = (m.last_name || "").trim().toLowerCase() === "org" ? "" : (m.last_name || "").trim();
+    const fullName = [firstName, lastName].filter(Boolean).join(" ") || "Member";
     return {
       ...m,
-      full_name: [m.first_name, m.last_name].filter(Boolean).join(" ") || "Member",
-      name: [m.first_name, m.last_name].filter(Boolean).join(" ") || "Member",
+      first_name: firstName,
+      last_name: lastName,
+      full_name: fullName,
+      name: fullName,
+      email: m.email || "",
+      phone: m.phone || "",
+      direct_members_count: Number(m.direct_members_count || 0),
+      indirect_members_count: Number(m.indirect_members_count || 0),
+      direct_count: Number(m.direct_members_count || 0),
+      indirect_count: Number(m.indirect_members_count || 0),
       paid: isPaid,
       is_paid: isPaid,
       isPaid: isPaid,
@@ -3689,12 +4154,56 @@ async function handleGetPublicMembers(request, db, cors, targetId) {
     };
   });
 
+  // Calculate current member's indirect counts
+  let indirectPaid = 0;
+  let indirectUnpaid = 0;
+  let indirectTotal = 0;
+  try {
+    const indResult = await db.prepare(`
+      SELECT id, payment_status FROM kyc_members
+      WHERE (
+        UPPER(COALESCE(referred_by, '')) IN (
+          SELECT UPPER(referral_id) FROM kyc_members
+          WHERE (
+            (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+          ) AND COALESCE(is_deleted, 0) = 0 AND referral_id IS NOT NULL AND referral_id != ''
+        )
+        OR UPPER(COALESCE(referred_by, '')) IN (
+          SELECT UPPER(login_id) FROM kyc_members
+          WHERE (
+            (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND UPPER(COALESCE(referred_by, '')) = UPPER(?))
+            OR (LENGTH(?) > 0 AND COALESCE(referred_by, '') = ?)
+          ) AND COALESCE(is_deleted, 0) = 0 AND login_id IS NOT NULL AND login_id != ''
+        )
+      ) AND COALESCE(is_deleted, 0) = 0
+    `).bind(refId, refId, logId, logId, memId, memId, refId, refId, logId, logId, memId, memId).all();
+
+    const indList = indResult.results || [];
+    indirectTotal = indList.length;
+    indirectPaid = indList.filter(m =>
+      ["approved", "paid", "success", "successful", "completed"].includes(String(m.payment_status || "").toLowerCase())
+    ).length;
+    indirectUnpaid = indirectTotal - indirectPaid;
+  } catch (err) {}
+
+  const directPaid = directList.filter(m => m.paid).length;
+  const directUnpaid = directList.length - directPaid;
+
   const responseData = {
     login_id: target.login_id,
+    referral_id: target.referral_id || "",
     direct_members: directList,
     direct_total: directList.length,
-    indirect_paid: 0,
-    indirect_unpaid: 0,
+    direct_paid: directPaid,
+    direct_unpaid: directUnpaid,
+    indirect_paid: indirectPaid,
+    indirect_unpaid: indirectUnpaid,
+    indirect_total: indirectTotal,
+    total_network: directList.length + indirectTotal,
+    tns_points: directPaid * 100,
   };
 
   return json({
@@ -3753,6 +4262,52 @@ async function handleProfilePhotoUpload(request, db, cors) {
     photoUrl: photoUrl,
     profile_pic: photoUrl,
     profile_photo: photoUrl,
+  }, 200, cors);
+}
+
+async function handleCoverPhotoUpload(request, db, cors) {
+  const member = await getCurrentMember(request, db);
+  if (!member) {
+    return json({
+      success: false,
+      message: "Authentication required.",
+    }, 401, cors);
+  }
+
+  const input = await parseRequestBody(request);
+  const bannerUrl = String(input.photo || input.photo_data || input.photo_url || input.photoUrl || input.cover_photo || input.banner || input.cover || "").trim();
+
+  if (bannerUrl) {
+    try {
+      await db.prepare(`
+        UPDATE kyc_members
+        SET cover_photo = ?,
+            updated_at = datetime('now')
+        WHERE id = ?
+      `).bind(bannerUrl, member.id).run();
+    } catch (e) {}
+
+    try {
+      await db.prepare(`
+        UPDATE civilian_full_kyc
+        SET cover_photo = ?,
+            updated_at = datetime('now')
+        WHERE member_id = ?
+      `).bind(bannerUrl, member.id).run();
+    } catch (e) {}
+  }
+
+  return json({
+    success: true,
+    statusCode: 200,
+    message: "Banner uploaded successfully.",
+    data: {
+      cover_photo: bannerUrl,
+      banner: bannerUrl,
+      photo_url: bannerUrl,
+    },
+    cover_photo: bannerUrl,
+    banner: bannerUrl,
   }, 200, cors);
 }
 
@@ -3980,8 +4535,8 @@ async function handleGetDashboard(request, db, cors) {
 
 async function handleGetAdminUser(request, db, cors, id) {
   const member = await db.prepare(`
-    SELECT * FROM kyc_members WHERE id = ?
-  `).bind(id).first();
+    SELECT * FROM kyc_members WHERE id = ? OR login_id = ? OR referral_id = ?
+  `).bind(id, id, id).first();
 
   if (!member) {
     return json({
@@ -3991,7 +4546,37 @@ async function handleGetAdminUser(request, db, cors, id) {
     }, 404, cors);
   }
 
-  const civilianKyc = await getCivilianFullKycRecord(member.id, db);
+  const civRecord = await getCivilianFullKycRecord(member.id, db);
+  const civRow = (await db.prepare(`
+    SELECT * FROM civilian_full_kyc WHERE member_id = ?
+  `).bind(member.id).first()) || {};
+
+  const civilianKyc = {
+    ...civRow,
+    ...(civRecord.values || {}),
+    ...(civRecord.files || {}),
+    dob: civRecord.values?.dob || civRecord.values?.date_of_birth || member.dob || member.date_of_birth || "",
+    date_of_birth: civRecord.values?.dob || civRecord.values?.date_of_birth || member.dob || member.date_of_birth || "",
+    father_spouse_name: civRecord.values?.father_spouse_name || civRecord.values?.father_name || member.father_spouse_name || member.father_name || "",
+    school_college_name: civRecord.values?.school_college_name || civRecord.values?.school_name || member.school_college_name || member.school_name || member.ug_college || member.pg_college || member.institution_name || "",
+    school_name: civRecord.values?.school_name || civRecord.values?.school_college_name || member.school_name || member.school_college_name || "",
+    highest_qualification: civRecord.values?.highest_qualification || member.highest_qualification || member.educational_qualification || member.education || "",
+    degree_year: civRecord.values?.degree_year || civRecord.values?.ug_year || member.degree_year || member.ug_year || "",
+    bank_branch_name: civRecord.values?.bank_branch_name || civRecord.values?.branch || member.bank_branch_name || member.branch || "",
+    branch: civRecord.values?.bank_branch_name || civRecord.values?.branch || member.bank_branch_name || member.branch || "",
+    emergency_contact_name: civRecord.values?.emergency_contact_name || member.emergency_contact_name || "",
+    emergency_contact_number: civRecord.values?.emergency_contact_number || member.emergency_contact_number || "",
+    emergency_relationship: civRecord.values?.emergency_relationship || member.emergency_relationship || "",
+    nominee_name: civRecord.values?.nominee_name || member.nominee_name || member.nomini_name || "",
+    nominee_relationship: civRecord.values?.nominee_relationship || member.nominee_relationship || "",
+    status: civRow.status || civRecord.status || "draft",
+    selected_plan: civRow.selected_plan || civRecord.selectedPlan || null,
+    submitted_at: civRow.submitted_at || null,
+    approved_at: civRow.approved_at || null,
+    values: civRecord.values,
+    files: civRecord.files,
+    sections: civRecord.sections,
+  };
   const ext = (await db.prepare(`
     SELECT * FROM kyc_members_ext_1 WHERE member_id = ?
   `).bind(member.id).first()) || {};
@@ -4074,7 +4659,9 @@ async function handleGetAdminUser(request, db, cors, id) {
     ["approved", "paid", "success", "successful", "completed"].includes(String(commPayment?.payment_status || "").toLowerCase())
   );
   const planAmount = commPayment?.amount || civilianKyc?.selectedPlan || ext.amount || (member.selected_plan ? Number(member.selected_plan) : (hasPayment ? 299 : null));
-  const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "Member";
+  const fn = (member.first_name || "").replace(/\s+org$/i, "").trim();
+  const ln = (member.last_name || "").trim().toLowerCase() === "org" ? "" : (member.last_name || "").trim();
+  const fullName = [fn, ln].filter(Boolean).join(" ") || "Member";
 
   const payment = {
     amount: hasPayment ? Number(commPayment?.amount || ext.amount || planAmount || 299) : (commPayment?.amount || ext.amount || null),
@@ -4084,24 +4671,39 @@ async function handleGetAdminUser(request, db, cors, id) {
     subscription_year: ext.subscription_year || "2026",
     payment_proof: ext.payment_proof || "",
     account_holder: ext.account_holder || fullName,
-    bank_name: ext.bank_name || "",
-    account_number: ext.account_number || "",
-    ifsc: ext.ifsc || "",
+    bank_name: ext.bank_name || civilianKyc?.bank_name || "",
+    account_number: ext.account_number || civilianKyc?.account_number || "",
+    ifsc: ext.ifsc || civilianKyc?.ifsc_code || "",
     paid_at: hasPayment ? (commPayment?.created_at || member.updated_at || member.created_at) : null,
   };
 
   const rawMember = {
     ...member,
     ...ext,
+    ...(civRecord.values || {}),
     id: member.id,
     login_id: member.login_id,
-    first_name: member.first_name,
-    last_name: member.last_name,
+    first_name: fn,
+    last_name: ln,
     full_name: fullName,
     fullname: fullName,
     name: fullName,
     email: member.email,
     phone: member.phone,
+    dob: civRecord.values?.dob || civRecord.values?.date_of_birth || member.dob || member.date_of_birth || "",
+    date_of_birth: civRecord.values?.dob || civRecord.values?.date_of_birth || member.dob || member.date_of_birth || "",
+    father_spouse_name: civRecord.values?.father_spouse_name || civRecord.values?.father_name || member.father_spouse_name || member.father_name || "",
+    school_college_name: civRecord.values?.school_college_name || civRecord.values?.school_name || member.school_college_name || member.school_name || member.ug_college || member.pg_college || member.institution_name || "",
+    school_name: civRecord.values?.school_name || civRecord.values?.school_college_name || member.school_name || member.school_college_name || "",
+    highest_qualification: civRecord.values?.highest_qualification || member.highest_qualification || member.educational_qualification || member.education || "",
+    degree_year: civRecord.values?.degree_year || civRecord.values?.ug_year || member.degree_year || member.ug_year || "",
+    bank_branch_name: civRecord.values?.bank_branch_name || civRecord.values?.branch || member.bank_branch_name || member.branch || "",
+    branch: civRecord.values?.bank_branch_name || civRecord.values?.branch || member.bank_branch_name || member.branch || "",
+    emergency_contact_name: civRecord.values?.emergency_contact_name || member.emergency_contact_name || "",
+    emergency_contact_number: civRecord.values?.emergency_contact_number || member.emergency_contact_number || "",
+    emergency_relationship: civRecord.values?.emergency_relationship || member.emergency_relationship || "",
+    nominee_name: civRecord.values?.nominee_name || member.nominee_name || member.nomini_name || "",
+    nominee_relationship: civRecord.values?.nominee_relationship || member.nominee_relationship || "",
     membership_type: member.membership_type || "Civilian Member",
     payment_status: member.payment_status || "pending",
     selected_plan: String(planAmount),
@@ -4113,8 +4715,8 @@ async function handleGetAdminUser(request, db, cors, id) {
     referrer_id: referrer ? referrer.login_id || referrer.referral_id : member.referred_by,
     referrer_phone: referrer ? referrer.phone : null,
     direct_members_count: directCount,
-    indirect_members_count: 0,
-    descendant_members_count: directCount,
+    indirect_members_count: indirectCount,
+    descendant_members_count: totalCount,
   };
 
   return json({
@@ -4131,7 +4733,7 @@ async function handleGetAdminUser(request, db, cors, id) {
       referrer,
       stats: {
         direct_members_count: directCount,
-        indirect_members_count: 0,
+        indirect_members_count: indirectCount,
       },
     },
     member: rawMember,
@@ -4150,24 +4752,99 @@ async function handleAdminEditUser(request, db, cors, id) {
       "SELECT * FROM kyc_members WHERE id = ? OR login_id = ? LIMIT 1"
     ).bind(id, id).first();
     if (!member) return json({ success: false, message: "Member not found." }, 404, cors);
+
     const editableCols = [
-      "first_name", "last_name", "email", "phone", "occupation", "education",
-      "city", "district", "state", "pincode", "country", "referral_id", "referred_by",
-      "payment_status", "membership_type", "network_level", "royalty_slab_category", "bio"
+      "first_name", "last_name", "email", "phone", "whatsapp_number", "contact_number",
+      "occupation", "profession", "education", "educational_qualification",
+      "city", "district", "state", "pincode", "country", "address",
+      "referral_id", "referred_by", "payment_status", "membership_type", "bio",
+      "father_name", "dob", "gender", "marital_status", "nationality", "blood_group",
+      "aadhar", "pan_number", "bank_name", "account_number",
+      "school_name", "ug_college", "ug_degree", "ug_year", "skills"
     ];
     const updates = [];
     const params = [];
     for (const col of editableCols) {
       if (Object.prototype.hasOwnProperty.call(input, col) && input[col] !== undefined) {
         updates.push(`${col} = ?`);
-        params.push(input[col] === "" ? null : String(input[col]).trim());
+        const v = input[col];
+        params.push(v === "" ? null : (Array.isArray(v) ? v.join(", ") : String(v).trim()));
       }
     }
     if (updates.length > 0) {
       updates.push("updated_at = datetime('now')");
       params.push(member.id);
-      await db.prepare(`UPDATE kyc_members SET ${updates.join(", ")} WHERE id = ?`).bind(...params).run();
+      try {
+        await db.prepare(`UPDATE kyc_members SET ${updates.join(", ")} WHERE id = ?`).bind(...params).run();
+      } catch (kmErr) {
+        console.error("Admin kyc_members update warning:", kmErr);
+      }
     }
+
+    // Ext_1 fields (for royalty/network)
+    if (input.network_level !== undefined || input.royalty_slab_category !== undefined) {
+      try {
+        await db.prepare(`
+          INSERT INTO kyc_members_ext_1 (member_id, network_level, royalty_slab_category, updated_at)
+          VALUES (?, ?, ?, datetime('now'))
+          ON CONFLICT(member_id) DO UPDATE SET
+            network_level = COALESCE(excluded.network_level, network_level),
+            royalty_slab_category = COALESCE(excluded.royalty_slab_category, royalty_slab_category),
+            updated_at = datetime('now')
+        `).bind(
+          member.id,
+          input.network_level !== undefined ? String(input.network_level) : null,
+          input.royalty_slab_category !== undefined ? String(input.royalty_slab_category) : null
+        ).run();
+      } catch (extErr) {
+        console.error("Admin kyc_members_ext_1 update warning:", extErr);
+      }
+    }
+
+    // Civilian KYC sync if civilian fields provided
+    const civBranch = input.bank_branch_name || input.bank_branch || input.branch || "";
+    const civIfsc = input.ifsc_code || input.ifsc || "";
+    const civEmergencyName = input.emergency_contact_name || "";
+    const civEmergencyPhone = input.emergency_contact_number || "";
+    const civEmergencyRel = input.emergency_relationship || input.relationship || "";
+    const civNomineeName = input.nominee_name || input.nomini_name || "";
+    const civNomineeRel = input.nominee_relationship || input.nomini_relationship || "";
+    const civNomineeDob = input.nominee_dob || input.nomini_dob || "";
+    const civNomineeAadhar = input.nominee_aadhaar || input.nominee_aadhar || input.nomini_aadhar || "";
+    const civCoverPhoto = input.cover_photo || input.banner || "";
+
+    if (civBranch || civIfsc || civEmergencyName || civEmergencyPhone || civEmergencyRel || civNomineeName || civCoverPhoto) {
+      try {
+        await db.prepare(`
+          INSERT INTO civilian_full_kyc (member_id)
+          VALUES (?)
+          ON CONFLICT(member_id) DO NOTHING
+        `).bind(member.id).run();
+
+        await db.prepare(`
+          UPDATE civilian_full_kyc
+          SET bank_branch_name = COALESCE(NULLIF(?, ''), bank_branch_name),
+              ifsc_code = COALESCE(NULLIF(?, ''), ifsc_code),
+              emergency_contact_name = COALESCE(NULLIF(?, ''), emergency_contact_name),
+              emergency_contact_number = COALESCE(NULLIF(?, ''), emergency_contact_number),
+              emergency_relationship = COALESCE(NULLIF(?, ''), emergency_relationship),
+              nominee_name = COALESCE(NULLIF(?, ''), nominee_name),
+              nominee_relationship = COALESCE(NULLIF(?, ''), nominee_relationship),
+              nominee_dob = COALESCE(NULLIF(?, ''), nominee_dob),
+              nominee_aadhaar = COALESCE(NULLIF(?, ''), nominee_aadhaar),
+              cover_photo = COALESCE(NULLIF(?, ''), cover_photo),
+              updated_at = datetime('now')
+          WHERE member_id = ?
+        `).bind(
+          civBranch, civIfsc, civEmergencyName, civEmergencyPhone, civEmergencyRel,
+          civNomineeName, civNomineeRel, civNomineeDob, civNomineeAadhar,
+          civCoverPhoto, member.id
+        ).run();
+      } catch (civErr) {
+        console.error("Admin civilian_full_kyc update warning:", civErr);
+      }
+    }
+
     const updated = await db.prepare("SELECT * FROM kyc_members WHERE id = ? LIMIT 1").bind(member.id).first();
     return json({
       success: true,
@@ -4534,11 +5211,51 @@ export default {
 
       if (path === "/api/me" && method === "GET") {
         const member = await getCurrentMember(request, db);
+        if (!member) {
+          return json({
+            login_id: null,
+            authenticated: false,
+            member: null,
+          }, 200, cors);
+        }
+
+        const civRecord = await getCivilianFullKycRecord(member.id, db);
+        const fullMember = (await db.prepare(`
+          SELECT * FROM kyc_members WHERE id = ?
+        `).bind(member.id).first()) || member;
+
+        const combinedMember = {
+          ...safeMember(fullMember),
+          ...fullMember,
+          ...(civRecord.values || {}),
+          ...(civRecord.files || {}),
+          school_college_name: civRecord.values?.school_college_name || civRecord.values?.school_name || fullMember.school_college_name || fullMember.school_name || fullMember.ug_college || fullMember.pg_college || fullMember.institution_name || "",
+          school_name: civRecord.values?.school_name || civRecord.values?.school_college_name || fullMember.school_name || fullMember.school_college_name || "",
+          dob: civRecord.values?.dob || civRecord.values?.date_of_birth || fullMember.dob || fullMember.date_of_birth || "",
+          date_of_birth: civRecord.values?.dob || civRecord.values?.date_of_birth || fullMember.dob || fullMember.date_of_birth || "",
+          father_spouse_name: civRecord.values?.father_spouse_name || civRecord.values?.father_name || fullMember.father_spouse_name || fullMember.father_name || "",
+          branch: civRecord.values?.branch || civRecord.values?.bank_branch_name || fullMember.branch || fullMember.bank_branch_name || "",
+          bank_branch_name: civRecord.values?.branch || civRecord.values?.bank_branch_name || fullMember.branch || fullMember.bank_branch_name || "",
+          highest_qualification: civRecord.values?.highest_qualification || fullMember.highest_qualification || fullMember.education || "",
+          emergency_contact_name: civRecord.values?.emergency_contact_name || fullMember.emergency_contact_name || "",
+          emergency_contact_number: civRecord.values?.emergency_contact_number || fullMember.emergency_contact_number || "",
+          emergency_relationship: civRecord.values?.emergency_relationship || fullMember.emergency_relationship || "",
+          nominee_name: civRecord.values?.nominee_name || fullMember.nominee_name || fullMember.nomini_name || "",
+          nominee_relationship: civRecord.values?.nominee_relationship || fullMember.nominee_relationship || "",
+          profile_photo: civRecord.files?.profile_photo || fullMember.profile_pic || "",
+          profile_pic: civRecord.files?.profile_photo || fullMember.profile_pic || "",
+          cover_photo: civRecord.files?.cover_photo || fullMember.cover_photo || "",
+          banner: civRecord.files?.cover_photo || fullMember.cover_photo || "",
+        };
+
+        delete combinedMember.password;
+        delete combinedMember.password_hash;
 
         return json({
           login_id: member?.login_id || null,
-          authenticated: !!member,
-          member: safeMember(member),
+          authenticated: true,
+          member: combinedMember,
+          user: combinedMember,
         }, 200, cors);
       }
 
@@ -4976,6 +5693,10 @@ async function handleRazorpayGetKey(request, env, cors) {
         return await handleProfilePhotoUpload(request, db, cors);
       }
 
+      if ((path === "/profile/upload-banner" || path === "/api/profile/upload-banner" || path === "/profile/upload-cover" || path === "/api/profile/upload-cover") && method === "POST") {
+        return await handleCoverPhotoUpload(request, db, cors);
+      }
+
       if ((path.startsWith("/uploads/") || path.startsWith("/api/uploads/")) && method === "GET") {
         return await handleServeUpload(request, db, cors, path);
       }
@@ -5110,8 +5831,21 @@ async function handleRazorpayGetKey(request, env, cors) {
             COALESCE(cp.payment_method, ext.payment_method, '') AS payment_method,
             COALESCE(cp.transaction_id, ext.transaction_id, '') AS transaction_id,
             COALESCE(ext.payment_proof, '') AS payment_proof,
-            (SELECT COUNT(1) FROM kyc_members d WHERE (d.referred_by = k.referral_id OR d.referred_by = k.login_id OR d.referred_by = CAST(k.id AS TEXT) OR UPPER(COALESCE(d.referred_by, '')) = UPPER(COALESCE(k.referral_id, '')) OR UPPER(COALESCE(d.referred_by, '')) = UPPER(COALESCE(k.login_id, ''))) AND COALESCE(d.is_deleted, 0) = 0) AS direct_members_count,
-            0 AS indirect_members_count
+            (SELECT COUNT(1) FROM kyc_members d WHERE ((LENGTH(COALESCE(k.referral_id, '')) > 0 AND (d.referred_by = k.referral_id OR UPPER(COALESCE(d.referred_by, '')) = UPPER(k.referral_id))) OR (LENGTH(COALESCE(k.login_id, '')) > 0 AND (d.referred_by = k.login_id OR UPPER(COALESCE(d.referred_by, '')) = UPPER(k.login_id))) OR d.referred_by = CAST(k.id AS TEXT)) AND COALESCE(d.is_deleted, 0) = 0) AS direct_members_count,
+            (
+              SELECT COUNT(1)
+              FROM kyc_members ind
+              WHERE ind.referred_by IN (
+                SELECT d2.referral_id FROM kyc_members d2
+                WHERE ((LENGTH(COALESCE(k.referral_id, '')) > 0 AND (d2.referred_by = k.referral_id OR UPPER(COALESCE(d2.referred_by, '')) = UPPER(k.referral_id))) OR (LENGTH(COALESCE(k.login_id, '')) > 0 AND (d2.referred_by = k.login_id OR UPPER(COALESCE(d2.referred_by, '')) = UPPER(k.login_id))) OR d2.referred_by = CAST(k.id AS TEXT))
+                AND COALESCE(d2.is_deleted, 0) = 0 AND LENGTH(COALESCE(d2.referral_id, '')) > 0
+                UNION
+                SELECT d2.login_id FROM kyc_members d2
+                WHERE ((LENGTH(COALESCE(k.referral_id, '')) > 0 AND (d2.referred_by = k.referral_id OR UPPER(COALESCE(d2.referred_by, '')) = UPPER(k.referral_id))) OR (LENGTH(COALESCE(k.login_id, '')) > 0 AND (d2.referred_by = k.login_id OR UPPER(COALESCE(d2.referred_by, '')) = UPPER(k.login_id))) OR d2.referred_by = CAST(k.id AS TEXT))
+                AND COALESCE(d2.is_deleted, 0) = 0 AND LENGTH(COALESCE(d2.login_id, '')) > 0
+              )
+              AND COALESCE(ind.is_deleted, 0) = 0
+            ) AS indirect_members_count
           FROM kyc_members k
           LEFT JOIN kyc_members_ext_1 ext ON k.id = ext.member_id
           LEFT JOIN civilian_full_kyc civ ON k.id = civ.member_id
@@ -5123,13 +5857,24 @@ async function handleRazorpayGetKey(request, env, cors) {
           ORDER BY k.id DESC
         `).all();
 
+        const cleanedUsers = (users.results || []).map(u => {
+          const fn = (u.first_name || "").replace(/\s+org$/i, "").trim();
+          const ln = (u.last_name || "").trim().toLowerCase() === "org" ? "" : (u.last_name || "").trim();
+          return {
+            ...u,
+            first_name: fn,
+            last_name: ln,
+            full_name: [fn, ln].filter(Boolean).join(" ") || "Member",
+          };
+        });
+
         return json({
           success: true,
-          users: users.results || [],
+          users: cleanedUsers,
           data: {
-            users: users.results || [],
-            members: users.results || [],
-            total: (users.results || []).length,
+            users: cleanedUsers,
+            members: cleanedUsers,
+            total: cleanedUsers.length,
           },
         }, 200, cors);
       }

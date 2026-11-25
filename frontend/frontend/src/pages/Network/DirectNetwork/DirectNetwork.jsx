@@ -1510,6 +1510,22 @@ export default function DirectNetwork() {
                             <span>Login ID</span>
                             <code>{loginId || "—"}</code>
                           </div>
+                          {networkMember.email && (
+                            <div className="inmba-tree-detail-item">
+                              <span>Gmail</span>
+                              <a href={`mailto:${networkMember.email}`} className="inmba-tree-contact-link">
+                                <i className="fas fa-envelope" aria-hidden="true"></i> {networkMember.email}
+                              </a>
+                            </div>
+                          )}
+                          {networkMember.phone && (
+                            <div className="inmba-tree-detail-item">
+                              <span>Phone</span>
+                              <a href={`tel:${networkMember.phone}`} className="inmba-tree-contact-link">
+                                <i className="fas fa-phone" aria-hidden="true"></i> {networkMember.phone}
+                              </a>
+                            </div>
+                          )}
                           {networkMember.referral_id && (
                             <div className="inmba-tree-detail-item">
                               <span>Referral Code</span>
@@ -1519,6 +1535,24 @@ export default function DirectNetwork() {
                           <div className="inmba-tree-detail-item">
                             <span>Sponsor</span>
                             <strong>You ({networkData.referral_id || memberLoginId})</strong>
+                          </div>
+
+                          {/* Downline counts under this member */}
+                          <div className="inmba-tree-downline-counts">
+                            <div className="inmba-tree-downline-pill direct">
+                              <i className="fas fa-user-group" aria-hidden="true"></i>
+                              <div>
+                                <strong>{Number(networkMember.direct_members_count ?? networkMember.direct_count ?? 0)}</strong>
+                                <small>Direct</small>
+                              </div>
+                            </div>
+                            <div className="inmba-tree-downline-pill indirect">
+                              <i className="fas fa-sitemap" aria-hidden="true"></i>
+                              <div>
+                                <strong>{Number(networkMember.indirect_members_count ?? networkMember.indirect_count ?? 0)}</strong>
+                                <small>Indirect</small>
+                              </div>
+                            </div>
                           </div>
                         </div>
 
@@ -1573,7 +1607,9 @@ export default function DirectNetwork() {
                     <tr>
                       <th>Member</th>
                       <th>Login ID</th>
+                      <th>Contact (Gmail &amp; Phone)</th>
                       <th>Membership</th>
+                      <th>Downline Under Them</th>
                       <th>Payment</th>
                       <th>Profile</th>
                     </tr>
@@ -1599,9 +1635,34 @@ export default function DirectNetwork() {
                             <code>{loginId || "Not available"}</code>
                           </td>
                           <td>
+                            <div className="inmba-network-contact-cell">
+                              {networkMember.email && (
+                                <a href={`mailto:${networkMember.email}`} className="inmba-network-email-link">
+                                  <i className="fas fa-envelope" aria-hidden="true"></i> {networkMember.email}
+                                </a>
+                              )}
+                              {networkMember.phone && (
+                                <span className="inmba-network-phone-span">
+                                  <i className="fas fa-phone" aria-hidden="true"></i> {networkMember.phone}
+                                </span>
+                              )}
+                              {!networkMember.email && !networkMember.phone && "—"}
+                            </div>
+                          </td>
+                          <td>
                             <span className="inmba-network-membership-badge">
                               {membershipType}
                             </span>
+                          </td>
+                          <td>
+                            <div className="inmba-network-downline-cell">
+                              <span className="inmba-downline-badge direct" title="Direct members under this member">
+                                <i className="fas fa-user-group" aria-hidden="true"></i> Direct: {Number(networkMember.direct_members_count ?? networkMember.direct_count ?? 0)}
+                              </span>
+                              <span className="inmba-downline-badge indirect" title="Indirect members under this member">
+                                <i className="fas fa-sitemap" aria-hidden="true"></i> Indirect: {Number(networkMember.indirect_members_count ?? networkMember.indirect_count ?? 0)}
+                              </span>
+                            </div>
                           </td>
                           <td>
                             <span

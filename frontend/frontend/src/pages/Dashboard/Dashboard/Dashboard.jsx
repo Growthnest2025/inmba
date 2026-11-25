@@ -2647,7 +2647,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {referralId ? (
+          {referralId && isApproved ? (
             <>
               <div className="member-dashboard-info-list">
                 <div className="member-dashboard-info-row">
@@ -2722,16 +2722,27 @@ export default function Dashboard() {
 
               <div>
                 <h3>
-                  Referral Code Not Available
+                  {!isApproved ? "Referral Link & QR Locked" : "Referral Code Not Available"}
                 </h3>
 
                 <p>
-                  Complete the required membership process to access
-                  your referral information.
+                  {!isApproved
+                    ? "Referral link and QR code will generate after payment is verified and approved by admin."
+                    : "Complete the required membership process to access your referral information."}
                 </p>
               </div>
 
-              {civilianMember ? (
+              {!hasCivilianPayment && civilianMember ? (
+                <button
+                  type="button"
+                  className="member-dashboard-primary-button"
+                  onClick={() =>
+                    navigate("/civilian-payment")
+                  }
+                >
+                  Complete Payment
+                </button>
+              ) : civilianMember ? (
                 <button
                   type="button"
                   className="member-dashboard-primary-button"
@@ -2740,15 +2751,13 @@ export default function Dashboard() {
                       "/civilian-kyc",
                       {
                         state: {
-                          selectedPlan:
-                            civilianSelectedPlan ||
-                            "",
+                          fromDashboard: true,
                         },
                       }
                     )
                   }
                 >
-                  Complete Full KYC
+                  Open Civilian KYC
                 </button>
               ) : (
                 <Link
