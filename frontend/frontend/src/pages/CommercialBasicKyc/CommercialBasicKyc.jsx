@@ -494,29 +494,29 @@ if (!newLoginId) {
         }
 
         try {
-          if (form.business_name) {
-            localStorage.setItem("inmba_commercial_business_name", form.business_name);
-            sessionStorage.setItem("inmba_commercial_business_name", form.business_name);
+          if (formData.business_name) {
+            localStorage.setItem("inmba_commercial_business_name", formData.business_name);
+            sessionStorage.setItem("inmba_commercial_business_name", formData.business_name);
           }
-          if (form.business_type || form.business_category) {
-            localStorage.setItem("inmba_commercial_business_type", form.business_type || form.business_category);
-            sessionStorage.setItem("inmba_commercial_business_type", form.business_type || form.business_category);
+          if (formData.business_type || formData.business_category) {
+            localStorage.setItem("inmba_commercial_business_type", formData.business_type || formData.business_category);
+            sessionStorage.setItem("inmba_commercial_business_type", formData.business_type || formData.business_category);
           }
-          if (form.full_name) {
-            localStorage.setItem("inmba_commercial_owner_name", form.full_name);
-            sessionStorage.setItem("inmba_commercial_owner_name", form.full_name);
+          if (formData.full_name) {
+            localStorage.setItem("inmba_commercial_owner_name", formData.full_name);
+            sessionStorage.setItem("inmba_commercial_owner_name", formData.full_name);
           }
-          if (form.city) {
-            localStorage.setItem("inmba_commercial_city", form.city);
-            sessionStorage.setItem("inmba_commercial_city", form.city);
+          if (formData.city) {
+            localStorage.setItem("inmba_commercial_city", formData.city);
+            sessionStorage.setItem("inmba_commercial_city", formData.city);
           }
-          if (form.mobile) {
-            localStorage.setItem("inmba_commercial_mobile", form.mobile);
-            sessionStorage.setItem("inmba_commercial_mobile", form.mobile);
+          if (formData.mobile) {
+            localStorage.setItem("inmba_commercial_mobile", formData.mobile);
+            sessionStorage.setItem("inmba_commercial_mobile", formData.mobile);
           }
-          if (form.email) {
-            localStorage.setItem("inmba_commercial_email", form.email);
-            sessionStorage.setItem("inmba_commercial_email", form.email);
+          if (formData.email) {
+            localStorage.setItem("inmba_commercial_email", formData.email);
+            sessionStorage.setItem("inmba_commercial_email", formData.email);
           }
         } catch {}
 
