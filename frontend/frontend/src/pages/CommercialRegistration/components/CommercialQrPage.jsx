@@ -924,34 +924,62 @@ export default function CommercialQrPage() {
                 Public Profile Link
               </label>
 
-              <div className="cqd-profile-link">
+              {verified ? (
+                <div className="cqd-profile-link">
+                  <input
+                    type="text"
+                    value={
+                      publicProfileUrl
+                    }
+                    readOnly
+                    aria-label="Commercial public profile URL"
+                  />
 
-                <input
-                  type="text"
-                  value={
-                    publicProfileUrl
-                  }
-                  readOnly
-                  aria-label="Commercial public profile URL"
-                />
-
-                <button
-                  type="button"
-                  title="Copy profile link"
-                  onClick={
-                    handleCopy
-                  }
+                  <button
+                    type="button"
+                    title="Copy profile link"
+                    onClick={
+                      handleCopy
+                    }
+                  >
+                    <i
+                      className={
+                        copied
+                          ? "fa-solid fa-check"
+                          : "fa-regular fa-copy"
+                      }
+                    />
+                  </button>
+                </div>
+              ) : (
+                <div
+                  className="cqd-profile-link-locked"
+                  style={{
+                    padding: "12px 16px",
+                    background: "#fef3c7",
+                    borderRadius: "10px",
+                    border: "1px dashed #f59e0b",
+                    color: "#92400e",
+                    fontSize: "13px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
                 >
                   <i
-                    className={
-                      copied
-                        ? "fa-solid fa-check"
-                        : "fa-regular fa-copy"
-                    }
+                    className="fa-solid fa-lock"
+                    style={{ color: "#d97706", fontSize: "16px" }}
                   />
-                </button>
-
-              </div>
+                  <div>
+                    <strong style={{ display: "block", color: "#78350f" }}>
+                      Profile Link Locked
+                    </strong>
+                    <span>
+                      Your public profile link will be active once payment is approved by administrator.
+                    </span>
+                  </div>
+                </div>
+              )}
 
             </div>
 
@@ -976,6 +1004,7 @@ export default function CommercialQrPage() {
 
               <button
                 type="button"
+                disabled={!verified || !publicProfileUrl}
                 onClick={
                   handleShare
                 }
@@ -987,11 +1016,13 @@ export default function CommercialQrPage() {
 
               <button
                 type="button"
-                onClick={() =>
+                disabled={!verified || !publicProfileUrl}
+                onClick={() => {
+                  if (!verified) return;
                   navigate(
                     publicProfilePath
-                  )
-                }
+                  );
+                }}
               >
                 <i className="fa-solid fa-address-card" />
 

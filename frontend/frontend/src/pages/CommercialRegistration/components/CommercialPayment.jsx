@@ -1,58 +1,83 @@
 import React, {
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
 import {
+  Link,
   useNavigate,
   useLocation,
 } from "react-router-dom";
 
+import { toast } from "react-toastify";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-import "./CommercialPayment.css";
-import { toast } from "react-toastify";
-import api from "../../../api/api";
+import api, { BACKEND_URL } from "../../../api/api";
 import { useAuth } from "../../../context/AuthContext";
 import PaymentDetailsCard from "../../../components/PaymentDetailsCard/PaymentDetailsCard";
 import RazorpayCard from "../../../components/RazorpayCheckout/RazorpayCard";
+import "./CommercialPayment.css";
 
 /* =========================================================
-   DEFAULT BASIC PLAN
-
-   Backend Commercial plan:
-   basic = ₹300
+   COMMERCIAL MEMBERSHIP PLANS
 ========================================================= */
 
-const DEFAULT_BASIC_PLAN = {
-  id: "basic",
-  name: "Basic Membership",
-  amount: 299,
-  requiresFullKyc: false,
-};
+const COMMERCIAL_PLANS = [
+  {
+    id: "basic",
+    name: "Basic Membership",
+    amount: 299,
+    label: "₹299 — 1 Year (Basic Starter Plan)",
+    badge: "Starter",
+    features: [
+      "QR Code & Scanner Access",
+      "Verified Business Public Profile",
+      "Full Commercial KYC (A-G) Access",
+      "Commercial Business Directory Listing",
+      "Digital Membership Card Access",
+    ],
+  },
+  {
+    id: "profile_upgrade",
+    name: "Profile Upgrade / Royalty",
+    amount: 2999,
+    label: "₹2,999 — 1 Year (Royalty & Rewards)",
+    badge: "Royalty",
+    features: [
+      "Network Rewards & Royalty Earnings",
+      "QR Code & Scanner Access",
+      "Verified Business Public Profile",
+      "Full Commercial KYC (A-G) Access",
+      "Priority Commercial Directory Listing",
+      "Direct Referral Incentives & Badges",
+    ],
+  },
+];
 
 /* =========================================================
    PAYMENT METHODS
-
-   IMPORTANT:
-   These names match Commercial backend validator.
 ========================================================= */
 
 const PAYMENT_METHODS = [
   {
-    id: "Account",
+    value: "Account",
     label: "Bank Account",
-    icon: "fa-solid fa-building-columns",
+    description: "Transfer using official Bank of Baroda account.",
+    icon: "fas fa-building-columns",
   },
   {
-    id: "UPI",
+    value: "UPI",
     label: "UPI Payment",
-    icon: "fa-solid fa-mobile-screen-button",
+    description: "Pay using any supported UPI app.",
+    icon: "fas fa-mobile-screen-button",
   },
   {
-    id: "QR",
+    value: "QR",
     label: "Scan QR",
-    icon: "fa-solid fa-qrcode",
+    description: "Scan official PhonePe / UPI QR code.",
+    icon: "fas fa-qrcode",
   },
 ];
 
@@ -60,454 +85,37 @@ const PAYMENT_METHODS = [
    HELPERS
 ========================================================= */
 
-const safeText = (
-  value,
-  fallback = ""
-) => {
-  const result =
-    String(
-      value ?? ""
-    ).trim();
-
-  return (
-    result ||
-    fallback
-  );
+const safeText = (value, fallback = "") => {
+  const result = String(value ?? "").trim();
+  return result || fallback;
 };
 
-const safeNumber = (
-  value,
-  fallback
-) => {
-  const number =
-    Number(
-      value
-    );
-
-  return Number.isFinite(
-    number
-  )
-    ? number
-    : fallback;
+const formatCurrency = (value) => {
+  const amount = Number(value) || 0;
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
 };
 
 /* =========================================================
-   READ SELECTED PLAN
-========================================================= */
-
-const readSelectedPlan =
-  () => {
-    try {
-      const stored =
-        sessionStorage.getItem(
-          "commercial_selected_plan"
-        );
-
-      if (!stored) {
-        return {
-          ...DEFAULT_BASIC_PLAN,
-        };
-      }
-
-      const parsed =
-        JSON.parse(
-          stored
-        );
-
-      const amount =
-        safeNumber(
-          parsed?.amount,
-          299
-        );
-
-      /*
-        ₹300 page should always map
-        to backend plan id "basic".
-      */
-
-      if (amount === 299) {
-        return {
-          id: "basic",
-
-          name:
-            safeText(
-              parsed?.name,
-              "Basic Membership"
-            ),
-
-          amount: 299,
-
-          requiresFullKyc:
-            false,
-        };
-      }
-
-      /*
-        Keeps selected data safe if another
-        Commercial plan reaches this page.
-      */
-
-      return {
-        id:
-          safeText(
-            parsed?.id ||
-              parsed?.plan_id,
-            amount === 2999 || amount === 1500
-              ? "profile_upgrade"
-              : "basic"
-          ),
-
-        name:
-          safeText(
-            parsed?.name,
-            amount === 2999 || amount === 1500
-              ? "Profile Upgrade"
-              : "Basic Membership"
-          ),
-
-        amount,
-
-        requiresFullKyc:
-          Boolean(
-            parsed
-              ?.requiresFullKyc ||
-              parsed
-                ?.requires_full_kyc
-          ),
-      };
-    } catch (
-      error
-    ) {
-      console.error(
-        "Commercial selected plan parse error:",
-        error
-      );
-
-      return {
-        ...DEFAULT_BASIC_PLAN,
-      };
-    }
-  };
-
-/* =========================================================
-   COMMERCIAL PAYMENT
+   COMMERCIAL PAYMENT COMPONENT
 ========================================================= */
 
 export default function CommercialPayment() {
-  const navigate =
-    useNavigate();
-  const location =
-    useLocation();
-  const { member: authMember } =
-    useAuth() || {};
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { member: authMember } = useAuth() || {};
+  const fileInputRef = useRef(null);
 
   /* =======================================================
-     PLAN
+     MEMBER IDENTITY
   ======================================================= */
 
-  const plan =
-    useMemo(
-      () => {
-        if (location?.state?.plan && location?.state?.plan?.amount) {
-          return location.state.plan;
-        }
-        return readSelectedPlan();
-      },
-      [location?.state?.plan]
-    );
-
-  const [
-    submitting,
-    setSubmitting,
-  ] = useState(false);
-
-  /* =======================================================
-     FORM STATE
-  ======================================================= */
-
-  const [
-    paymentMethod,
-    setPaymentMethod,
-  ] =
-    useState(
-      "Account"
-    );
-
-  const [
-    transactionId,
-    setTransactionId,
-  ] =
-    useState(
-      ""
-    );
-
-  const [
-    paymentProof,
-    setPaymentProof,
-  ] =
-    useState(
-      null
-    );
-
-  const [
-    error,
-    setError,
-  ] =
-    useState(
-      ""
-    );
-
-  /* =======================================================
-     PAYMENT METHOD
-  ======================================================= */
-
-  const handlePaymentMethodChange =
-    (
-      method
-    ) => {
-      setPaymentMethod(
-        method
-      );
-
-      setError(
-        ""
-      );
-    };
-
-  /* =======================================================
-     PAYMENT PROOF
-  ======================================================= */
-
-  const handlePaymentProofChange =
-    (
-      event
-    ) => {
-      const file =
-        event
-          .target
-          .files?.[0] ||
-        null;
-
-      if (!file) {
-        setPaymentProof(
-          null
-        );
-
-        return;
-      }
-
-      const allowedTypes = [
-        "image/jpeg",
-        "image/png",
-        "image/webp",
-        "application/pdf",
-      ];
-
-      if (
-        !allowedTypes.includes(
-          file.type
-        )
-      ) {
-        setPaymentProof(
-          null
-        );
-
-        setError(
-          "Upload JPG, PNG, WEBP or PDF payment proof."
-        );
-
-        event.target.value =
-          "";
-
-        return;
-      }
-
-      /*
-        Frontend safety limit.
-        Backend validation remains authoritative.
-      */
-
-      const maxSize =
-        5 *
-        1024 *
-        1024;
-
-      if (
-        file.size >
-        maxSize
-      ) {
-        setPaymentProof(
-          null
-        );
-
-        setError(
-          "Payment proof must be below 5 MB."
-        );
-
-        event.target.value =
-          "";
-
-        return;
-      }
-
-      setPaymentProof(
-        file
-      );
-
-      setError(
-        ""
-      );
-    };
-
-  /* =======================================================
-     REMOVE PROOF
-  ======================================================= */
-
-  const removePaymentProof =
-    () => {
-      setPaymentProof(
-        null
-      );
-
-      setError(
-        ""
-      );
-
-      const input =
-        document.getElementById(
-          "commercial-payment-proof"
-        );
-
-      if (input) {
-        input.value =
-          "";
-      }
-    };
-
-  /* =======================================================
-     SUBMIT
-
-     IMPORTANT:
-     First we complete the UI exactly.
-     Actual POST /api/commercial-payment wiring
-     will be connected in the next payment step.
-
-     No fake payment success.
-     No automatic dashboard navigation.
-  ======================================================= */
-const handleSubmit = async (event) => {
-  event.preventDefault();
-
-  if (!paymentMethod) {
-    setError("Please select a payment method.");
-    return;
-  }
-
-  const loginId =
-    sessionStorage.getItem("commercial_login_id") ||
-    localStorage.getItem("commercial_login_id") ||
-    sessionStorage.getItem("inmba_commercial_login_id") ||
-    localStorage.getItem("inmba_commercial_login_id") ||
-    sessionStorage.getItem("inmba_member_login_id") ||
-    localStorage.getItem("inmba_member_login_id") ||
-    sessionStorage.getItem("inmba_login_id") ||
-    localStorage.getItem("inmba_login_id") ||
-    authMember?.login_id ||
-    location?.state?.loginId ||
-    location?.state?.login_id ||
-    "";
-
-  if (!loginId) {
-    setError("Commercial Login ID is missing. Please log in again.");
-    return;
-  }
-
-  try {
-    sessionStorage.setItem("commercial_login_id", loginId);
-    localStorage.setItem("commercial_login_id", loginId);
-    sessionStorage.setItem("inmba_commercial_login_id", loginId);
-    localStorage.setItem("inmba_commercial_login_id", loginId);
-    sessionStorage.setItem("inmba_member_login_id", loginId);
-  } catch {}
-
-  try {
-    setSubmitting(true);
-    setError("");
-
-    const endpoint = `/commercial-payment?login_id=${encodeURIComponent(loginId)}`;
-    const headers = {
-      "X-Login-Id": loginId,
-      "X-Commercial-Login-Id": loginId,
-    };
-
-    let response;
-    if (paymentProof) {
-      const formData = new FormData();
-      formData.append("login_id", loginId);
-      formData.append("plan_id", plan.id);
-      formData.append("plan_name", plan.name);
-      formData.append("amount", String(plan.amount));
-      formData.append("payment_method", paymentMethod);
-
-      if (transactionId.trim()) {
-        formData.append("transaction_id", transactionId.trim());
-      }
-      formData.append("payment_proof", paymentProof);
-
-      response = await api.post(endpoint, formData, { headers });
-    } else {
-      const payload = {
-        login_id: loginId,
-        plan_id: plan.id,
-        plan_name: plan.name,
-        amount: Number(plan.amount),
-        payment_method: paymentMethod,
-        transaction_id: transactionId.trim(),
-      };
-
-      response = await api.post(endpoint, payload, { headers });
-    }
-
-    console.log("Commercial Payment Success:", response?.data);
-
-    navigate("/commercial/qr", {
-      replace: true,
-      state: {
-        loginId,
-        paymentSuccess: true,
-      },
-    });
-  } catch (error) {
-    console.error("Commercial Payment Error:", error);
-
-    setError(
-      error?.response?.data?.message ||
-      error?.response?.data?.error ||
-      error?.message ||
-      "Payment submission failed."
-    );
-  } finally {
-    setSubmitting(false);
-  }
-};
-  /* =======================================================
-     BASIC BENEFITS
-  ======================================================= */
-
-  const benefits = [
-    "Commercial Member Access",
-    "Referral Link",
-    "Basic Commercial Dashboard",
-    "Upgrade Later",
-  ];
-
-  const handleRazorpaySuccess = async (verifyResult, rzpResponse) => {
-    const pId = rzpResponse.razorpay_payment_id;
-    setTransactionId(pId);
-    setPaymentMethod("Razorpay");
-    setError("");
-
-    const currentLoginId =
+  const loginId = useMemo(() => {
+    return (
       sessionStorage.getItem("commercial_login_id") ||
       localStorage.getItem("commercial_login_id") ||
       sessionStorage.getItem("inmba_commercial_login_id") ||
@@ -517,553 +125,877 @@ const handleSubmit = async (event) => {
       sessionStorage.getItem("inmba_login_id") ||
       localStorage.getItem("inmba_login_id") ||
       authMember?.login_id ||
+      authMember?.loginId ||
       location?.state?.loginId ||
       location?.state?.login_id ||
-      "";
+      ""
+    );
+  }, [authMember, location?.state]);
 
-    if (!currentLoginId) {
-      toast.success("Payment verified via Razorpay! Transaction ID: " + pId);
+  const businessName = useMemo(() => {
+    return (
+      authMember?.business_name ||
+      authMember?.businessName ||
+      authMember?.company_name ||
+      sessionStorage.getItem("commercial_business_name") ||
+      localStorage.getItem("commercial_business_name") ||
+      location?.state?.business_name ||
+      "Commercial Business"
+    );
+  }, [authMember, location?.state]);
+
+  const ownerName = useMemo(() => {
+    return (
+      authMember?.owner_full_name ||
+      authMember?.owner_name ||
+      authMember?.full_name ||
+      authMember?.name ||
+      sessionStorage.getItem("commercial_owner_name") ||
+      localStorage.getItem("commercial_owner_name") ||
+      "Commercial Member"
+    );
+  }, [authMember]);
+
+  /* =======================================================
+     INITIAL PLAN SELECTION
+  ======================================================= */
+
+  const initialPlanId = useMemo(() => {
+    const passedPlan = location?.state?.plan;
+    if (passedPlan?.id === "profile_upgrade" || Number(passedPlan?.amount) >= 2999) {
+      return "profile_upgrade";
+    }
+
+    try {
+      const stored = sessionStorage.getItem("commercial_selected_plan");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed?.id === "profile_upgrade" || Number(parsed?.amount) >= 2999) {
+          return "profile_upgrade";
+        }
+      }
+    } catch {}
+
+    return "basic";
+  }, [location?.state]);
+
+  /* =======================================================
+     STATE
+  ======================================================= */
+
+  const [selectedPlanId, setSelectedPlanId] = useState(initialPlanId);
+  const selectedPlan = useMemo(() => {
+    return (
+      COMMERCIAL_PLANS.find((p) => p.id === selectedPlanId) ||
+      COMMERCIAL_PLANS[0]
+    );
+  }, [selectedPlanId]);
+
+  const [formData, setFormData] = useState({
+    payment_method: "QR",
+    transaction_id: "",
+    payment_proof: null,
+  });
+
+  const [proofPreview, setProofPreview] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [existingPayment, setExistingPayment] = useState(null);
+
+  /* Clean preview blob */
+  useEffect(() => {
+    return () => {
+      if (proofPreview) {
+        URL.revokeObjectURL(proofPreview);
+      }
+    };
+  }, [proofPreview]);
+
+  /* =======================================================
+     FETCH EXISTING PAYMENT STATUS (IF ANY)
+  ======================================================= */
+
+  useEffect(() => {
+    let isMounted = true;
+    const checkExistingPayment = async () => {
+      if (!loginId) return;
+
+      try {
+        const res = await api.get(`/commercial-payment?login_id=${encodeURIComponent(loginId)}`, {
+          headers: {
+            "X-Login-Id": loginId,
+            "X-Commercial-Login-Id": loginId,
+          },
+        });
+
+        if (isMounted && res?.data) {
+          const data = res.data?.data || res.data?.payment || res.data;
+          if (data && (data.amount || data.payment_method || data.status || data.payment_status)) {
+            setExistingPayment(data);
+          }
+        }
+      } catch (err) {
+        // Fallback gracefully
+      }
+    };
+
+    checkExistingPayment();
+    return () => {
+      isMounted = false;
+    };
+  }, [loginId]);
+
+  /* =======================================================
+     COMPUTED PAYMENT STATUS
+  ======================================================= */
+
+  const paymentStatus = useMemo(() => {
+    const rawStatus = (
+      existingPayment?.status ||
+      existingPayment?.payment_status ||
+      authMember?.payment_status ||
+      authMember?.commercial_payment_status ||
+      (location?.state?.paymentSuccess ? "submitted" : "pending")
+    ).toLowerCase();
+
+    if (rawStatus === "approved" || rawStatus === "paid" || rawStatus === "active") {
+      return {
+        value: "approved",
+        label: "Approved",
+        title: "Payment Approved",
+        description: "Your commercial membership payment has been verified and approved.",
+        icon: "fas fa-circle-check",
+      };
+    }
+
+    if (
+      rawStatus === "submitted" ||
+      rawStatus === "pending_verification" ||
+      rawStatus === "under_review" ||
+      location?.state?.paymentSuccess
+    ) {
+      return {
+        value: "submitted",
+        label: "Under Verification",
+        title: "Payment Submitted",
+        description: "Your payment proof has been submitted and is currently being verified by admin.",
+        icon: "fas fa-clock",
+      };
+    }
+
+    return {
+      value: "pending",
+      label: "Pending",
+      title: "Payment Pending",
+      description: "Complete your commercial payment and upload payment proof to activate member privileges.",
+      icon: "fas fa-receipt",
+    };
+  }, [existingPayment, authMember, location?.state?.paymentSuccess]);
+
+  const isApproved = paymentStatus.value === "approved";
+
+  /* =======================================================
+     FORM HANDLERS
+  ======================================================= */
+
+  const handlePlanChange = (event) => {
+    const nextId = event.target.value;
+    setSelectedPlanId(nextId);
+    setError("");
+
+    try {
+      const planObj = COMMERCIAL_PLANS.find((p) => p.id === nextId);
+      if (planObj) {
+        sessionStorage.setItem("commercial_selected_plan", JSON.stringify(planObj));
+      }
+    } catch {}
+  };
+
+  const handlePaymentMethodChange = (methodValue) => {
+    setFormData((prev) => ({
+      ...prev,
+      payment_method: methodValue,
+    }));
+    setError("");
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setError("");
+  };
+
+  const handleProofChange = (event) => {
+    const file = event.target.files?.[0] || null;
+    if (!file) {
+      return;
+    }
+
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "application/pdf",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      setError("Please upload a valid JPG, PNG, WEBP or PDF payment proof.");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Payment proof file size must be less than 5 MB.");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    if (proofPreview) {
+      URL.revokeObjectURL(proofPreview);
+    }
+
+    if (file.type.startsWith("image/")) {
+      setProofPreview(URL.createObjectURL(file));
+    } else {
+      setProofPreview("");
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      payment_proof: file,
+    }));
+    setError("");
+  };
+
+  const handleRemoveProof = (event) => {
+    event?.stopPropagation?.();
+    if (proofPreview) {
+      URL.revokeObjectURL(proofPreview);
+    }
+    setProofPreview("");
+    setFormData((prev) => ({
+      ...prev,
+      payment_proof: null,
+    }));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  /* =======================================================
+     SUBMISSION
+  ======================================================= */
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (submitting || isApproved) {
+      return;
+    }
+
+    if (!loginId) {
+      setError("Commercial Login ID is missing. Please log in again.");
+      return;
+    }
+
+    if (!formData.payment_method) {
+      setError("Please select a payment method.");
       return;
     }
 
     try {
       setSubmitting(true);
-      const endpoint = `/commercial-payment?login_id=${encodeURIComponent(currentLoginId)}`;
+      setError("");
+
+      const endpoint = `/commercial-payment?login_id=${encodeURIComponent(loginId)}`;
       const headers = {
-        "X-Login-Id": currentLoginId,
-        "X-Commercial-Login-Id": currentLoginId,
-      };
-      const payload = {
-        login_id: currentLoginId,
-        plan_id: plan.id,
-        plan_name: plan.name,
-        amount: Number(plan.amount),
-        payment_method: "Razorpay",
-        transaction_id: pId,
+        "X-Login-Id": loginId,
+        "X-Commercial-Login-Id": loginId,
       };
 
-      await api.post(endpoint, payload, { headers });
-      toast.success("Commercial payment completed and approved!");
-      navigate("/commercial/qr", {
+      let response;
+      if (formData.payment_proof) {
+        const payload = new FormData();
+        payload.append("login_id", loginId);
+        payload.append("plan_id", selectedPlan.id);
+        payload.append("plan_name", selectedPlan.name);
+        payload.append("amount", String(selectedPlan.amount));
+        payload.append("payment_method", formData.payment_method);
+
+        if (formData.transaction_id.trim()) {
+          payload.append("transaction_id", formData.transaction_id.trim());
+        }
+        payload.append("payment_proof", formData.payment_proof);
+
+        response = await api.post(endpoint, payload, { headers });
+      } else {
+        const payload = {
+          login_id: loginId,
+          plan_id: selectedPlan.id,
+          plan_name: selectedPlan.name,
+          amount: Number(selectedPlan.amount),
+          payment_method: formData.payment_method,
+          transaction_id: formData.transaction_id.trim(),
+        };
+
+        response = await api.post(endpoint, payload, { headers });
+      }
+
+      console.log("Commercial Payment response:", response?.data);
+      toast.success("Commercial payment submitted successfully! Please complete your Commercial KYC.");
+
+      navigate("/commercial/kyc", {
         replace: true,
         state: {
-          loginId: currentLoginId,
+          loginId,
           paymentSuccess: true,
+          plan: selectedPlan,
         },
       });
-    } catch (e) {
-      console.warn("Auto submit after commercial razorpay error:", e);
-      toast.success("Payment verified via Razorpay! Transaction ID: " + pId);
+    } catch (err) {
+      console.error("Commercial Payment error:", err);
+      setError(
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        "Payment submission failed. Please try again."
+      );
     } finally {
       setSubmitting(false);
     }
   };
 
   /* =======================================================
-     UI
+     RAZORPAY SUCCESS
+  ======================================================= */
+
+  const handleRazorpaySuccess = async (verifyResult, rzpResponse) => {
+    const pId = rzpResponse.razorpay_payment_id;
+    setFormData((prev) => ({
+      ...prev,
+      transaction_id: pId,
+      payment_method: "Razorpay",
+    }));
+    setError("");
+
+    if (!loginId) {
+      toast.success("Payment verified via Razorpay! Transaction ID: " + pId);
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      const endpoint = `/commercial-payment?login_id=${encodeURIComponent(loginId)}`;
+      const headers = {
+        "X-Login-Id": loginId,
+        "X-Commercial-Login-Id": loginId,
+      };
+      const payload = {
+        login_id: loginId,
+        plan_id: selectedPlan.id,
+        plan_name: selectedPlan.name,
+        amount: Number(selectedPlan.amount),
+        payment_method: "Razorpay",
+        transaction_id: pId,
+      };
+
+      await api.post(endpoint, payload, { headers });
+      toast.success("Commercial payment completed and approved! Please complete your Commercial KYC.");
+
+      navigate("/commercial/kyc", {
+        replace: true,
+        state: {
+          loginId,
+          paymentSuccess: true,
+          plan: selectedPlan,
+        },
+      });
+    } catch (err) {
+      console.warn("Auto submit after razorpay error:", err);
+      toast.success("Payment verified via Razorpay! Please complete your Commercial KYC.");
+      navigate("/commercial/kyc", {
+        replace: true,
+        state: {
+          loginId,
+          paymentSuccess: true,
+          plan: selectedPlan,
+        },
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  /* =======================================================
+     RENDER
   ======================================================= */
 
   return (
     <main className="commercial-payment-page">
-      <div className="commercial-payment-shell">
+      <div className="commercial-payment-container">
 
-        {/* =================================================
-            LEFT PANEL
-        ================================================= */}
-
-        <section className="commercial-payment-left">
-
-          <div className="commercial-payment-left-content">
-
-            {/* BRAND */}
-
-            <div className="commercial-payment-brand">
-              <div className="commercial-payment-brand-icon">
-                <i className="fa-solid fa-building" />
-              </div>
-
-              <div>
-                <span>
-                  INMBA
-                </span>
-
-                <strong>
-                  Commercial
-                </strong>
-              </div>
-            </div>
-
-            {/* TITLE */}
-
-            <div className="commercial-payment-intro">
-              <span className="commercial-payment-kicker">
-                COMMERCIAL MEMBERSHIP
-              </span>
-
-              <h1>
-                Complete Your
-                <br />
-                Membership
-              </h1>
-
-              <p>
-                Complete your payment securely
-                and upload payment proof for
-                verification.
-              </p>
-            </div>
-
-            {/* SELECTED PLAN */}
-
-            <div className="commercial-payment-selected-card">
-              <span className="commercial-payment-selected-label">
-                SELECTED PLAN
-              </span>
-
-              <h2>
-                {plan.name}
-              </h2>
-
-              <div className="commercial-payment-price">
-                <span>
-                  ₹
-                </span>
-
-                {plan.amount}
-              </div>
-            </div>
-
-            {/* BENEFITS */}
-
-            <div className="commercial-payment-benefits">
-              {benefits.map(
-                (
-                  benefit
-                ) => (
-                  <div
-                    className="commercial-payment-benefit"
-                    key={
-                      benefit
-                    }
-                  >
-                    <span className="commercial-payment-check">
-                      <i className="fa-solid fa-check" />
-                    </span>
-
-                    <span>
-                      {benefit}
-                    </span>
-                  </div>
-                )
-              )}
-            </div>
-
-            {/* SECURITY */}
-
-            <div className="commercial-payment-security">
-              <i className="fa-solid fa-shield-halved" />
-
-              <span>
-                Secure Commercial Membership
-                Payment
-              </span>
-            </div>
+        {/* ===================================================
+            1. PAGE HEADER
+        =================================================== */}
+        <header className="commercial-payment-header">
+          <div>
+            <p>INMBA Commercial Portal</p>
+            <h1>Commercial Membership Payment</h1>
+            <span>Complete your payment and proceed to Commercial KYC.</span>
           </div>
 
-          {/* DECORATION */}
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <button
+              type="button"
+              className="commercial-payment-header-button"
+              onClick={() => navigate(-1)}
+            >
+              <i className="fas fa-arrow-left" aria-hidden="true" />
+              Back
+            </button>
+            <Link to="/commercial/dashboard" className="commercial-payment-header-button">
+              Dashboard
+            </Link>
+          </div>
+        </header>
 
-          <div
-            className="commercial-payment-circle circle-one"
-            aria-hidden="true"
-          />
+        {/* ===================================================
+            2. MEMBER SUMMARY
+        =================================================== */}
+        <section className="commercial-payment-member-summary">
+          <div className="commercial-payment-member-avatar">
+            {(businessName || ownerName || "C").charAt(0).toUpperCase()}
+          </div>
 
-          <div
-            className="commercial-payment-circle circle-two"
-            aria-hidden="true"
-          />
+          <div>
+            <p>Payment for</p>
+            <h2>{businessName}</h2>
+            <span>
+              Login ID: <strong>{loginId || "COM Member"}</strong>
+              {ownerName && ownerName !== "Commercial Member" ? ` • Owner: ${ownerName}` : ""}
+            </span>
+          </div>
+
+          <div className="commercial-payment-membership-badge">
+            <i className="fas fa-briefcase" aria-hidden="true" />
+            INMBA Commercial Member
+          </div>
         </section>
 
-        {/* =================================================
-            RIGHT PANEL
-        ================================================= */}
+        {/* ===================================================
+            3. PAYMENT STATUS CARD
+        =================================================== */}
+        <section className={`commercial-payment-status-card commercial-payment-status-${paymentStatus.value}`}>
+          <div className="commercial-payment-status-icon">
+            <i className={paymentStatus.icon} aria-hidden="true" />
+          </div>
 
-        <section className="commercial-payment-right">
+          <div>
+            <p>Current Payment Status</p>
+            <h2>{paymentStatus.title}</h2>
+            <span>{paymentStatus.description}</span>
+          </div>
 
-          <div className="commercial-payment-form-wrap">
+          <strong>{paymentStatus.label}</strong>
+        </section>
 
-            {/* TOP */}
+        {/* ERROR ALERT */}
+        {error && (
+          <div className="commercial-payment-alert" role="alert">
+            <i className="fas fa-circle-exclamation" aria-hidden="true" />
+            <span>{error}</span>
+          </div>
+        )}
 
-            <div className="commercial-payment-top-row">
-              <button
-                type="button"
-                className="commercial-payment-back"
-                onClick={() =>
-                  navigate(
-                    "/commercial/membership-plan"
-                  )
-                }
-              >
-                <i className="fa-solid fa-arrow-left" />
+        {/* ===================================================
+            4. MAIN GRID (FORM + SIDE COLUMN)
+        =================================================== */}
+        <div className="commercial-payment-main-grid">
 
-                Back
-              </button>
-
-              <div className="commercial-payment-secure-badge">
-                <i className="fa-solid fa-lock" />
-
-                Secure Payment
+          {/* LEFT: PAYMENT FORM */}
+          <form className="commercial-payment-form-card" onSubmit={handleSubmit} noValidate>
+            <header className="commercial-payment-card-header">
+              <div className="commercial-payment-card-icon">
+                <i className="fas fa-credit-card" aria-hidden="true" />
               </div>
-            </div>
-
-            {/* HEADER */}
-
-            <header className="commercial-payment-header">
-              <span>
-                PAYMENT
-              </span>
-
-              <h2>
-                Complete Payment
-              </h2>
-
-              <p>
-                Complete your Commercial Membership
-                payment of{" "}
-                <strong>
-                  ₹{plan.amount}
-                </strong>.
-              </p>
+              <div>
+                <h2>Complete Payment</h2>
+                <p>Enter transaction details and upload receipt proof.</p>
+              </div>
             </header>
 
-            <form
-              className="commercial-payment-form"
-              onSubmit={
-                handleSubmit
-              }
-            >
+            {/* DIVIDER: SUBMIT PAYMENT PROOF (TOP) */}
+            <div className="commercial-payment-section-divider">
+              <span className="commercial-payment-section-divider-text">
+                SUBMIT PAYMENT PROOF (AFTER BANK / UPI / QR TRANSFER)
+              </span>
+            </div>
 
-              {/* ===========================================
-                  MEMBERSHIP PLAN
-              =========================================== */}
-
-              <div className="commercial-payment-field">
-                <label>
-                  Membership Plan
+            {/* PLAN SELECTION & AMOUNT ROW */}
+            <div className="commercial-payment-form-row">
+              <div className="commercial-payment-form-group">
+                <label htmlFor="commercial-plan-select">
+                  Commercial Plan <span>*</span>
                 </label>
-
-                <div className="commercial-payment-plan-box">
-                  <div className="commercial-payment-plan-icon">
-                    <i className="fa-solid fa-id-card" />
-                  </div>
-
-                  <div className="commercial-payment-plan-text">
-                    <span>
-                      Selected Membership
-                    </span>
-
-                    <strong>
-                      {plan.name}
-                    </strong>
-                  </div>
-
-                  <div className="commercial-payment-plan-amount">
-                    ₹{plan.amount}
-                  </div>
-                </div>
+                <select
+                  id="commercial-plan-select"
+                  name="selected_plan"
+                  value={selectedPlanId}
+                  onChange={handlePlanChange}
+                  disabled={submitting || isApproved}
+                >
+                  {COMMERCIAL_PLANS.map((plan) => (
+                    <option key={plan.id} value={plan.id}>
+                      {plan.label}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              {/* ========================================================
-                  1. SUBMIT PAYMENT PROOF (TOP)
-                  ======================================================== */}
-              <div style={{ textAlign: "center", margin: "16px 0 24px 0", position: "relative" }}>
-                <hr style={{ border: "none", borderTop: "1px solid #cbd5e1", margin: 0 }} />
-                <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#166534", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
-                  SUBMIT PAYMENT PROOF (AFTER BANK / UPI / QR TRANSFER)
-                </span>
-              </div>
-
-              {/* ===========================================
-                  AMOUNT
-              =========================================== */}
-
-              <div className="commercial-payment-field">
-                <label>
-                  Amount
+              <div className="commercial-payment-form-group">
+                <label htmlFor="commercial-amount">
+                  Amount <span>*</span>
                 </label>
-
-                <div className="commercial-payment-input-wrap commercial-payment-amount-input">
-                  <span className="commercial-payment-prefix">
-                    ₹
-                  </span>
-
+                <div className="commercial-payment-amount-input">
+                  <span className="commercial-payment-currency-symbol">₹</span>
                   <input
+                    id="commercial-amount"
                     type="text"
-                    value={
-                      plan.amount
-                    }
+                    value={Number(selectedPlan.amount).toLocaleString("en-IN")}
                     readOnly
-                    aria-label="Payment amount"
+                    tabIndex={-1}
+                    disabled={submitting || isApproved}
                   />
-
-                  <span className="commercial-payment-locked">
+                  <span className="commercial-payment-locked-icon">
                     <i className="fa-solid fa-lock" />
                   </span>
                 </div>
+                <small className="commercial-payment-field-hint">
+                  <i className="fa-solid fa-lock" />
+                  Amount is locked to selected {selectedPlan.name}.
+                </small>
               </div>
+            </div>
 
-              {/* ===========================================
-                  TRANSACTION ID
-              =========================================== */}
-
-              <div className="commercial-payment-field">
-                <div className="commercial-payment-label-row">
-                  <label
-                    htmlFor="commercial-transaction-id"
-                  >
-                    Transaction ID / UTR
-                  </label>
-
-                  <span>
-                    Optional
-                  </span>
-                </div>
-
-                <div className="commercial-payment-input-wrap">
-                  <span className="commercial-payment-input-icon">
-                    <i className="fa-solid fa-receipt" />
-                  </span>
-
-                  <input
-                    id="commercial-transaction-id"
-                    type="text"
-                    maxLength={255}
-                    placeholder="Enter Transaction ID / UTR"
-                    value={
-                      transactionId
-                    }
-                    onChange={(
-                      event
-                    ) => {
-                      setTransactionId(
-                        event
-                          .target
-                          .value
-                      );
-
-                      setError(
-                        ""
-                      );
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* ===========================================
-                  PAYMENT PROOF
-              =========================================== */}
-
-              <div className="commercial-payment-field">
-                <div className="commercial-payment-label-row">
-                  <label
-                    htmlFor="commercial-payment-proof"
-                  >
-                    Upload Payment Proof
-                  </label>
-
-                  <span>
-                    Optional
-                  </span>
-                </div>
-
-                {!paymentProof ? (
-                  <label
-                    htmlFor="commercial-payment-proof"
-                    className="commercial-payment-upload"
-                  >
-                    <input
-                      id="commercial-payment-proof"
-                      type="file"
-                      accept=".jpg,.jpeg,.png,.webp,.pdf"
-                      onChange={
-                        handlePaymentProofChange
-                      }
-                    />
-
-                    <div className="commercial-payment-upload-icon">
-                      <i className="fa-solid fa-cloud-arrow-up" />
-                    </div>
-
-                    <div className="commercial-payment-upload-text">
-                      <strong>
-                        Upload Payment Screenshot
-                      </strong>
-
-                      <span>
-                        JPG, PNG, WEBP or PDF • Max 5 MB
-                      </span>
-                    </div>
-
-                    <span className="commercial-payment-browse">
-                      Browse
-                    </span>
-                  </label>
-                ) : (
-                  <div className="commercial-payment-file">
-                    <div className="commercial-payment-file-icon">
-                      <i className="fa-solid fa-file-circle-check" />
-                    </div>
-
-                    <div className="commercial-payment-file-details">
-                      <strong>
-                        {paymentProof.name}
-                      </strong>
-
-                      <span>
-                        {(
-                          paymentProof.size /
-                          1024 /
-                          1024
-                        ).toFixed(
-                          2
-                        )}{" "}
-                        MB
-                      </span>
-                    </div>
-
-                    <button
-                      type="button"
-                      className="commercial-payment-file-remove"
-                      onClick={
-                        removePaymentProof
-                      }
-                      aria-label="Remove payment proof"
-                    >
-                      <i className="fa-solid fa-xmark" />
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* ========================================================
-                  2. PAYMENT METHODS (FOLLOWING THE PROOF PART)
-                  ======================================================== */}
-              {/* DIVIDER: OFFICIAL PAYMENT METHODS */}
-              <div className="inmba-payment-section-divider">
-                <span className="inmba-payment-section-divider-text">
-                  OFFICIAL PAYMENT DETAILS (BANK / UPI / QR CODE)
-                </span>
-              </div>
-
-              {/* 1. OFFICIAL PAYMENT DETAILS CARD (BANK & QR) */}
-              <PaymentDetailsCard
-                amount={plan.amount}
-                upiId="robertsonraja@barodampay"
-                accountName="INMBA ORGANIZATION"
-                accountNumber="70340200001467"
-                ifsc="BARB0VJPACO"
-                bankName="Bank of Baroda"
-                branch="Chitlapakkam Branch, Chennai"
-                qrUrl="/inmba-qr.png"
+            {/* TRANSACTION ID / UTR */}
+            <div className="commercial-payment-form-group">
+              <label htmlFor="commercial-transaction-id">
+                Transaction ID / UTR <small>Optional</small>
+              </label>
+              <input
+                id="commercial-transaction-id"
+                type="text"
+                name="transaction_id"
+                value={formData.transaction_id}
+                onChange={handleInputChange}
+                placeholder="Enter Transaction ID / UTR number"
+                maxLength={150}
+                disabled={submitting || isApproved}
               />
+            </div>
 
-              {/* DIVIDER: OR PAY VIA RAZORPAY */}
-              <div className="inmba-payment-section-divider">
-                <span className="inmba-payment-section-divider-text">
-                  OR PAY INSTANTLY ONLINE (RAZORPAY)
-                </span>
-              </div>
+            {/* PAYMENT PROOF UPLOAD */}
+            <div className="commercial-payment-form-group">
+              <label>
+                Payment Proof <small>JPG / PNG / WEBP / PDF, max 5 MB</small>
+              </label>
 
-              {/* 2. RAZORPAY INSTANT ONLINE PAYMENT */}
-              <RazorpayCard
-                amount={plan.amount}
-                name="INMBA Commercial Membership"
-                description={`Commercial Plan: ${plan.name} (₹${plan.amount})`}
-                notes={{
-                  login_id:
-                    sessionStorage.getItem("commercial_login_id") ||
-                    localStorage.getItem("commercial_login_id") ||
-                    "",
-                  plan_name: plan.name,
-                }}
-                onSuccess={handleRazorpaySuccess}
-                onFailure={(err) => {
-                  setError(err.message || "Payment cancelled or failed.");
-                }}
-                transactionId={transactionId}
-                disabled={submitting}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,application/pdf"
+                className="commercial-payment-hidden-input"
+                onChange={handleProofChange}
+                disabled={submitting || isApproved}
               />
-
-              {/* ===========================================
-                  INFO
-              =========================================== */}
-
-              <div className="commercial-payment-info">
-                <i className="fa-solid fa-circle-info" />
-
-                <p>
-                  Your payment will be submitted
-                  securely for verification.
-                  Membership activation will follow
-                  the Commercial payment status.
-                </p>
-              </div>
-
-              {/* ===========================================
-                  ERROR
-              =========================================== */}
-
-              {error && (
-                <div
-                  className="commercial-payment-error"
-                  role="alert"
-                >
-                  <i className="fa-solid fa-triangle-exclamation" />
-
-                  <span>
-                    {error}
-                  </span>
-                </div>
-              )}
-
-              {/* ===========================================
-                  DISCLAIMER
-              =========================================== */}
-
-              <div className="commercial-payment-disclaimer-box">
-                <div className="commercial-payment-disclaimer-header">
-                  <i className="fa-solid fa-triangle-exclamation" />
-                  <strong>Membership Payment Disclaimer (₹{plan.amount})</strong>
-                </div>
-                <p>
-                  Commercial membership payments (₹299 Basic / ₹2,999 Profile Upgrade) are strictly non-refundable one-time fees. Business profile activation, member directory access, and QR code tools are activated after admin review within 24 hours.
-                </p>
-              </div>
-
-              {/* ===========================================
-                  SUBMIT
-              =========================================== */}
 
               <button
-                type="submit"
-                className="commercial-payment-submit"
-                disabled={submitting}
+                type="button"
+                className="commercial-payment-upload-box"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={submitting || isApproved}
               >
-                <span>
-                  {submitting ? "Submitting Payment..." : `Confirm ₹${plan.amount} Payment`}
-                </span>
+                <div className="commercial-payment-upload-content">
+                  <span className="commercial-payment-upload-icon-circle">
+                    <i className="fas fa-cloud-arrow-up" aria-hidden="true" />
+                  </span>
 
-                <i className={submitting ? "fa-solid fa-spinner fa-spin" : "fa-solid fa-arrow-right"} />
+                  <div>
+                    <strong>
+                      {formData.payment_proof
+                        ? formData.payment_proof.name
+                        : proofPreview
+                        ? "Payment proof selected"
+                        : "Upload payment screenshot / receipt"}
+                    </strong>
+                    <small>Click to browse file from your device</small>
+                  </div>
+                </div>
+
+                {proofPreview && (
+                  <div className="commercial-payment-proof-preview">
+                    <img src={proofPreview} alt="Payment proof preview" />
+                    {!isApproved && (
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        onClick={handleRemoveProof}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") handleRemoveProof(e);
+                        }}
+                        aria-label="Remove payment proof"
+                      >
+                        <i className="fas fa-xmark" aria-hidden="true" />
+                      </span>
+                    )}
+                  </div>
+                )}
               </button>
+            </div>
 
-              <p className="commercial-payment-footer-note">
-                <i className="fa-solid fa-shield-halved" />
+            {/* PAYMENT METHOD SELECTION */}
+            <div className="commercial-payment-form-group">
+              <label className="commercial-payment-section-title">
+                Select Payment Method Used <span>*</span>
+              </label>
 
-                Your payment information is handled
-                securely.
+              <div className="commercial-payment-methods-grid">
+                {PAYMENT_METHODS.map((method) => {
+                  const isSelected = (formData.payment_method || "QR") === method.value;
+                  return (
+                    <button
+                      key={method.value}
+                      type="button"
+                      className={`commercial-payment-method-item ${
+                        isSelected ? "commercial-payment-method-selected" : ""
+                      }`}
+                      onClick={() => handlePaymentMethodChange(method.value)}
+                      disabled={submitting || isApproved}
+                    >
+                      <span className="commercial-payment-method-icon">
+                        <i className={method.icon} aria-hidden="true" />
+                      </span>
+                      <div className="commercial-payment-method-info">
+                        <strong>{method.label}</strong>
+                        <small>{method.description}</small>
+                      </div>
+                      <i
+                        className={isSelected ? "fas fa-circle-check" : "far fa-circle"}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* DIVIDER: OFFICIAL PAYMENT DETAILS */}
+            <div className="commercial-payment-section-divider">
+              <span className="commercial-payment-section-divider-text">
+                OFFICIAL PAYMENT DETAILS (BANK / UPI / QR CODE)
+              </span>
+            </div>
+
+            {/* OFFICIAL PAYMENT DETAILS CARD */}
+            <PaymentDetailsCard
+              amount={selectedPlan.amount}
+              upiId="robertsonraja@barodampay"
+              accountName="INMBA ORGANIZATION"
+              accountNumber="70340200001467"
+              ifsc="BARB0VJPACO"
+              bankName="Bank of Baroda"
+              branch="Chitlapakkam Branch, Chennai"
+              qrUrl="/inmba-qr.png"
+            />
+
+            {/* DIVIDER: INSTANT ONLINE PAYMENT */}
+            <div className="commercial-payment-section-divider">
+              <span className="commercial-payment-section-divider-text">
+                OR PAY INSTANTLY ONLINE (RAZORPAY)
+              </span>
+            </div>
+
+            {/* RAZORPAY CARD */}
+            <RazorpayCard
+              amount={selectedPlan.amount}
+              name="INMBA Commercial Membership"
+              description={`Commercial Plan: ${selectedPlan.name} (₹${selectedPlan.amount})`}
+              prefill={{
+                name: ownerName || businessName,
+                email: authMember?.email || "",
+                contact: authMember?.phone || "",
+              }}
+              notes={{
+                login_id: loginId || "",
+                plan_name: selectedPlan.name,
+                plan_id: selectedPlan.id,
+              }}
+              onSuccess={handleRazorpaySuccess}
+              onFailure={(err) => {
+                setError(err.message || "Payment cancelled or failed.");
+              }}
+              transactionId={formData.transaction_id}
+              disabled={submitting || isApproved || !Number(selectedPlan.amount)}
+            />
+
+            {/* DISCLAIMER BOX */}
+            <div className="commercial-payment-disclaimer-box">
+              <div className="commercial-payment-disclaimer-header">
+                <i className="fas fa-triangle-exclamation" aria-hidden="true" />
+                <strong>Commercial Membership Payment Disclaimer (₹{selectedPlan.amount})</strong>
+              </div>
+              <p>
+                Commercial membership payments of {formatCurrency(selectedPlan.amount)} are non-refundable processing charges.
+                Digital Commercial Member Card, verified business profile, directory listing, and QR code access are activated following administrative review within 24 hours.
               </p>
-            </form>
-          </div>
-        </section>
+            </div>
+
+            {/* SUBMIT BUTTON */}
+            <button
+              type="submit"
+              className="commercial-payment-submit-button"
+              disabled={submitting}
+            >
+              {submitting ? (
+                <>
+                  <span className="spinner-border spinner-border-sm" aria-hidden="true" />
+                  Submitting Payment...
+                </>
+              ) : isApproved ? (
+                <>
+                  <i className="fas fa-circle-check" aria-hidden="true" />
+                  Payment Approved — Proceed to KYC
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-shield-halved" aria-hidden="true" />
+                  Confirm ₹{selectedPlan.amount} Payment & Proceed to KYC
+                </>
+              )}
+            </button>
+
+            {isApproved && (
+              <div style={{ textAlign: "center", marginTop: "12px" }}>
+                <Link
+                  to="/commercial/kyc"
+                  className="commercial-payment-submit-button"
+                  style={{ textDecoration: "none", display: "inline-flex" }}
+                >
+                  <i className="fas fa-arrow-right" aria-hidden="true" />
+                  Proceed to Commercial KYC (Next Step)
+                </Link>
+              </div>
+            )}
+
+            <p className="commercial-payment-verification-note">
+              <i className="fas fa-clock" aria-hidden="true" />
+              After payment submission, you will proceed to complete your Commercial KYC.
+            </p>
+          </form>
+
+          {/* RIGHT: SIDE COLUMN */}
+          <aside className="commercial-payment-side-column">
+
+            {/* PLAN BENEFITS CARD */}
+            <section className="commercial-payment-side-card commercial-payment-benefits-card">
+              <header>
+                <span className="commercial-payment-side-card-icon">
+                  <i className="fas fa-award" aria-hidden="true" />
+                </span>
+                <div>
+                  <h2>{selectedPlan.name} Benefits</h2>
+                  <p>Included with your commercial subscription.</p>
+                </div>
+              </header>
+
+              <ul className="commercial-payment-benefits-list">
+                {selectedPlan.features.map((feature, idx) => (
+                  <li key={idx}>
+                    <i className="fas fa-check" aria-hidden="true" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            {/* SECURE PAYMENT STEPS */}
+            <section className="commercial-payment-side-card commercial-payment-steps-card">
+              <header>
+                <span className="commercial-payment-side-card-icon">
+                  <i className="fas fa-shield-halved" aria-hidden="true" />
+                </span>
+                <div>
+                  <h2>Registration & Membership Flow</h2>
+                  <p>Follow the 4 simple steps to activate membership.</p>
+                </div>
+              </header>
+
+              <div className="commercial-payment-steps-list">
+                <article>
+                  <span>1</span>
+                  <div>
+                    <h3>Basic Registration</h3>
+                    <p>Enter business & owner details (Completed).</p>
+                  </div>
+                </article>
+
+                <article>
+                  <span>2</span>
+                  <div>
+                    <h3>Membership Payment</h3>
+                    <p>Transfer ₹{selectedPlan.amount} via UPI, QR, or Razorpay (Current Step).</p>
+                  </div>
+                </article>
+
+                <article>
+                  <span>3</span>
+                  <div>
+                    <h3>Commercial KYC</h3>
+                    <p>Complete sections A-G business documents (Next Step).</p>
+                  </div>
+                </article>
+
+                <article>
+                  <span>4</span>
+                  <div>
+                    <h3>Commercial Dashboard</h3>
+                    <p>Access your public business card, QR code & network tools.</p>
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            {/* PROTECTED INFO CARD */}
+            <section className="commercial-payment-side-card commercial-payment-security-card">
+              <span className="commercial-payment-side-card-icon security-icon">
+                <i className="fas fa-lock" aria-hidden="true" />
+              </span>
+              <div>
+                <h3>Protected Information</h3>
+                <p>
+                  Your payment information is submitted securely through your authenticated Commercial member session.
+                </p>
+              </div>
+            </section>
+
+            {/* SUPPORT CARD */}
+            <section className="commercial-payment-side-card commercial-payment-support-card">
+              <i className="fas fa-headset commercial-payment-support-icon" aria-hidden="true" />
+              <h3>Need Payment Help?</h3>
+              <p>
+                Contact INMBA support if you need assistance with Commercial membership verification.
+              </p>
+              <Link to="/contact" className="commercial-payment-support-link">
+                Contact Support
+              </Link>
+            </section>
+
+          </aside>
+        </div>
+
       </div>
     </main>
   );

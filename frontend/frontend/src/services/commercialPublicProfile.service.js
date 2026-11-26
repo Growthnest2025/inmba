@@ -443,8 +443,251 @@ export const normalizeCommercialPublicProfile =
         ),
 
       /* =========================
+         OWNER & PERSONAL IDENTITY (SECTION A)
+      ========================= */
+
+      owner_full_legal_name:
+        toText(
+          data.owner_full_legal_name ??
+            data.owner_name ??
+            data.full_name ??
+            data.name
+        ),
+
+      owner_name:
+        toText(
+          data.owner_name ??
+            data.owner_full_legal_name ??
+            data.full_name ??
+            data.name
+        ),
+
+      full_name:
+        toText(
+          data.full_name ??
+            data.owner_full_legal_name ??
+            data.name
+        ),
+
+      father_spouse_name:
+        toText(
+          data.father_spouse_name ??
+            data.father_name
+        ),
+
+      father_name:
+        toText(
+          data.father_name ??
+            data.father_spouse_name
+        ),
+
+      dob:
+        toText(
+          data.dob ??
+            data.date_of_birth
+        ),
+
+      date_of_birth:
+        toText(
+          data.date_of_birth ??
+            data.dob
+        ),
+
+      gender:
+        toText(
+          data.gender
+        ),
+
+      marital_status:
+        toText(
+          data.marital_status
+        ),
+
+      nationality:
+        toText(
+          data.nationality,
+          "Indian"
+        ),
+
+      blood_group:
+        toText(
+          data.blood_group
+        ),
+
+      aadhaar_number:
+        toText(
+          data.aadhaar_number ??
+            data.aadhar
+        ),
+
+      pan_number:
+        toText(
+          data.pan_number ??
+            data.pan
+        ),
+
+      passport_number:
+        toText(
+          data.passport_number
+        ),
+
+      voter_id:
+        toText(
+          data.voter_id
+        ),
+
+      driving_license:
+        toText(
+          data.driving_license
+        ),
+
+      /* =========================
+         LEGAL & REGISTRATION (SECTION B)
+      ========================= */
+
+      business_registration_number:
+        toText(
+          data.business_registration_number ??
+            data.registration_number
+        ),
+
+      registration_number:
+        toText(
+          data.registration_number ??
+            data.business_registration_number
+        ),
+
+      company_pan:
+        toText(
+          data.company_pan ??
+            data.pan_number
+        ),
+
+      authorized_pan:
+        toText(
+          data.authorized_pan ??
+            data.signatory_pan
+        ),
+
+      gst_number:
+        toText(
+          data.gst_number ??
+            data.gstin
+        ),
+
+      /* =========================
+         FINANCIAL & BANK (SECTION D)
+      ========================= */
+
+      bank_account_number:
+        toText(
+          data.bank_account_number ??
+            data.account_number
+        ),
+
+      account_number:
+        toText(
+          data.account_number ??
+            data.bank_account_number
+        ),
+
+      ifsc_code:
+        toText(
+          data.ifsc_code ??
+            data.ifsc
+        ),
+
+      bank_branch_name:
+        toText(
+          data.bank_branch_name ??
+            data.bank_branch ??
+            data.branch
+        ),
+
+      bank_branch:
+        toText(
+          data.bank_branch ??
+            data.bank_branch_name ??
+            data.branch
+        ),
+
+      upi_id:
+        toText(
+          data.upi_id
+        ),
+
+      nominee_name:
+        toText(
+          data.nominee_name ??
+            data.nomini_name
+        ),
+
+      nominee_relationship:
+        toText(
+          data.nominee_relationship ??
+            data.nominee_relation ??
+            data.nomini_relationship
+        ),
+
+      nominee_aadhaar_id:
+        toText(
+          data.nominee_aadhaar_id ??
+            data.nominee_aadhaar ??
+            data.nomini_aadhar
+        ),
+
+      nominee_aadhaar:
+        toText(
+          data.nominee_aadhaar ??
+            data.nominee_aadhaar_id ??
+            data.nomini_aadhar
+        ),
+
+      /* =========================
+         EMERGENCY CONTACT (SECTION G)
+      ========================= */
+
+      emergency_contact_name:
+        toText(
+          data.emergency_contact_name
+        ),
+
+      emergency_contact_number:
+        toText(
+          data.emergency_contact_number ??
+            data.emergency_mobile
+        ),
+
+      relationship:
+        toText(
+          data.relationship ??
+            data.emergency_relationship
+        ),
+
+      emergency_relationship:
+        toText(
+          data.emergency_relationship ??
+            data.relationship
+        ),
+
+      /* =========================
+         PAYOUT CYCLE (SECTION F)
+      ========================= */
+
+      preferred_payout_cycle:
+        toText(
+          data.preferred_payout_cycle
+        ),
+
+      /* =========================
          BUSINESS PROFILE
       ========================= */
+
+      annual_turnover_slab:
+        toText(
+          data.annual_turnover_slab ??
+            data.annual_turnover
+        ),
 
       year_established:
         toNumberOrNull(

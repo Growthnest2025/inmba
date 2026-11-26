@@ -2584,9 +2584,18 @@ function GenericKycDetails({
     );
   }
 
+  const flattenedData = {
+    ...data,
+    ...(data.values || {}),
+  };
+  delete flattenedData.values;
+  delete flattenedData.sections;
+  delete flattenedData.valuesBySection;
+  delete flattenedData.kyc_data;
+
   const entries =
     Object.entries(
-      data
+      flattenedData
     ).filter(
       ([key, value]) =>
         !KYC_HIDDEN_FIELDS.has(

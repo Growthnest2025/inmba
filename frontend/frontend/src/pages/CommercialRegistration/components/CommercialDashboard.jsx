@@ -429,8 +429,20 @@ export default function CommercialDashboard() {
       sessionMember,
 
     clearMemberSession,
+    memberLogout,
   } =
     useAuth();
+
+  const handleLogout = async () => {
+    try {
+      if (memberLogout) {
+        await memberLogout();
+      }
+    } catch {}
+    clearMemberSession();
+    toast.success("Logged out successfully.");
+    navigate("/login/commercial", { replace: true });
+  };
 
 
   const [
@@ -549,13 +561,16 @@ api.get(
             kycResult.status ===
             "fulfilled"
           ) {
+            const rawKyc =
+              kycResult.value?.data?.data?.commercialKyc ||
+              kycResult.value?.data?.commercialKyc ||
+              kycResult.value?.data?.data ||
+              kycResult.value?.data ||
+              {};
 
             setCommercialKyc(
               asObject(
-                kycResult.value
-                  ?.data
-                  ?.data
-                  ?.commercialKyc
+                rawKyc
               )
             );
 
@@ -687,18 +702,38 @@ api.get(
      DETAILS
   ======================================================= */
 
+  const localDraft = useMemo(() => {
+    try {
+      const draftStr = localStorage.getItem("inmba_commercial_kyc_draft");
+      return draftStr ? JSON.parse(draftStr) : {};
+    } catch {
+      return {};
+    }
+  }, []);
+
   const ownerName =
     toText(
+      commercialKyc?.sections?.A?.owner_full_legal_name ||
+      commercialKyc?.full_legal_name ||
+      localDraft.A?.owner_full_legal_name ||
       member.full_legal_name ||
       member.full_name ||
-      member.first_name,
+      member.first_name ||
+      localStorage.getItem("inmba_commercial_owner_name"),
       "Commercial Member"
     );
 
 
   const businessName =
     toText(
-      member.business_name,
+      commercialKyc?.sections?.B?.business_name ||
+      commercialKyc?.sections?.B?.business_company_name ||
+      commercialKyc?.business_name ||
+      localDraft.B?.business_name ||
+      localDraft.B?.business_company_name ||
+      member.business_name ||
+      member.occupation ||
+      localStorage.getItem("inmba_commercial_business_name"),
       "Business Member"
     );
 
@@ -758,16 +793,25 @@ api.get(
 
   const businessType =
     toText(
-      member.business_type,
+      commercialKyc?.sections?.B?.business_type ||
+      commercialKyc?.business_type ||
+      localDraft.B?.business_type ||
+      member.business_type ||
+      member.business_category ||
+      localStorage.getItem("inmba_commercial_business_type"),
       "Not specified"
     );
 
 
   const city =
     toText(
+      commercialKyc?.sections?.C?.registered_business_address ||
+      commercialKyc?.sections?.C?.branch_locations ||
+      localDraft.C?.registered_business_address ||
       member.city ||
       member.district ||
-      member.entity_district,
+      member.entity_district ||
+      localStorage.getItem("inmba_commercial_city"),
       "Not specified"
     );
 
@@ -1045,11 +1089,12 @@ const backendAmount =
         )}`
       : "";
 
-  // Referral is available from Commercial registration/login itself.
-  // Payment approval is NOT required for Referral ID / Link access.
+  // Referral is only unlocked once payment is approved by admin
   const hasReferralAccess =
     Boolean(
-      referralId
+      isPaymentApproved &&
+      referralId &&
+      referralId !== "Not available"
     );
 
 
@@ -1250,17 +1295,45 @@ const backendAmount =
           </div>
 
 
-          <button
-            type="button"
-            className="commercial-dashboard-refresh-button"
-            onClick={
-              loadDashboard
-            }
-          >
-            <i className="fas fa-rotate" />
+          <div className="commercial-dashboard-hero-actions" style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+            <button
+              type="button"
+              className="commercial-dashboard-refresh-button"
+              onClick={
+                loadDashboard
+              }
+            >
+              <i className="fas fa-rotate" />
 
-            Refresh
-          </button>
+              Refresh
+            </button>
+
+            <button
+              type="button"
+              className="commercial-dashboard-logout-button"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "10px 16px",
+                background: "#fef2f2",
+                border: "1px solid #fee2e2",
+                borderRadius: "10px",
+                color: "#dc2626",
+                fontWeight: "600",
+                fontSize: "14px",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+              }}
+              onClick={
+                handleLogout
+              }
+            >
+              <i className="fas fa-arrow-right-from-bracket" />
+
+              Logout
+            </button>
+          </div>
 
         </section>
 
@@ -1464,27 +1537,32 @@ const backendAmount =
 
             <div className="commercial-dashboard-action-grid">
 
-              {hasPaidPlan && (
-                <Link
-                  to="/commercial/profile-upgrade"
-                  className="commercial-dashboard-primary-button"
-                >
-                  <i className="fas fa-building-shield" />
+              <Link
+                to="/commercial/profile-upgrade"
+                className="commercial-dashboard-primary-button"
+              >
+                <i className="fas fa-pen-to-square" />
 
-                  Commercial KYC
-                </Link>
-              )}
+                Edit Profile
+              </Link>
 
-              {hasPaidPlan && (
-                <Link
-                  to="/commercial/profile-upgrade/review"
-                  className="commercial-dashboard-secondary-button"
-                >
-                  <i className="fas fa-eye" />
+              <Link
+                to="/commercial/profile-upgrade/review"
+                className="commercial-dashboard-secondary-button"
+              >
+                <i className="fas fa-eye" />
 
-                  Review KYC
-                </Link>
-              )}
+                Review KYC
+              </Link>
+
+              <Link
+                to={publicProfilePath || `/commercial/public-profile/${encodeURIComponent(loginId)}`}
+                className="commercial-dashboard-secondary-button"
+              >
+                <i className="fas fa-globe" />
+
+                Preview Public View
+              </Link>
 
               {isBasic && (
                 <button
@@ -1501,18 +1579,6 @@ const backendAmount =
                   Upgrade to ₹2999
                 </button>
               )}
-
-              {hasQrPublicProfileAccess &&
-                publicProfilePath && (
-                  <Link
-                    to="/commercial/full-profile"
-                    className="commercial-dashboard-secondary-button"
-                  >
-                    <i className="fas fa-address-card" />
-
-                    Owner Profile
-                  </Link>
-                )}
 
             </div>
 
@@ -1742,8 +1808,17 @@ const backendAmount =
               label="Business Category"
               value={
                 toText(
-                  commercialKyc
-                    ?.business_category_tags,
+                  commercialKyc?.values?.business_category_tags ||
+                  commercialKyc?.sections?.E?.business_category_tags ||
+                  commercialKyc?.values?.business_type ||
+                  commercialKyc?.sections?.B?.business_type ||
+                  commercialKyc?.business_category_tags ||
+                  commercialKyc?.business_type ||
+                  localDraft.E?.business_category_tags ||
+                  localDraft.B?.business_type ||
+                  localStorage.getItem("inmba_commercial_business_type") ||
+                  member.business_type ||
+                  member.business_category,
                   "Not specified"
                 )
               }
@@ -1753,8 +1828,13 @@ const backendAmount =
               label="GST Number"
               value={
                 toText(
-                  commercialKyc
-                    ?.gst_number,
+                  commercialKyc?.values?.gst_number ||
+                  commercialKyc?.sections?.B?.gst_number ||
+                  commercialKyc?.sections?.D?.gst_number ||
+                  commercialKyc?.gst_number ||
+                  localDraft.B?.gst_number ||
+                  localDraft.D?.gst_number ||
+                  member.gst_number,
                   "Not provided"
                 )
               }
@@ -1764,8 +1844,15 @@ const backendAmount =
               label="Registration / MSME"
               value={
                 toText(
-                  commercialKyc
-                    ?.registration_number,
+                  commercialKyc?.values?.registration_number ||
+                  commercialKyc?.values?.business_registration_number ||
+                  commercialKyc?.sections?.B?.business_registration_number ||
+                  commercialKyc?.sections?.B?.registration_number ||
+                  commercialKyc?.registration_number ||
+                  commercialKyc?.business_registration_number ||
+                  localDraft.B?.business_registration_number ||
+                  localDraft.B?.registration_number ||
+                  member.registration_number,
                   "Not provided"
                 )
               }
@@ -1775,8 +1862,14 @@ const backendAmount =
               label="Employee Count"
               value={
                 toText(
-                  commercialKyc
-                    ?.employee_count,
+                  commercialKyc?.values?.number_of_employees ||
+                  commercialKyc?.values?.employee_count ||
+                  commercialKyc?.sections?.E?.number_of_employees ||
+                  commercialKyc?.sections?.E?.employee_count ||
+                  commercialKyc?.employee_count ||
+                  localDraft.E?.number_of_employees ||
+                  localDraft.E?.employee_count ||
+                  member.employee_count,
                   "Not specified"
                 )
               }
@@ -1786,8 +1879,11 @@ const backendAmount =
               label="Payout Cycle"
               value={
                 toText(
-                  commercialKyc
-                    ?.preferred_payout_cycle,
+                  commercialKyc?.values?.preferred_payout_cycle ||
+                  commercialKyc?.sections?.F?.preferred_payout_cycle ||
+                  commercialKyc?.preferred_payout_cycle ||
+                  localDraft.F?.preferred_payout_cycle ||
+                  member.preferred_payout_cycle,
                   "Not selected"
                 )
               }
@@ -2018,13 +2114,12 @@ const backendAmount =
               <div>
 
                 <h3>
-                  Referral Code Not Available
+                  Referral Program Locked
                 </h3>
 
                 <p>
-                  Referral ID / Link is available from your Commercial
-                  account itself. If it is not visible yet, refresh the
-                  dashboard after your account details finish loading.
+                  Your referral code and invite link will be unlocked once your
+                  payment is approved by the administrator.
                 </p>
 
               </div>

@@ -535,9 +535,11 @@ function Field({
   options = null,
 
   error = "",
+  maxLength,
+  ...rest
 }) {
   return (
-    <div className="commercial-kyc-field">
+    <div className={`commercial-kyc-field ${error ? "has-error" : ""}`}>
       <label
         htmlFor={
           name
@@ -606,6 +608,9 @@ function Field({
           placeholder={
             placeholder
           }
+          maxLength={
+            maxLength
+          }
           onChange={(
             event
           ) =>
@@ -616,6 +621,7 @@ function Field({
                 .value
             )
           }
+          {...rest}
         />
       )}
 
@@ -1567,6 +1573,29 @@ export default function CommercialProfileUpgrade() {
           );
 
           const mergedComm = mergeServerSections(data.sections);
+
+          // Merge local storage draft so user-entered data is never lost
+          try {
+            const draftStr = localStorage.getItem("inmba_commercial_kyc_draft");
+            if (draftStr) {
+              const draftData = JSON.parse(draftStr);
+              if (draftData && typeof draftData === "object") {
+                SECTIONS.forEach(({ id }) => {
+                  if (draftData[id]) {
+                    mergedComm[id] = {
+                      ...(mergedComm[id] || {}),
+                      ...Object.fromEntries(
+                        Object.entries(draftData[id]).filter(
+                          ([, v]) => v !== null && v !== undefined && v !== "" && v !== "—"
+                        )
+                      ),
+                    };
+                  }
+                });
+              }
+            }
+          } catch {}
+
           if (!String(mergedComm.E?.business_bio || "").trim()) {
             const ownerName = mergedComm.A?.business_name || mergedComm.A?.authorized_person_name || data?.member?.first_name || "";
             const planVal = String(data?.selectedPlan?.amount || data?.selectedPlan?.id || selectedPlan?.amount || selectedPlan?.id || "2999").trim();
@@ -1848,24 +1877,57 @@ export default function CommercialProfileUpgrade() {
   const updateValue =
     (
       name,
-      value
+      rawValue
     ) => {
+      let value = rawValue;
+
+      // Strict numeric & length limits
+      if (
+        name === "nominee_aadhaar_id" ||
+        name === "aadhaar_number" ||
+        name === "owner_aadhaar_number"
+      ) {
+        value = String(rawValue || "").replace(/\D/g, "").slice(0, 12);
+      } else if (
+        name === "emergency_contact_number" ||
+        name === "business_contact_number" ||
+        name === "phone" ||
+        name === "mobile"
+      ) {
+        value = String(rawValue || "").replace(/\D/g, "").slice(0, 10);
+      } else if (name === "pan_number") {
+        value = String(rawValue || "").toUpperCase().slice(0, 10);
+      } else if (name === "ifsc_code") {
+        value = String(rawValue || "").toUpperCase().slice(0, 11);
+      }
+
       setForm(
         (
           previous
-        ) => ({
-          ...previous,
+        ) => {
+          const updatedForm = {
+            ...previous,
 
-          [activeSection]:
-            {
-              ...previous[
-                activeSection
-              ],
+            [activeSection]:
+              {
+                ...previous[
+                  activeSection
+                ],
 
-              [name]:
-                value,
-            },
-        })
+                [name]:
+                  value,
+              },
+          };
+
+          try {
+            localStorage.setItem(
+              "inmba_commercial_kyc_draft",
+              JSON.stringify(updatedForm)
+            );
+          } catch {}
+
+          return updatedForm;
+        }
       );
 
       setFieldErrors(
@@ -2551,6 +2613,7 @@ export default function CommercialProfileUpgrade() {
                 value={
                   values.aadhaar_number
                 }
+                maxLength={12}
                 onChange={
                   updateValue
                 }
@@ -2567,6 +2630,7 @@ export default function CommercialProfileUpgrade() {
                 value={
                   values.pan_number
                 }
+                maxLength={10}
                 onChange={
                   updateValue
                 }
@@ -3005,6 +3069,8 @@ export default function CommercialProfileUpgrade() {
               value={
                 values.business_contact_number
               }
+              maxLength={10}
+              placeholder="10-digit mobile number"
               onChange={
                 updateValue
               }
@@ -3183,6 +3249,8 @@ export default function CommercialProfileUpgrade() {
                 value={
                   values.nominee_aadhaar_id
                 }
+                maxLength={12}
+                placeholder="12-digit Aadhaar number"
                 onChange={
                   updateValue
                 }
@@ -3564,6 +3632,8 @@ export default function CommercialProfileUpgrade() {
             value={
               values.emergency_contact_number
             }
+            maxLength={10}
+            placeholder="10-digit mobile number"
             onChange={
               updateValue
             }
@@ -3817,18 +3887,11 @@ export default function CommercialProfileUpgrade() {
               {normalizedStatus ===
               "approved"
                 ? "Your Commercial KYC has been approved and is now locked."
-                : "Your Commercial KYC has been submitted. Review your saved details before continuing to payment."}
+                : "Your Commercial KYC has been submitted. Review your saved details before final dashboard activation."}
             </p>
 
             {normalizedStatus === "approved" ? (
               <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "1rem", flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  className="commercial-kyc-next"
-                  onClick={() => navigate("/commercial/payment")}
-                >
-                  Proceed to Payment <i className="fa-solid fa-arrow-right" />
-                </button>
                 <button
                   type="button"
                   className="commercial-kyc-next"

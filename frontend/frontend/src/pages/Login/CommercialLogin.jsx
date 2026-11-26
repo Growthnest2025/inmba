@@ -404,10 +404,12 @@ const paymentStatus =
         sessionStorage.removeItem("commercial_from_registration");
         sessionStorage.removeItem("commercial_payment_status");
 
+        const nextPath = location.state?.nextPath;
         const targetPath =
-          !isPaymentApproved || fromNewRegistration
-            ? "/commercial/membership-plan"
-            : "/commercial/dashboard";
+          nextPath ||
+          (!isPaymentApproved || fromNewRegistration
+            ? "/commercial/payment"
+            : "/commercial/dashboard");
 
         navigate(
           targetPath,

@@ -8,6 +8,8 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+import { toast } from "react-toastify";
+
 import {
   getCommercialKyc,
   submitCommercialKyc,
@@ -550,9 +552,30 @@ export default function CommercialReview() {
      DATA
   ======================================================= */
 
-  const sections =
-    kyc?.sections ||
-    {};
+  const sections = useMemo(() => {
+    const serverSections = kyc?.sections || {};
+    let draftSections = {};
+    try {
+      const draftStr = localStorage.getItem("inmba_commercial_kyc_draft");
+      if (draftStr) {
+        draftSections = JSON.parse(draftStr) || {};
+      }
+    } catch {}
+
+    const merged = {};
+    ["A", "B", "C", "D", "E", "F", "G"].forEach((id) => {
+      const s = serverSections[id] || {};
+      const d = draftSections[id] || {};
+      merged[id] = { ...d, ...s };
+      Object.keys(d).forEach((key) => {
+        const val = s[key];
+        if (val === undefined || val === null || val === "" || val === "—") {
+          merged[id][key] = d[key];
+        }
+      });
+    });
+    return merged;
+  }, [kyc?.sections]);
 
 const progress =
   useMemo(
@@ -657,99 +680,37 @@ const progress =
     );
 
   /* =======================================================
-     FINAL SUBMIT
+     FINAL SUBMIT -> DASHBOARD
   ======================================================= */
 
-  const goToPayment =
-    () => {
-      const loginId =
-        sessionStorage.getItem("commercial_login_id") ||
-        localStorage.getItem("commercial_login_id") ||
-        sessionStorage.getItem("inmba_commercial_login_id") ||
-        localStorage.getItem("inmba_commercial_login_id") ||
-        sessionStorage.getItem("inmba_member_login_id") ||
-        localStorage.getItem("inmba_member_login_id") ||
-        sessionStorage.getItem("inmba_login_id") ||
-        localStorage.getItem("inmba_login_id") ||
-        "";
+  const goToDashboard = () => {
+    const loginId =
+      sessionStorage.getItem("commercial_login_id") ||
+      localStorage.getItem("commercial_login_id") ||
+      sessionStorage.getItem("inmba_commercial_login_id") ||
+      localStorage.getItem("inmba_commercial_login_id") ||
+      sessionStorage.getItem("inmba_member_login_id") ||
+      localStorage.getItem("inmba_member_login_id") ||
+      sessionStorage.getItem("inmba_login_id") ||
+      localStorage.getItem("inmba_login_id") ||
+      "";
 
-      if (loginId) {
-        sessionStorage.setItem("commercial_login_id", loginId);
-        localStorage.setItem("commercial_login_id", loginId);
-      }
+    if (loginId) {
+      sessionStorage.setItem("commercial_login_id", loginId);
+      localStorage.setItem("commercial_login_id", loginId);
+    }
 
-      sessionStorage.setItem(
-        "commercial_selected_plan",
-        JSON.stringify(
-          selectedPlan
-        )
-      );
+    toast.success("Commercial Full KYC submitted successfully!");
 
-      localStorage.setItem(
-        "commercialSelectedPlanId",
-        selectedPlan.id
-      );
-
-      localStorage.setItem(
-        "commercialSelectedPlanAmount",
-        String(
-          selectedPlan.amount
-        )
-      );
-
-      localStorage.setItem(
-        "commercialSelectedPlanName",
-        selectedPlan.name
-      );
-
-      localStorage.setItem(
-        "commercialRequiresFullKyc",
-        "true"
-      );
-
-      navigate(
-        "/commercial/payment",
-        {
-          replace:
-            true,
-
-          state: {
-            fromCommercialReview:
-              true,
-
-            plan:
-              selectedPlan,
-
-            planId:
-              selectedPlan.id,
-
-            selectedPlanId:
-              selectedPlan.id,
-
-            selected_plan_id:
-              selectedPlan.id,
-
-            amount:
-              selectedPlan.amount,
-
-            planAmount:
-              selectedPlan.amount,
-
-            selectedPlanAmount:
-              selectedPlan.amount,
-
-            selected_plan_amount:
-              selectedPlan.amount,
-
-            requiresFullKyc:
-              true,
-
-            requires_full_kyc:
-              true,
-          },
-        }
-      );
-    };
+    navigate("/commercial/dashboard", {
+      replace: true,
+      state: {
+        fromCommercialReview: true,
+        kycSubmitted: true,
+        loginId,
+      },
+    });
+  };
 
   const handleSubmit =
     async () => {
@@ -783,16 +744,6 @@ const progress =
           ""
         );
 
-        /*
-          IMPORTANT:
-          Do NOT call saveCommercialKycConsent()
-          before final submit.
-
-          submitCommercialKyc() already sends
-          privacyConsent + declarationAccepted
-          to the backend final-submit endpoint.
-        */
-
         await submitCommercialKyc({
           privacyConsent:
             true,
@@ -801,7 +752,7 @@ const progress =
             true,
         });
 
-        goToPayment();
+        goToDashboard();
       } catch (
         requestError
       ) {
@@ -823,12 +774,6 @@ const progress =
             ""
           );
 
-        /*
-          Retry-safe:
-          If a previous click already completed
-          KYC submission, do not try to edit/save
-          KYC again. Continue to Payment.
-        */
         if (
           errorCode ===
             "COMMERCIAL_KYC_ALREADY_SUBMITTED" ||
@@ -837,7 +782,7 @@ const progress =
               message
             )
         ) {
-          goToPayment();
+          goToDashboard();
 
           return;
         }
@@ -1493,6 +1438,15 @@ const progress =
               value={
                 toText(
                   D.nominee_relationship
+                )
+              }
+            />
+
+            <ReviewRow
+              label="Nominee Aadhaar / ID"
+              value={
+                toText(
+                  D.nominee_aadhaar_id
                 )
               }
             />

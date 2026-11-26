@@ -1920,102 +1920,107 @@ async function getCommercialKycRecord(memberId, loginId, db) {
   const completedSet = new Set(completedList);
   const isApprovedOrSubmitted = ["approved", "paid", "submitted", "under_review", "under-review"].includes(String(row.kyc_status || ext.commercial_kyc_status || "").toLowerCase());
 
+  let kycData = {};
+  if (row && row.kyc_data) {
+    try { kycData = JSON.parse(row.kyc_data) || {}; } catch {}
+  }
+
   const secA = {
-    owner_full_legal_name: row.full_legal_name || basic.full_name || member.first_name || "",
-    full_legal_name: row.full_legal_name || basic.full_name || member.first_name || "",
-    father_spouse_name: row.father_spouse_name || "",
-    date_of_birth: row.dob || "",
-    dob: row.dob || "",
-    gender: row.gender || "",
-    marital_status: row.marital_status || "",
-    nationality: row.nationality || "Indian",
-    aadhaar_number: row.aadhaar_number || "",
-    pan_number: row.pan_number || "",
-    passport_number: row.passport_number || "",
-    voter_id: row.voter_id || "",
-    driving_license: row.driving_license || "",
-    blood_group: row.blood_group || "",
-    completed: completedSet.has("A") || (isApprovedOrSubmitted && Boolean(row.full_legal_name && row.aadhaar_number)),
+    owner_full_legal_name: kycData.A?.owner_full_legal_name || row.full_legal_name || basic.full_name || member.first_name || "",
+    full_legal_name: kycData.A?.full_legal_name || row.full_legal_name || basic.full_name || member.first_name || "",
+    father_spouse_name: kycData.A?.father_spouse_name || row.father_spouse_name || "",
+    date_of_birth: kycData.A?.date_of_birth || row.dob || "",
+    dob: kycData.A?.dob || row.dob || "",
+    gender: kycData.A?.gender || row.gender || "",
+    marital_status: kycData.A?.marital_status || row.marital_status || "",
+    nationality: kycData.A?.nationality || row.nationality || "Indian",
+    aadhaar_number: kycData.A?.aadhaar_number || row.aadhaar_number || "",
+    pan_number: kycData.A?.pan_number || row.pan_number || "",
+    passport_number: kycData.A?.passport_number || row.passport_number || "",
+    voter_id: kycData.A?.voter_id || row.voter_id || "",
+    driving_license: kycData.A?.driving_license || row.driving_license || "",
+    blood_group: kycData.A?.blood_group || row.blood_group || "",
+    completed: completedSet.has("A") || (isApprovedOrSubmitted && Boolean((kycData.A?.owner_full_legal_name || row.full_legal_name) && (kycData.A?.aadhaar_number || row.aadhaar_number))),
   };
 
   const secB = {
-    business_company_name: row.business_name || basic.business_name || ext.business_name || "",
-    business_name: row.business_name || basic.business_name || ext.business_name || "",
-    business_type: row.business_type || basic.business_type || ext.business_category_tags || "",
-    business_registration_number: row.registration_number || "",
-    registration_number: row.registration_number || "",
-    company_pan_tan: row.company_pan || row.tan_number || "",
-    company_pan: row.company_pan || "",
-    tan_number: row.tan_number || "",
-    gst_applicable: Boolean(row.gst_number),
-    gst_number: row.gst_number || "",
+    business_company_name: kycData.B?.business_company_name || kycData.B?.business_name || row.business_name || basic.business_name || ext.business_name || "",
+    business_name: kycData.B?.business_name || kycData.B?.business_company_name || row.business_name || basic.business_name || ext.business_name || "",
+    business_type: kycData.B?.business_type || row.business_type || basic.business_type || ext.business_category_tags || "",
+    business_registration_number: kycData.B?.business_registration_number || row.registration_number || "",
+    registration_number: kycData.B?.registration_number || row.registration_number || "",
+    company_pan_tan: kycData.B?.company_pan_tan || row.company_pan || row.tan_number || "",
+    company_pan: kycData.B?.company_pan || row.company_pan || "",
+    tan_number: kycData.B?.tan_number || row.tan_number || "",
+    gst_applicable: Boolean(kycData.B?.gst_number || row.gst_number),
+    gst_number: kycData.B?.gst_number || row.gst_number || "",
     shop_establishment_license_required: false,
     industry_license_required: false,
-    completed: completedSet.has("B") || (isApprovedOrSubmitted && Boolean(row.business_name && row.business_type)),
+    completed: completedSet.has("B") || (isApprovedOrSubmitted && Boolean((kycData.B?.business_name || row.business_name) && (kycData.B?.business_type || row.business_type))),
   };
 
   const secC = {
-    registered_business_address: row.business_address || ext.business_address || basic.address || basic.city || "",
-    business_address: row.business_address || ext.business_address || basic.address || basic.city || "",
-    branch_locations: row.branch_locations || "",
-    business_contact_number: row.business_phone || basic.mobile || member.phone || "",
-    business_phone: row.business_phone || basic.mobile || member.phone || "",
-    business_email: row.business_email || basic.email || member.email || "",
-    business_website: row.business_website || "",
-    google_map_location: row.google_map_pin || "",
-    google_map_pin: row.google_map_pin || "",
-    completed: completedSet.has("C") || (isApprovedOrSubmitted && Boolean(row.business_address && row.business_phone)),
+    registered_business_address: kycData.C?.registered_business_address || row.business_address || ext.business_address || basic.address || basic.city || "",
+    business_address: kycData.C?.business_address || row.business_address || ext.business_address || basic.address || basic.city || "",
+    branch_locations: kycData.C?.branch_locations || row.branch_locations || "",
+    business_contact_number: kycData.C?.business_contact_number || row.business_phone || basic.mobile || member.phone || "",
+    business_phone: kycData.C?.business_phone || row.business_phone || basic.mobile || member.phone || "",
+    business_email: kycData.C?.business_email || row.business_email || basic.email || member.email || "",
+    business_website: kycData.C?.business_website || row.business_website || "",
+    google_map_location: kycData.C?.google_map_location || row.google_map_pin || "",
+    google_map_pin: kycData.C?.google_map_pin || row.google_map_pin || "",
+    completed: completedSet.has("C") || (isApprovedOrSubmitted && Boolean((kycData.C?.registered_business_address || row.business_address) && (kycData.C?.business_contact_number || row.business_phone))),
   };
 
   const secD = {
-    bank_account_number: row.bank_account_number || "",
-    ifsc_code: row.ifsc_code || "",
-    bank_branch_name: row.bank_branch || "",
-    bank_branch: row.bank_branch || "",
-    upi_id: row.upi_id || "",
-    gst_applicable: Boolean(row.gst_number),
-    gst_number: row.gst_number || "",
-    income_tax_declaration: row.income_tax_slab || "",
-    income_tax_slab: row.income_tax_slab || "",
-    nominee_name: row.nominee_name || "",
-    nominee_relationship: row.nominee_relation || "",
-    nominee_relation: row.nominee_relation || "",
-    nominee_aadhaar_id: "",
-    completed: completedSet.has("D") || (isApprovedOrSubmitted && Boolean(row.bank_account_number && row.ifsc_code)),
+    bank_account_number: kycData.D?.bank_account_number || row.bank_account_number || "",
+    ifsc_code: kycData.D?.ifsc_code || row.ifsc_code || "",
+    bank_branch_name: kycData.D?.bank_branch_name || row.bank_branch || "",
+    bank_branch: kycData.D?.bank_branch || row.bank_branch || "",
+    upi_id: kycData.D?.upi_id || row.upi_id || "",
+    gst_applicable: Boolean(kycData.D?.gst_number || row.gst_number),
+    gst_number: kycData.D?.gst_number || row.gst_number || "",
+    income_tax_declaration: kycData.D?.income_tax_declaration || row.income_tax_slab || "",
+    income_tax_slab: kycData.D?.income_tax_slab || row.income_tax_slab || "",
+    nominee_name: kycData.D?.nominee_name || row.nominee_name || "",
+    nominee_relationship: kycData.D?.nominee_relationship || row.nominee_relation || "",
+    nominee_relation: kycData.D?.nominee_relation || row.nominee_relation || "",
+    nominee_aadhaar_id: kycData.D?.nominee_aadhaar_id || row.nominee_aadhaar_id || row.nominee_aadhaar || "",
+    completed: completedSet.has("D") || (isApprovedOrSubmitted && Boolean((kycData.D?.bank_account_number || row.bank_account_number) && (kycData.D?.ifsc_code || row.ifsc_code))),
   };
 
   const secE = {
-    year_established: row.year_established || "",
-    number_of_employees: row.employee_count || "",
-    employee_count: row.employee_count || "",
-    annual_turnover_slab: row.annual_turnover || "",
-    annual_turnover: row.annual_turnover || "",
-    products_services_offered: row.products_services || "",
-    products_services: row.products_services || "",
-    business_category_tags: row.business_category_tags || basic.business_type || "",
-    awards_certifications: row.awards_certifications || "",
-    client_testimonials: row.client_testimonials || "",
-    business_bio: row.business_bio || "",
-    social_media_links: row.social_links || "",
-    social_links: row.social_links || "",
-    completed: completedSet.has("E") || (isApprovedOrSubmitted && Boolean(row.year_established || row.business_bio)),
+    year_established: kycData.E?.year_established || row.year_established || "",
+    number_of_employees: kycData.E?.number_of_employees || row.employee_count || "",
+    employee_count: kycData.E?.employee_count || row.employee_count || "",
+    annual_turnover_slab: kycData.E?.annual_turnover_slab || row.annual_turnover || "",
+    annual_turnover: kycData.E?.annual_turnover || row.annual_turnover || "",
+    products_services_offered: kycData.E?.products_services_offered || row.products_services || "",
+    products_services: kycData.E?.products_services || row.products_services || "",
+    business_category_tags: kycData.E?.business_category_tags || row.business_category_tags || basic.business_type || "",
+    awards_certifications: kycData.E?.awards_certifications || row.awards_certifications || "",
+    client_testimonials: kycData.E?.client_testimonials || row.client_testimonials || "",
+    business_bio: kycData.E?.business_bio || row.business_bio || "",
+    social_media_links: kycData.E?.social_media_links || row.social_links || "",
+    social_links: kycData.E?.social_links || row.social_links || "",
+    completed: completedSet.has("E") || (isApprovedOrSubmitted && Boolean(kycData.E?.year_established || row.year_established || kycData.E?.business_bio || row.business_bio)),
   };
 
   const secF = {
-    preferred_payout_cycle: row.preferred_payout_cycle || "",
-    referral_id: row.referral_id || member.referral_id || "",
+    preferred_payout_cycle: kycData.F?.preferred_payout_cycle || row.preferred_payout_cycle || "",
+    referral_id: kycData.F?.referral_id || row.referral_id || member.referral_id || "",
     network_level_rank: member.network_level || "",
     team_size: member.direct_network || "0",
     royalty_slab_category: member.royalty_slab_category || "Standard",
-    completed: completedSet.has("F") || (isApprovedOrSubmitted && Boolean(row.preferred_payout_cycle)),
+    completed: completedSet.has("F") || (isApprovedOrSubmitted && Boolean(kycData.F?.preferred_payout_cycle || row.preferred_payout_cycle)),
   };
 
   const secG = {
-    emergency_contact_name: row.emergency_contact_name || "",
-    emergency_contact_number: row.emergency_contact_number || "",
-    relationship: row.emergency_relationship || "",
-    emergency_relationship: row.emergency_relationship || "",
-    completed: completedSet.has("G") || (isApprovedOrSubmitted && Boolean(row.emergency_contact_name)),
+    emergency_contact_name: kycData.G?.emergency_contact_name || row.emergency_contact_name || "",
+    emergency_contact_number: kycData.G?.emergency_contact_number || row.emergency_contact_number || "",
+    relationship: kycData.G?.relationship || row.emergency_relationship || "",
+    emergency_relationship: kycData.G?.emergency_relationship || row.emergency_relationship || "",
+    completed: completedSet.has("G") || (isApprovedOrSubmitted && Boolean(kycData.G?.emergency_contact_name || row.emergency_contact_name)),
   };
 
   const sections = {
@@ -2575,6 +2580,7 @@ async function handleSaveCommercialSection(request, db, cors, section) {
     "business_name", "business_type", "registration_number", "gst_number", "company_pan", "tan_number",
     "business_address", "branch_locations", "business_phone", "business_email", "business_website", "google_map_pin",
     "bank_account_number", "ifsc_code", "bank_branch", "upi_id", "income_tax_slab", "nominee_name", "nominee_relation",
+    "nominee_aadhaar_id", "nominee_aadhaar",
     "year_established", "employee_count", "annual_turnover", "products_services", "business_category_tags",
     "awards_certifications", "client_testimonials", "business_bio", "social_links", "referral_id",
     "preferred_payout_cycle", "emergency_contact_name", "emergency_contact_number", "emergency_relationship"
@@ -2592,6 +2598,8 @@ async function handleSaveCommercialSection(request, db, cors, section) {
     bank_branch_name: "bank_branch",
     income_tax_declaration: "income_tax_slab",
     nominee_relationship: "nominee_relation",
+    nominee_aadhaar_id: "nominee_aadhaar_id",
+    nominee_aadhaar: "nominee_aadhaar_id",
     number_of_employees: "employee_count",
     annual_turnover_slab: "annual_turnover",
     products_services_offered: "products_services",
@@ -2661,8 +2669,27 @@ async function handleSaveCommercialSection(request, db, cors, section) {
     }
   }
 
-  // Record section in commercial_kyc_progress
+  // Ensure kyc_data JSON column exists and stores all section data
   const normalizedSec = String(section || "").trim().toUpperCase();
+  try {
+    await db.prepare("ALTER TABLE commercial_kyc ADD COLUMN kyc_data TEXT").run();
+  } catch {}
+  try {
+    await db.prepare("ALTER TABLE commercial_kyc ADD COLUMN nominee_aadhaar_id TEXT").run();
+  } catch {}
+
+  try {
+    let existingKycData = {};
+    const commRow = await db.prepare("SELECT kyc_data FROM commercial_kyc WHERE member_id = ? OR login_id = ?").bind(member.id, member.login_id).first();
+    if (commRow && commRow.kyc_data) {
+      try { existingKycData = JSON.parse(commRow.kyc_data) || {}; } catch {}
+    }
+    existingKycData[normalizedSec] = { ...(existingKycData[normalizedSec] || {}), ...values };
+    await db.prepare("UPDATE commercial_kyc SET kyc_data = ?, updated_at = datetime('now') WHERE member_id = ? OR login_id = ?")
+      .bind(JSON.stringify(existingKycData), member.id, member.login_id).run();
+  } catch (err) {
+    console.error("Error saving commercial kyc_data JSON:", err);
+  }
   if (["A", "B", "C", "D", "E", "F", "G"].includes(normalizedSec)) {
     try {
       await db.prepare(`
@@ -3786,6 +3813,9 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     SELECT * FROM commercial_basic_kyc WHERE login_id = ?
   `).bind(member.login_id).first()) || {};
 
+  const commKycRecord = await getCommercialKycRecord(member.id, member.login_id, db);
+  const commVals = commKycRecord.values || {};
+
   const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "INMBA Member";
   const isApproved = String(member.payment_status || "").toLowerCase() === "approved";
   const planAmount = fullKyc?.selectedPlan || ext.amount || "299";
@@ -3795,28 +3825,36 @@ async function handleGetPublicUser(request, db, cors, loginId) {
   const isProfessional = /professional/i.test(member.membership_type) || loginIdUpper.startsWith("PRO");
   const networkSummary = await getMemberNetworkSummary(db, member);
 
+  let commData = {};
+  if (commKyc && commKyc.kyc_data) {
+    try { commData = JSON.parse(commKyc.kyc_data) || {}; } catch {}
+  }
+
   const business = {
-    name: commBasic.business_name || commKyc.business_name || member.occupation || "Commercial Business",
-    category: commBasic.business_type || commKyc.business_type || commKyc.business_category_tags || "Commercial",
+    name: commData.B?.business_name || commData.B?.business_company_name || commKyc.business_name || commBasic.business_name || member.occupation || "Commercial Business",
+    category: commData.B?.business_type || commKyc.business_type || commBasic.business_type || commKyc.business_category_tags || "Commercial",
     legal_type: "Commercial",
-    address: commKyc.business_address || member.current_address || "",
-    city: commBasic.city || member.city || "",
-    contact_number: member.phone,
-    email: commBasic.email || member.email || "",
-    website: commKyc.business_website || "",
-    google_map_location: commKyc.google_map_pin || "",
-    year_established: commKyc.year_established || 2024,
-    number_of_employees: commKyc.employee_count || 5,
-    products_services: commKyc.products_services || "",
-    products_services_offered: commKyc.products_services || "",
-    category_tags: commKyc.business_category_tags || "",
-    bio: commKyc.business_bio || member.bio || "",
+    address: commData.C?.registered_business_address || commKyc.business_address || member.current_address || "",
+    city: commData.C?.city || commBasic.city || member.city || "",
+    contact_number: commData.C?.business_contact_number || commKyc.business_phone || member.phone,
+    email: commData.C?.business_email || commKyc.business_email || commBasic.email || member.email || "",
+    website: commData.C?.business_website || commKyc.business_website || "",
+    google_map_location: commData.C?.google_map_location || commKyc.google_map_pin || "",
+    year_established: commData.E?.year_established || commKyc.year_established || "",
+    number_of_employees: commData.E?.number_of_employees || commKyc.employee_count || "",
+    products_services: commData.E?.products_services_offered || commKyc.products_services || "",
+    products_services_offered: commData.E?.products_services_offered || commKyc.products_services || "",
+    category_tags: commData.E?.business_category_tags || commKyc.business_category_tags || "",
+    awards_certifications: commData.E?.awards_certifications || commKyc.awards_certifications || "",
+    client_testimonials: commData.E?.client_testimonials || commKyc.client_testimonials || "",
+    bio: commData.E?.business_bio || commKyc.business_bio || member.bio || "",
     logo: member.profile_pic || "",
   };
 
   const profile = {
     ...(fullKyc?.values || {}),
     ...(fullKyc?.files || {}),
+    ...(commVals || {}),
     id: member.id,
     login_id: member.login_id,
     first_name: member.first_name,
@@ -3844,20 +3882,20 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     })(planAmount, isCommercial, isProfessional, member.membership_type),
     profile_type: isCommercial ? "commercial" : (isProfessional ? "professional" : "civilian"),
     payment_status: member.payment_status || "pending",
-    bio: commKyc.business_bio || fullKyc?.values?.bio || member.bio || "",
-    profile_bio: commKyc.business_bio || fullKyc?.values?.bio || member.bio || "",
+    bio: commVals.business_bio || commKyc.business_bio || fullKyc?.values?.bio || member.bio || "",
+    profile_bio: commVals.business_bio || commKyc.business_bio || fullKyc?.values?.bio || member.bio || "",
     profile_pic: member.profile_pic || fullKyc?.files?.profile_photo || "",
     profile_image_url: member.profile_pic || fullKyc?.files?.profile_photo || "",
     profile_photo: member.profile_pic || fullKyc?.files?.profile_photo || "",
     profile_photo_url: member.profile_pic || fullKyc?.files?.profile_photo || "",
     photo_url: member.profile_pic || fullKyc?.files?.profile_photo || "",
-    city: commBasic.city || member.city || fullKyc?.values?.city || "",
+    city: commVals.city || commBasic.city || member.city || fullKyc?.values?.city || "",
     state: member.state || fullKyc?.values?.state || "",
     district: member.district || fullKyc?.values?.district || "",
     pincode: fullKyc?.values?.pincode || member.pincode || "",
-    current_address: fullKyc?.values?.current_address || member.current_address || member.address || "",
+    current_address: commVals.registered_business_address || commVals.business_address || fullKyc?.values?.current_address || member.current_address || member.address || "",
     permanent_address: fullKyc?.values?.permanent_address || "",
-    address: fullKyc?.values?.current_address || member.current_address || member.address || "",
+    address: commVals.registered_business_address || commVals.business_address || fullKyc?.values?.current_address || member.current_address || member.address || "",
     country: "India",
     profession: member.occupation || (isProfessional ? "Professional" : ""),
     education: fullKyc?.values?.highest_qualification || fullKyc?.values?.education_level || fullKyc?.values?.ug_degree || member.education || "",
@@ -3887,32 +3925,54 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     cover_photo_url: fullKyc?.files?.cover_photo || fullKyc?.values?.cover_photo || member.cover_photo || "",
     banner: fullKyc?.files?.cover_photo || fullKyc?.values?.cover_photo || member.cover_photo || "",
     banner_url: fullKyc?.files?.cover_photo || fullKyc?.values?.cover_photo || member.cover_photo || "",
-    father_spouse_name: fullKyc?.values?.father_spouse_name || member.father_spouse_name || member.father_name || "",
-    father_name: fullKyc?.values?.father_spouse_name || member.father_spouse_name || member.father_name || "",
-    blood_group: fullKyc?.values?.blood_group || member.blood_group || "",
-    aadhaar_number: fullKyc?.values?.aadhaar_number || member.aadhaar_number || member.aadhar || "",
-    aadhar: fullKyc?.values?.aadhaar_number || member.aadhaar_number || member.aadhar || "",
-    pan_number: fullKyc?.values?.pan_number || member.pan_number || member.pan || "",
-    pan: fullKyc?.values?.pan_number || member.pan_number || member.pan || "",
-    nominee_name: fullKyc?.values?.nominee_name || member.nominee_name || member.nomini_name || "",
-    nomini_name: fullKyc?.values?.nominee_name || member.nomini_name || "",
-    nominee_relationship: fullKyc?.values?.nominee_relationship || member.nominee_relationship || member.nomini_relationship || "",
-    nomini_relationship: fullKyc?.values?.nominee_relationship || member.nomini_relationship || "",
+    owner_full_legal_name: commVals.owner_full_legal_name || commVals.full_legal_name || fullName,
+    owner_name: commVals.owner_full_legal_name || commVals.full_legal_name || fullName,
+    father_spouse_name: commVals.father_spouse_name || fullKyc?.values?.father_spouse_name || member.father_spouse_name || member.father_name || "",
+    father_name: commVals.father_spouse_name || fullKyc?.values?.father_spouse_name || member.father_spouse_name || member.father_name || "",
+    dob: commVals.dob || commVals.date_of_birth || fullKyc?.values?.dob || member.dob || member.date_of_birth || "",
+    date_of_birth: commVals.date_of_birth || commVals.dob || fullKyc?.values?.date_of_birth || member.date_of_birth || member.dob || "",
+    gender: commVals.gender || fullKyc?.values?.gender || member.gender || "",
+    marital_status: commVals.marital_status || fullKyc?.values?.marital_status || member.marital_status || "",
+    nationality: commVals.nationality || member.nationality || "Indian",
+    blood_group: commVals.blood_group || fullKyc?.values?.blood_group || member.blood_group || "",
+    aadhaar_number: commVals.aadhaar_number || fullKyc?.values?.aadhaar_number || member.aadhaar_number || member.aadhar || "",
+    aadhar: commVals.aadhaar_number || fullKyc?.values?.aadhaar_number || member.aadhaar_number || member.aadhar || "",
+    pan_number: commVals.pan_number || commVals.company_pan || fullKyc?.values?.pan_number || member.pan_number || member.pan || "",
+    pan: commVals.pan_number || commVals.company_pan || fullKyc?.values?.pan_number || member.pan_number || member.pan || "",
+    passport_number: commVals.passport_number || "",
+    voter_id: commVals.voter_id || "",
+    driving_license: commVals.driving_license || "",
+    business_registration_number: commVals.business_registration_number || commVals.registration_number || "",
+    registration_number: commVals.registration_number || commVals.business_registration_number || "",
+    company_pan: commVals.company_pan || commVals.pan_number || "",
+    gst_number: commVals.gst_number || "",
+    bank_account_number: commVals.bank_account_number || fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || member.bank_account_number || member.account_number || "",
+    account_number: commVals.bank_account_number || fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || member.account_number || "",
+    ifsc_code: commVals.ifsc_code || fullKyc?.values?.ifsc_code || member.ifsc_code || "",
+    ifsc: commVals.ifsc_code || fullKyc?.values?.ifsc_code || member.ifsc_code || "",
+    branch: commVals.bank_branch_name || commVals.bank_branch || fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || "",
+    bank_branch: commVals.bank_branch_name || commVals.bank_branch || fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || "",
+    bank_branch_name: commVals.bank_branch_name || commVals.bank_branch || fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || "",
+    upi_id: commVals.upi_id || "",
+    nominee_name: commVals.nominee_name || fullKyc?.values?.nominee_name || member.nominee_name || member.nomini_name || "",
+    nomini_name: commVals.nominee_name || fullKyc?.values?.nominee_name || member.nomini_name || "",
+    nominee_relationship: commVals.nominee_relationship || commVals.nominee_relation || fullKyc?.values?.nominee_relationship || member.nominee_relationship || member.nomini_relationship || "",
+    nomini_relationship: commVals.nominee_relationship || commVals.nominee_relation || fullKyc?.values?.nominee_relationship || member.nomini_relationship || "",
     nominee_dob: fullKyc?.values?.nominee_dob || member.nominee_dob || member.nomini_dob || "",
     nomini_dob: fullKyc?.values?.nominee_dob || member.nomini_dob || "",
-    nominee_aadhaar: fullKyc?.values?.nominee_aadhaar || member.nominee_aadhaar || member.nomini_aadhar || "",
-    nomini_aadhar: fullKyc?.values?.nominee_aadhaar || member.nomini_aadhar || "",
-    emergency_contact_name: fullKyc?.values?.emergency_contact_name || member.emergency_contact_name || "",
-    emergency_contact_number: fullKyc?.values?.emergency_contact_number || member.emergency_contact_number || "",
-    emergency_relationship: fullKyc?.values?.emergency_relationship || member.emergency_relationship || "",
-    bank_name: fullKyc?.values?.bank_name || member.bank_name || "",
-    bank_account_number: fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || member.bank_account_number || member.account_number || "",
-    account_number: fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || member.account_number || "",
-    ifsc_code: fullKyc?.values?.ifsc_code || member.ifsc_code || "",
-    ifsc: fullKyc?.values?.ifsc_code || member.ifsc_code || "",
-    branch: fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || member.bank_branch || member.bank_branch_name || "",
-    bank_branch: fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || member.bank_branch || member.bank_branch_name || "",
-    bank_branch_name: fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || member.bank_branch || member.bank_branch_name || "",
+    nominee_aadhaar: commVals.nominee_aadhaar_id || commVals.nominee_aadhaar || fullKyc?.values?.nominee_aadhaar || member.nominee_aadhaar || member.nomini_aadhar || "",
+    nominee_aadhaar_id: commVals.nominee_aadhaar_id || commVals.nominee_aadhaar || fullKyc?.values?.nominee_aadhaar || member.nominee_aadhaar || member.nomini_aadhar || "",
+    nomini_aadhar: commVals.nominee_aadhaar_id || commVals.nominee_aadhaar || fullKyc?.values?.nominee_aadhaar || member.nomini_aadhar || "",
+    annual_turnover_slab: commVals.annual_turnover_slab || commVals.annual_turnover || "",
+    products_services_offered: commVals.products_services_offered || commVals.products_services || business.products_services_offered || "",
+    business_category_tags: commVals.business_category_tags || business.category_tags || "",
+    awards_certifications: commVals.awards_certifications || business.awards_certifications || "",
+    client_testimonials: commVals.client_testimonials || business.client_testimonials || "",
+    emergency_contact_name: commVals.emergency_contact_name || fullKyc?.values?.emergency_contact_name || member.emergency_contact_name || "",
+    emergency_contact_number: commVals.emergency_contact_number || fullKyc?.values?.emergency_contact_number || member.emergency_contact_number || "",
+    emergency_relationship: commVals.relationship || commVals.emergency_relationship || fullKyc?.values?.emergency_relationship || member.emergency_relationship || "",
+    relationship: commVals.relationship || commVals.emergency_relationship || fullKyc?.values?.emergency_relationship || member.emergency_relationship || "",
+    preferred_payout_cycle: commVals.preferred_payout_cycle || "",
     skills: fullKyc?.values?.skills || "",
     social_instagram: fullKyc?.values?.instagram_url || "",
     social_linkedin: fullKyc?.values?.linkedin_url || "",
@@ -3955,6 +4015,7 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     values: {
       ...fullKyc?.values,
       ...commKyc,
+      ...commVals,
       ...business,
     },
   };
@@ -4590,6 +4651,9 @@ async function handleGetAdminUser(request, db, cors, id) {
     SELECT * FROM commercial_payments WHERE login_id = ? ORDER BY id DESC LIMIT 1
   `).bind(member.login_id).first()) || {};
 
+  const commKycRecord = await getCommercialKycRecord(member.id, member.login_id, db);
+  const commVals = commKycRecord.values || {};
+
   let referrer = null;
   if (member.referred_by) {
     referrer = await db.prepare(`
@@ -4681,6 +4745,7 @@ async function handleGetAdminUser(request, db, cors, id) {
     ...member,
     ...ext,
     ...(civRecord.values || {}),
+    ...(commVals || {}),
     id: member.id,
     login_id: member.login_id,
     first_name: fn,
@@ -4690,20 +4755,30 @@ async function handleGetAdminUser(request, db, cors, id) {
     name: fullName,
     email: member.email,
     phone: member.phone,
-    dob: civRecord.values?.dob || civRecord.values?.date_of_birth || member.dob || member.date_of_birth || "",
-    date_of_birth: civRecord.values?.dob || civRecord.values?.date_of_birth || member.dob || member.date_of_birth || "",
-    father_spouse_name: civRecord.values?.father_spouse_name || civRecord.values?.father_name || member.father_spouse_name || member.father_name || "",
+    dob: commVals.dob || commVals.date_of_birth || civRecord.values?.dob || civRecord.values?.date_of_birth || member.dob || member.date_of_birth || "",
+    date_of_birth: commVals.date_of_birth || commVals.dob || civRecord.values?.dob || civRecord.values?.date_of_birth || member.dob || member.date_of_birth || "",
+    father_spouse_name: commVals.father_spouse_name || civRecord.values?.father_spouse_name || civRecord.values?.father_name || member.father_spouse_name || member.father_name || "",
+    gender: commVals.gender || member.gender || "",
+    marital_status: commVals.marital_status || member.marital_status || "",
+    nationality: commVals.nationality || member.nationality || "Indian",
+    blood_group: commVals.blood_group || member.blood_group || "",
+    aadhaar_number: commVals.aadhaar_number || member.aadhaar_number || member.aadhar || "",
+    pan_number: commVals.pan_number || commVals.company_pan || member.pan_number || member.pan || "",
     school_college_name: civRecord.values?.school_college_name || civRecord.values?.school_name || member.school_college_name || member.school_name || member.ug_college || member.pg_college || member.institution_name || "",
     school_name: civRecord.values?.school_name || civRecord.values?.school_college_name || member.school_name || member.school_college_name || "",
     highest_qualification: civRecord.values?.highest_qualification || member.highest_qualification || member.educational_qualification || member.education || "",
     degree_year: civRecord.values?.degree_year || civRecord.values?.ug_year || member.degree_year || member.ug_year || "",
-    bank_branch_name: civRecord.values?.bank_branch_name || civRecord.values?.branch || member.bank_branch_name || member.branch || "",
-    branch: civRecord.values?.bank_branch_name || civRecord.values?.branch || member.bank_branch_name || member.branch || "",
-    emergency_contact_name: civRecord.values?.emergency_contact_name || member.emergency_contact_name || "",
-    emergency_contact_number: civRecord.values?.emergency_contact_number || member.emergency_contact_number || "",
-    emergency_relationship: civRecord.values?.emergency_relationship || member.emergency_relationship || "",
-    nominee_name: civRecord.values?.nominee_name || member.nominee_name || member.nomini_name || "",
-    nominee_relationship: civRecord.values?.nominee_relationship || member.nominee_relationship || "",
+    bank_branch_name: commVals.bank_branch_name || commVals.bank_branch || civRecord.values?.bank_branch_name || civRecord.values?.branch || member.bank_branch_name || member.branch || "",
+    branch: commVals.bank_branch_name || commVals.bank_branch || civRecord.values?.bank_branch_name || civRecord.values?.branch || member.bank_branch_name || member.branch || "",
+    bank_account_number: commVals.bank_account_number || member.bank_account_number || member.account_number || "",
+    ifsc_code: commVals.ifsc_code || member.ifsc_code || "",
+    emergency_contact_name: commVals.emergency_contact_name || civRecord.values?.emergency_contact_name || member.emergency_contact_name || "",
+    emergency_contact_number: commVals.emergency_contact_number || civRecord.values?.emergency_contact_number || member.emergency_contact_number || "",
+    emergency_relationship: commVals.relationship || civRecord.values?.emergency_relationship || member.emergency_relationship || "",
+    nominee_name: commVals.nominee_name || civRecord.values?.nominee_name || member.nominee_name || member.nomini_name || "",
+    nominee_relationship: commVals.nominee_relationship || civRecord.values?.nominee_relationship || member.nominee_relationship || "",
+    nominee_aadhaar: commVals.nominee_aadhaar_id || commVals.nominee_aadhaar || "",
+    nominee_aadhaar_id: commVals.nominee_aadhaar_id || commVals.nominee_aadhaar || "",
     membership_type: member.membership_type || "Civilian Member",
     payment_status: member.payment_status || "pending",
     selected_plan: String(planAmount),
@@ -4728,7 +4803,13 @@ async function handleGetAdminUser(request, db, cors, id) {
       user: rawMember,
       payment,
       civilianKyc,
-      commercialKyc: { ...commBasic, ...commKyc },
+      commercialKyc: {
+        ...commBasic,
+        ...commKyc,
+        ...commVals,
+        sections: commKycRecord.sections,
+        values: commVals,
+      },
       commercialPayment: commPayment,
       referrer,
       stats: {

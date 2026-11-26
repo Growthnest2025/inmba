@@ -1,4 +1,5 @@
 import React, {
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -32,7 +33,7 @@ const INITIAL_FORM_DATA = {
   city: "",
   business_address: "",
   password: "",
-  referral: "",
+  referral: "7777777",
 };
 
 /* =========================================================
@@ -119,8 +120,16 @@ export default function CommercialBasicKyc() {
       ...INITIAL_FORM_DATA,
 
       referral:
-        referralFromUrl,
+        referralFromUrl || "7777777",
     });
+
+  useEffect(() => {
+    const resolved = referralFromUrl || "7777777";
+    setFormData((prev) => ({
+      ...prev,
+      referral: resolved,
+    }));
+  }, [referralFromUrl]);
 
   const [
     fieldErrors,
@@ -428,7 +437,7 @@ if (
 
           referral:
             text(
-              formData.referral
+              formData.referral || "7777777"
             )
               .replace(/\s/g, "")
               .slice(0, 50)
@@ -483,6 +492,33 @@ if (!newLoginId) {
             newLoginId
           );
         }
+
+        try {
+          if (form.business_name) {
+            localStorage.setItem("inmba_commercial_business_name", form.business_name);
+            sessionStorage.setItem("inmba_commercial_business_name", form.business_name);
+          }
+          if (form.business_type || form.business_category) {
+            localStorage.setItem("inmba_commercial_business_type", form.business_type || form.business_category);
+            sessionStorage.setItem("inmba_commercial_business_type", form.business_type || form.business_category);
+          }
+          if (form.full_name) {
+            localStorage.setItem("inmba_commercial_owner_name", form.full_name);
+            sessionStorage.setItem("inmba_commercial_owner_name", form.full_name);
+          }
+          if (form.city) {
+            localStorage.setItem("inmba_commercial_city", form.city);
+            sessionStorage.setItem("inmba_commercial_city", form.city);
+          }
+          if (form.mobile) {
+            localStorage.setItem("inmba_commercial_mobile", form.mobile);
+            sessionStorage.setItem("inmba_commercial_mobile", form.mobile);
+          }
+          if (form.email) {
+            localStorage.setItem("inmba_commercial_email", form.email);
+            sessionStorage.setItem("inmba_commercial_email", form.email);
+          }
+        } catch {}
 
         if (result?.token) {
           localStorage.setItem("inmba_auth_token", result.token);
@@ -606,6 +642,26 @@ const handleContinueMembership = () => {
     "true"
   );
 
+  const hasToken =
+    sessionStorage.getItem("inmba_session_token") ||
+    localStorage.getItem("inmba_session_token") ||
+    sessionStorage.getItem("inmba_auth_token") ||
+    localStorage.getItem("inmba_auth_token");
+
+  if (hasToken) {
+    navigate(
+      "/commercial/payment",
+      {
+        replace: true,
+        state: {
+          loginId,
+          fromRegistration: true,
+        },
+      }
+    );
+    return;
+  }
+
   navigate(
     "/login/commercial",
     {
@@ -615,8 +671,8 @@ const handleContinueMembership = () => {
         prefillId: loginId,
         fromNewRegistration: true,
         registrationSuccess: true,
-        nextPath: "/commercial/membership-plan",
-        message: `Commercial account registered successfully! Your Login ID is ${loginId}. Please login to select your membership plan.`,
+        nextPath: "/commercial/payment",
+        message: `Commercial account registered successfully! Your Login ID is ${loginId}. Please login to proceed to payment.`,
       },
     }
   );
@@ -724,7 +780,7 @@ const handleContinueMembership = () => {
               }
             >
               <span>
-                Continue to Commercial Login
+                Proceed to Payment (Step 2)
               </span>
 
               <i className="fas fa-arrow-right" />
@@ -1320,40 +1376,26 @@ minLength={5}
               )}
             </div>
 
-            {/* REFERRAL */}
-
+            {/* REFERRAL ID - LOCKED */}
             <div className="commercial-registration-field">
               <div className="commercial-registration-label-row">
                 <label htmlFor="commercial-referral">
                   Referral ID
                 </label>
-
-                <span>
-                  Optional
-                </span>
+                <span>{(formData.referral || "7777777") === "7777777" ? "Organization Default" : "Referral Applied"}</span>
               </div>
 
               <div className="commercial-registration-input">
-                <i className="fas fa-user-plus" />
-
+                <i className="fas fa-user-plus" aria-hidden="true" />
                 <input
                   id="commercial-referral"
                   name="referral"
                   type="text"
-                  value={
-                    formData.referral
-                  }
-                  onChange={
-                    handleInputChange
-                  }
-                  placeholder="Enter Referral ID"
-                  maxLength={50}
-                  disabled={
-                    submitting ||
-                    Boolean(
-                      referralFromUrl
-                    )
-                  }
+                  value={formData.referral || "7777777"}
+                  readOnly
+                  tabIndex={-1}
+                  style={{ backgroundColor: "#f8fafc", cursor: "not-allowed", color: "#334155", fontWeight: 600 }}
+                  placeholder="Referral ID"
                 />
               </div>
 
