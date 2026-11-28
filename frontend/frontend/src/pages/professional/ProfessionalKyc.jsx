@@ -2465,7 +2465,7 @@ export default function ProfessionalKyc() {
             navigate("/professional-payment", {
               replace: true,
               state: {
-                loginId: rawMem?.login_id || loginId,
+                loginId: rawMem?.login_id || sessionStorage.getItem("inmba_professional_login_id") || "",
                 member: rawMem,
               },
             });
