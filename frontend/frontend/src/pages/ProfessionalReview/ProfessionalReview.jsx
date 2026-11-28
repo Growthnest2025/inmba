@@ -102,80 +102,33 @@ const NEXT_ROUTE_STORAGE_KEY =
 
 const MAIN_FLOW_STEPS = [
   {
-    key:
-      "basic",
-
-    label:
-      "Basic KYC",
-
-    icon:
-      "fa-solid fa-user",
+    key: "basic",
+    label: "Basic KYC",
+    icon: "fa-solid fa-user",
   },
 
   {
-    key:
-      "login",
-
-    label:
-      "Login",
-
-    icon:
-      "fa-solid fa-right-to-bracket",
+    key: "login",
+    label: "Login",
+    icon: "fa-solid fa-right-to-bracket",
   },
 
   {
-    key:
-      "membership",
-
-    label:
-      "Membership",
-
-    icon:
-      "fa-solid fa-id-card",
+    key: "payment",
+    label: "Payment",
+    icon: "fa-solid fa-credit-card",
   },
 
   {
-    key:
-      "full-kyc",
-
-    label:
-      "Full KYC",
-
-    icon:
-      "fa-solid fa-file-shield",
+    key: "full-kyc",
+    label: "Full KYC",
+    icon: "fa-solid fa-file-shield",
   },
 
   {
-    key:
-      "review",
-
-    label:
-      "Review",
-
-    icon:
-      "fa-solid fa-clipboard-check",
-  },
-
-  {
-    key:
-      "payment",
-
-    label:
-      "Payment",
-
-    icon:
-      "fa-solid fa-credit-card",
-  },
-
-  {
-    key:
-      "complete",
-
-    label:
-      "Complete",
-
-    icon:
-      "fa-solid fa-circle-check",
+    key: "complete",
+    label: "Dashboard",
+    icon: "fa-solid fa-gauge",
   },
 ];
 

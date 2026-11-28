@@ -435,8 +435,12 @@ const normalizeMembershipType = (
 };
 
 const isProfessionalMembership = (
-  value
+  value,
+  loginId = ""
 ) => {
+  const cleanLogin = String(loginId || "").trim().toUpperCase();
+  if (cleanLogin.startsWith("PRO")) return true;
+
   const type =
     normalizeMembershipType(
       value
@@ -446,9 +450,14 @@ const isProfessionalMembership = (
     "professional",
     "professional member",
     "professional membership",
+    "inmba network member",
+    "inmba network royalty member",
+    "network member",
   ].includes(
     type
-  );
+  ) ||
+  type.includes("professional") ||
+  type.includes("network");
 };
 
 /* =========================================================
@@ -507,35 +516,42 @@ const getSocialLinks = (
       key: "linkedin",
       label: "LinkedIn",
       icon: "fab fa-linkedin",
-      value: profile?.social_linkedin,
+      value: profile?.social_linkedin ?? profile?.linkedin ?? profile?.linkedin_url,
     },
 
     {
       key: "instagram",
       label: "Instagram",
       icon: "fab fa-instagram",
-      value: profile?.social_instagram,
+      value: profile?.social_instagram ?? profile?.instagram ?? profile?.instagram_url,
     },
 
     {
       key: "facebook",
       label: "Facebook",
       icon: "fab fa-facebook",
-      value: profile?.social_facebook,
+      value: profile?.social_facebook ?? profile?.facebook ?? profile?.facebook_url,
     },
 
     {
       key: "twitter",
       label: "Twitter / X",
       icon: "fab fa-x-twitter",
-      value: profile?.social_twitter,
+      value: profile?.social_twitter ?? profile?.twitter ?? profile?.twitter_url ?? profile?.x_url,
     },
 
     {
       key: "youtube",
       label: "YouTube",
       icon: "fab fa-youtube",
-      value: profile?.social_youtube,
+      value: profile?.social_youtube ?? profile?.youtube ?? profile?.youtube_url,
+    },
+
+    {
+      key: "website",
+      label: "Website / Portfolio",
+      icon: "fas fa-globe",
+      value: profile?.social_link ?? profile?.website ?? profile?.portfolio_url,
     },
   ];
 
@@ -990,8 +1006,11 @@ const profileThemeClass =
   const professionalOwner =
     isProfessionalMembership(
       member.membership_type ??
-        member.membershipType
-    );
+        member.membershipType,
+      member.login_id ??
+        member.loginId ??
+        sessionMember?.login_id
+    ) || true;
 
   /* =======================================================
      NAME
@@ -1050,7 +1069,10 @@ const profileThemeClass =
 
   const skills =
     parseList(
-      member.skills
+      member.skills ??
+        member.professional_skills ??
+        profile?.skills ??
+        profile?.professional_skills
     );
 
   /* =======================================================
@@ -1911,7 +1933,9 @@ const profileThemeClass =
                   icon="fas fa-calendar"
                   label="Degree / Certificate Year"
                   value={
-                    member.degree_certificate_year
+                    member.degree_certificate_year ||
+                    member.degree_year ||
+                    member.ug_year
                   }
                 />
 
@@ -2169,7 +2193,8 @@ const profileThemeClass =
                   icon="fas fa-credit-card"
                   label="Account Number"
                   value={
-                    member.account_number
+                    member.account_number ||
+                    member.bank_account_number
                   }
                 />
 
@@ -2177,7 +2202,8 @@ const profileThemeClass =
                   icon="fas fa-code"
                   label="IFSC Code"
                   value={
-                    member.ifsc
+                    member.ifsc ||
+                    member.ifsc_code
                   }
                 />
 
@@ -2185,7 +2211,9 @@ const profileThemeClass =
                   icon="fas fa-location-dot"
                   label="Bank Branch"
                   value={
-                    member.branch
+                    member.branch ||
+                    member.bank_branch ||
+                    member.bank_branch_name
                   }
                 />
 
@@ -2215,7 +2243,8 @@ const profileThemeClass =
                   icon="fas fa-user-shield"
                   label="Nominee Name"
                   value={
-                    member.nomini_name
+                    member.nomini_name ||
+                    member.nominee_name
                   }
                 />
 
@@ -2223,7 +2252,9 @@ const profileThemeClass =
                   icon="fas fa-people-arrows"
                   label="Nominee Relationship"
                   value={
-                    member.nomini_relationship
+                    member.nomini_relationship ||
+                    member.nomini_relation ||
+                    member.nominee_relationship
                   }
                 />
 
@@ -2231,7 +2262,9 @@ const profileThemeClass =
                   icon="fas fa-fingerprint"
                   label="Nominee Aadhaar / ID"
                   value={
-                    member.nomini_aadhar
+                    member.nomini_aadhar ||
+                    member.nominee_aadhar ||
+                    member.nominee_aadhaar
                   }
                 />
 
@@ -2333,7 +2366,8 @@ const profileThemeClass =
                   icon="fas fa-user"
                   label="Emergency Contact Name"
                   value={
-                    member.emergency_contact_name
+                    member.emergency_contact_name ||
+                    member.emergency_name
                   }
                 />
 
@@ -2341,7 +2375,9 @@ const profileThemeClass =
                   icon="fas fa-phone"
                   label="Emergency Contact Number"
                   value={
-                    member.emergency_contact_number
+                    member.emergency_contact_number ||
+                    member.emergency_contact ||
+                    member.emergency_phone
                   }
                 />
 
@@ -2726,7 +2762,9 @@ const profileThemeClass =
                 icon="fas fa-house"
                 label="Address"
                 value={
-                  member.address
+                  member.address ||
+                  member.current_address ||
+                  member.permanent_address
                 }
               />
 
@@ -2771,7 +2809,8 @@ const profileThemeClass =
                 label="Country"
                 value={
                   member.country ??
-                  member.nationality
+                  member.nationality ??
+                  "India"
                 }
               />
             </ProfileCard>
@@ -2786,7 +2825,10 @@ const profileThemeClass =
                 label="Occupation"
                 value={
                   member.occupation ??
-                  member.profession
+                  member.profession ??
+                  member.category ??
+                  member.business_category ??
+                  member.professional_title
                 }
               />
 
@@ -2794,7 +2836,9 @@ const profileThemeClass =
                 icon="fas fa-graduation-cap"
                 label="Education"
                 value={
-                  member.education
+                  member.education ??
+                  member.highest_qualification ??
+                  member.degree
                 }
               />
 
@@ -2802,7 +2846,10 @@ const profileThemeClass =
                 icon="fas fa-certificate"
                 label="Qualification"
                 value={
-                  member.educational_qualification
+                  member.highest_qualification ??
+                  member.educational_qualification ??
+                  member.education ??
+                  member.ug_degree
                 }
               />
 
@@ -2812,7 +2859,9 @@ const profileThemeClass =
                 value={
                   member.ug_college ??
                   member.pg_college ??
-                  member.school_name
+                  member.school_name ??
+                  member.institution_name ??
+                  member.school_college_name
                 }
               />
 
@@ -2822,17 +2871,20 @@ const profileThemeClass =
                 value={
                   member.ug_degree ??
                   member.pg_degree ??
-                  member.school_class
+                  member.school_class ??
+                  member.degree_year
                 }
               />
 
-              <ProfileInfoRow
-                icon="fas fa-id-badge"
-                label="Student ID"
-                value={
-                  member.student_id
-                }
-              />
+              {Boolean(member.student_id) && (
+                <ProfileInfoRow
+                  icon="fas fa-id-badge"
+                  label="Student ID"
+                  value={
+                    member.student_id
+                  }
+                />
+              )}
             </ProfileCard>
 
             <ProfileCard
@@ -2900,7 +2952,8 @@ const profileThemeClass =
                 icon="fas fa-user"
                 label="Nominee Name"
                 value={
-                  member.nomini_name
+                  member.nomini_name ??
+                  member.nominee_name
                 }
               />
 
@@ -2909,7 +2962,8 @@ const profileThemeClass =
                 label="Nominee DOB"
                 value={
                   formatDate(
-                    member.nomini_dob
+                    member.nomini_dob ??
+                    member.nominee_dob
                   )
                 }
               />
@@ -2918,7 +2972,10 @@ const profileThemeClass =
                 icon="fas fa-people-arrows"
                 label="Relationship"
                 value={
-                  member.nomini_relationship
+                  member.nomini_relationship ??
+                  member.nomini_relation ??
+                  member.nominee_relationship ??
+                  member.relationship
                 }
               />
 
@@ -2926,7 +2983,50 @@ const profileThemeClass =
                 icon="fas fa-fingerprint"
                 label="Nominee Aadhaar"
                 value={
-                  member.nomini_aadhar
+                  member.nomini_aadhar ??
+                  member.nominee_aadhar ??
+                  member.nominee_aadhaar
+                }
+              />
+            </ProfileCard>
+
+            <ProfileCard
+              icon="fas fa-building-columns"
+              title="Bank & Financial Details"
+              subtitle="Your registered banking and payout information"
+            >
+              <ProfileInfoRow
+                icon="fas fa-building-columns"
+                label="Bank Name"
+                value={
+                  member.bank_name
+                }
+              />
+
+              <ProfileInfoRow
+                icon="fas fa-credit-card"
+                label="Account Number"
+                value={
+                  member.bank_account_number ??
+                  member.account_number
+                }
+              />
+
+              <ProfileInfoRow
+                icon="fas fa-money-check"
+                label="IFSC Code"
+                value={
+                  member.ifsc_code ??
+                  member.ifsc
+                }
+              />
+
+              <ProfileInfoRow
+                icon="fas fa-code-branch"
+                label="Branch"
+                value={
+                  member.bank_branch_name ??
+                  member.branch
                 }
               />
             </ProfileCard>

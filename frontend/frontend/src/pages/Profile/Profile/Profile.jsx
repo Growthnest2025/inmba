@@ -444,8 +444,12 @@ const normalizeMembershipType = (
 };
 
 const isProfessionalMembership = (
-  value
+  value,
+  loginId = ""
 ) => {
+  const cleanId = String(loginId || "").trim().toUpperCase();
+  if (cleanId.startsWith("PRO")) return true;
+
   const type =
     normalizeMembershipType(
       value
@@ -455,9 +459,14 @@ const isProfessionalMembership = (
     "professional",
     "professional member",
     "professional membership",
+    "inmba network member",
+    "inmba network royalty member",
+    "network member",
   ].includes(
     type
-  );
+  ) ||
+  type.includes("professional") ||
+  type.includes("network");
 };
 
 /* =========================================================
@@ -516,35 +525,42 @@ const getSocialLinks = (
       key: "linkedin",
       label: "LinkedIn",
       icon: "fab fa-linkedin",
-      value: profile?.social_linkedin,
+      value: profile?.social_linkedin || profile?.linkedin_url || profile?.linkedin,
     },
 
     {
       key: "instagram",
       label: "Instagram",
       icon: "fab fa-instagram",
-      value: profile?.social_instagram,
+      value: profile?.social_instagram || profile?.instagram_url || profile?.instagram,
     },
 
     {
       key: "facebook",
       label: "Facebook",
       icon: "fab fa-facebook",
-      value: profile?.social_facebook,
+      value: profile?.social_facebook || profile?.facebook_url || profile?.facebook,
     },
 
     {
       key: "twitter",
       label: "Twitter / X",
       icon: "fab fa-x-twitter",
-      value: profile?.social_twitter,
+      value: profile?.social_twitter || profile?.twitter_url || profile?.twitter,
     },
 
     {
       key: "youtube",
       label: "YouTube",
       icon: "fab fa-youtube",
-      value: profile?.social_youtube,
+      value: profile?.social_youtube || profile?.youtube_url || profile?.youtube,
+    },
+
+    {
+      key: "website",
+      label: "Website / Portfolio",
+      icon: "fas fa-globe",
+      value: profile?.social_link || profile?.website || profile?.portfolio_url,
     },
   ];
 
@@ -983,7 +999,9 @@ export default function Profile() {
   const professionalOwner =
     isProfessionalMembership(
       member.membership_type ??
-        member.membershipType
+        member.membershipType,
+      member.login_id ??
+        member.loginId
     );
 
   /* =======================================================
@@ -1051,7 +1069,7 @@ export default function Profile() {
 
   const skills =
     parseList(
-      member.skills
+      member.skills || member.professional_skills
     );
 
   /* =======================================================
@@ -2192,7 +2210,8 @@ export default function Profile() {
                   icon="fas fa-code"
                   label="IFSC Code"
                   value={
-                    member.ifsc
+                    member.ifsc ||
+                    member.ifsc_code
                   }
                 />
 
@@ -2232,7 +2251,8 @@ export default function Profile() {
                   icon="fas fa-user-shield"
                   label="Nominee Name"
                   value={
-                    member.nomini_name
+                    member.nomini_name ||
+                    member.nominee_name
                   }
                 />
 
@@ -2240,7 +2260,19 @@ export default function Profile() {
                   icon="fas fa-people-arrows"
                   label="Nominee Relationship"
                   value={
-                    member.nomini_relationship
+                    member.nomini_relationship ||
+                    member.nomini_relation ||
+                    member.nominee_relationship
+                  }
+                />
+
+                <ProfileInfoRow
+                  icon="fas fa-fingerprint"
+                  label="Nominee Aadhaar / ID"
+                  value={
+                    member.nomini_aadhar ||
+                    member.nominee_aadhar ||
+                    member.nominee_aadhaar
                   }
                 />
               </ProfileCard>
@@ -2335,7 +2367,8 @@ export default function Profile() {
                   icon="fas fa-user"
                   label="Emergency Contact Name"
                   value={
-                    member.emergency_contact_name
+                    member.emergency_contact_name ||
+                    member.emergency_name
                   }
                 />
 
@@ -2343,7 +2376,9 @@ export default function Profile() {
                   icon="fas fa-phone"
                   label="Emergency Contact Number"
                   value={
-                    member.emergency_contact_number
+                    member.emergency_contact_number ||
+                    member.emergency_contact ||
+                    member.emergency_phone
                   }
                 />
 
@@ -2762,6 +2797,14 @@ export default function Profile() {
               />
 
               <ProfileInfoRow
+                icon="fas fa-city"
+                label="City"
+                value={
+                  member.city
+                }
+              />
+
+              <ProfileInfoRow
                 icon="fas fa-building"
                 label="Permanent Address"
                 value={
@@ -2801,7 +2844,8 @@ export default function Profile() {
                 label="Country"
                 value={
                   member.country ??
-                  member.nationality
+                  member.nationality ??
+                  "India"
                 }
               />
             </ProfileCard>
@@ -2811,6 +2855,18 @@ export default function Profile() {
               title="Professional & Education"
               subtitle="Your education and career details"
             >
+              <ProfileInfoRow
+                icon="fas fa-briefcase"
+                label="Occupation"
+                value={
+                  member.occupation ??
+                  member.profession ??
+                  member.category ??
+                  member.business_category ??
+                  member.professional_title
+                }
+              />
+
               <ProfileInfoRow
                 icon="fas fa-graduation-cap"
                 label="Highest Qualification"
@@ -2914,11 +2970,31 @@ export default function Profile() {
               />
 
               <ProfileInfoRow
+                icon="fas fa-calendar"
+                label="Nominee DOB"
+                value={
+                  member.nominee_dob ??
+                  member.nomini_dob
+                }
+              />
+
+              <ProfileInfoRow
                 icon="fas fa-people-arrows"
                 label="Relationship"
                 value={
                   member.nominee_relationship ??
-                  member.nomini_relationship
+                  member.nomini_relationship ??
+                  member.nomini_relation ??
+                  member.relationship
+                }
+              />
+
+              <ProfileInfoRow
+                icon="fas fa-id-card"
+                label="Nominee Aadhaar"
+                value={
+                  member.nominee_aadhar ??
+                  member.nomini_aadhar
                 }
               />
             </ProfileCard>

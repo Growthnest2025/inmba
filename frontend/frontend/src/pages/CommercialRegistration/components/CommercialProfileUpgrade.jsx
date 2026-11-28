@@ -3240,6 +3240,18 @@ export default function CommercialProfileUpgrade() {
                 onChange={
                   updateValue
                 }
+                options={[
+                  "Father",
+                  "Mother",
+                  "Spouse",
+                  "Brother",
+                  "Sister",
+                  "Son",
+                  "Daughter",
+                  "Friend",
+                  "Guardian",
+                  "Other",
+                ]}
                 error={fieldErrors.nominee_relationship}
               />
 
@@ -3652,6 +3664,18 @@ export default function CommercialProfileUpgrade() {
             onChange={
               updateValue
             }
+            options={[
+              "Father",
+              "Mother",
+              "Spouse",
+              "Brother",
+              "Sister",
+              "Son",
+              "Daughter",
+              "Friend",
+              "Guardian",
+              "Other",
+            ]}
             required
             error={
               fieldErrors.relationship

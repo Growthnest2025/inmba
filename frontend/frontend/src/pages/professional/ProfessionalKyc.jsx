@@ -100,9 +100,9 @@ const MAIN_FLOW_STEPS = [
   },
 
   {
-    key: "membership",
-    label: "Membership",
-    icon: "fa-solid fa-id-card",
+    key: "payment",
+    label: "Payment",
+    icon: "fa-solid fa-credit-card",
   },
 
   {
@@ -112,21 +112,9 @@ const MAIN_FLOW_STEPS = [
   },
 
   {
-    key: "review",
-    label: "Review",
-    icon: "fa-solid fa-clipboard-check",
-  },
-
-  {
-    key: "payment",
-    label: "Payment",
-    icon: "fa-solid fa-credit-card",
-  },
-
-  {
     key: "complete",
-    label: "Complete",
-    icon: "fa-solid fa-circle-check",
+    label: "Dashboard",
+    icon: "fa-solid fa-gauge",
   },
 ];
 
@@ -1192,6 +1180,22 @@ const SECTION_FIELDS = {
       label:
         "Nominee Relationship",
 
+      type:
+        "select",
+
+      options: [
+        "Father",
+        "Mother",
+        "Spouse",
+        "Son",
+        "Daughter",
+        "Brother",
+        "Sister",
+        "Friend",
+        "Guardian",
+        "Other",
+      ],
+
       required: true,
     },
 
@@ -1204,6 +1208,9 @@ const SECTION_FIELDS = {
 
       maxLength:
         12,
+
+      inputMode:
+        "numeric",
     },
   ],
 
@@ -1350,6 +1357,22 @@ const SECTION_FIELDS = {
 
       label:
         "Relationship",
+
+      type:
+        "select",
+
+      options: [
+        "Father",
+        "Mother",
+        "Spouse",
+        "Son",
+        "Daughter",
+        "Brother",
+        "Sister",
+        "Friend",
+        "Guardian",
+        "Other",
+      ],
     },
   ],
 };
@@ -2249,10 +2272,10 @@ export default function ProfessionalKyc() {
                   field.name
                 ]
               );
-            if (section === "F" && field.name === "bio" && !nextValues[field.name].trim()) {
+            if ((section === "G" || section === "F") && (field.name === "professional_bio" || field.name === "bio") && !nextValues[field.name].trim()) {
               const m = getMemberFromResponse(response);
               const fullName = [m?.first_name, m?.last_name].filter(Boolean).join(" ").trim() || toText(values.full_name || m?.full_name || "");
-              const selPlan = toText(values.selected_plan || m?.selected_plan || "2999").trim();
+              const selPlan = toText(values.selected_plan || m?.selected_plan || "299").trim();
               nextValues[field.name] = buildDefaultBio({ name: fullName, plan: selPlan, membershipType: m?.membership_type || "Professional Member" });
             }
           }
@@ -2421,11 +2444,33 @@ export default function ProfessionalKyc() {
               {}
           );
 
-          setMember(
-            getMemberFromResponse(
-              response
-            )
+          const rawMem = getMemberFromResponse(
+            response
           );
+
+          setMember(
+            rawMem
+          );
+
+          // Flow Guard: User MUST complete payment before doing KYC!
+          const memPaymentStatus = String(rawMem?.payment_status || "").trim().toLowerCase();
+          const hasPaid = Boolean(
+            (rawMem?.transaction_id && String(rawMem.transaction_id).trim()) ||
+            (rawMem?.payment_proof && String(rawMem.payment_proof).trim()) ||
+            ["approved", "paid", "completed", "success", "successful"].includes(memPaymentStatus) ||
+            sessionStorage.getItem("inmba_professional_payment_submitted") === "true"
+          );
+
+          if (!hasPaid) {
+            navigate("/professional-payment", {
+              replace: true,
+              state: {
+                loginId: rawMem?.login_id || loginId,
+                member: rawMem,
+              },
+            });
+            return;
+          }
 
           const fullData =
             getFullKycData(
@@ -2646,6 +2691,7 @@ export default function ProfessionalKyc() {
           "secondary_mobile",
           "whatsapp_number",
           "emergency_contact_number",
+          "emergency_phone",
         ].includes(
           name
         )
@@ -2665,7 +2711,12 @@ export default function ProfessionalKyc() {
       if (
         [
           "aadhar",
+          "aadhaar",
+          "aadhaar_number",
           "nomini_aadhar",
+          "nominee_aadhar",
+          "nominee_aadhaar_id",
+          "nomini_id",
         ].includes(
           name
         )
@@ -3657,15 +3708,15 @@ export default function ProfessionalKyc() {
 
       sessionStorage.setItem(
         PROFESSIONAL_NEXT_ROUTE_STORAGE_KEY,
-        "/professional-review"
+        "/professional-dashboard"
       );
 
       /* ===================================================
-         NAVIGATE REVIEW
+         NAVIGATE DASHBOARD
       =================================================== */
 
       navigate(
-        "/professional-review",
+        "/professional-dashboard",
         {
           replace:
             true,
@@ -3686,7 +3737,7 @@ export default function ProfessionalKyc() {
             membershipSelection,
 
             professionalFlow:
-              "profile_upgrade",
+              "full_kyc_completed",
 
             kycCompleted:
               true,
@@ -4087,7 +4138,7 @@ export default function ProfessionalKyc() {
               onClick={
                 () =>
                   navigate(
-                    "/dashboard"
+                    "/professional-dashboard"
                   )
               }
             >
@@ -4133,7 +4184,7 @@ export default function ProfessionalKyc() {
             onClick={
               () =>
                 navigate(
-                  "/dashboard"
+                  "/professional-dashboard"
                 )
             }
           >

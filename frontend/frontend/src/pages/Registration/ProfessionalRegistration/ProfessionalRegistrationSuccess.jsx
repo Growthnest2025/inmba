@@ -215,10 +215,10 @@ export default function ProfessionalRegistrationSuccess() {
               "Professional Member",
 
             nextPath:
-              "/professional-membership",
+              "/professional-payment",
 
             message:
-              "Professional registration completed successfully. Please login to continue to Membership Plan selection.",
+              "Professional registration completed successfully. Please login to continue to payment.",
 
             from:
               "professional-registration-success",
@@ -351,7 +351,7 @@ export default function ProfessionalRegistrationSuccess() {
 
         <div className="pro-success-flow">
 
-          <div className="active">
+          <div className="completed">
             <span>
               1
             </span>
@@ -363,7 +363,7 @@ export default function ProfessionalRegistrationSuccess() {
 
           <i className="fas fa-angle-right" />
 
-          <div>
+          <div className="active">
             <span>
               2
             </span>
@@ -381,7 +381,31 @@ export default function ProfessionalRegistrationSuccess() {
             </span>
 
             <p>
-              Membership
+              Payment
+            </p>
+          </div>
+
+          <i className="fas fa-angle-right" />
+
+          <div>
+            <span>
+              4
+            </span>
+
+            <p>
+              Full KYC
+            </p>
+          </div>
+
+          <i className="fas fa-angle-right" />
+
+          <div>
+            <span>
+              5
+            </span>
+
+            <p>
+              Dashboard
             </p>
           </div>
 

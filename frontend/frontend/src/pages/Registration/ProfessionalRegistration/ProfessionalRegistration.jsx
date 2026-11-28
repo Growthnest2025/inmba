@@ -151,8 +151,16 @@ export default function ProfessionalRegistration() {
       ...INITIAL_FORM_DATA,
 
       referral:
-        referralFromUrl,
+        referralFromUrl || "7777777",
     });
+
+  useEffect(() => {
+    const resolved = referralFromUrl || "7777777";
+    setFormData((prev) => ({
+      ...prev,
+      referral: prev.referral || resolved,
+    }));
+  }, [referralFromUrl]);
 
   const [
     fieldErrors,
@@ -1480,16 +1488,6 @@ export default function ProfessionalRegistration() {
                   value={formData.category}
                   onChange={handleInputChange}
                   disabled={submitting}
-                  style={{
-                    width: "100%",
-                    background: "transparent",
-                    border: "none",
-                    outline: "none",
-                    fontSize: "0.95rem",
-                    color: formData.category ? "#0f172a" : "#94a3b8",
-                    cursor: "pointer",
-                    padding: "8px 0",
-                  }}
                 >
                   <option value="">Select Professional Category (40+ Categories)</option>
                   <option value="Information Technology (IT) & Software">Information Technology (IT) & Software</option>
@@ -1554,16 +1552,6 @@ export default function ProfessionalRegistration() {
                   value={formData.relationship}
                   onChange={handleInputChange}
                   disabled={submitting}
-                  style={{
-                    width: "100%",
-                    background: "transparent",
-                    border: "none",
-                    outline: "none",
-                    fontSize: "0.95rem",
-                    color: formData.relationship ? "#0f172a" : "#94a3b8",
-                    cursor: "pointer",
-                    padding: "8px 0",
-                  }}
                 >
                   <option value="">Select Relationship (Nominee / Emergency)</option>
                   <option value="Father">Father</option>

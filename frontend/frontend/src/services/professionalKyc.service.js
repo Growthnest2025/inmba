@@ -615,6 +615,12 @@ export const createProfessionalKycFormData =
       )
     );
 
+    for (const [k, v] of Object.entries(asObject(values))) {
+      if (v !== undefined && v !== null && typeof v !== "object") {
+        formData.append(k, String(v));
+      }
+    }
+
     formData.append(
       "completed",
       completed
@@ -726,6 +732,10 @@ const prepareSectionRequest =
 
     return {
       data: {
+        ...asObject(
+          split.values
+        ),
+
         values:
           split.values,
 

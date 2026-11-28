@@ -145,6 +145,9 @@ const isProfessionalProfile = (
       profile
     );
 
+  const loginId = String(source.login_id || source.loginId || "").trim().toUpperCase();
+  if (loginId.startsWith("PRO")) return true;
+
   const membershipType =
     normalizeMembershipType(
       source.membership_type
@@ -160,9 +163,13 @@ const isProfessionalProfile = (
       "professional",
       "professional member",
       "professional membership",
+      "inmba network member",
+      "inmba network royalty member",
+      "network member",
     ].includes(
       membershipType
     ) ||
+    membershipType.includes("professional") ||
     profileType ===
       "professional"
   );
@@ -661,36 +668,10 @@ function ProfessionalPublicGrid({
           let displayValue =
             "";
 
-          let locked =
-            false;
-
           if (row.value !== undefined && row.value !== null && String(row.value).trim() !== "") {
             displayValue = toText(row.value);
-            locked = false;
-          } else if (
-            status ===
-            "private"
-          ) {
-            locked =
-              true;
-
-            displayValue =
-              "Not Provided";
-          } else if (
-            status ===
-            "optional-private"
-          ) {
-            locked =
-              true;
-
-            displayValue =
-              "Not Provided";
           } else {
-            displayValue =
-              toText(
-                row.value,
-                "Not Provided"
-              );
+            displayValue = "Not Provided";
           }
 
           return (
@@ -713,37 +694,7 @@ function ProfessionalPublicGrid({
                 {row.label}
               </div>
 
-              <div
-                className="fval"
-                style={
-                  locked
-                    ? {
-                        display:
-                          "flex",
-
-                        alignItems:
-                          "center",
-
-                        gap:
-                          "7px",
-
-                        color:
-                          "#64748b",
-
-                        fontWeight:
-                          600,
-                      }
-                    : undefined
-                }
-              >
-                {locked && (
-                  <span
-                    aria-hidden="true"
-                  >
-                    🔒
-                  </span>
-                )}
-
+              <div className="fval">
                 <span>
                   {displayValue}
                 </span>

@@ -2261,6 +2261,18 @@ export default function CivilianKyc() {
                 onChange={
                   updateValue
                 }
+                options={[
+                  "Father",
+                  "Mother",
+                  "Spouse",
+                  "Brother",
+                  "Sister",
+                  "Son",
+                  "Daughter",
+                  "Friend",
+                  "Guardian",
+                  "Other",
+                ]}
                 error={fieldErrors.nominee_relationship}
               />
             </div>
@@ -2816,6 +2828,18 @@ export default function CivilianKyc() {
             onChange={
               updateValue
             }
+            options={[
+              "Father",
+              "Mother",
+              "Spouse",
+              "Brother",
+              "Sister",
+              "Son",
+              "Daughter",
+              "Friend",
+              "Guardian",
+              "Other",
+            ]}
             required
             error={
               fieldErrors.emergency_relationship

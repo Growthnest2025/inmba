@@ -912,9 +912,9 @@ export default function ProfessionalDashboard() {
 
   const isPaymentApproved =
     paymentStatus === "approved" ||
-    paymentStatus === "paid" ||
-    paymentStatus === "completed" ||
-    paymentStatus === "success";
+    Boolean(member.is_payment_approved) ||
+    Boolean(member.is_approved) ||
+    Boolean(dashboardData?.member?.is_approved);
 
   const kycStatusRaw =
     toText(
@@ -929,14 +929,7 @@ export default function ProfessionalDashboard() {
     kycStatusRaw === "approved";
 
   // Professional QR & network access require payment approval by admin
-  const isFullyApproved = Boolean(
-    isPaymentApproved ||
-    member.is_approved ||
-    member.is_payment_approved ||
-    member.kyc_verified ||
-    dashboardData?.member?.is_approved ||
-    dashboardData?.is_approved
-  );
+  const isFullyApproved = Boolean(isPaymentApproved);
 
   const isApproved =
     isFullyApproved;
@@ -1001,12 +994,10 @@ export default function ProfessionalDashboard() {
         : "Not selected";
 
   const hasProfessionalNetworkAccess =
-    Boolean(isApproved && ["2999", "1500"].includes(selectedMembershipPlan));
+    Boolean(isApproved);
 
   const hasProfessionalRoyaltyAccess =
-    isApproved &&
-
-      ["2999", "1500"].includes(selectedMembershipPlan);
+    Boolean(isApproved && ["2999", "1500"].includes(selectedMembershipPlan));
 
   /* =======================================================
      CREATED DATE
@@ -1238,6 +1229,19 @@ export default function ProfessionalDashboard() {
       }
     };
 
+  const handleLogout = async () => {
+    try {
+      if (typeof clearMemberSession === "function") {
+        await clearMemberSession();
+      }
+    } catch {}
+    try {
+      localStorage.removeItem("inmba_auth_token");
+      sessionStorage.clear();
+    } catch {}
+    navigate("/professional-login", { replace: true });
+  };
+
   /* =======================================================
      LOADING
   ======================================================= */
@@ -1368,20 +1372,45 @@ export default function ProfessionalDashboard() {
             </div>
           </div>
 
-          <button
-            type="button"
-            className="member-dashboard-refresh-button"
-            onClick={() =>
-              loadDashboard()
-            }
-          >
-            <i
-              className="fas fa-rotate"
-              aria-hidden="true"
-            ></i>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+            <button
+              type="button"
+              className="member-dashboard-refresh-button"
+              onClick={() =>
+                loadDashboard()
+              }
+            >
+              <i
+                className="fas fa-rotate"
+                aria-hidden="true"
+              ></i>
 
-            Refresh
-          </button>
+              Refresh
+            </button>
+
+            <button
+              type="button"
+              className="member-dashboard-logout-button"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "10px 18px",
+                borderRadius: "10px",
+                border: "1.5px solid #ef4444",
+                background: "#ffffff",
+                color: "#ef4444",
+                fontWeight: "600",
+                fontSize: "0.92rem",
+                cursor: "pointer",
+                transition: "all 0.2s ease"
+              }}
+              onClick={handleLogout}
+            >
+              <i className="fas fa-arrow-right-from-bracket" aria-hidden="true"></i>
+              Logout
+            </button>
+          </div>
         </section>
 
         {/* =================================================
@@ -2244,23 +2273,25 @@ export default function ProfessionalDashboard() {
         {/* =================================================
             PROFESSIONAL MEMBER QR CODE (UNLOCKED WHEN APPROVED)
         ================================================= */}
-        {isApproved && publicProfileUrl && (
-          <section className="member-dashboard-card member-dashboard-qr-card">
-            <div className="member-dashboard-card-header">
+        <section className="member-dashboard-card member-dashboard-qr-card">
+          <div className="member-dashboard-card-header">
+            <div>
+              <span className="member-dashboard-card-icon" style={{ color: "#0d47a1" }}>
+                <i className="fas fa-qrcode" aria-hidden="true"></i>
+              </span>
               <div>
-                <span className="member-dashboard-card-icon" style={{ color: "#0d47a1" }}>
-                  <i className="fas fa-qrcode" aria-hidden="true"></i>
-                </span>
-                <div>
-                  <p>Digital Member Identity</p>
-                  <h2>My QR Code</h2>
-                </div>
+                <p>Digital Member Identity</p>
+                <h2>My QR Code</h2>
               </div>
+            </div>
+            {isApproved && publicProfileUrl && (
               <Link to="/qr-code?theme=professional" className="member-dashboard-secondary-button">
                 <i className="fas fa-expand" aria-hidden="true"></i> View Full QR
               </Link>
-            </div>
+            )}
+          </div>
 
+          {isApproved && publicProfileUrl ? (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "20px 0" }}>
               <div style={{ background: "#ffffff", padding: "16px", borderRadius: "12px", boxShadow: "0 4px 12px rgba(13, 71, 161, 0.12)", border: "2px solid #e2e8f0", marginBottom: "16px" }}>
                 <QRCodeCanvas
@@ -2316,8 +2347,23 @@ export default function ProfessionalDashboard() {
                 </button>
               </div>
             </div>
-          </section>
-        )}
+          ) : (
+            <div style={{ textAlign: "center", padding: "36px 20px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "28px", marginBottom: "16px" }}>
+                <i className="fas fa-lock" aria-hidden="true"></i>
+              </div>
+              <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#1e293b", margin: "0 0 8px 0" }}>
+                QR Code Locked
+              </h3>
+              <p style={{ fontSize: "0.95rem", color: "#64748b", maxWidth: "420px", margin: "0 auto 16px auto", lineHeight: 1.5 }}>
+                Your QR code will be generated and visible here once your payment is approved by the administrator.
+              </p>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "#f1f5f9", padding: "6px 14px", borderRadius: "20px", fontSize: "0.85rem", fontWeight: 600, color: "#64748b" }}>
+                <i className="fas fa-clock" /> Verification Pending
+              </div>
+            </div>
+          )}
+        </section>
 
         {/* =================================================
             OWNER PRIVACY NOTICE

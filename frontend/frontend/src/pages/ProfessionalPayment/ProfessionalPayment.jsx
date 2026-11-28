@@ -72,9 +72,9 @@ const MAIN_FLOW_STEPS = [
   },
 
   {
-    key: "membership",
-    label: "Membership",
-    icon: "fa-solid fa-id-card",
+    key: "payment",
+    label: "Payment",
+    icon: "fa-solid fa-credit-card",
   },
 
   {
@@ -84,21 +84,9 @@ const MAIN_FLOW_STEPS = [
   },
 
   {
-    key: "review",
-    label: "Review",
-    icon: "fa-solid fa-clipboard-check",
-  },
-
-  {
-    key: "payment",
-    label: "Payment",
-    icon: "fa-solid fa-credit-card",
-  },
-
-  {
     key: "complete",
-    label: "Complete",
-    icon: "fa-solid fa-circle-check",
+    label: "Dashboard",
+    icon: "fa-solid fa-gauge",
   },
 ];
 
@@ -319,7 +307,7 @@ export default function ProfessionalPayment() {
         value
       )
         ? value
-        : "";
+        : "299";
     };
 
   const [
@@ -338,7 +326,7 @@ export default function ProfessionalPayment() {
       selectedPlan
     )
       ? selectedPlan
-      : "";
+      : "299";
 
   const isRoyaltyPlan =
     validSelectedPlan ===
@@ -503,6 +491,12 @@ export default function ProfessionalPayment() {
   const subscriptionYear =
     getCurrentSubscriptionYear();
 
+  const isPaymentApproved =
+    paymentCompleted ||
+    ["approved", "paid", "completed", "success"].includes(
+      String(member?.payment_status || "").toLowerCase()
+    );
+
   /* =======================================================
      PAYMENT PAGE PROTECTION
 
@@ -511,56 +505,13 @@ export default function ProfessionalPayment() {
 
   useEffect(
     () => {
-      if (
-        !validSelectedPlan
-      ) {
-        sessionStorage.setItem(
-          NEXT_ROUTE_STORAGE_KEY,
-          "/professional-membership"
-        );
-
-        navigate(
-          "/professional-membership",
-          {
-            replace: true,
-          }
-        );
-
-        return;
+      // Flow is basic registration -> payment -> kyc -> dashboard. Keep user on payment.
+      if (!validSelectedPlan) {
+        setSelectedPlan("299");
       }
-
-      if (
-        (kycCompleted && kycConfirmed) ||
-        Boolean(loginId)
-      ) {
-        return;
-      }
-
-      sessionStorage.setItem(
-        NEXT_ROUTE_STORAGE_KEY,
-        "/professional-review"
-      );
-
-      navigate(
-        "/professional-review",
-        {
-          replace: true,
-          state: {
-            membershipSelection,
-            selectedPlan:
-              validSelectedPlan,
-            selected_plan:
-              validSelectedPlan,
-          },
-        }
-      );
     },
     [
       validSelectedPlan,
-      kycCompleted,
-      kycConfirmed,
-      membershipSelection,
-      navigate,
     ]
   );
 
@@ -1101,6 +1052,7 @@ export default function ProfessionalPayment() {
             .message
         );
 
+        sessionStorage.setItem("inmba_professional_payment_submitted", "true");
         setPaymentCompleted(
           true
         );
@@ -1486,6 +1438,16 @@ export default function ProfessionalPayment() {
               <button
                 type="button"
                 className="professional-payment-dashboard-button"
+                style={{ background: "#16a34a", color: "#ffffff", fontWeight: 700 }}
+                onClick={() => navigate("/professional-kyc", { state: { loginId, selectedPlan: validSelectedPlan } })}
+              >
+                Proceed to Professional KYC
+                <i className="fa-solid fa-arrow-right" style={{ marginLeft: "8px" }} />
+              </button>
+
+              <button
+                type="button"
+                className="professional-payment-dashboard-button"
                 style={{ background: "#0d47a1" }}
                 onClick={() => navigate("/professional-dashboard", { state: { loginId } })}
               >
@@ -1500,7 +1462,7 @@ export default function ProfessionalPayment() {
                 onClick={handleGoAcknowledgement}
               >
                 View Acknowledgement
-                <i className="fa-solid fa-arrow-right" style={{ marginLeft: "8px" }} />
+                <i className="fa-solid fa-receipt" style={{ marginLeft: "8px" }} />
               </button>
             </div>
           </section>
@@ -1566,7 +1528,7 @@ export default function ProfessionalPayment() {
               ) => {
                 const completed =
                   index <
-                  5;
+                  2;
 
                 const active =
                   step.key ===
@@ -1624,7 +1586,7 @@ export default function ProfessionalPayment() {
                           "professional-payment-flow-line",
 
                           index <
-                          5
+                          2
                             ? "completed"
                             : "",
                         ]
@@ -1866,6 +1828,52 @@ export default function ProfessionalPayment() {
                 <span style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", background: "#ffffff", padding: "0 14px", color: "#166534", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
                   SUBMIT PAYMENT PROOF (AFTER BANK / UPI / QR TRANSFER)
                 </span>
+              </div>
+
+              {/* =========================================
+                  MEMBERSHIP PLAN SELECT (₹299 / ₹2999)
+              ========================================= */}
+              <div className="professional-payment-input-group full" style={{ marginBottom: "18px" }}>
+                <label htmlFor="professional-plan-select" style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, color: "#1e293b", marginBottom: "6px" }}>
+                  <span>Membership Plan <span style={{ color: "#ef4444" }}>*</span></span>
+                  <span style={{ color: "#166534", fontWeight: 700 }}>₹{paymentAmount}</span>
+                </label>
+                <div className="professional-payment-input-wrapper">
+                  <i className="fa-solid fa-id-card" />
+                  <select
+                    id="professional-plan-select"
+                    name="selected_plan"
+                    value={validSelectedPlan}
+                    onChange={(e) => {
+                      const next = e.target.value;
+                      setSelectedPlan(next);
+                      try {
+                        localStorage.setItem("professionalSelectedPlan", next);
+                        sessionStorage.setItem("inmba_professional_membership_plan", JSON.stringify({
+                          selectedPlan: next,
+                          selected_plan: next,
+                          amount: next === "2999" ? 2999 : 299
+                        }));
+                      } catch {}
+                    }}
+                    disabled={submitting || isPaymentApproved}
+                    style={{
+                      width: "100%",
+                      height: "50px",
+                      padding: "0 16px 0 44px",
+                      borderRadius: "10px",
+                      border: "1.5px solid #cbd5e1",
+                      background: "#ffffff",
+                      fontWeight: "600",
+                      fontSize: "0.95rem",
+                      color: "#0f172a",
+                      cursor: "pointer"
+                    }}
+                  >
+                    <option value="299">₹299 — Basic Starter Plan (1 Year)</option>
+                    <option value="2999">₹2999 — Royalty / Pro Plan (1 Year)</option>
+                  </select>
+                </div>
               </div>
 
               {/* =========================================

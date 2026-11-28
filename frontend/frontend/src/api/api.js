@@ -83,7 +83,11 @@ api.interceptors.request.use(
     config.withCredentials = true;
     try {
       if (typeof localStorage !== "undefined") {
-        const token = localStorage.getItem("inmba_session_token");
+        // Prefer admin token for admin routes, then shared session token
+        const isAdminRoute = typeof config.url === "string" && config.url.includes("/admin");
+        const token = isAdminRoute
+          ? (localStorage.getItem("inmba_admin_token") || localStorage.getItem("inmba_session_token"))
+          : localStorage.getItem("inmba_session_token");
         if (token && !config.headers.Authorization) {
           config.headers.Authorization = `Bearer ${token}`;
         }

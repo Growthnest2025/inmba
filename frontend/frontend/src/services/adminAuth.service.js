@@ -44,7 +44,9 @@ rootAdminApi.interceptors.request.use((config) => {
   config.withCredentials = true;
   try {
     if (typeof localStorage !== "undefined") {
-      const token = localStorage.getItem("inmba_session_token");
+      const token =
+        localStorage.getItem("inmba_admin_token") ||
+        localStorage.getItem("inmba_session_token");
       if (token && !config.headers.Authorization) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -56,6 +58,7 @@ rootAdminApi.interceptors.request.use((config) => {
 rootAdminApi.interceptors.response.use((response) => {
   try {
     if (typeof localStorage !== "undefined" && response?.data?.token) {
+      localStorage.setItem("inmba_admin_token", response.data.token);
       localStorage.setItem("inmba_session_token", response.data.token);
     }
   } catch {}

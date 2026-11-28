@@ -1078,9 +1078,22 @@ export const getOwnFullProfile =
   async ({
     signal,
   } = {}) => {
-    let isPro = false;
+    const path = typeof window !== "undefined" ? (window.location.pathname || "").toLowerCase() : "";
+    const isProfessionalRoute = path.includes("professional");
+
+    let isPro = isProfessionalRoute;
     try {
       if (typeof localStorage !== "undefined") {
+        const storedLoginId = String(
+          localStorage.getItem("inmba_login_id") ||
+          localStorage.getItem("inmba_member_login_id") ||
+          localStorage.getItem("login_id") ||
+          ""
+        ).toUpperCase();
+        if (storedLoginId.startsWith("PRO")) {
+          isPro = true;
+        }
+
         const raw = localStorage.getItem("inmba_user") || localStorage.getItem("inmba_member");
         if (raw) {
           const u = JSON.parse(raw);
@@ -1093,83 +1106,38 @@ export const getOwnFullProfile =
       }
     } catch {}
 
-    if (!isPro) {
+    if (isPro) {
       try {
-        return await getOwnCivilianProfile({
+        return await getOwnProfessionalProfile({
           signal,
         });
-      } catch (civilianError) {
-        const civStatus = Number(civilianError?.statusCode ?? civilianError?.response?.status ?? 0);
-        if (civStatus === 401) throw civilianError;
+      } catch (proError) {
+        const proStatus = Number(proError?.statusCode ?? proError?.response?.status ?? 0);
+        if (proStatus === 401) throw proError;
+      }
+    }
+
+    if (!path.includes("civilian")) {
+      try {
+        return await getOwnProfessionalProfile({
+          signal,
+        });
+      } catch (proError) {
+        const proStatus = Number(proError?.statusCode ?? proError?.response?.status ?? 0);
+        if (proStatus === 401) throw proError;
       }
     }
 
     try {
-      return await getOwnProfessionalProfile({
+      return await getOwnCivilianProfile({
         signal,
       });
-    } catch (
-      professionalError
-    ) {
-      const statusCode =
-        Number(
-          professionalError
-            ?.statusCode ??
-            professionalError
-              ?.response
-              ?.status ??
-            0
-        );
-
-      if (
-        statusCode ===
-        401
-      ) {
-        throw professionalError;
-      }
-
-      if (
-        statusCode !==
-          403 &&
-        statusCode !==
-          404
-      ) {
-        /*
-          Some old backends may still not expose
-          professional owner API correctly.
-          Continue to fallback only for endpoint
-          availability errors.
-        */
-      }
-
-      try {
-        return await getOwnCivilianProfile({
-          signal,
-        });
-      } catch (
-        civilianError
-      ) {
-        const civilianStatus =
-          Number(
-            civilianError
-              ?.statusCode ??
-              civilianError
-                ?.response
-                ?.status ??
-              0
-          );
-
-        if (
-          civilianStatus ===
-          401
-        ) {
-          throw civilianError;
-        }
-
-        return getMyProfile({
-          signal,
-        });
-      }
+    } catch (civilianError) {
+      const civStatus = Number(civilianError?.statusCode ?? civilianError?.response?.status ?? 0);
+      if (civStatus === 401) throw civilianError;
+      return getMyProfile({
+        signal,
+      });
     }
   };
 

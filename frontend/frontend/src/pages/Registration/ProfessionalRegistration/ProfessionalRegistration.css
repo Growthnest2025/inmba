@@ -487,38 +487,49 @@
   position: absolute;
 
   top: 50%;
-  left: 16px;
+  left: 18px;
 
   transform: translateY(-50%);
 
   z-index: 2;
 
-  width: 20px;
+  width: 22px;
 
   color: #8190a5;
 
-  font-size: 0.98rem;
+  font-size: 1rem;
 
   text-align: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   pointer-events: none;
 }
 
-.professional-registration-input input {
-  width: 100%;
-  height: 56px;
+.professional-registration-input input,
+.professional-registration-input input[type="text"],
+.professional-registration-input input[type="email"],
+.professional-registration-input input[type="tel"],
+.professional-registration-input input[type="date"],
+.professional-registration-input input[type="password"] {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 56px !important;
 
-  padding: 0 46px 0 48px;
+  padding: 0 46px 0 64px !important;
+  padding-left: 64px !important;
 
-  border: 1px solid #d6dde7;
+  border: 1px solid #d6dde7 !important;
 
-  border-radius: 11px;
+  border-radius: 11px !important;
 
   outline: none;
 
-  color: #263348;
+  color: #263348 !important;
 
-  background: #ffffff;
+  background: #ffffff !important;
 
   font-family: inherit;
 
@@ -526,10 +537,65 @@
 
   font-weight: 500;
 
+  cursor: pointer;
+
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease,
     background-color 0.2s ease;
+}
+
+.professional-registration-input select,
+.professional-registration-input select.form-select,
+.professional-registration-input select#professional-category,
+.professional-registration-input select#professional-relationship {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 56px !important;
+
+  padding: 0 42px 0 64px !important;
+  padding-left: 64px !important;
+
+  border: 1px solid #d6dde7 !important;
+
+  border-radius: 11px !important;
+
+  outline: none;
+
+  color: #263348 !important;
+
+  background-color: #ffffff !important;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+
+  background-repeat: no-repeat !important;
+
+  background-position: right 18px center !important;
+
+  background-size: 16px !important;
+
+  font-family: inherit;
+
+  font-size: 1rem;
+
+  font-weight: 500;
+
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.professional-registration-input select option {
+  padding: 10px;
+  background: #ffffff;
+  color: #0f172a;
 }
 
 .professional-registration-input input::placeholder {
@@ -1051,7 +1117,20 @@
   }
 
   .professional-registration-input input {
-    font-size: 0.98rem;
+    box-sizing: border-box !important;
+    font-size: 0.95rem;
+    height: 52px;
+    padding: 0 40px 0 60px !important;
+  }
+
+  .professional-registration-input select {
+    box-sizing: border-box !important;
+    font-size: 0.95rem;
+    height: 52px;
+    padding: 0 38px 0 60px !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
   }
 
   .professional-registration-upload {

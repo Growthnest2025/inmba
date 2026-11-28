@@ -672,8 +672,9 @@ async function handleRegistration(request, db, cors) {
   const gender = String(input.gender || "").trim();
   const maritalStatus = String(input.marital_status || "").trim();
   const nationality = String(input.nationality || "Indian").trim();
-  const occupation = String(input.business_name || input.occupation || input.profession || "").trim();
+  const occupation = String(input.business_name || input.occupation || input.profession || input.category || "").trim();
   const education = String(input.education || "").trim();
+  const nominiRelation = String(input.relationship || input.nomini_relation || input.nominee_relationship || "").trim();
 
   let membershipType = String(input.membership_type || "").trim();
   if (!membershipType) {
@@ -883,17 +884,20 @@ async function handleRegistration(request, db, cors) {
     INSERT INTO kyc_members (
       login_id, first_name, last_name, father_name, dob, email, phone,
       pincode, gender, marital_status, nationality, occupation, education,
+      nomini_relation, emergency_relationship,
       membership_type, referred_by, referral_id, aadhar, pan_number, token, password,
       payment_status, created_at, is_deleted
     ) VALUES (
       ?, ?, ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?, ?,
+      ?, ?,
       ?, ?, ?, ?, ?, ?, ?,
       'pending', ?, 0
     )
   `).bind(
     loginId, firstName, lastName || null, fatherName || null, dob || null, email || null, phone,
     pincode || null, gender || null, maritalStatus || null, nationality || "Indian", occupation || null, education || null,
+    nominiRelation || null, nominiRelation || null,
     membershipType, canonicalReferredBy || null, referralId, aadhar || null, pan || null, memberToken, passwordHash,
     nowIso
   ).run();
@@ -1197,15 +1201,24 @@ const CIVILIAN_SECTION_FIELDS = {
 };
 
 async function getCivilianFullKycRecord(memberId, db) {
-  await db.prepare(`
-    INSERT INTO civilian_full_kyc (member_id)
-    VALUES (?)
-    ON CONFLICT(member_id) DO NOTHING
-  `).bind(memberId).run();
-
-  const row = (await db.prepare(`
+  // Try to fetch existing row first (fast read path)
+  let row = (await db.prepare(`
     SELECT * FROM civilian_full_kyc WHERE member_id = ?
-  `).bind(memberId).first()) || {};
+  `).bind(memberId).first()) || null;
+
+  // Only insert if no row exists yet (lazy init, avoids write on every read)
+  if (!row) {
+    try {
+      await db.prepare(`
+        INSERT INTO civilian_full_kyc (member_id)
+        VALUES (?)
+        ON CONFLICT(member_id) DO NOTHING
+      `).bind(memberId).run();
+    } catch {}
+    row = (await db.prepare(`
+      SELECT * FROM civilian_full_kyc WHERE member_id = ?
+    `).bind(memberId).first()) || {};
+  }
 
   const member = (await db.prepare(`
     SELECT * FROM kyc_members WHERE id = ?
@@ -1920,107 +1933,102 @@ async function getCommercialKycRecord(memberId, loginId, db) {
   const completedSet = new Set(completedList);
   const isApprovedOrSubmitted = ["approved", "paid", "submitted", "under_review", "under-review"].includes(String(row.kyc_status || ext.commercial_kyc_status || "").toLowerCase());
 
-  let kycData = {};
-  if (row && row.kyc_data) {
-    try { kycData = JSON.parse(row.kyc_data) || {}; } catch {}
-  }
-
   const secA = {
-    owner_full_legal_name: kycData.A?.owner_full_legal_name || row.full_legal_name || basic.full_name || member.first_name || "",
-    full_legal_name: kycData.A?.full_legal_name || row.full_legal_name || basic.full_name || member.first_name || "",
-    father_spouse_name: kycData.A?.father_spouse_name || row.father_spouse_name || "",
-    date_of_birth: kycData.A?.date_of_birth || row.dob || "",
-    dob: kycData.A?.dob || row.dob || "",
-    gender: kycData.A?.gender || row.gender || "",
-    marital_status: kycData.A?.marital_status || row.marital_status || "",
-    nationality: kycData.A?.nationality || row.nationality || "Indian",
-    aadhaar_number: kycData.A?.aadhaar_number || row.aadhaar_number || "",
-    pan_number: kycData.A?.pan_number || row.pan_number || "",
-    passport_number: kycData.A?.passport_number || row.passport_number || "",
-    voter_id: kycData.A?.voter_id || row.voter_id || "",
-    driving_license: kycData.A?.driving_license || row.driving_license || "",
-    blood_group: kycData.A?.blood_group || row.blood_group || "",
-    completed: completedSet.has("A") || (isApprovedOrSubmitted && Boolean((kycData.A?.owner_full_legal_name || row.full_legal_name) && (kycData.A?.aadhaar_number || row.aadhaar_number))),
+    owner_full_legal_name: row.full_legal_name || basic.full_name || member.first_name || "",
+    full_legal_name: row.full_legal_name || basic.full_name || member.first_name || "",
+    father_spouse_name: row.father_spouse_name || "",
+    date_of_birth: row.dob || "",
+    dob: row.dob || "",
+    gender: row.gender || "",
+    marital_status: row.marital_status || "",
+    nationality: row.nationality || "Indian",
+    aadhaar_number: row.aadhaar_number || "",
+    pan_number: row.pan_number || "",
+    passport_number: row.passport_number || "",
+    voter_id: row.voter_id || "",
+    driving_license: row.driving_license || "",
+    blood_group: row.blood_group || "",
+    completed: completedSet.has("A") || (isApprovedOrSubmitted && Boolean(row.full_legal_name && row.aadhaar_number)),
   };
 
   const secB = {
-    business_company_name: kycData.B?.business_company_name || kycData.B?.business_name || row.business_name || basic.business_name || ext.business_name || "",
-    business_name: kycData.B?.business_name || kycData.B?.business_company_name || row.business_name || basic.business_name || ext.business_name || "",
-    business_type: kycData.B?.business_type || row.business_type || basic.business_type || ext.business_category_tags || "",
-    business_registration_number: kycData.B?.business_registration_number || row.registration_number || "",
-    registration_number: kycData.B?.registration_number || row.registration_number || "",
-    company_pan_tan: kycData.B?.company_pan_tan || row.company_pan || row.tan_number || "",
-    company_pan: kycData.B?.company_pan || row.company_pan || "",
-    tan_number: kycData.B?.tan_number || row.tan_number || "",
-    gst_applicable: Boolean(kycData.B?.gst_number || row.gst_number),
-    gst_number: kycData.B?.gst_number || row.gst_number || "",
+    business_company_name: row.business_name || basic.business_name || ext.business_name || "",
+    business_name: row.business_name || basic.business_name || ext.business_name || "",
+    business_type: row.business_type || basic.business_type || ext.business_category_tags || "",
+    business_registration_number: row.registration_number || "",
+    registration_number: row.registration_number || "",
+    company_pan_tan: row.company_pan || row.tan_number || "",
+    company_pan: row.company_pan || "",
+    tan_number: row.tan_number || "",
+    gst_applicable: Boolean(row.gst_number),
+    gst_number: row.gst_number || "",
     shop_establishment_license_required: false,
     industry_license_required: false,
-    completed: completedSet.has("B") || (isApprovedOrSubmitted && Boolean((kycData.B?.business_name || row.business_name) && (kycData.B?.business_type || row.business_type))),
+    completed: completedSet.has("B") || (isApprovedOrSubmitted && Boolean(row.business_name && row.business_type)),
   };
 
   const secC = {
-    registered_business_address: kycData.C?.registered_business_address || row.business_address || ext.business_address || basic.address || basic.city || "",
-    business_address: kycData.C?.business_address || row.business_address || ext.business_address || basic.address || basic.city || "",
-    branch_locations: kycData.C?.branch_locations || row.branch_locations || "",
-    business_contact_number: kycData.C?.business_contact_number || row.business_phone || basic.mobile || member.phone || "",
-    business_phone: kycData.C?.business_phone || row.business_phone || basic.mobile || member.phone || "",
-    business_email: kycData.C?.business_email || row.business_email || basic.email || member.email || "",
-    business_website: kycData.C?.business_website || row.business_website || "",
-    google_map_location: kycData.C?.google_map_location || row.google_map_pin || "",
-    google_map_pin: kycData.C?.google_map_pin || row.google_map_pin || "",
-    completed: completedSet.has("C") || (isApprovedOrSubmitted && Boolean((kycData.C?.registered_business_address || row.business_address) && (kycData.C?.business_contact_number || row.business_phone))),
+    registered_business_address: row.business_address || ext.business_address || basic.address || basic.city || "",
+    business_address: row.business_address || ext.business_address || basic.address || basic.city || "",
+    branch_locations: row.branch_locations || "",
+    business_contact_number: row.business_phone || basic.mobile || member.phone || "",
+    business_phone: row.business_phone || basic.mobile || member.phone || "",
+    business_email: row.business_email || basic.email || member.email || "",
+    business_website: row.business_website || "",
+    google_map_location: row.google_map_pin || "",
+    google_map_pin: row.google_map_pin || "",
+    completed: completedSet.has("C") || (isApprovedOrSubmitted && Boolean(row.business_address && row.business_phone)),
   };
 
   const secD = {
-    bank_account_number: kycData.D?.bank_account_number || row.bank_account_number || "",
-    ifsc_code: kycData.D?.ifsc_code || row.ifsc_code || "",
-    bank_branch_name: kycData.D?.bank_branch_name || row.bank_branch || "",
-    bank_branch: kycData.D?.bank_branch || row.bank_branch || "",
-    upi_id: kycData.D?.upi_id || row.upi_id || "",
-    gst_applicable: Boolean(kycData.D?.gst_number || row.gst_number),
-    gst_number: kycData.D?.gst_number || row.gst_number || "",
-    income_tax_declaration: kycData.D?.income_tax_declaration || row.income_tax_slab || "",
-    income_tax_slab: kycData.D?.income_tax_slab || row.income_tax_slab || "",
-    nominee_name: kycData.D?.nominee_name || row.nominee_name || "",
-    nominee_relationship: kycData.D?.nominee_relationship || row.nominee_relation || "",
-    nominee_relation: kycData.D?.nominee_relation || row.nominee_relation || "",
-    nominee_aadhaar_id: kycData.D?.nominee_aadhaar_id || row.nominee_aadhaar_id || row.nominee_aadhaar || "",
-    completed: completedSet.has("D") || (isApprovedOrSubmitted && Boolean((kycData.D?.bank_account_number || row.bank_account_number) && (kycData.D?.ifsc_code || row.ifsc_code))),
+    bank_account_number: row.bank_account_number || "",
+    ifsc_code: row.ifsc_code || "",
+    bank_branch_name: row.bank_branch || "",
+    bank_branch: row.bank_branch || "",
+    upi_id: row.upi_id || "",
+    gst_applicable: Boolean(row.gst_number),
+    gst_number: row.gst_number || "",
+    income_tax_declaration: row.income_tax_slab || "",
+    income_tax_slab: row.income_tax_slab || "",
+    nominee_name: row.nominee_name || "",
+    nominee_relationship: row.nominee_relation || "",
+    nominee_relation: row.nominee_relation || "",
+    nominee_aadhaar_id: "",
+    completed: completedSet.has("D") || (isApprovedOrSubmitted && Boolean(row.bank_account_number && row.ifsc_code)),
   };
 
   const secE = {
-    year_established: kycData.E?.year_established || row.year_established || "",
-    number_of_employees: kycData.E?.number_of_employees || row.employee_count || "",
-    employee_count: kycData.E?.employee_count || row.employee_count || "",
-    annual_turnover_slab: kycData.E?.annual_turnover_slab || row.annual_turnover || "",
-    annual_turnover: kycData.E?.annual_turnover || row.annual_turnover || "",
-    products_services_offered: kycData.E?.products_services_offered || row.products_services || "",
-    products_services: kycData.E?.products_services || row.products_services || "",
-    business_category_tags: kycData.E?.business_category_tags || row.business_category_tags || basic.business_type || "",
-    awards_certifications: kycData.E?.awards_certifications || row.awards_certifications || "",
-    client_testimonials: kycData.E?.client_testimonials || row.client_testimonials || "",
-    business_bio: kycData.E?.business_bio || row.business_bio || "",
-    social_media_links: kycData.E?.social_media_links || row.social_links || "",
-    social_links: kycData.E?.social_links || row.social_links || "",
-    completed: completedSet.has("E") || (isApprovedOrSubmitted && Boolean(kycData.E?.year_established || row.year_established || kycData.E?.business_bio || row.business_bio)),
+    year_established: row.year_established || "",
+    number_of_employees: row.employee_count || "",
+    employee_count: row.employee_count || "",
+    annual_turnover_slab: row.annual_turnover || "",
+    annual_turnover: row.annual_turnover || "",
+    products_services_offered: row.products_services || "",
+    products_services: row.products_services || "",
+    business_category_tags: row.business_category_tags || basic.business_type || "",
+    awards_certifications: row.awards_certifications || "",
+    client_testimonials: row.client_testimonials || "",
+    business_bio: row.business_bio || "",
+    social_media_links: row.social_links || "",
+    social_links: row.social_links || "",
+    completed: completedSet.has("E") || (isApprovedOrSubmitted && Boolean(row.year_established || row.business_bio)),
   };
 
   const secF = {
-    preferred_payout_cycle: kycData.F?.preferred_payout_cycle || row.preferred_payout_cycle || "",
-    referral_id: kycData.F?.referral_id || row.referral_id || member.referral_id || "",
+    preferred_payout_cycle: row.preferred_payout_cycle || "",
+    referral_id: row.referral_id || member.referral_id || "",
     network_level_rank: member.network_level || "",
     team_size: member.direct_network || "0",
     royalty_slab_category: member.royalty_slab_category || "Standard",
-    completed: completedSet.has("F") || (isApprovedOrSubmitted && Boolean(kycData.F?.preferred_payout_cycle || row.preferred_payout_cycle)),
+    completed: completedSet.has("F") || (isApprovedOrSubmitted && Boolean(row.preferred_payout_cycle)),
   };
 
   const secG = {
-    emergency_contact_name: kycData.G?.emergency_contact_name || row.emergency_contact_name || "",
-    emergency_contact_number: kycData.G?.emergency_contact_number || row.emergency_contact_number || "",
-    relationship: kycData.G?.relationship || row.emergency_relationship || "",
-    emergency_relationship: kycData.G?.emergency_relationship || row.emergency_relationship || "",
-    completed: completedSet.has("G") || (isApprovedOrSubmitted && Boolean(kycData.G?.emergency_contact_name || row.emergency_contact_name)),
+    emergency_contact_name: row.emergency_contact_name || "",
+    emergency_contact_number: row.emergency_contact_number || "",
+    relationship: row.emergency_relationship || "",
+    emergency_relationship: row.emergency_relationship || "",
+    completed: completedSet.has("G") || (isApprovedOrSubmitted && Boolean(row.emergency_contact_name)),
   };
 
   const sections = {
@@ -2580,7 +2588,6 @@ async function handleSaveCommercialSection(request, db, cors, section) {
     "business_name", "business_type", "registration_number", "gst_number", "company_pan", "tan_number",
     "business_address", "branch_locations", "business_phone", "business_email", "business_website", "google_map_pin",
     "bank_account_number", "ifsc_code", "bank_branch", "upi_id", "income_tax_slab", "nominee_name", "nominee_relation",
-    "nominee_aadhaar_id", "nominee_aadhaar",
     "year_established", "employee_count", "annual_turnover", "products_services", "business_category_tags",
     "awards_certifications", "client_testimonials", "business_bio", "social_links", "referral_id",
     "preferred_payout_cycle", "emergency_contact_name", "emergency_contact_number", "emergency_relationship"
@@ -2598,8 +2605,6 @@ async function handleSaveCommercialSection(request, db, cors, section) {
     bank_branch_name: "bank_branch",
     income_tax_declaration: "income_tax_slab",
     nominee_relationship: "nominee_relation",
-    nominee_aadhaar_id: "nominee_aadhaar_id",
-    nominee_aadhaar: "nominee_aadhaar_id",
     number_of_employees: "employee_count",
     annual_turnover_slab: "annual_turnover",
     products_services_offered: "products_services",
@@ -2669,27 +2674,8 @@ async function handleSaveCommercialSection(request, db, cors, section) {
     }
   }
 
-  // Ensure kyc_data JSON column exists and stores all section data
+  // Record section in commercial_kyc_progress
   const normalizedSec = String(section || "").trim().toUpperCase();
-  try {
-    await db.prepare("ALTER TABLE commercial_kyc ADD COLUMN kyc_data TEXT").run();
-  } catch {}
-  try {
-    await db.prepare("ALTER TABLE commercial_kyc ADD COLUMN nominee_aadhaar_id TEXT").run();
-  } catch {}
-
-  try {
-    let existingKycData = {};
-    const commRow = await db.prepare("SELECT kyc_data FROM commercial_kyc WHERE member_id = ? OR login_id = ?").bind(member.id, member.login_id).first();
-    if (commRow && commRow.kyc_data) {
-      try { existingKycData = JSON.parse(commRow.kyc_data) || {}; } catch {}
-    }
-    existingKycData[normalizedSec] = { ...(existingKycData[normalizedSec] || {}), ...values };
-    await db.prepare("UPDATE commercial_kyc SET kyc_data = ?, updated_at = datetime('now') WHERE member_id = ? OR login_id = ?")
-      .bind(JSON.stringify(existingKycData), member.id, member.login_id).run();
-  } catch (err) {
-    console.error("Error saving commercial kyc_data JSON:", err);
-  }
   if (["A", "B", "C", "D", "E", "F", "G"].includes(normalizedSec)) {
     try {
       await db.prepare(`
@@ -2878,20 +2864,170 @@ async function handleGetCommercialBasicKycByMobile(request, db, cors, mobile) {
    PROFESSIONAL KYC HELPERS
 ========================================================= */
 
-async function getProfessionalKycRecord(memberId, db) {
-  const member = (await db.prepare("SELECT * FROM kyc_members WHERE id = ?").bind(memberId).first()) || {};
-  const ext = (await db.prepare("SELECT * FROM kyc_members_ext_1 WHERE member_id = ?").bind(memberId).first()) || {};
-
+async function ensureProfessionalKycTable(db) {
   try {
     await db.prepare(`
-      CREATE TABLE IF NOT EXISTS professional_kyc_progress (
+      CREATE TABLE IF NOT EXISTS professional_kyc (
         member_id INTEGER PRIMARY KEY,
-        completed_sections TEXT,
-        completed_count INTEGER DEFAULT 0,
+        login_id TEXT,
+        full_legal_name TEXT,
+        father_name TEXT,
+        dob TEXT,
+        gender TEXT,
+        marital_status TEXT,
+        nationality TEXT,
+        blood_group TEXT,
+        aadhar_number TEXT,
+        pan_number TEXT,
+        address TEXT,
+        current_address TEXT,
+        permanent_address TEXT,
+        city TEXT,
+        district TEXT,
+        state TEXT,
+        pincode TEXT,
+        country TEXT,
+        occupation TEXT,
+        profession TEXT,
+        education TEXT,
+        highest_qualification TEXT,
+        institution_name TEXT,
+        degree_year TEXT,
+        skills TEXT,
+        bio TEXT,
+        nominee_name TEXT,
+        nominee_dob TEXT,
+        nominee_relationship TEXT,
+        nominee_aadhar TEXT,
+        emergency_contact_name TEXT,
+        emergency_contact_number TEXT,
+        emergency_relationship TEXT,
+        bank_name TEXT,
+        account_number TEXT,
+        ifsc_code TEXT,
+        branch TEXT,
+        kyc_data TEXT,
+        kyc_status TEXT DEFAULT 'draft',
+        submitted_at DATETIME,
+        approved_at DATETIME,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `).run();
+
+    const cols = [
+      "full_legal_name", "father_name", "dob", "gender", "marital_status", "nationality", "blood_group",
+      "aadhar_number", "pan_number", "address", "current_address", "permanent_address",
+      "city", "district", "state", "pincode", "country",
+      "occupation", "profession", "education", "highest_qualification", "institution_name", "degree_year",
+      "skills", "bio",
+      "nominee_name", "nominee_dob", "nominee_relationship", "nominee_aadhar",
+      "emergency_contact_name", "emergency_contact_number", "emergency_relationship",
+      "bank_name", "account_number", "ifsc_code", "branch", "kyc_data", "kyc_status", "submitted_at", "approved_at"
+    ];
+    for (const c of cols) {
+      await db.prepare(`ALTER TABLE professional_kyc ADD COLUMN ${c} TEXT`).run().catch(() => {});
+    }
+
+    const ext1Cols = [
+      "nomini_name", "nomini_dob", "nomini_relationship", "nomini_aadhar",
+      "current_address", "permanent_address", "amount", "subscription_year", "payment_method", "transaction_id", "payment_proof",
+      "professional_section_a_completed", "professional_section_b_completed",
+      "professional_section_c_completed", "professional_section_d_completed",
+      "professional_section_e_completed", "professional_section_f_completed",
+      "professional_section_g_completed", "professional_section_h_completed",
+      "professional_section_i_completed", "professional_section_j_completed",
+      "professional_privacy_consent", "professional_declaration_accepted",
+      "professional_kyc_status", "professional_kyc_current_step"
+    ];
+    for (const c of ext1Cols) {
+      await db.prepare(`ALTER TABLE kyc_members_ext_1 ADD COLUMN ${c} TEXT`).run().catch(() => {});
+    }
+
+    const kycMemCols = [
+      "father_name", "dob", "gender", "marital_status", "nationality", "blood_group",
+      "aadhar", "pan_number", "address", "city", "district", "state", "pincode", "country",
+      "occupation", "profession", "education", "highest_qualification", "institution_name", "degree_year",
+      "skills", "bio", "profile_bio", "whatsapp_number", "contact_number", "profile_pic"
+    ];
+    for (const c of kycMemCols) {
+      await db.prepare(`ALTER TABLE kyc_members ADD COLUMN ${c} TEXT`).run().catch(() => {});
+    }
+
+    const civCols = [
+      "full_legal_name", "father_spouse_name", "dob", "gender", "blood_group", "marital_status", "nationality",
+      "aadhaar_number", "pan_number", "primary_mobile", "primary_email", "whatsapp_number", "secondary_mobile",
+      "current_address", "permanent_address", "city", "district", "state", "pincode",
+      "highest_qualification", "school_college_name", "degree_year",
+      "bank_name", "bank_account_number", "ifsc_code", "bank_branch_name",
+      "emergency_contact_name", "emergency_contact_number", "emergency_relationship",
+      "nominee_name", "nominee_relationship", "nominee_dob", "nominee_aadhaar"
+    ];
+    for (const c of civCols) {
+      await db.prepare(`ALTER TABLE civilian_full_kyc ADD COLUMN ${c} TEXT`).run().catch(() => {});
+    }
   } catch {}
+}
+
+async function getProfessionalKycRecord(memberId, db) {
+  const member = (await db.prepare("SELECT * FROM kyc_members WHERE id = ?").bind(memberId).first()) || {};
+  const ext = (await db.prepare("SELECT * FROM kyc_members_ext_1 WHERE member_id = ?").bind(memberId).first()) || {};
+  const ext2 = (await db.prepare("SELECT * FROM kyc_members_ext_2 WHERE member_id = ?").bind(memberId).first()) || {};
+  const civKycRow = (await db.prepare("SELECT * FROM civilian_full_kyc WHERE member_id = ?").bind(memberId).first()) || {};
+
+  let profKycRow = null;
+  let parsedKycData = {};
+  try {
+    profKycRow = await db.prepare("SELECT * FROM professional_kyc WHERE member_id = ? OR login_id = ?").bind(memberId, member.login_id || "").first();
+    if (profKycRow && profKycRow.kyc_data) {
+      parsedKycData = typeof profKycRow.kyc_data === "string" ? JSON.parse(profKycRow.kyc_data) : (profKycRow.kyc_data || {});
+    }
+  } catch {}
+
+  // Unpack any nested values or section-nested values
+  if (parsedKycData && typeof parsedKycData === "object") {
+    if (parsedKycData.values && typeof parsedKycData.values === "object") {
+      parsedKycData = { ...parsedKycData.values, ...parsedKycData };
+    }
+    const secKeys = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+    secKeys.forEach(s => {
+      if (parsedKycData[s] && typeof parsedKycData[s] === "object") {
+        if (parsedKycData[s].values && typeof parsedKycData[s].values === "object") {
+          parsedKycData = { ...parsedKycData[s].values, ...parsedKycData };
+        } else {
+          parsedKycData = { ...parsedKycData[s], ...parsedKycData };
+        }
+      }
+    });
+
+    const profAliases = {
+      current_address: "address",
+      father_spouse_name: "father_name",
+      date_of_birth: "dob",
+      profession: "occupation",
+      professional_title: "occupation",
+      highest_qualification: "education",
+      degree: "education",
+      nominee_name: "nomini_name",
+      nominee_dob: "nomini_dob",
+      nominee_relationship: "nomini_relation",
+      nomini_relationship: "nomini_relation",
+      nominee_aadhar: "nomini_aadhar",
+      professional_skills: "skills",
+      professional_bio: "bio",
+      bank_branch: "branch",
+      bank_branch_name: "branch",
+      emergency_contact: "emergency_contact_number",
+    };
+    for (const [fromKey, toKey] of Object.entries(profAliases)) {
+      if (parsedKycData[fromKey] && !parsedKycData[toKey]) {
+        parsedKycData[toKey] = parsedKycData[fromKey];
+      }
+      if (parsedKycData[toKey] && !parsedKycData[fromKey]) {
+        parsedKycData[fromKey] = parsedKycData[toKey];
+      }
+    }
+  }
 
   let completedList = [];
   try {
@@ -2902,7 +3038,11 @@ async function getProfessionalKycRecord(memberId, db) {
   } catch {}
 
   const allSections = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
-  const isAlreadySubmitted = ext.professional_kyc_status === "submitted" || ext.professional_kyc_status === "approved";
+  const isAlreadySubmitted = ext.professional_kyc_status === "submitted" || ext.professional_kyc_status === "approved" || profKycRow?.kyc_status === "submitted" || profKycRow?.kyc_status === "approved";
+
+  if (isAlreadySubmitted && completedList.length < 10) {
+    completedList = [...allSections];
+  }
 
   const sections = {};
   const progressSections = {};
@@ -2920,9 +3060,82 @@ async function getProfessionalKycRecord(memberId, db) {
   const values = {
     ...member,
     ...ext,
-    full_legal_name: [member.first_name, member.last_name].filter(Boolean).join(" ") || "Professional Member",
-    selectedPlan: ext.subscription_year || ext.amount || "299",
+    ...ext2,
+    ...civKycRow,
+    ...(profKycRow || {}),
+    ...parsedKycData,
+    full_legal_name: [member.first_name, member.last_name].filter(Boolean).join(" ") || profKycRow?.full_legal_name || civKycRow?.full_legal_name || parsedKycData.full_legal_name || "Professional Member",
+    father_name: profKycRow?.father_name || member.father_name || civKycRow?.father_spouse_name || "",
+    father_spouse_name: profKycRow?.father_name || member.father_name || civKycRow?.father_spouse_name || "",
+    dob: profKycRow?.dob || member.dob || civKycRow?.dob || "",
+    date_of_birth: profKycRow?.dob || member.dob || civKycRow?.dob || "",
+    gender: profKycRow?.gender || member.gender || civKycRow?.gender || "",
+    blood_group: profKycRow?.blood_group || member.blood_group || civKycRow?.blood_group || "",
+    marital_status: profKycRow?.marital_status || member.marital_status || civKycRow?.marital_status || "",
+    nationality: profKycRow?.nationality || member.nationality || civKycRow?.nationality || "Indian",
+    aadhar: profKycRow?.aadhar_number || member.aadhar || civKycRow?.aadhaar_number || "",
+    aadhar_number: profKycRow?.aadhar_number || member.aadhar || civKycRow?.aadhaar_number || "",
+    aadhaar_number: profKycRow?.aadhar_number || member.aadhar || civKycRow?.aadhaar_number || "",
+    pan_number: profKycRow?.pan_number || member.pan_number || civKycRow?.pan_number || "",
+    pan: profKycRow?.pan_number || member.pan_number || civKycRow?.pan_number || "",
+    phone: member.phone || "",
+    primary_mobile: member.phone || "",
+    email: member.email || "",
+    primary_email: member.email || "",
+    whatsapp_number: member.whatsapp_number || civKycRow?.whatsapp_number || "",
+    contact_number: member.contact_number || civKycRow?.secondary_mobile || member.phone || "",
+    secondary_mobile: member.contact_number || civKycRow?.secondary_mobile || member.phone || "",
+    address: member.address || ext.current_address || profKycRow?.address || profKycRow?.current_address || civKycRow?.current_address || parsedKycData.address || parsedKycData.current_address || "",
+    current_address: ext.current_address || member.address || profKycRow?.current_address || profKycRow?.address || civKycRow?.current_address || parsedKycData.current_address || parsedKycData.address || "",
+    permanent_address: ext.permanent_address || profKycRow?.permanent_address || civKycRow?.permanent_address || "",
+    city: member.city || profKycRow?.city || civKycRow?.city || parsedKycData.city || "",
+    district: member.district || profKycRow?.district || civKycRow?.district || parsedKycData.district || "",
+    state: member.state || profKycRow?.state || civKycRow?.state || parsedKycData.state || "",
+    pincode: member.pincode || profKycRow?.pincode || civKycRow?.pincode || parsedKycData.pincode || "",
+    country: member.country || profKycRow?.country || civKycRow?.nationality || parsedKycData.country || "Indian",
+    occupation: member.occupation || member.profession || profKycRow?.occupation || profKycRow?.profession || civKycRow?.occupation || parsedKycData.occupation || parsedKycData.profession || "",
+    profession: member.profession || member.occupation || profKycRow?.profession || profKycRow?.occupation || parsedKycData.profession || "",
+    education: member.education || member.educational_qualification || profKycRow?.education || profKycRow?.highest_qualification || civKycRow?.highest_qualification || parsedKycData.education || parsedKycData.highest_qualification || "",
+    highest_qualification: profKycRow?.highest_qualification || member.educational_qualification || member.education || civKycRow?.highest_qualification || parsedKycData.highest_qualification || parsedKycData.education || "",
+    educational_qualification: profKycRow?.highest_qualification || member.educational_qualification || member.education || civKycRow?.highest_qualification || parsedKycData.highest_qualification || parsedKycData.education || "",
+    institution_name: profKycRow?.institution_name || member.ug_college || member.school_name || civKycRow?.school_college_name || "",
+    school_college_name: profKycRow?.institution_name || member.ug_college || member.school_name || civKycRow?.school_college_name || "",
+    ug_college: profKycRow?.institution_name || member.ug_college || civKycRow?.ug_college || "",
+    degree_year: profKycRow?.degree_year || member.ug_year || civKycRow?.degree_year || "",
+    ug_year: profKycRow?.degree_year || member.ug_year || civKycRow?.ug_year || "",
+    nomini_name: ext.nomini_name || profKycRow?.nominee_name || civKycRow?.nominee_name || member.nomini_name || parsedKycData.nomini_name || parsedKycData.nominee_name || "",
+    nominee_name: ext.nomini_name || profKycRow?.nominee_name || civKycRow?.nominee_name || member.nomini_name || parsedKycData.nomini_name || parsedKycData.nominee_name || "",
+    nomini_dob: ext.nomini_dob || profKycRow?.nominee_dob || civKycRow?.nominee_dob || parsedKycData.nomini_dob || parsedKycData.nominee_dob || "",
+    nominee_dob: ext.nomini_dob || profKycRow?.nominee_dob || civKycRow?.nominee_dob || parsedKycData.nomini_dob || parsedKycData.nominee_dob || "",
+    nomini_relation: ext.nomini_relationship || profKycRow?.nominee_relationship || civKycRow?.nominee_relationship || member.nomini_relation || parsedKycData.nomini_relation || parsedKycData.nominee_relationship || "",
+    nomini_relationship: ext.nomini_relationship || profKycRow?.nominee_relationship || civKycRow?.nominee_relationship || member.nomini_relation || parsedKycData.nomini_relation || parsedKycData.nominee_relationship || "",
+    nominee_relationship: ext.nomini_relationship || profKycRow?.nominee_relationship || civKycRow?.nominee_relationship || member.nomini_relation || parsedKycData.nomini_relation || parsedKycData.nominee_relationship || "",
+    nomini_aadhar: ext.nomini_aadhar || profKycRow?.nominee_aadhar || civKycRow?.nominee_aadhar || parsedKycData.nomini_aadhar || parsedKycData.nominee_aadhar || "",
+    nominee_aadhar: ext.nomini_aadhar || profKycRow?.nominee_aadhar || civKycRow?.nominee_aadhar || parsedKycData.nomini_aadhar || parsedKycData.nominee_aadhar || "",
+    emergency_contact_name: ext2.emergency_contact_name || profKycRow?.emergency_contact_name || civKycRow?.emergency_contact_name || parsedKycData.emergency_contact_name || "",
+    emergency_contact_number: ext2.emergency_contact_number || profKycRow?.emergency_contact_number || civKycRow?.emergency_contact_number || parsedKycData.emergency_contact_number || "",
+    emergency_relationship: ext2.emergency_relationship || profKycRow?.emergency_relationship || civKycRow?.emergency_relationship || parsedKycData.emergency_relationship || "",
+    bank_name: member.bank_name || profKycRow?.bank_name || civKycRow?.bank_name || parsedKycData.bank_name || "",
+    account_number: member.account_number || profKycRow?.account_number || civKycRow?.bank_account_number || parsedKycData.account_number || "",
+    bank_account_number: member.account_number || profKycRow?.account_number || civKycRow?.bank_account_number || parsedKycData.account_number || "",
+    ifsc: ext.ifsc || profKycRow?.ifsc_code || civKycRow?.ifsc_code || parsedKycData.ifsc || parsedKycData.ifsc_code || "",
+    ifsc_code: ext.ifsc || profKycRow?.ifsc_code || civKycRow?.ifsc_code || parsedKycData.ifsc || parsedKycData.ifsc_code || "",
+    branch: ext2.branch || profKycRow?.branch || civKycRow?.bank_branch_name || parsedKycData.branch || "",
+    bank_branch_name: ext2.branch || profKycRow?.branch || civKycRow?.bank_branch_name || parsedKycData.branch || "",
+    skills: member.skills || profKycRow?.skills || civKycRow?.skills || parsedKycData.skills || "",
+    bio: member.bio || member.profile_bio || ext.professional_bio || profKycRow?.bio || civKycRow?.bio || parsedKycData.bio || parsedKycData.professional_bio || "",
+    professional_bio: ext.professional_bio || member.profile_bio || member.bio || profKycRow?.bio || civKycRow?.bio || parsedKycData.professional_bio || parsedKycData.bio || "",
+    selectedPlan: parsedKycData.selectedPlan || ext.subscription_year || ext.amount || member.selected_plan || "299",
   };
+
+  // Add section completion indicators for admin generic kyc renderer
+  allSections.forEach(sec => {
+    values[`professional_section_${sec.toLowerCase()}_completed`] = (isAlreadySubmitted || sections[sec]?.completed) ? "Yes" : "No";
+  });
+  if (isAlreadySubmitted || completedCount >= 10) {
+    values.professional_privacy_consent = "Yes";
+    values.professional_declaration_accepted = "Yes";
+  }
 
   return {
     success: true,
@@ -2931,16 +3144,33 @@ async function getProfessionalKycRecord(memberId, db) {
     sections,
     values,
     valuesBySection: {
-      A: values, B: values, C: values, D: values, E: values,
-      F: values, G: values, H: values, I: values, J: values,
+      A: { ...values, ...(parsedKycData.A || {}) },
+      B: { ...values, ...(parsedKycData.B || {}) },
+      C: { ...values, ...(parsedKycData.C || {}) },
+      D: { ...values, ...(parsedKycData.D || {}) },
+      E: { ...values, ...(parsedKycData.E || {}) },
+      F: { ...values, ...(parsedKycData.F || {}) },
+      G: { ...values, ...(parsedKycData.G || {}) },
+      H: { ...values, ...(parsedKycData.H || {}) },
+      I: { ...values, ...(parsedKycData.I || {}) },
+      J: { ...values, ...(parsedKycData.J || {}) },
     },
     currentStep: ext.professional_kyc_current_step || "A",
     status: ext.professional_kyc_status || (completedCount >= 10 ? "completed" : "draft"),
     progress: {
-      completed: completedCount,
-      total: 10,
-      percentage: percentage,
+      completedCount,
+      completedSections: allSections.filter(sec => sections[sec]?.completed),
+      totalSections: 10,
+      percentage,
       sections: progressSections,
+      kycCompleted: completedCount >= 10,
+      currentStep: ext.professional_kyc_current_step || "A",
+    },
+    payment: {
+      status: ext.payment_status || member.payment_status || "pending",
+      transactionId: ext.transaction_id || "",
+      method: ext.payment_method || "",
+      amount: ext.amount || 299,
     },
   };
 }
@@ -3012,7 +3242,18 @@ async function handleSaveProfessionalSection(request, db, cors, section) {
     return json({ success: false, message: "Member session not found." }, 401, cors);
   }
 
-  const input = await parseRequestBody(request);
+  const rawInput = await parseRequestBody(request);
+  let unpackedValues = {};
+  if (rawInput && rawInput.values) {
+    if (typeof rawInput.values === "string") {
+      try {
+        unpackedValues = JSON.parse(rawInput.values);
+      } catch {}
+    } else if (typeof rawInput.values === "object" && rawInput.values !== null) {
+      unpackedValues = rawInput.values;
+    }
+  }
+  const input = { ...rawInput, ...unpackedValues };
   const normalizedSec = String(section || "A").trim().toUpperCase();
 
   // Duplicate Aadhaar check for professional Section A
@@ -3046,6 +3287,286 @@ async function handleSaveProfessionalSection(request, db, cors, section) {
   }
 
   try {
+    await ensureProfessionalKycTable(db);
+
+    let existingRow = await db.prepare("SELECT * FROM professional_kyc WHERE member_id = ?").bind(member.id).first();
+    let currentData = {};
+    if (existingRow && existingRow.kyc_data) {
+      try {
+        currentData = typeof existingRow.kyc_data === "string" ? JSON.parse(existingRow.kyc_data) : (existingRow.kyc_data || {});
+      } catch {}
+    }
+
+    currentData = { ...currentData, ...input };
+    if (!currentData[normalizedSec]) currentData[normalizedSec] = {};
+    currentData[normalizedSec] = { ...currentData[normalizedSec], ...input };
+
+    const profCols = {
+      full_legal_name: input.full_legal_name || input.fullname || input.name,
+      father_name: input.father_name || input.father_spouse_name,
+      dob: input.dob || input.date_of_birth,
+      gender: input.gender,
+      marital_status: input.marital_status,
+      nationality: input.nationality,
+      blood_group: input.blood_group,
+      aadhar_number: input.aadhar_number || input.aadhar,
+      pan_number: input.pan_number || input.pan,
+      address: input.address || input.current_address,
+      current_address: input.current_address || input.address,
+      permanent_address: input.permanent_address,
+      city: input.city,
+      district: input.district,
+      state: input.state,
+      pincode: input.pincode,
+      country: input.country || "Indian",
+      occupation: input.occupation || input.profession || input.professional_title,
+      profession: input.profession || input.occupation,
+      education: input.education || input.highest_qualification || input.degree,
+      highest_qualification: input.highest_qualification || input.education || input.degree,
+      institution_name: input.institution_name || input.school_college_name || input.ug_college,
+      degree_year: input.degree_year || input.ug_year,
+      skills: input.skills || input.professional_skills,
+      bio: input.professional_bio || input.bio,
+      nominee_name: input.nomini_name || input.nominee_name,
+      nominee_dob: input.nomini_dob || input.nominee_dob,
+      nominee_relationship: input.nomini_relationship || input.nomini_relation || input.nominee_relationship,
+      nominee_aadhar: input.nomini_aadhar || input.nominee_aadhar,
+      emergency_contact_name: input.emergency_contact_name,
+      emergency_contact_number: input.emergency_contact_number,
+      emergency_relationship: input.emergency_relationship,
+      bank_name: input.bank_name,
+      account_number: input.account_number || input.bank_account_number,
+      ifsc_code: input.ifsc_code || input.ifsc,
+      branch: input.branch || input.bank_branch_name || input.bank_branch,
+    };
+
+    await db.prepare(`
+      INSERT INTO professional_kyc (member_id, login_id, created_at, updated_at)
+      VALUES (?, ?, datetime('now'), datetime('now'))
+      ON CONFLICT(member_id) DO NOTHING
+    `).bind(member.id, member.login_id || "").run().catch(() => {});
+
+    const pKycUpdates = ["kyc_data = ?", "updated_at = datetime('now')"];
+    const pKycVals = [JSON.stringify(currentData)];
+    for (const [col, val] of Object.entries(profCols)) {
+      if (val !== undefined && val !== null && String(val).trim()) {
+        pKycUpdates.push(`${col} = ?`);
+        pKycVals.push(String(val).trim());
+      }
+    }
+    pKycVals.push(member.id);
+
+    await db.prepare(`
+      UPDATE professional_kyc
+      SET ${pKycUpdates.join(", ")}
+      WHERE member_id = ?
+    `).bind(...pKycVals).run().catch((e) => {
+      console.error("professional_kyc update error:", e);
+    });
+
+    // 1. Sync ALL valid kyc_members columns just like Civilian KYC flow
+    const memUpdates = [];
+    const memVals = [];
+    const validKycMembersCols = {
+      father_name: input.father_name || input.father_spouse_name,
+      dob: input.dob || input.date_of_birth,
+      gender: input.gender,
+      marital_status: input.marital_status,
+      nationality: input.nationality || "Indian",
+      blood_group: input.blood_group,
+      occupation: input.occupation || input.profession || input.professional_title,
+      profession: input.profession || input.occupation,
+      education: input.education || input.highest_qualification || input.degree,
+      educational_qualification: input.highest_qualification || input.education || input.degree,
+      city: input.city,
+      district: input.district,
+      state: input.state,
+      pincode: input.pincode,
+      country: input.country || "Indian",
+      address: input.address || input.current_address,
+      skills: input.skills || input.professional_skills,
+      bio: input.professional_bio || input.bio,
+      profile_bio: input.professional_bio || input.bio,
+      bank_name: input.bank_name,
+      account_number: input.account_number || input.bank_account_number,
+      aadhar: input.aadhar || input.aadhar_number,
+      pan_number: input.pan_number || input.pan,
+      ug_college: input.institution_name || input.school_college_name || input.ug_college,
+      school_name: input.school_college_name || input.school_name || input.institution_name,
+      ug_degree: input.degree || input.ug_degree || input.highest_qualification || input.education,
+      ug_year: input.degree_year || input.ug_year,
+      social_instagram: input.social_instagram || input.instagram_url,
+      social_linkedin: input.social_linkedin || input.linkedin_url,
+      social_facebook: input.social_facebook || input.facebook_url,
+      social_youtube: input.social_youtube || input.youtube_url,
+      social_twitter: input.social_twitter || input.twitter_url,
+      social_link: input.website || input.portfolio_url || input.social_link,
+      whatsapp_number: input.whatsapp_number || input.whatsapp,
+      contact_number: input.contact_number || input.secondary_mobile,
+    };
+
+    if (input.full_legal_name || input.fullname || input.name) {
+      const parts = String(input.full_legal_name || input.fullname || input.name).trim().split(/\s+/);
+      if (parts[0]) {
+        validKycMembersCols.first_name = parts[0];
+        validKycMembersCols.last_name = parts.slice(1).join(" ") || "";
+      }
+    }
+    if (input.email) validKycMembersCols.email = String(input.email).trim();
+    if (input.phone) validKycMembersCols.phone = String(input.phone).trim();
+    if (input.profile_pic || input.profile_photo || input.photo) {
+      validKycMembersCols.profile_pic = String(input.profile_pic || input.profile_photo || input.photo).trim();
+    }
+
+    for (const [col, val] of Object.entries(validKycMembersCols)) {
+      if (val !== undefined && val !== null && String(val).trim()) {
+        memUpdates.push(`"${col}" = ?`);
+        memVals.push(String(val).trim());
+      }
+    }
+
+    if (memUpdates.length > 0) {
+      memUpdates.push(`"updated_at" = datetime('now')`);
+      memVals.push(member.id);
+      await db.prepare(`UPDATE kyc_members SET ${memUpdates.join(", ")} WHERE id = ?`).bind(...memVals).run().catch((e) => {
+        console.error("Error updating valid kyc_members fields:", e);
+      });
+    }
+
+    // Also sync to civilian_full_kyc as reliable fallback
+    try {
+      await db.prepare(`
+        INSERT INTO civilian_full_kyc (member_id) VALUES (?) ON CONFLICT(member_id) DO NOTHING
+      `).bind(member.id).run().catch(() => {});
+
+      const civUpdates = [];
+      const civVals = [];
+      const civFields = {
+        full_legal_name: input.full_legal_name || input.fullname || input.name,
+        father_spouse_name: input.father_name || input.father_spouse_name,
+        dob: input.dob || input.date_of_birth,
+        gender: input.gender,
+        blood_group: input.blood_group,
+        marital_status: input.marital_status,
+        nationality: input.nationality || "Indian",
+        aadhaar_number: input.aadhar_number || input.aadhar,
+        pan_number: input.pan_number || input.pan,
+        primary_mobile: input.phone,
+        primary_email: input.email,
+        whatsapp_number: input.whatsapp_number || input.whatsapp,
+        secondary_mobile: input.contact_number || input.secondary_mobile,
+        current_address: input.address || input.current_address,
+        permanent_address: input.permanent_address,
+        city: input.city,
+        district: input.district,
+        state: input.state,
+        pincode: input.pincode,
+        highest_qualification: input.highest_qualification || input.education,
+        school_college_name: input.institution_name || input.school_college_name || input.ug_college,
+        degree_year: input.degree_year || input.ug_year,
+        bank_name: input.bank_name,
+        bank_account_number: input.account_number || input.bank_account_number,
+        ifsc_code: input.ifsc_code || input.ifsc,
+        bank_branch_name: input.branch || input.bank_branch_name,
+        emergency_contact_name: input.emergency_contact_name,
+        emergency_contact_number: input.emergency_contact_number,
+        emergency_relationship: input.emergency_relationship,
+        nominee_name: input.nomini_name || input.nominee_name,
+        nominee_relationship: input.nomini_relationship || input.nomini_relation || input.nominee_relationship,
+        bio: input.professional_bio || input.bio,
+        skills: input.skills || input.professional_skills,
+      };
+      for (const [col, val] of Object.entries(civFields)) {
+        if (val !== undefined && val !== null && String(val).trim()) {
+          civUpdates.push(`"${col}" = ?`);
+          civVals.push(String(val).trim());
+        }
+      }
+      if (civUpdates.length > 0) {
+        civUpdates.push(`"updated_at" = datetime('now')`);
+        civVals.push(member.id);
+        await db.prepare(`UPDATE civilian_full_kyc SET ${civUpdates.join(", ")} WHERE member_id = ?`).bind(...civVals).run().catch(() => {});
+      }
+    } catch {}
+
+    // 2. Sync to kyc_members_ext_1
+    await db.prepare(`
+      INSERT INTO kyc_members_ext_1 (member_id, professional_kyc_status, professional_kyc_current_step, subscription_year)
+      VALUES (?, 'in_progress', ?, '2026')
+      ON CONFLICT(member_id) DO UPDATE SET
+        professional_kyc_current_step = excluded.professional_kyc_current_step
+    `).bind(member.id, normalizedSec).run().catch(() => {});
+
+    const ext1Updates = [];
+    const ext1Vals = [];
+    const ext1Fields = {
+      nomini_name: input.nomini_name || input.nominee_name,
+      nomini_dob: input.nomini_dob || input.nominee_dob,
+      nomini_relationship: input.nomini_relationship || input.nomini_relation || input.nominee_relationship,
+      nomini_aadhar: input.nomini_aadhar || input.nominee_aadhar,
+      current_address: input.current_address || input.address,
+      permanent_address: input.permanent_address,
+      ifsc: input.ifsc_code || input.ifsc,
+      school_college_name: input.institution_name || input.school_college_name || input.ug_college,
+      professional_bio: input.professional_bio || input.bio,
+      interest_categories: input.interest_categories,
+      hobbies: input.hobbies,
+      preferred_industry: input.preferred_industry,
+    };
+
+    for (const [col, val] of Object.entries(ext1Fields)) {
+      if (val !== undefined && val !== null && String(val).trim()) {
+        ext1Updates.push(`${col} = ?`);
+        ext1Vals.push(String(val).trim());
+      }
+    }
+
+    const docFields = [
+      "aadhaar_front", "aadhaar_back", "address_proof",
+      "professional_license_document", "council_registration_document",
+      "resume_cv", "cover_photo", "gallery_photo", "nomini_id_document",
+      "pan_card_document", "passport_document", "driving_license_document"
+    ];
+    for (const df of docFields) {
+      if (input[df]) {
+        ext1Updates.push(`${df} = ?`);
+        ext1Vals.push(String(input[df]).trim());
+      }
+    }
+    ext1Updates.push(`professional_section_${normalizedSec.toLowerCase()}_completed = 1`);
+    if (normalizedSec === "J" || input.privacy_consent || input.privacyConsent) {
+      ext1Updates.push(`professional_privacy_consent = 1`);
+    }
+    if (normalizedSec === "J" || input.declaration_accepted || input.declarationAccepted) {
+      ext1Updates.push(`professional_declaration_accepted = 1`);
+    }
+    ext1Vals.push(member.id);
+    await db.prepare(`UPDATE kyc_members_ext_1 SET ${ext1Updates.join(", ")} WHERE member_id = ?`).bind(...ext1Vals).run().catch(() => {});
+
+    // 3. Sync to kyc_members_ext_2 (emergency contact and branch)
+    await db.prepare(`
+      INSERT INTO kyc_members_ext_2 (member_id) VALUES (?) ON CONFLICT(member_id) DO NOTHING
+    `).bind(member.id).run().catch(() => {});
+
+    const ext2Updates = [];
+    const ext2Vals = [];
+    const ext2Fields = {
+      emergency_contact_name: input.emergency_contact_name,
+      emergency_contact_number: input.emergency_contact_number,
+      emergency_relationship: input.emergency_relationship,
+      branch: input.branch || input.bank_branch_name || input.bank_branch,
+    };
+    for (const [col, val] of Object.entries(ext2Fields)) {
+      if (val !== undefined && val !== null && String(val).trim()) {
+        ext2Updates.push(`${col} = ?`);
+        ext2Vals.push(String(val).trim());
+      }
+    }
+    if (ext2Updates.length > 0) {
+      ext2Vals.push(member.id);
+      await db.prepare(`UPDATE kyc_members_ext_2 SET ${ext2Updates.join(", ")} WHERE member_id = ?`).bind(...ext2Vals).run().catch(() => {});
+    }
+
     await db.prepare(`
       CREATE TABLE IF NOT EXISTS professional_kyc_progress (
         member_id INTEGER PRIMARY KEY,
@@ -3122,10 +3643,55 @@ async function handleSubmitProfessionalKyc(request, db, cors) {
     `).bind(member.id, JSON.stringify(all10)).run();
 
     await db.prepare(`
-      UPDATE kyc_members_ext_1
-      SET professional_kyc_status = 'submitted'
+      INSERT INTO kyc_members_ext_1 (
+        member_id, professional_kyc_status, professional_kyc_current_step,
+        professional_section_a_completed, professional_section_b_completed,
+        professional_section_c_completed, professional_section_d_completed,
+        professional_section_e_completed, professional_section_f_completed,
+        professional_section_g_completed, professional_section_h_completed,
+        professional_section_i_completed, professional_section_j_completed,
+        professional_privacy_consent, professional_declaration_accepted,
+        subscription_year
+      ) VALUES (?, 'submitted', 'J', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, '2026')
+      ON CONFLICT(member_id) DO UPDATE SET
+        professional_kyc_status = 'submitted',
+        professional_section_a_completed = 1,
+        professional_section_b_completed = 1,
+        professional_section_c_completed = 1,
+        professional_section_d_completed = 1,
+        professional_section_e_completed = 1,
+        professional_section_f_completed = 1,
+        professional_section_g_completed = 1,
+        professional_section_h_completed = 1,
+        professional_section_i_completed = 1,
+        professional_section_j_completed = 1,
+        professional_privacy_consent = 1,
+        professional_declaration_accepted = 1
+    `).bind(member.id).run().catch(async () => {
+      await db.prepare(`
+        UPDATE kyc_members_ext_1
+        SET professional_kyc_status = 'submitted',
+            professional_section_a_completed = 1,
+            professional_section_b_completed = 1,
+            professional_section_c_completed = 1,
+            professional_section_d_completed = 1,
+            professional_section_e_completed = 1,
+            professional_section_f_completed = 1,
+            professional_section_g_completed = 1,
+            professional_section_h_completed = 1,
+            professional_section_i_completed = 1,
+            professional_section_j_completed = 1,
+            professional_privacy_consent = 1,
+            professional_declaration_accepted = 1
+        WHERE member_id = ?
+      `).bind(member.id).run().catch(() => {});
+    });
+
+    await db.prepare(`
+      UPDATE professional_kyc
+      SET kyc_status = 'submitted', submitted_at = datetime('now')
       WHERE member_id = ?
-    `).bind(member.id).run();
+    `).bind(member.id).run().catch(() => {});
   } catch {}
 
   const updatedRecord = await getProfessionalKycRecord(member.id, db);
@@ -3228,6 +3794,9 @@ async function handleGetCivilianProfile(request, db, cors) {
   }
 
   const fullKyc = await getCivilianFullKycRecord(member.id, db);
+  const profRecord = await getProfessionalKycRecord(member.id, db);
+  const pv = profRecord?.values || {};
+
   const ext = (await db.prepare(`
     SELECT payment_method, transaction_id, subscription_year, amount, payment_proof
     FROM kyc_members_ext_1
@@ -3238,13 +3807,14 @@ async function handleGetCivilianProfile(request, db, cors) {
     SELECT * FROM kyc_members WHERE id = ?
   `).bind(member.id).first()) || member;
 
-  const activePhoto = fullMember.profile_pic || fullKyc?.files?.profile_photo || "";
+  const activePhoto = fullMember.profile_pic || fullKyc?.files?.profile_photo || pv?.profile_pic || "";
   const networkSummary = await getMemberNetworkSummary(db, fullMember);
 
   const profile = {
     ...fullMember,
     ...fullKyc.values,
     ...fullKyc.files,
+    ...(pv || {}),
     ...ext,
     ...networkSummary,
     id: member.id,
@@ -3402,22 +3972,118 @@ async function handleGetProfessionalProfile(request, db, cors) {
     SELECT * FROM kyc_members WHERE id = ?
   `).bind(member.id).first()) || member;
 
+  const profRecord = await getProfessionalKycRecord(member.id, db);
   const memberPaymentStatus = String(fullMember.payment_status || member.payment_status || "pending").toLowerCase().trim();
   const isApproved = ["approved", "paid", "completed", "success", "successful"].includes(memberPaymentStatus);
   const networkSummary = await getMemberNetworkSummary(db, fullMember);
 
+  const pv = profRecord.values || {};
+
+  // Auto-heal kyc_members if address/details were in KYC but not in kyc_members
+  if (!fullMember.address && (pv.address || pv.city || pv.nomini_name || pv.occupation)) {
+    try {
+      const syncCols = [];
+      const syncVals = [];
+      const checkFields = {
+        address: pv.address || pv.current_address,
+        city: pv.city,
+        district: pv.district,
+        state: pv.state,
+        pincode: pv.pincode,
+        occupation: pv.occupation || pv.profession || pv.professional_title,
+        education: pv.education || pv.highest_qualification || pv.degree,
+        educational_qualification: pv.highest_qualification || pv.education,
+        skills: pv.skills || pv.professional_skills,
+        bio: pv.bio || pv.professional_bio,
+      };
+      for (const [k, v] of Object.entries(checkFields)) {
+        if (v && !fullMember[k]) {
+          syncCols.push(`${k} = ?`);
+          syncVals.push(String(v));
+        }
+      }
+      if (syncCols.length > 0) {
+        syncVals.push(member.id);
+        await db.prepare(`UPDATE kyc_members SET ${syncCols.join(", ")} WHERE id = ?`).bind(...syncVals).run().catch(() => {});
+      }
+
+      // Also auto-heal kyc_members_ext_1 for nominee and ext_2 for emergency
+      await db.prepare(`
+        INSERT INTO kyc_members_ext_1 (member_id) VALUES (?) ON CONFLICT(member_id) DO NOTHING
+      `).bind(member.id).run().catch(() => {});
+      await db.prepare(`
+        UPDATE kyc_members_ext_1
+        SET nomini_name = COALESCE(nomini_name, ?),
+            nomini_dob = COALESCE(nomini_dob, ?),
+            nomini_relationship = COALESCE(nomini_relationship, ?),
+            nomini_aadhar = COALESCE(nomini_aadhar, ?),
+            current_address = COALESCE(current_address, ?)
+        WHERE member_id = ?
+      `).bind(
+        pv.nomini_name || pv.nominee_name || null,
+        pv.nomini_dob || pv.nominee_dob || null,
+        pv.nomini_relation || pv.nomini_relationship || pv.nominee_relationship || null,
+        pv.nomini_aadhar || pv.nominee_aadhar || null,
+        pv.address || pv.current_address || null,
+        member.id
+      ).run().catch(() => {});
+
+      await db.prepare(`
+        INSERT INTO kyc_members_ext_2 (member_id) VALUES (?) ON CONFLICT(member_id) DO NOTHING
+      `).bind(member.id).run().catch(() => {});
+      await db.prepare(`
+        UPDATE kyc_members_ext_2
+        SET emergency_contact_name = COALESCE(emergency_contact_name, ?),
+            emergency_contact_number = COALESCE(emergency_contact_number, ?),
+            emergency_relationship = COALESCE(emergency_relationship, ?)
+        WHERE member_id = ?
+      `).bind(
+        pv.emergency_contact_name || null,
+        pv.emergency_contact_number || null,
+        pv.emergency_relationship || null,
+        member.id
+      ).run().catch(() => {});
+    } catch {}
+  }
+
   const profile = {
     ...fullMember,
     ...ext1,
+    ...pv,
     ...networkSummary,
     id: member.id,
     login_id: member.login_id,
-    first_name: fullMember.first_name || member.first_name,
-    last_name: fullMember.last_name || member.last_name,
-    full_name: [fullMember.first_name || member.first_name, fullMember.last_name || member.last_name].filter(Boolean).join(" ") || "Professional Member",
-    name: [fullMember.first_name || member.first_name, fullMember.last_name || member.last_name].filter(Boolean).join(" ") || "Professional Member",
-    email: fullMember.email || member.email,
-    phone: fullMember.phone || member.phone,
+    first_name: fullMember.first_name || member.first_name || pv.first_name,
+    last_name: fullMember.last_name || member.last_name || pv.last_name,
+    full_name: [fullMember.first_name || member.first_name || pv.first_name, fullMember.last_name || member.last_name || pv.last_name].filter(Boolean).join(" ") || "Professional Member",
+    name: [fullMember.first_name || member.first_name || pv.first_name, fullMember.last_name || member.last_name || pv.last_name].filter(Boolean).join(" ") || "Professional Member",
+    email: fullMember.email || member.email || pv.email,
+    phone: fullMember.phone || member.phone || pv.phone,
+    address: fullMember.address || pv.address || pv.current_address || "",
+    current_address: fullMember.address || pv.address || pv.current_address || "",
+    city: fullMember.city || pv.city || "",
+    district: fullMember.district || pv.district || "",
+    state: fullMember.state || pv.state || "",
+    pincode: fullMember.pincode || pv.pincode || "",
+    country: fullMember.country || pv.country || "Indian",
+    occupation: fullMember.occupation || pv.occupation || pv.profession || pv.professional_title || "",
+    education: fullMember.education || pv.education || pv.highest_qualification || pv.degree || "",
+    highest_qualification: fullMember.highest_qualification || pv.highest_qualification || pv.education || "",
+    nomini_name: fullMember.nomini_name || pv.nomini_name || pv.nominee_name || "",
+    nominee_name: fullMember.nomini_name || pv.nomini_name || pv.nominee_name || "",
+    nomini_dob: fullMember.nomini_dob || pv.nomini_dob || pv.nominee_dob || "",
+    nominee_dob: fullMember.nomini_dob || pv.nomini_dob || pv.nominee_dob || "",
+    nomini_relation: fullMember.nomini_relation || pv.nomini_relation || pv.nominee_relationship || pv.nomini_relationship || "",
+    nominee_relationship: fullMember.nomini_relation || pv.nomini_relation || pv.nominee_relationship || pv.nomini_relationship || "",
+    nomini_aadhar: fullMember.nomini_aadhar || pv.nomini_aadhar || pv.nominee_aadhar || "",
+    nominee_aadhar: fullMember.nomini_aadhar || pv.nomini_aadhar || pv.nominee_aadhar || "",
+    skills: fullMember.skills || pv.skills || pv.professional_skills || "",
+    bio: fullMember.bio || pv.bio || pv.professional_bio || "",
+    emergency_contact_name: fullMember.emergency_contact_name || pv.emergency_contact_name || "",
+    emergency_contact_number: fullMember.emergency_contact_number || pv.emergency_contact_number || "",
+    emergency_relationship: fullMember.emergency_relationship || pv.emergency_relationship || "",
+    professional_kyc_status: ext1.professional_kyc_status || (profRecord.progress?.completed >= 10 ? "submitted" : "draft"),
+    professional_kyc_current_step: ext1.professional_kyc_current_step || "A",
     membership_type: ((p) => {
       const clean = String(p || "").replace(/[^0-9]/g, "");
       if (clean === "299" || clean === "300") return "INMBA Network Member";
@@ -3636,6 +4302,125 @@ async function handleProfileUpdate(request, db, cors) {
       console.error("kyc_members update error:", memErr);
     }
 
+    // 2. UPDATE kyc_members_ext_1 (nominee, address, certifications)
+    try {
+      await db.prepare(`
+        INSERT INTO kyc_members_ext_1 (member_id) VALUES (?) ON CONFLICT(member_id) DO NOTHING
+      `).bind(member.id).run();
+
+      await db.prepare(`
+        UPDATE kyc_members_ext_1
+        SET nomini_name = COALESCE(NULLIF(?, ''), nomini_name),
+            nomini_dob = COALESCE(NULLIF(?, ''), nomini_dob),
+            nomini_relationship = COALESCE(NULLIF(?, ''), nomini_relationship),
+            nomini_aadhar = COALESCE(NULLIF(?, ''), nomini_aadhar),
+            current_address = COALESCE(NULLIF(?, ''), current_address),
+            permanent_address = COALESCE(NULLIF(?, ''), permanent_address),
+            ifsc = COALESCE(NULLIF(?, ''), ifsc),
+            school_college_name = COALESCE(NULLIF(?, ''), school_college_name),
+            professional_bio = COALESCE(NULLIF(?, ''), professional_bio),
+            interest_categories = COALESCE(NULLIF(?, ''), interest_categories),
+            hobbies = COALESCE(NULLIF(?, ''), hobbies),
+            preferred_industry = COALESCE(NULLIF(?, ''), preferred_industry)
+        WHERE member_id = ?
+      `).bind(
+        nominiName, nominiDob, nominiRelationship, nominiAadhar,
+        address, toStr(input.permanent_address), ifsc, schoolCollege,
+        bio, toStr(input.interest_categories), toStr(input.hobbies), toStr(input.preferred_industry),
+        member.id
+      ).run();
+    } catch (ext1Err) {
+      console.error("kyc_members_ext_1 update error:", ext1Err);
+    }
+
+    // 3. UPDATE kyc_members_ext_2 (emergency contact & branch)
+    try {
+      await db.prepare(`
+        INSERT INTO kyc_members_ext_2 (member_id) VALUES (?) ON CONFLICT(member_id) DO NOTHING
+      `).bind(member.id).run();
+
+      await db.prepare(`
+        UPDATE kyc_members_ext_2
+        SET emergency_contact_name = COALESCE(NULLIF(?, ''), emergency_contact_name),
+            emergency_contact_number = COALESCE(NULLIF(?, ''), emergency_contact_number),
+            emergency_relationship = COALESCE(NULLIF(?, ''), emergency_relationship),
+            branch = COALESCE(NULLIF(?, ''), branch)
+        WHERE member_id = ?
+      `).bind(
+        emergencyContactName, emergencyContactNumber, emergencyRelationship, bankBranch,
+        member.id
+      ).run();
+    } catch (ext2Err) {
+      console.error("kyc_members_ext_2 update error:", ext2Err);
+    }
+
+    // 4. UPDATE professional_kyc (dedicated table for professional)
+    try {
+      await ensureProfessionalKycTable(db);
+      await db.prepare(`
+        INSERT INTO professional_kyc (member_id, login_id) VALUES (?, ?) ON CONFLICT(member_id) DO NOTHING
+      `).bind(member.id, member.login_id || "").run();
+
+      let profRow = await db.prepare("SELECT kyc_data FROM professional_kyc WHERE member_id = ?").bind(member.id).first();
+      let kycJson = {};
+      if (profRow && profRow.kyc_data) {
+        try { kycJson = JSON.parse(profRow.kyc_data); } catch {}
+      }
+      kycJson = { ...kycJson, ...input };
+
+      await db.prepare(`
+        UPDATE professional_kyc
+        SET full_legal_name = COALESCE(NULLIF(?, ''), full_legal_name),
+            father_name = COALESCE(NULLIF(?, ''), father_name),
+            dob = COALESCE(NULLIF(?, ''), dob),
+            gender = COALESCE(NULLIF(?, ''), gender),
+            marital_status = COALESCE(NULLIF(?, ''), marital_status),
+            nationality = COALESCE(NULLIF(?, ''), nationality),
+            blood_group = COALESCE(NULLIF(?, ''), blood_group),
+            aadhar_number = COALESCE(NULLIF(?, ''), aadhar_number),
+            pan_number = COALESCE(NULLIF(?, ''), pan_number),
+            address = COALESCE(NULLIF(?, ''), address),
+            current_address = COALESCE(NULLIF(?, ''), current_address),
+            city = COALESCE(NULLIF(?, ''), city),
+            district = COALESCE(NULLIF(?, ''), district),
+            state = COALESCE(NULLIF(?, ''), state),
+            pincode = COALESCE(NULLIF(?, ''), pincode),
+            occupation = COALESCE(NULLIF(?, ''), occupation),
+            profession = COALESCE(NULLIF(?, ''), profession),
+            education = COALESCE(NULLIF(?, ''), education),
+            highest_qualification = COALESCE(NULLIF(?, ''), highest_qualification),
+            institution_name = COALESCE(NULLIF(?, ''), institution_name),
+            skills = COALESCE(NULLIF(?, ''), skills),
+            bio = COALESCE(NULLIF(?, ''), bio),
+            nominee_name = COALESCE(NULLIF(?, ''), nominee_name),
+            nominee_dob = COALESCE(NULLIF(?, ''), nominee_dob),
+            nominee_relationship = COALESCE(NULLIF(?, ''), nominee_relationship),
+            nominee_aadhar = COALESCE(NULLIF(?, ''), nominee_aadhar),
+            emergency_contact_name = COALESCE(NULLIF(?, ''), emergency_contact_name),
+            emergency_contact_number = COALESCE(NULLIF(?, ''), emergency_contact_number),
+            emergency_relationship = COALESCE(NULLIF(?, ''), emergency_relationship),
+            bank_name = COALESCE(NULLIF(?, ''), bank_name),
+            account_number = COALESCE(NULLIF(?, ''), account_number),
+            ifsc_code = COALESCE(NULLIF(?, ''), ifsc_code),
+            branch = COALESCE(NULLIF(?, ''), branch),
+            kyc_data = ?,
+            updated_at = datetime('now')
+        WHERE member_id = ?
+      `).bind(
+        cleanFirstName ? [cleanFirstName, cleanLastName].filter(Boolean).join(" ") : null,
+        fatherName, dob, gender, maritalStatus, nationality, bloodGroup,
+        aadhaarNumber, panNumber, address, address, city, district, state, pincode,
+        occupation, occupation, education, highestQual, schoolCollege, skills, bio,
+        nominiName, nominiDob, nominiRelationship, nominiAadhar,
+        emergencyContactName, emergencyContactNumber, emergencyRelationship,
+        bankName, accountNumber, ifsc, bankBranch,
+        JSON.stringify(kycJson),
+        member.id
+      ).run();
+    } catch (profErr) {
+      console.error("professional_kyc update error:", profErr);
+    }
+
     // 2. Ensure civilian_full_kyc row exists and update civilian fields
     try {
       await db.prepare(`
@@ -3727,42 +4512,106 @@ async function handleProfileUpdate(request, db, cors) {
     }
 
     const updatedMember = (await db.prepare(`SELECT * FROM kyc_members WHERE id = ?`).bind(member.id).first()) || member;
-    const fullKycUpdated = await getCivilianFullKycRecord(member.id, db);
-    const civVals = fullKycUpdated?.values || {};
-    const civFiles = fullKycUpdated?.files || {};
+    const isProf = /professional/i.test(member.membership_type || "") || String(member.login_id || "").toUpperCase().startsWith("PRO");
 
-    const updatedProfile = {
-      ...updatedMember,
-      ...civVals,
-      ...civFiles,
-      id: member.id,
-      login_id: member.login_id,
-      first_name: cleanFirstName || updatedMember.first_name,
-      last_name: cleanLastName || updatedMember.last_name,
-      full_name: [cleanFirstName || updatedMember.first_name, cleanLastName || updatedMember.last_name].filter(Boolean).join(" ") || "Civilian Member",
-      full_legal_name: [cleanFirstName || updatedMember.first_name, cleanLastName || updatedMember.last_name].filter(Boolean).join(" ") || civVals.full_legal_name || "",
-      bank_name: bankName || civVals.bank_name || updatedMember.bank_name || "",
-      bank_branch: bankBranch || civVals.bank_branch_name || "",
-      bank_branch_name: bankBranch || civVals.bank_branch_name || "",
-      branch: bankBranch || civVals.bank_branch_name || "",
-      ifsc_code: ifsc || civVals.ifsc_code || "",
-      ifsc: ifsc || civVals.ifsc_code || "",
-      account_number: accountNumber || civVals.bank_account_number || updatedMember.account_number || "",
-      bank_account_number: accountNumber || civVals.bank_account_number || updatedMember.account_number || "",
-      cover_photo: coverPhoto || civFiles.cover_photo || civVals.cover_photo || "",
-      cover_photo_url: coverPhoto || civFiles.cover_photo || civVals.cover_photo || "",
-      banner: coverPhoto || civFiles.cover_photo || civVals.cover_photo || "",
-      profile_photo: photoUrl || civFiles.profile_photo || civVals.profile_photo || updatedMember.profile_pic || "",
-      profile_pic: photoUrl || civFiles.profile_photo || civVals.profile_photo || updatedMember.profile_pic || "",
-      profile_image_url: photoUrl || civFiles.profile_photo || civVals.profile_photo || updatedMember.profile_pic || "",
-      emergency_contact_name: emergencyContactName || civVals.emergency_contact_name || "",
-      emergency_contact_number: emergencyContactNumber || civVals.emergency_contact_number || "",
-      emergency_relationship: emergencyRelationship || civVals.emergency_relationship || "",
-      skills: skills || civVals.skills || updatedMember.skills || "",
-      interest_categories: toStr(input.interest_categories) || civVals.interest_categories || "",
-      hobbies: toStr(input.hobbies) || civVals.hobbies || "",
-      preferred_industry: toStr(input.preferred_industry) || civVals.preferred_industry || "",
-    };
+    let updatedProfile;
+    if (isProf) {
+      const profRec = await getProfessionalKycRecord(member.id, db);
+      const pv = profRec.values || {};
+      updatedProfile = {
+        ...updatedMember,
+        ...pv,
+        id: member.id,
+        login_id: member.login_id,
+        first_name: cleanFirstName || updatedMember.first_name,
+        last_name: cleanLastName || updatedMember.last_name,
+        full_name: [cleanFirstName || updatedMember.first_name, cleanLastName || updatedMember.last_name].filter(Boolean).join(" ") || "Professional Member",
+        full_legal_name: [cleanFirstName || updatedMember.first_name, cleanLastName || updatedMember.last_name].filter(Boolean).join(" ") || pv.full_legal_name || "Professional Member",
+        address: address || pv.address || updatedMember.address || "",
+        current_address: address || pv.current_address || updatedMember.address || "",
+        city: city || pv.city || updatedMember.city || "",
+        district: district || pv.district || updatedMember.district || "",
+        state: state || pv.state || updatedMember.state || "",
+        pincode: pincode || pv.pincode || updatedMember.pincode || "",
+        country: nationality || pv.country || updatedMember.country || "Indian",
+        occupation: occupation || pv.occupation || updatedMember.occupation || "",
+        profession: occupation || pv.profession || updatedMember.profession || "",
+        education: education || pv.education || updatedMember.education || "",
+        highest_qualification: highestQual || pv.highest_qualification || updatedMember.educational_qualification || "",
+        educational_qualification: highestQual || pv.educational_qualification || updatedMember.educational_qualification || "",
+        school_college_name: schoolCollege || pv.school_college_name || updatedMember.school_name || "",
+        institution_name: schoolCollege || pv.institution_name || "",
+        nomini_name: nominiName || pv.nomini_name || "",
+        nominee_name: nominiName || pv.nomini_name || "",
+        nomini_dob: nominiDob || pv.nomini_dob || "",
+        nominee_dob: nominiDob || pv.nomini_dob || "",
+        nomini_relation: nominiRelationship || pv.nomini_relation || "",
+        nominee_relationship: nominiRelationship || pv.nomini_relation || "",
+        nomini_relationship: nominiRelationship || pv.nomini_relation || "",
+        nomini_aadhar: nominiAadhar || pv.nomini_aadhar || "",
+        nominee_aadhar: nominiAadhar || pv.nomini_aadhar || "",
+        emergency_contact_name: emergencyContactName || pv.emergency_contact_name || "",
+        emergency_contact_number: emergencyContactNumber || pv.emergency_contact_number || "",
+        emergency_relationship: emergencyRelationship || pv.emergency_relationship || "",
+        bank_name: bankName || pv.bank_name || updatedMember.bank_name || "",
+        branch: bankBranch || pv.branch || "",
+        bank_branch: bankBranch || pv.branch || "",
+        bank_branch_name: bankBranch || pv.branch || "",
+        account_number: accountNumber || pv.account_number || updatedMember.account_number || "",
+        ifsc: ifsc || pv.ifsc || "",
+        ifsc_code: ifsc || pv.ifsc_code || "",
+        skills: skills || pv.skills || updatedMember.skills || "",
+        bio: bio || pv.bio || updatedMember.bio || "",
+        professional_bio: bio || pv.professional_bio || updatedMember.bio || "",
+        profile_pic: photoUrl || updatedMember.profile_pic || "",
+        profile_photo: photoUrl || updatedMember.profile_pic || "",
+        profile_photo_url: photoUrl || updatedMember.profile_pic || "",
+        profile_image_url: photoUrl || updatedMember.profile_pic || "",
+        social_instagram: instagram || pv.social_instagram || updatedMember.social_instagram || "",
+        social_linkedin: linkedin || pv.social_linkedin || updatedMember.social_linkedin || "",
+        social_facebook: facebook || pv.social_facebook || updatedMember.social_facebook || "",
+        social_youtube: youtube || pv.social_youtube || updatedMember.social_youtube || "",
+        social_twitter: twitter || pv.social_twitter || updatedMember.social_twitter || "",
+        social_link: website || pv.social_link || updatedMember.social_link || "",
+      };
+    } else {
+      const fullKycUpdated = await getCivilianFullKycRecord(member.id, db);
+      const civVals = fullKycUpdated?.values || {};
+      const civFiles = fullKycUpdated?.files || {};
+
+      updatedProfile = {
+        ...updatedMember,
+        ...civVals,
+        ...civFiles,
+        id: member.id,
+        login_id: member.login_id,
+        first_name: cleanFirstName || updatedMember.first_name,
+        last_name: cleanLastName || updatedMember.last_name,
+        full_name: [cleanFirstName || updatedMember.first_name, cleanLastName || updatedMember.last_name].filter(Boolean).join(" ") || "Civilian Member",
+        full_legal_name: [cleanFirstName || updatedMember.first_name, cleanLastName || updatedMember.last_name].filter(Boolean).join(" ") || civVals.full_legal_name || "",
+        bank_name: bankName || civVals.bank_name || updatedMember.bank_name || "",
+        bank_branch: bankBranch || civVals.bank_branch_name || "",
+        bank_branch_name: bankBranch || civVals.bank_branch_name || "",
+        branch: bankBranch || civVals.bank_branch_name || "",
+        ifsc_code: ifsc || civVals.ifsc_code || "",
+        ifsc: ifsc || civVals.ifsc_code || "",
+        account_number: accountNumber || civVals.bank_account_number || updatedMember.account_number || "",
+        bank_account_number: accountNumber || civVals.bank_account_number || updatedMember.account_number || "",
+        cover_photo: coverPhoto || civFiles.cover_photo || civVals.cover_photo || "",
+        cover_photo_url: coverPhoto || civFiles.cover_photo || civVals.cover_photo || "",
+        banner: coverPhoto || civFiles.cover_photo || civVals.cover_photo || "",
+        profile_photo: photoUrl || civFiles.profile_photo || civVals.profile_photo || updatedMember.profile_pic || "",
+        profile_pic: photoUrl || civFiles.profile_photo || civVals.profile_photo || updatedMember.profile_pic || "",
+        profile_image_url: photoUrl || civFiles.profile_photo || civVals.profile_photo || updatedMember.profile_pic || "",
+        emergency_contact_name: emergencyContactName || civVals.emergency_contact_name || "",
+        emergency_contact_number: emergencyContactNumber || civVals.emergency_contact_number || "",
+        emergency_relationship: emergencyRelationship || civVals.emergency_relationship || "",
+        skills: skills || civVals.skills || updatedMember.skills || "",
+        interest_categories: toStr(input.interest_categories) || civVals.interest_categories || "",
+        hobbies: toStr(input.hobbies) || civVals.hobbies || "",
+        preferred_industry: toStr(input.preferred_industry) || civVals.preferred_industry || "",
+      };
+    }
 
     return json({
       success: true,
@@ -3813,9 +4662,6 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     SELECT * FROM commercial_basic_kyc WHERE login_id = ?
   `).bind(member.login_id).first()) || {};
 
-  const commKycRecord = await getCommercialKycRecord(member.id, member.login_id, db);
-  const commVals = commKycRecord.values || {};
-
   const fullName = [member.first_name, member.last_name].filter(Boolean).join(" ") || "INMBA Member";
   const isApproved = String(member.payment_status || "").toLowerCase() === "approved";
   const planAmount = fullKyc?.selectedPlan || ext.amount || "299";
@@ -3825,36 +4671,32 @@ async function handleGetPublicUser(request, db, cors, loginId) {
   const isProfessional = /professional/i.test(member.membership_type) || loginIdUpper.startsWith("PRO");
   const networkSummary = await getMemberNetworkSummary(db, member);
 
-  let commData = {};
-  if (commKyc && commKyc.kyc_data) {
-    try { commData = JSON.parse(commKyc.kyc_data) || {}; } catch {}
-  }
+  const profRecord = await getProfessionalKycRecord(member.id, db);
+  const profData = profRecord?.values || {};
 
   const business = {
-    name: commData.B?.business_name || commData.B?.business_company_name || commKyc.business_name || commBasic.business_name || member.occupation || "Commercial Business",
-    category: commData.B?.business_type || commKyc.business_type || commBasic.business_type || commKyc.business_category_tags || "Commercial",
+    name: commBasic.business_name || commKyc.business_name || member.occupation || "Commercial Business",
+    category: commBasic.business_type || commKyc.business_type || commKyc.business_category_tags || "Commercial",
     legal_type: "Commercial",
-    address: commData.C?.registered_business_address || commKyc.business_address || member.current_address || "",
-    city: commData.C?.city || commBasic.city || member.city || "",
-    contact_number: commData.C?.business_contact_number || commKyc.business_phone || member.phone,
-    email: commData.C?.business_email || commKyc.business_email || commBasic.email || member.email || "",
-    website: commData.C?.business_website || commKyc.business_website || "",
-    google_map_location: commData.C?.google_map_location || commKyc.google_map_pin || "",
-    year_established: commData.E?.year_established || commKyc.year_established || "",
-    number_of_employees: commData.E?.number_of_employees || commKyc.employee_count || "",
-    products_services: commData.E?.products_services_offered || commKyc.products_services || "",
-    products_services_offered: commData.E?.products_services_offered || commKyc.products_services || "",
-    category_tags: commData.E?.business_category_tags || commKyc.business_category_tags || "",
-    awards_certifications: commData.E?.awards_certifications || commKyc.awards_certifications || "",
-    client_testimonials: commData.E?.client_testimonials || commKyc.client_testimonials || "",
-    bio: commData.E?.business_bio || commKyc.business_bio || member.bio || "",
+    address: commKyc.business_address || member.current_address || "",
+    city: commBasic.city || member.city || "",
+    contact_number: member.phone,
+    email: commBasic.email || member.email || "",
+    website: commKyc.business_website || "",
+    google_map_location: commKyc.google_map_pin || "",
+    year_established: commKyc.year_established || 2024,
+    number_of_employees: commKyc.employee_count || 5,
+    products_services: commKyc.products_services || "",
+    products_services_offered: commKyc.products_services || "",
+    category_tags: commKyc.business_category_tags || "",
+    bio: commKyc.business_bio || member.bio || "",
     logo: member.profile_pic || "",
   };
 
   const profile = {
     ...(fullKyc?.values || {}),
     ...(fullKyc?.files || {}),
-    ...(commVals || {}),
+    ...(isProfessional ? profData : {}),
     id: member.id,
     login_id: member.login_id,
     first_name: member.first_name,
@@ -3882,42 +4724,43 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     })(planAmount, isCommercial, isProfessional, member.membership_type),
     profile_type: isCommercial ? "commercial" : (isProfessional ? "professional" : "civilian"),
     payment_status: member.payment_status || "pending",
-    bio: commVals.business_bio || commKyc.business_bio || fullKyc?.values?.bio || member.bio || "",
-    profile_bio: commVals.business_bio || commKyc.business_bio || fullKyc?.values?.bio || member.bio || "",
+    bio: (isProfessional ? (profData.professional_bio || profData.bio) : null) || commKyc.business_bio || fullKyc?.values?.bio || member.bio || "",
+    profile_bio: (isProfessional ? (profData.professional_bio || profData.bio) : null) || commKyc.business_bio || fullKyc?.values?.bio || member.bio || "",
     profile_pic: member.profile_pic || fullKyc?.files?.profile_photo || "",
     profile_image_url: member.profile_pic || fullKyc?.files?.profile_photo || "",
     profile_photo: member.profile_pic || fullKyc?.files?.profile_photo || "",
     profile_photo_url: member.profile_pic || fullKyc?.files?.profile_photo || "",
     photo_url: member.profile_pic || fullKyc?.files?.profile_photo || "",
-    city: commVals.city || commBasic.city || member.city || fullKyc?.values?.city || "",
-    state: member.state || fullKyc?.values?.state || "",
-    district: member.district || fullKyc?.values?.district || "",
-    pincode: fullKyc?.values?.pincode || member.pincode || "",
-    current_address: commVals.registered_business_address || commVals.business_address || fullKyc?.values?.current_address || member.current_address || member.address || "",
-    permanent_address: fullKyc?.values?.permanent_address || "",
-    address: commVals.registered_business_address || commVals.business_address || fullKyc?.values?.current_address || member.current_address || member.address || "",
+    city: (isProfessional ? (profData.city || member.city) : (commBasic.city || member.city || fullKyc?.values?.city)) || "",
+    state: (isProfessional ? (profData.state || member.state) : (member.state || fullKyc?.values?.state)) || "",
+    district: (isProfessional ? (profData.district || member.district) : (member.district || fullKyc?.values?.district)) || "",
+    pincode: (isProfessional ? (profData.pincode || member.pincode) : (fullKyc?.values?.pincode || member.pincode)) || "",
+    current_address: (isProfessional ? (profData.current_address || profData.address || member.address) : (fullKyc?.values?.current_address || member.current_address || member.address)) || "",
+    permanent_address: (isProfessional ? (profData.permanent_address || "") : (fullKyc?.values?.permanent_address || "")) || "",
+    address: (isProfessional ? (profData.address || profData.current_address || member.address) : (fullKyc?.values?.current_address || member.current_address || member.address)) || "",
     country: "India",
-    profession: member.occupation || (isProfessional ? "Professional" : ""),
-    education: fullKyc?.values?.highest_qualification || fullKyc?.values?.education_level || fullKyc?.values?.ug_degree || member.education || "",
-    highest_qualification: fullKyc?.values?.highest_qualification || fullKyc?.values?.education_level || fullKyc?.values?.ug_degree || member.highest_qualification || member.education || "",
-    educational_qualification: fullKyc?.values?.highest_qualification || fullKyc?.values?.education_level || fullKyc?.values?.ug_degree || member.educational_qualification || member.education || "",
+    profession: (isProfessional ? (profData.occupation || profData.profession || member.occupation) : (member.occupation || "")) || "",
+    occupation: (isProfessional ? (profData.occupation || profData.profession || member.occupation) : (member.occupation || "")) || "",
+    education: (isProfessional ? (profData.education || profData.highest_qualification || member.education) : (fullKyc?.values?.highest_qualification || fullKyc?.values?.education_level || member.education)) || "",
+    highest_qualification: (isProfessional ? (profData.highest_qualification || profData.education || member.educational_qualification) : (fullKyc?.values?.highest_qualification || member.highest_qualification || member.education)) || "",
+    educational_qualification: (isProfessional ? (profData.highest_qualification || profData.education || member.educational_qualification) : (fullKyc?.values?.highest_qualification || member.educational_qualification || member.education)) || "",
     education_level: fullKyc?.values?.education_level || "",
-    school_name: fullKyc?.values?.school_name || member.school_name || "",
+    school_name: (isProfessional ? (profData.institution_name || profData.school_college_name || member.school_name) : (fullKyc?.values?.school_name || member.school_name)) || "",
     school_class: fullKyc?.values?.school_class || member.school_class || "",
     board: fullKyc?.values?.board || member.board || "",
     school_city: fullKyc?.values?.school_city || member.school_city || "",
-    ug_college: fullKyc?.values?.ug_college || member.ug_college || "",
-    ug_degree: fullKyc?.values?.ug_degree || member.ug_degree || "",
+    ug_college: (isProfessional ? (profData.institution_name || member.ug_college) : (fullKyc?.values?.ug_college || member.ug_college)) || "",
+    ug_degree: (isProfessional ? (profData.education || member.ug_degree) : (fullKyc?.values?.ug_degree || member.ug_degree)) || "",
     ug_department: fullKyc?.values?.ug_department || member.ug_department || "",
-    ug_year: fullKyc?.values?.ug_year || member.ug_year || "",
+    ug_year: (isProfessional ? (profData.degree_year || member.ug_year) : (fullKyc?.values?.ug_year || member.ug_year)) || "",
     pg_college: fullKyc?.values?.pg_college || member.pg_college || "",
     pg_degree: fullKyc?.values?.pg_degree || member.pg_degree || "",
     pg_specialization: fullKyc?.values?.pg_specialization || member.pg_specialization || "",
-    institution_name: fullKyc?.values?.ug_college || fullKyc?.values?.school_name || fullKyc?.values?.institution_name || member.institution_name || "",
-    school_college_name: fullKyc?.values?.ug_college || fullKyc?.values?.school_name || fullKyc?.values?.institution_name || member.school_college_name || "",
+    institution_name: (isProfessional ? (profData.institution_name || member.institution_name) : (fullKyc?.values?.ug_college || fullKyc?.values?.school_name || member.institution_name)) || "",
+    school_college_name: (isProfessional ? (profData.institution_name || profData.school_college_name || member.school_college_name) : (fullKyc?.values?.ug_college || fullKyc?.values?.school_name || member.school_college_name)) || "",
     education_certificate: fullKyc?.files?.education_certificate || "",
     achievement_certificate: fullKyc?.files?.achievement_certificate || "",
-    certifications_achievements: fullKyc?.values?.certifications_achievements || fullKyc?.values?.professional_certifications || fullKyc?.values?.awards_recognitions || "",
+    certifications_achievements: (isProfessional ? (profData.certifications_achievements || profData.awards_recognitions) : (fullKyc?.values?.certifications_achievements || fullKyc?.values?.professional_certifications || fullKyc?.values?.awards_recognitions)) || "",
     additional_certifications: fullKyc?.values?.additional_certifications || fullKyc?.values?.professional_certifications || fullKyc?.values?.certifications_achievements || fullKyc?.values?.awards_recognitions || "",
     professional_certifications: fullKyc?.values?.professional_certifications || "",
     awards_recognitions: fullKyc?.values?.awards_recognitions || "",
@@ -3925,54 +4768,32 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     cover_photo_url: fullKyc?.files?.cover_photo || fullKyc?.values?.cover_photo || member.cover_photo || "",
     banner: fullKyc?.files?.cover_photo || fullKyc?.values?.cover_photo || member.cover_photo || "",
     banner_url: fullKyc?.files?.cover_photo || fullKyc?.values?.cover_photo || member.cover_photo || "",
-    owner_full_legal_name: commVals.owner_full_legal_name || commVals.full_legal_name || fullName,
-    owner_name: commVals.owner_full_legal_name || commVals.full_legal_name || fullName,
-    father_spouse_name: commVals.father_spouse_name || fullKyc?.values?.father_spouse_name || member.father_spouse_name || member.father_name || "",
-    father_name: commVals.father_spouse_name || fullKyc?.values?.father_spouse_name || member.father_spouse_name || member.father_name || "",
-    dob: commVals.dob || commVals.date_of_birth || fullKyc?.values?.dob || member.dob || member.date_of_birth || "",
-    date_of_birth: commVals.date_of_birth || commVals.dob || fullKyc?.values?.date_of_birth || member.date_of_birth || member.dob || "",
-    gender: commVals.gender || fullKyc?.values?.gender || member.gender || "",
-    marital_status: commVals.marital_status || fullKyc?.values?.marital_status || member.marital_status || "",
-    nationality: commVals.nationality || member.nationality || "Indian",
-    blood_group: commVals.blood_group || fullKyc?.values?.blood_group || member.blood_group || "",
-    aadhaar_number: commVals.aadhaar_number || fullKyc?.values?.aadhaar_number || member.aadhaar_number || member.aadhar || "",
-    aadhar: commVals.aadhaar_number || fullKyc?.values?.aadhaar_number || member.aadhaar_number || member.aadhar || "",
-    pan_number: commVals.pan_number || commVals.company_pan || fullKyc?.values?.pan_number || member.pan_number || member.pan || "",
-    pan: commVals.pan_number || commVals.company_pan || fullKyc?.values?.pan_number || member.pan_number || member.pan || "",
-    passport_number: commVals.passport_number || "",
-    voter_id: commVals.voter_id || "",
-    driving_license: commVals.driving_license || "",
-    business_registration_number: commVals.business_registration_number || commVals.registration_number || "",
-    registration_number: commVals.registration_number || commVals.business_registration_number || "",
-    company_pan: commVals.company_pan || commVals.pan_number || "",
-    gst_number: commVals.gst_number || "",
-    bank_account_number: commVals.bank_account_number || fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || member.bank_account_number || member.account_number || "",
-    account_number: commVals.bank_account_number || fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || member.account_number || "",
-    ifsc_code: commVals.ifsc_code || fullKyc?.values?.ifsc_code || member.ifsc_code || "",
-    ifsc: commVals.ifsc_code || fullKyc?.values?.ifsc_code || member.ifsc_code || "",
-    branch: commVals.bank_branch_name || commVals.bank_branch || fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || "",
-    bank_branch: commVals.bank_branch_name || commVals.bank_branch || fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || "",
-    bank_branch_name: commVals.bank_branch_name || commVals.bank_branch || fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || "",
-    upi_id: commVals.upi_id || "",
-    nominee_name: commVals.nominee_name || fullKyc?.values?.nominee_name || member.nominee_name || member.nomini_name || "",
-    nomini_name: commVals.nominee_name || fullKyc?.values?.nominee_name || member.nomini_name || "",
-    nominee_relationship: commVals.nominee_relationship || commVals.nominee_relation || fullKyc?.values?.nominee_relationship || member.nominee_relationship || member.nomini_relationship || "",
-    nomini_relationship: commVals.nominee_relationship || commVals.nominee_relation || fullKyc?.values?.nominee_relationship || member.nomini_relationship || "",
-    nominee_dob: fullKyc?.values?.nominee_dob || member.nominee_dob || member.nomini_dob || "",
-    nomini_dob: fullKyc?.values?.nominee_dob || member.nomini_dob || "",
-    nominee_aadhaar: commVals.nominee_aadhaar_id || commVals.nominee_aadhaar || fullKyc?.values?.nominee_aadhaar || member.nominee_aadhaar || member.nomini_aadhar || "",
-    nominee_aadhaar_id: commVals.nominee_aadhaar_id || commVals.nominee_aadhaar || fullKyc?.values?.nominee_aadhaar || member.nominee_aadhaar || member.nomini_aadhar || "",
-    nomini_aadhar: commVals.nominee_aadhaar_id || commVals.nominee_aadhaar || fullKyc?.values?.nominee_aadhaar || member.nomini_aadhar || "",
-    annual_turnover_slab: commVals.annual_turnover_slab || commVals.annual_turnover || "",
-    products_services_offered: commVals.products_services_offered || commVals.products_services || business.products_services_offered || "",
-    business_category_tags: commVals.business_category_tags || business.category_tags || "",
-    awards_certifications: commVals.awards_certifications || business.awards_certifications || "",
-    client_testimonials: commVals.client_testimonials || business.client_testimonials || "",
-    emergency_contact_name: commVals.emergency_contact_name || fullKyc?.values?.emergency_contact_name || member.emergency_contact_name || "",
-    emergency_contact_number: commVals.emergency_contact_number || fullKyc?.values?.emergency_contact_number || member.emergency_contact_number || "",
-    emergency_relationship: commVals.relationship || commVals.emergency_relationship || fullKyc?.values?.emergency_relationship || member.emergency_relationship || "",
-    relationship: commVals.relationship || commVals.emergency_relationship || fullKyc?.values?.emergency_relationship || member.emergency_relationship || "",
-    preferred_payout_cycle: commVals.preferred_payout_cycle || "",
+    father_spouse_name: (isProfessional ? (profData.father_name || profData.father_spouse_name) : null) || fullKyc?.values?.father_spouse_name || member.father_spouse_name || member.father_name || "",
+    father_name: (isProfessional ? (profData.father_name || profData.father_spouse_name) : null) || fullKyc?.values?.father_spouse_name || member.father_spouse_name || member.father_name || "",
+    blood_group: (isProfessional ? profData.blood_group : null) || fullKyc?.values?.blood_group || member.blood_group || "",
+    aadhaar_number: (isProfessional ? (profData.aadhar_number || profData.aadhar) : null) || fullKyc?.values?.aadhaar_number || member.aadhaar_number || member.aadhar || "",
+    aadhar: (isProfessional ? (profData.aadhar_number || profData.aadhar) : null) || fullKyc?.values?.aadhaar_number || member.aadhaar_number || member.aadhar || "",
+    pan_number: (isProfessional ? (profData.pan_number || profData.pan) : null) || fullKyc?.values?.pan_number || member.pan_number || member.pan || "",
+    pan: (isProfessional ? (profData.pan_number || profData.pan) : null) || fullKyc?.values?.pan_number || member.pan_number || member.pan || "",
+    nominee_name: (isProfessional ? (profData.nominee_name || profData.nomini_name) : null) || fullKyc?.values?.nominee_name || member.nominee_name || member.nomini_name || "",
+    nomini_name: (isProfessional ? (profData.nomini_name || profData.nominee_name) : null) || fullKyc?.values?.nominee_name || member.nomini_name || "",
+    nominee_relationship: (isProfessional ? (profData.nominee_relationship || profData.nomini_relationship || profData.nomini_relation) : null) || fullKyc?.values?.nominee_relationship || member.nominee_relationship || member.nomini_relationship || "",
+    nomini_relationship: (isProfessional ? (profData.nomini_relationship || profData.nominee_relationship || profData.nomini_relation) : null) || fullKyc?.values?.nominee_relationship || member.nomini_relationship || "",
+    nominee_dob: (isProfessional ? (profData.nominee_dob || profData.nomini_dob) : null) || fullKyc?.values?.nominee_dob || member.nominee_dob || member.nomini_dob || "",
+    nomini_dob: (isProfessional ? (profData.nomini_dob || profData.nominee_dob) : null) || fullKyc?.values?.nominee_dob || member.nomini_dob || "",
+    nominee_aadhaar: (isProfessional ? (profData.nominee_aadhar || profData.nomini_aadhar) : null) || fullKyc?.values?.nominee_aadhaar || member.nominee_aadhaar || member.nomini_aadhar || "",
+    nomini_aadhar: (isProfessional ? (profData.nomini_aadhar || profData.nominee_aadhar) : null) || fullKyc?.values?.nominee_aadhaar || member.nomini_aadhar || "",
+    emergency_contact_name: (isProfessional ? profData.emergency_contact_name : null) || fullKyc?.values?.emergency_contact_name || member.emergency_contact_name || "",
+    emergency_contact_number: (isProfessional ? (profData.emergency_contact_number || profData.emergency_contact) : null) || fullKyc?.values?.emergency_contact_number || member.emergency_contact_number || "",
+    emergency_relationship: (isProfessional ? profData.emergency_relationship : null) || fullKyc?.values?.emergency_relationship || member.emergency_relationship || "",
+    bank_name: (isProfessional ? profData.bank_name : null) || fullKyc?.values?.bank_name || member.bank_name || "",
+    bank_account_number: (isProfessional ? (profData.account_number || profData.bank_account_number) : null) || fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || member.bank_account_number || member.account_number || "",
+    account_number: (isProfessional ? (profData.account_number || profData.bank_account_number) : null) || fullKyc?.values?.bank_account_number || fullKyc?.values?.account_number || member.account_number || "",
+    ifsc_code: (isProfessional ? (profData.ifsc_code || profData.ifsc) : null) || fullKyc?.values?.ifsc_code || member.ifsc_code || "",
+    ifsc: (isProfessional ? (profData.ifsc || profData.ifsc_code) : null) || fullKyc?.values?.ifsc_code || member.ifsc_code || "",
+    branch: (isProfessional ? (profData.branch || profData.bank_branch_name) : null) || fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || member.bank_branch || member.bank_branch_name || "",
+    bank_branch: (isProfessional ? (profData.branch || profData.bank_branch_name) : null) || fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || member.bank_branch || member.bank_branch_name || "",
+    bank_branch_name: (isProfessional ? (profData.branch || profData.bank_branch_name) : null) || fullKyc?.values?.bank_branch_name || fullKyc?.values?.bank_branch || fullKyc?.values?.branch || member.branch || member.bank_branch || member.bank_branch_name || "",
     skills: fullKyc?.values?.skills || "",
     social_instagram: fullKyc?.values?.instagram_url || "",
     social_linkedin: fullKyc?.values?.linkedin_url || "",
@@ -4015,7 +4836,6 @@ async function handleGetPublicUser(request, db, cors, loginId) {
     values: {
       ...fullKyc?.values,
       ...commKyc,
-      ...commVals,
       ...business,
     },
   };
@@ -4651,8 +5471,25 @@ async function handleGetAdminUser(request, db, cors, id) {
     SELECT * FROM commercial_payments WHERE login_id = ? ORDER BY id DESC LIMIT 1
   `).bind(member.login_id).first()) || {};
 
-  const commKycRecord = await getCommercialKycRecord(member.id, member.login_id, db);
-  const commVals = commKycRecord.values || {};
+  const profRecord = await getProfessionalKycRecord(member.id, db);
+  const profRow = (await db.prepare(`
+    SELECT * FROM professional_kyc WHERE member_id = ? OR login_id = ?
+  `).bind(member.id, member.login_id).first()) || {};
+  let profData = {};
+  if (profRow.kyc_data) {
+    try {
+      profData = typeof profRow.kyc_data === "string" ? JSON.parse(profRow.kyc_data) : (profRow.kyc_data || {});
+    } catch {}
+  }
+  const professionalKyc = {
+    ...profRow,
+    ...profData,
+    ...(profRecord.values || {}),
+    status: profRow.kyc_status || profRecord.status || "draft",
+    selected_plan: profData.selectedPlan || ext.subscription_year || ext.amount || "299",
+    values: profRecord.values,
+    sections: profRecord.sections,
+  };
 
   let referrer = null;
   if (member.referred_by) {
@@ -4745,7 +5582,7 @@ async function handleGetAdminUser(request, db, cors, id) {
     ...member,
     ...ext,
     ...(civRecord.values || {}),
-    ...(commVals || {}),
+    ...(profRecord.values || {}),
     id: member.id,
     login_id: member.login_id,
     first_name: fn,
@@ -4755,30 +5592,21 @@ async function handleGetAdminUser(request, db, cors, id) {
     name: fullName,
     email: member.email,
     phone: member.phone,
-    dob: commVals.dob || commVals.date_of_birth || civRecord.values?.dob || civRecord.values?.date_of_birth || member.dob || member.date_of_birth || "",
-    date_of_birth: commVals.date_of_birth || commVals.dob || civRecord.values?.dob || civRecord.values?.date_of_birth || member.dob || member.date_of_birth || "",
-    father_spouse_name: commVals.father_spouse_name || civRecord.values?.father_spouse_name || civRecord.values?.father_name || member.father_spouse_name || member.father_name || "",
-    gender: commVals.gender || member.gender || "",
-    marital_status: commVals.marital_status || member.marital_status || "",
-    nationality: commVals.nationality || member.nationality || "Indian",
-    blood_group: commVals.blood_group || member.blood_group || "",
-    aadhaar_number: commVals.aadhaar_number || member.aadhaar_number || member.aadhar || "",
-    pan_number: commVals.pan_number || commVals.company_pan || member.pan_number || member.pan || "",
+    dob: profRecord.values?.dob || civRecord.values?.dob || civRecord.values?.date_of_birth || member.dob || member.date_of_birth || "",
+    date_of_birth: profRecord.values?.dob || civRecord.values?.dob || civRecord.values?.date_of_birth || member.dob || member.date_of_birth || "",
+    father_spouse_name: profRecord.values?.father_name || profRecord.values?.father_spouse_name || civRecord.values?.father_spouse_name || civRecord.values?.father_name || member.father_spouse_name || member.father_name || "",
     school_college_name: civRecord.values?.school_college_name || civRecord.values?.school_name || member.school_college_name || member.school_name || member.ug_college || member.pg_college || member.institution_name || "",
     school_name: civRecord.values?.school_name || civRecord.values?.school_college_name || member.school_name || member.school_college_name || "",
-    highest_qualification: civRecord.values?.highest_qualification || member.highest_qualification || member.educational_qualification || member.education || "",
+    highest_qualification: profRecord.values?.highest_qualification || profRecord.values?.education || civRecord.values?.highest_qualification || member.highest_qualification || member.educational_qualification || member.education || "",
     degree_year: civRecord.values?.degree_year || civRecord.values?.ug_year || member.degree_year || member.ug_year || "",
-    bank_branch_name: commVals.bank_branch_name || commVals.bank_branch || civRecord.values?.bank_branch_name || civRecord.values?.branch || member.bank_branch_name || member.branch || "",
-    branch: commVals.bank_branch_name || commVals.bank_branch || civRecord.values?.bank_branch_name || civRecord.values?.branch || member.bank_branch_name || member.branch || "",
-    bank_account_number: commVals.bank_account_number || member.bank_account_number || member.account_number || "",
-    ifsc_code: commVals.ifsc_code || member.ifsc_code || "",
-    emergency_contact_name: commVals.emergency_contact_name || civRecord.values?.emergency_contact_name || member.emergency_contact_name || "",
-    emergency_contact_number: commVals.emergency_contact_number || civRecord.values?.emergency_contact_number || member.emergency_contact_number || "",
-    emergency_relationship: commVals.relationship || civRecord.values?.emergency_relationship || member.emergency_relationship || "",
-    nominee_name: commVals.nominee_name || civRecord.values?.nominee_name || member.nominee_name || member.nomini_name || "",
-    nominee_relationship: commVals.nominee_relationship || civRecord.values?.nominee_relationship || member.nominee_relationship || "",
-    nominee_aadhaar: commVals.nominee_aadhaar_id || commVals.nominee_aadhaar || "",
-    nominee_aadhaar_id: commVals.nominee_aadhaar_id || commVals.nominee_aadhaar || "",
+    bank_branch_name: profRecord.values?.branch || profRecord.values?.bank_branch_name || civRecord.values?.bank_branch_name || civRecord.values?.branch || member.bank_branch_name || member.branch || "",
+    branch: profRecord.values?.branch || profRecord.values?.bank_branch_name || civRecord.values?.bank_branch_name || civRecord.values?.branch || member.bank_branch_name || member.branch || "",
+    emergency_contact_name: profRecord.values?.emergency_contact_name || civRecord.values?.emergency_contact_name || member.emergency_contact_name || "",
+    emergency_contact_number: profRecord.values?.emergency_contact_number || civRecord.values?.emergency_contact_number || member.emergency_contact_number || "",
+    emergency_relationship: profRecord.values?.emergency_relationship || civRecord.values?.emergency_relationship || member.emergency_relationship || "",
+    nominee_name: profRecord.values?.nomini_name || civRecord.values?.nominee_name || member.nominee_name || member.nomini_name || "",
+    nominee_relationship: profRecord.values?.nomini_relationship || civRecord.values?.nominee_relationship || member.nominee_relationship || "",
+    nominee_aadhar: profRecord.values?.nomini_aadhar || member.nomini_aadhar || "",
     membership_type: member.membership_type || "Civilian Member",
     payment_status: member.payment_status || "pending",
     selected_plan: String(planAmount),
@@ -4803,14 +5631,9 @@ async function handleGetAdminUser(request, db, cors, id) {
       user: rawMember,
       payment,
       civilianKyc,
-      commercialKyc: {
-        ...commBasic,
-        ...commKyc,
-        ...commVals,
-        sections: commKycRecord.sections,
-        values: commVals,
-      },
+      commercialKyc: { ...commBasic, ...commKyc },
       commercialPayment: commPayment,
+      professionalKyc,
       referrer,
       stats: {
         direct_members_count: directCount,
@@ -4823,6 +5646,7 @@ async function handleGetAdminUser(request, db, cors, id) {
     civilianKyc,
     commercialKyc: { ...commBasic, ...commKyc },
     commercialPayment: commPayment,
+    professionalKyc,
   }, 200, cors);
 }
 
@@ -4841,7 +5665,9 @@ async function handleAdminEditUser(request, db, cors, id) {
       "referral_id", "referred_by", "payment_status", "membership_type", "bio",
       "father_name", "dob", "gender", "marital_status", "nationality", "blood_group",
       "aadhar", "pan_number", "bank_name", "account_number",
-      "school_name", "ug_college", "ug_degree", "ug_year", "skills"
+      "school_name", "ug_college", "ug_degree", "ug_year", "skills",
+      "nomini_name", "nomini_dob", "nomini_relation", "nomini_aadhar",
+      "emergency_contact_name", "emergency_contact_number", "emergency_relationship"
     ];
     const updates = [];
     const params = [];
@@ -5301,6 +6127,7 @@ export default {
         }
 
         const civRecord = await getCivilianFullKycRecord(member.id, db);
+        const profRecord = await getProfessionalKycRecord(member.id, db);
         const fullMember = (await db.prepare(`
           SELECT * FROM kyc_members WHERE id = ?
         `).bind(member.id).first()) || member;
@@ -5310,23 +6137,37 @@ export default {
           ...fullMember,
           ...(civRecord.values || {}),
           ...(civRecord.files || {}),
-          school_college_name: civRecord.values?.school_college_name || civRecord.values?.school_name || fullMember.school_college_name || fullMember.school_name || fullMember.ug_college || fullMember.pg_college || fullMember.institution_name || "",
-          school_name: civRecord.values?.school_name || civRecord.values?.school_college_name || fullMember.school_name || fullMember.school_college_name || "",
-          dob: civRecord.values?.dob || civRecord.values?.date_of_birth || fullMember.dob || fullMember.date_of_birth || "",
-          date_of_birth: civRecord.values?.dob || civRecord.values?.date_of_birth || fullMember.dob || fullMember.date_of_birth || "",
-          father_spouse_name: civRecord.values?.father_spouse_name || civRecord.values?.father_name || fullMember.father_spouse_name || fullMember.father_name || "",
-          branch: civRecord.values?.branch || civRecord.values?.bank_branch_name || fullMember.branch || fullMember.bank_branch_name || "",
-          bank_branch_name: civRecord.values?.branch || civRecord.values?.bank_branch_name || fullMember.branch || fullMember.bank_branch_name || "",
-          highest_qualification: civRecord.values?.highest_qualification || fullMember.highest_qualification || fullMember.education || "",
-          emergency_contact_name: civRecord.values?.emergency_contact_name || fullMember.emergency_contact_name || "",
-          emergency_contact_number: civRecord.values?.emergency_contact_number || fullMember.emergency_contact_number || "",
-          emergency_relationship: civRecord.values?.emergency_relationship || fullMember.emergency_relationship || "",
-          nominee_name: civRecord.values?.nominee_name || fullMember.nominee_name || fullMember.nomini_name || "",
-          nominee_relationship: civRecord.values?.nominee_relationship || fullMember.nominee_relationship || "",
-          profile_photo: civRecord.files?.profile_photo || fullMember.profile_pic || "",
-          profile_pic: civRecord.files?.profile_photo || fullMember.profile_pic || "",
-          cover_photo: civRecord.files?.cover_photo || fullMember.cover_photo || "",
-          banner: civRecord.files?.cover_photo || fullMember.cover_photo || "",
+          ...(profRecord.values || {}),
+          ...(profRecord.files || {}),
+          school_college_name: profRecord.values?.institution_name || profRecord.values?.school_college_name || civRecord.values?.school_college_name || civRecord.values?.school_name || fullMember.school_college_name || fullMember.school_name || fullMember.ug_college || fullMember.pg_college || fullMember.institution_name || "",
+          school_name: profRecord.values?.institution_name || profRecord.values?.school_college_name || civRecord.values?.school_name || civRecord.values?.school_college_name || fullMember.school_name || fullMember.school_college_name || "",
+          dob: profRecord.values?.dob || civRecord.values?.dob || civRecord.values?.date_of_birth || fullMember.dob || fullMember.date_of_birth || "",
+          date_of_birth: profRecord.values?.dob || civRecord.values?.dob || civRecord.values?.date_of_birth || fullMember.dob || fullMember.date_of_birth || "",
+          father_name: profRecord.values?.father_name || profRecord.values?.father_spouse_name || civRecord.values?.father_spouse_name || civRecord.values?.father_name || fullMember.father_spouse_name || fullMember.father_name || "",
+          father_spouse_name: profRecord.values?.father_spouse_name || profRecord.values?.father_name || civRecord.values?.father_spouse_name || civRecord.values?.father_name || fullMember.father_spouse_name || fullMember.father_name || "",
+          branch: profRecord.values?.branch || profRecord.values?.bank_branch_name || civRecord.values?.branch || civRecord.values?.bank_branch_name || fullMember.branch || fullMember.bank_branch_name || "",
+          bank_branch_name: profRecord.values?.branch || profRecord.values?.bank_branch_name || civRecord.values?.branch || civRecord.values?.bank_branch_name || fullMember.branch || fullMember.bank_branch_name || "",
+          highest_qualification: profRecord.values?.highest_qualification || profRecord.values?.education || civRecord.values?.highest_qualification || fullMember.highest_qualification || fullMember.education || "",
+          emergency_contact_name: profRecord.values?.emergency_contact_name || civRecord.values?.emergency_contact_name || fullMember.emergency_contact_name || "",
+          emergency_contact_number: profRecord.values?.emergency_contact_number || civRecord.values?.emergency_contact_number || fullMember.emergency_contact_number || "",
+          emergency_relationship: profRecord.values?.emergency_relationship || civRecord.values?.emergency_relationship || fullMember.emergency_relationship || "",
+          nominee_name: profRecord.values?.nominee_name || profRecord.values?.nomini_name || civRecord.values?.nominee_name || fullMember.nominee_name || fullMember.nomini_name || "",
+          nominee_relationship: profRecord.values?.nominee_relationship || profRecord.values?.nomini_relationship || civRecord.values?.nominee_relationship || fullMember.nominee_relationship || "",
+          nominee_dob: profRecord.values?.nominee_dob || profRecord.values?.nomini_dob || civRecord.values?.nominee_dob || fullMember.nominee_dob || fullMember.nomini_dob || "",
+          nominee_aadhar: profRecord.values?.nominee_aadhar || profRecord.values?.nomini_aadhar || civRecord.values?.nominee_aadhaar || fullMember.nominee_aadhar || fullMember.nomini_aadhar || "",
+          address: profRecord.values?.address || profRecord.values?.current_address || civRecord.values?.current_address || fullMember.address || "",
+          current_address: profRecord.values?.current_address || profRecord.values?.address || civRecord.values?.current_address || fullMember.address || "",
+          city: profRecord.values?.city || civRecord.values?.city || fullMember.city || "",
+          district: profRecord.values?.district || civRecord.values?.district || fullMember.district || "",
+          state: profRecord.values?.state || civRecord.values?.state || fullMember.state || "",
+          pincode: profRecord.values?.pincode || civRecord.values?.pincode || fullMember.pincode || "",
+          occupation: profRecord.values?.occupation || profRecord.values?.profession || civRecord.values?.occupation || fullMember.occupation || "",
+          skills: profRecord.values?.skills || fullMember.skills || "",
+          bio: profRecord.values?.bio || profRecord.values?.professional_bio || fullMember.bio || fullMember.profile_bio || "",
+          profile_photo: profRecord.files?.profile_photo || civRecord.files?.profile_photo || fullMember.profile_pic || "",
+          profile_pic: profRecord.files?.profile_photo || civRecord.files?.profile_photo || fullMember.profile_pic || "",
+          cover_photo: profRecord.files?.cover_photo || civRecord.files?.cover_photo || fullMember.cover_photo || "",
+          banner: profRecord.files?.cover_photo || civRecord.files?.cover_photo || fullMember.cover_photo || "",
         };
 
         delete combinedMember.password;
@@ -5907,6 +6748,16 @@ async function handleRazorpayGetKey(request, env, cors) {
             k.id, k.login_id, k.first_name, k.last_name, k.email, k.phone, 
             k.membership_type, k.payment_status, k.created_at, k.is_deleted,
             k.referral_id, k.referred_by,
+            COALESCE(prof.kyc_status, civ.status, ext.professional_kyc_status, 'draft') AS kyc_status,
+            COALESCE(prof.address, civ.current_address, ext.current_address, k.address, '') AS address,
+            COALESCE(prof.city, civ.city, k.city, '') AS city,
+            COALESCE(prof.district, civ.district, k.district, '') AS district,
+            COALESCE(prof.state, civ.state, k.state, '') AS state,
+            COALESCE(prof.pincode, civ.pincode, k.pincode, '') AS pincode,
+            COALESCE(prof.occupation, k.occupation, '') AS occupation,
+            COALESCE(prof.education, civ.highest_qualification, k.education, '') AS education,
+            COALESCE(prof.nominee_name, civ.nominee_name, ext.nomini_name, '') AS nominee_name,
+            COALESCE(prof.nominee_relationship, civ.nominee_relationship, ext.nomini_relationship, '') AS nominee_relationship,
             COALESCE(cp.plan_name, civ.selected_plan, CASE WHEN ext.amount IS NOT NULL THEN CAST(ext.amount AS TEXT) ELSE NULL END, NULL) AS selected_plan,
             COALESCE(cp.amount, ext.amount, CASE WHEN civ.selected_plan IS NOT NULL THEN CAST(civ.selected_plan AS NUMERIC) ELSE NULL END, NULL) AS amount,
             COALESCE(cp.payment_method, ext.payment_method, '') AS payment_method,
@@ -5930,6 +6781,7 @@ async function handleRazorpayGetKey(request, env, cors) {
           FROM kyc_members k
           LEFT JOIN kyc_members_ext_1 ext ON k.id = ext.member_id
           LEFT JOIN civilian_full_kyc civ ON k.id = civ.member_id
+          LEFT JOIN professional_kyc prof ON (k.id = prof.member_id OR k.login_id = prof.login_id)
           LEFT JOIN (
             SELECT login_id, plan_name, amount, payment_method, transaction_id, payment_status, MAX(id) as max_id 
             FROM commercial_payments 

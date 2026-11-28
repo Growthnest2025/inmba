@@ -87,8 +87,12 @@ const normalizeMembershipType = (
 ========================================================= */
 
 const isProfessionalMembership = (
-  value
+  value,
+  loginId = ""
 ) => {
+  const cleanId = String(loginId || "").trim().toUpperCase();
+  if (cleanId.startsWith("PRO")) return true;
+
   const type =
     normalizeMembershipType(
       value
@@ -98,9 +102,14 @@ const isProfessionalMembership = (
     "professional",
     "professional member",
     "professional membership",
+    "inmba network member",
+    "inmba network royalty member",
+    "network member",
   ].includes(
     type
-  );
+  ) ||
+  type.includes("professional") ||
+  type.includes("network");
 };
 
 /* =========================================================
@@ -315,7 +324,8 @@ export default function PremiumProfile() {
 
         return isProfessionalMembership(
           profile
-            ?.membership_type
+            ?.membership_type,
+          safeLoginId
         );
       },
       [
@@ -674,7 +684,8 @@ export default function PremiumProfile() {
               "professional" ||
             isProfessionalMembership(
               member
-                ?.membership_type
+                ?.membership_type,
+              safeLoginId
             );
 
           if (

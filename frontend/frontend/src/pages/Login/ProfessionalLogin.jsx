@@ -412,45 +412,35 @@ const isPaymentApproved =
    ALREADY APPROVED → DIRECT DASHBOARD
 ===================================================== */
 
-if (
-  isPaymentApproved
-) {
-  sessionStorage.removeItem(
-    PROFESSIONAL_NEXT_ROUTE_STORAGE_KEY
-  );
+        const hasPayment = Boolean(
+          (member?.transaction_id && String(member.transaction_id).trim()) ||
+          (member?.payment_proof && String(member.payment_proof).trim()) ||
+          ["approved", "paid", "completed", "success", "successful"].includes(paymentStatus) ||
+          sessionStorage.getItem("inmba_professional_payment_submitted") === "true"
+        );
+        const hasKyc = Boolean(
+          member?.professional_kyc_status === "submitted" ||
+          member?.professional_kyc_status === "completed" ||
+          member?.professional_kyc_status === "approved" ||
+          sessionStorage.getItem("inmba_professional_kyc_completed") === "true"
+        );
 
-  navigate(
-    "/professional-dashboard",
-    {
-      replace: true,
+        let destination = "/professional-payment";
+        if (isPaymentApproved || (hasPayment && hasKyc)) {
+          destination = "/professional-dashboard";
+        } else if (hasPayment) {
+          destination = "/professional-kyc";
+        } else {
+          destination = "/professional-payment";
+        }
 
-      state: {
-        loginId:
-          member?.login_id,
-
-        member,
-
-        membershipType:
-          member?.membership_type,
-      },
-    }
-  );
-
-  return;
-}
-
-/* =====================================================
-   NOT APPROVED → CONTINUE MEMBERSHIP FLOW
-===================================================== */
-
-sessionStorage.setItem(
-  PROFESSIONAL_NEXT_ROUTE_STORAGE_KEY,
-  "/professional-membership"
-);
-
+        sessionStorage.setItem(
+          PROFESSIONAL_NEXT_ROUTE_STORAGE_KEY,
+          destination
+        );
 
         navigate(
-          "/professional-membership",
+          destination,
           {
             replace:
               true,
